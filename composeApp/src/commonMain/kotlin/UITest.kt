@@ -16,12 +16,14 @@ import top.yukonga.miuix.kmp.MiuixCard
 import top.yukonga.miuix.kmp.MiuixSurface
 import top.yukonga.miuix.kmp.MiuixSwitch
 import top.yukonga.miuix.kmp.MiuixText
+import top.yukonga.miuix.kmp.MiuixTextField
 import top.yukonga.miuix.kmp.MiuixTextWithSwitch
 
 @Composable
 fun UITest() {
-    var checked by remember { mutableStateOf(true) }
-    var checked1 by remember { mutableStateOf(true) }
+    var switch by remember { mutableStateOf(false) }
+    var textWishSwitch by remember { mutableStateOf(true) }
+    var text by remember { mutableStateOf("") }
 
     MiuixSurface(
         modifier = Modifier.fillMaxSize()
@@ -32,32 +34,42 @@ fun UITest() {
                 .systemBarsPadding()
                 .padding(top = 18.dp)
         ) {
-            Column(
-                modifier = Modifier
-            ) {
+            Column {
                 MiuixText(
                     text = "Text",
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
+
                 )
 
                 MiuixSwitch(
-                    checked = checked,
-                    onCheckedChange = { checked = it },
+                    checked = switch,
+                    onCheckedChange = { switch = it },
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                 )
 
                 MiuixTextWithSwitch(
                     text = "Text with Switch",
-                    checked = checked1,
-                    onCheckedChange = { checked1 = it },
+                    checked = textWishSwitch,
+                    onCheckedChange = { textWishSwitch = it },
+                )
+
+                MiuixTextField(
+                    value = text,
+                    onValueChange = { text = it },
+                    label = "Text Field",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 8.dp)
                 )
 
                 MiuixCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
+                        .padding(bottom = 8.dp)
                 ) {
                     MiuixText("Card")
                 }

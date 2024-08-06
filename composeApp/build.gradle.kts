@@ -80,7 +80,7 @@ android {
                 (this as BaseVariantOutputImpl).outputFileName = "$appName-v$versionName($versionCode)-$name.apk"
             }
         }
-        resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        resources.excludes += "**"
     }
     buildTypes {
         getByName("release") {

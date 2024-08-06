@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.util.fastForEachIndexed
-import top.yukonga.miuix.kmp.ui.MiuixTheme
 import kotlin.math.max
 
 /**
@@ -65,7 +64,7 @@ inline fun MiuixBox(
     Layout(
         content = { MiuixBoxScopeInstance.content() },
         measurePolicy = measurePolicy,
-        modifier = modifier.background(color = MiuixTheme.colorScheme.background)
+        modifier = modifier
     )
 }
 
@@ -121,36 +120,36 @@ private data class MiuixBoxMeasurePolicy(
 
         if (measurables.size == 1) {
             val measurable = measurables[0]
-            val MiuixBoxWidth: Int
-            val MiuixBoxHeight: Int
+            val mWidth: Int
+            val mHeight: Int
             val placeable: Placeable
             if (!measurable.matchesParentSize) {
                 placeable = measurable.measure(contentConstraints)
-                MiuixBoxWidth = max(constraints.minWidth, placeable.width)
-                MiuixBoxHeight = max(constraints.minHeight, placeable.height)
+                mWidth = max(constraints.minWidth, placeable.width)
+                mHeight = max(constraints.minHeight, placeable.height)
             } else {
-                MiuixBoxWidth = constraints.minWidth
-                MiuixBoxHeight = constraints.minHeight
+                mWidth = constraints.minWidth
+                mHeight = constraints.minHeight
                 placeable = measurable.measure(
                     Constraints.fixed(constraints.minWidth, constraints.minHeight)
                 )
             }
-            return layout(MiuixBoxWidth, MiuixBoxHeight) {
-                placeInMiuixBox(placeable, measurable, layoutDirection, MiuixBoxWidth, MiuixBoxHeight, alignment)
+            return layout(mWidth, mHeight) {
+                placeInMiuixBox(placeable, measurable, layoutDirection, mWidth, mHeight, alignment)
             }
         }
 
         val placeables = arrayOfNulls<Placeable>(measurables.size)
         // First measure non match parent size children to get the size of the MiuixBox.
         var hasMatchParentSizeChildren = false
-        var MiuixBoxWidth = constraints.minWidth
-        var MiuixBoxHeight = constraints.minHeight
+        var mWidth = constraints.minWidth
+        var mHeight = constraints.minHeight
         measurables.fastForEachIndexed { index, measurable ->
             if (!measurable.matchesParentSize) {
                 val placeable = measurable.measure(contentConstraints)
                 placeables[index] = placeable
-                MiuixBoxWidth = max(MiuixBoxWidth, placeable.width)
-                MiuixBoxHeight = max(MiuixBoxHeight, placeable.height)
+                mWidth = max(mWidth, placeable.width)
+                mHeight = max(mHeight, placeable.height)
             } else {
                 hasMatchParentSizeChildren = true
             }
@@ -160,10 +159,10 @@ private data class MiuixBoxMeasurePolicy(
         if (hasMatchParentSizeChildren) {
             // The infinity check is needed for default intrinsic measurements.
             val matchParentSizeConstraints = Constraints(
-                minWidth = if (MiuixBoxWidth != Constraints.Infinity) MiuixBoxWidth else 0,
-                minHeight = if (MiuixBoxHeight != Constraints.Infinity) MiuixBoxHeight else 0,
-                maxWidth = MiuixBoxWidth,
-                maxHeight = MiuixBoxHeight
+                minWidth = if (mWidth != Constraints.Infinity) mWidth else 0,
+                minHeight = if (mHeight != Constraints.Infinity) mHeight else 0,
+                maxWidth = mWidth,
+                maxHeight = mHeight
             )
             measurables.fastForEachIndexed { index, measurable ->
                 if (measurable.matchesParentSize) {
@@ -173,11 +172,11 @@ private data class MiuixBoxMeasurePolicy(
         }
 
         // Specify the size of the MiuixBox and position its children.
-        return layout(MiuixBoxWidth, MiuixBoxHeight) {
+        return layout(mWidth, mHeight) {
             placeables.forEachIndexed { index, placeable ->
                 placeable as Placeable
                 val measurable = measurables[index]
-                placeInMiuixBox(placeable, measurable, layoutDirection, MiuixBoxWidth, MiuixBoxHeight, alignment)
+                placeInMiuixBox(placeable, measurable, layoutDirection, mWidth, mHeight, alignment)
             }
         }
     }
@@ -187,14 +186,14 @@ private fun Placeable.PlacementScope.placeInMiuixBox(
     placeable: Placeable,
     measurable: Measurable,
     layoutDirection: LayoutDirection,
-    MiuixBoxWidth: Int,
-    MiuixBoxHeight: Int,
+    mWidth: Int,
+    mHeight: Int,
     alignment: Alignment
 ) {
     val childAlignment = measurable.MiuixBoxChildDataNode?.alignment ?: alignment
     val position = childAlignment.align(
         IntSize(placeable.width, placeable.height),
-        IntSize(MiuixBoxWidth, MiuixBoxHeight),
+        IntSize(mWidth, mHeight),
         layoutDirection
     )
     placeable.place(position)

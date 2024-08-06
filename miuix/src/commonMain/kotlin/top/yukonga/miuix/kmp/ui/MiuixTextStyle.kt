@@ -2,6 +2,7 @@ package top.yukonga.miuix.kmp.ui
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 
@@ -24,7 +25,8 @@ fun miuixTextStyles(
 
 private val DefaultTextStyle: TextStyle
     get() = TextStyle(
-        fontSize = 16.sp
+        fontSize = 16.sp,
+        fontWeight = FontWeight.SemiBold
     )
 
 private val TitleTextStyle: TextStyle

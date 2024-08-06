@@ -87,7 +87,7 @@ fun MiuixText(
 
     BasicText(
         text,
-        modifier = modifier.padding(vertical = 4.dp),
+        modifier = modifier,
         style.merge(
             color = textColor,
             fontSize = fontSize,
