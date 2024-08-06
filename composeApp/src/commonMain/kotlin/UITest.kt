@@ -30,29 +30,37 @@ fun UITest() {
             modifier = Modifier
                 .displayCutoutPadding()
                 .systemBarsPadding()
-                .padding(horizontal = 18.dp)
                 .padding(top = 18.dp)
         ) {
-            Column {
-                MiuixText("Text")
+            Column(
+                modifier = Modifier
+            ) {
+                MiuixText(
+                    text = "Text",
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                )
 
                 MiuixSwitch(
                     checked = checked,
-                    onCheckedChange = { checked = it }
+                    onCheckedChange = { checked = it },
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
                 )
 
                 MiuixTextWithSwitch(
                     text = "Text with Switch",
                     checked = checked1,
-                    onCheckedChange = { checked1 = it }
+                    onCheckedChange = { checked1 = it },
                 )
 
                 MiuixCard(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 ) {
                     MiuixText("Card")
                 }
-
             }
         }
     }

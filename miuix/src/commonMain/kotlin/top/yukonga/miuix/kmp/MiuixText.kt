@@ -1,8 +1,6 @@
 package top.yukonga.miuix.kmp
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.runtime.Composable
@@ -26,20 +24,10 @@ import top.yukonga.miuix.kmp.ui.MiuixTheme
 /**
  * High level element that displays text and provides semantics / accessibility information.
  *
- * For ease of use, commonly used parameters from [TextStyle] are also present here. The order of
- * precedence is as follows:
- * - If a parameter is explicitly set here (i.e, it is _not_ `null` or [TextUnit.Unspecified]), then
- *   this parameter will always be used.
- * - If a parameter is _not_ set, (`null` or [TextUnit.Unspecified]), then the corresponding value
- *   from [style] will be used instead.
- *
- * Additionally, for [color], if [color] is not set, and [style] does not have a color, then
- * [MiuixTheme.colors.primary] will be used.
- *
  * @param text the text to be displayed
  * @param modifier the [Modifier] to be applied to this layout node
  * @param color [Color] to apply to the text. If [Color.Unspecified], and [style] has no color set,
- *   this will be [MiuixTheme.colors.primary].
+ *   this will be [MiuixTheme.colorScheme.primary].
  * @param fontSize the size of glyphs to use when painting the text. See [TextStyle.fontSize].
  * @param fontStyle the typeface variant to use when drawing the letters (e.g., italic). See
  *   [TextStyle.fontStyle].
@@ -122,29 +110,10 @@ fun MiuixText(
 /**
  * High level element that displays text and provides semantics / accessibility information.
  *
- * The default [style] uses the [LocalMiuixTextStyle] provided by the [MiuixTextStyle] / components. If
- * you are setting your own style, you may want to consider first retrieving [LocalMiuixTextStyle], and
- * using [TextStyle.copy] to keep any theme defined attributes, only modifying the specific
- * attributes you want to override.
- *
- * For ease of use, commonly used parameters from [TextStyle] are also present here. The order of
- * precedence is as follows:
- * - If a parameter is explicitly set here (i.e, it is _not_ `null` or [TextUnit.Unspecified]), then
- *   this parameter will always be used.
- * - If a parameter is _not_ set, (`null` or [TextUnit.Unspecified]), then the corresponding value
- *   from [style] will be used instead.
- *
- * Additionally, for [color], if [color] is not set, and [style] does not have a color, then
- * [LocalMiuixContentColor] will be used.
- *
- * See an example of displaying text with links where links apply the styling from the theme:
- *
- * @sample androidx.compose.material3.samples.TextWithLinks
- *
  * @param text the text to be displayed
  * @param modifier the [Modifier] to be applied to this layout node
  * @param color [Color] to apply to the text. If [Color.Unspecified], and [style] has no color set,
- *   this will be [LocalMiuixContentColor].
+ *   this will be [MiuixTheme.colorScheme.primary].
  * @param fontSize the size of glyphs to use when painting the text. See [TextStyle.fontSize].
  * @param fontStyle the typeface variant to use when drawing the letters (e.g., italic). See
  *   [TextStyle.fontStyle].
@@ -225,51 +194,5 @@ fun MiuixText(
         maxLines = maxLines,
         minLines = minLines,
         inlineContent = inlineContent
-    )
-}
-
-@Deprecated(
-    "Maintained for binary compatibility. Use version with minLines instead",
-    level = DeprecationLevel.HIDDEN
-)
-@Composable
-fun MiuixText(
-    text: AnnotatedString,
-    modifier: Modifier = Modifier,
-    color: Color = Color.Unspecified,
-    fontSize: TextUnit = TextUnit.Unspecified,
-    fontStyle: FontStyle? = null,
-    fontWeight: FontWeight? = null,
-    fontFamily: FontFamily? = null,
-    letterSpacing: TextUnit = TextUnit.Unspecified,
-    textDecoration: TextDecoration? = null,
-    textAlign: TextAlign? = null,
-    lineHeight: TextUnit = TextUnit.Unspecified,
-    overflow: TextOverflow = TextOverflow.Clip,
-    softWrap: Boolean = true,
-    maxLines: Int = Int.MAX_VALUE,
-    inlineContent: Map<String, InlineTextContent> = mapOf(),
-    onTextLayout: (TextLayoutResult) -> Unit = {},
-    style: TextStyle = MiuixTheme.textStyles.main
-) {
-    MiuixText(
-        text,
-        modifier,
-        color,
-        fontSize,
-        fontStyle,
-        fontWeight,
-        fontFamily,
-        letterSpacing,
-        textDecoration,
-        textAlign,
-        lineHeight,
-        overflow,
-        softWrap,
-        maxLines,
-        1,
-        inlineContent,
-        onTextLayout,
-        style
     )
 }

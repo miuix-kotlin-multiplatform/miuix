@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.ui.MiuixTheme
 
 @Composable
-@Suppress("ComposableLambdaParameterNaming", "ComposableLambdaParameterPosition")
 fun MiuixSwitch(
     checked: Boolean,
     onCheckedChange: ((Boolean) -> Unit)?,

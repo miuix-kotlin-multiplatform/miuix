@@ -13,7 +13,8 @@ class MiuixColors(
     primaryContainer: Color,
     onPrimaryContainer: Color,
     background: Color,
-    onBackground: Color
+    onBackground: Color,
+    pressBackground: Color,
 ) {
     val primary by mutableStateOf(primary, structuralEqualityPolicy())
     val onPrimary by mutableStateOf(onPrimary, structuralEqualityPolicy())
@@ -21,6 +22,7 @@ class MiuixColors(
     val onPrimaryContainer by mutableStateOf(onPrimaryContainer, structuralEqualityPolicy())
     val background by mutableStateOf(background, structuralEqualityPolicy())
     val onBackground by mutableStateOf(onBackground, structuralEqualityPolicy())
+    val pressBackground by mutableStateOf(pressBackground, structuralEqualityPolicy())
 }
 
 fun lightColorScheme() = MiuixColors(
@@ -30,6 +32,7 @@ fun lightColorScheme() = MiuixColors(
     onPrimaryContainer = Color.Black,
     background = Color.White,
     onBackground = Color.Black,
+    pressBackground = Color(0xFFEBEBEB)
 )
 
 fun darkColorScheme() = MiuixColors(
@@ -39,4 +42,5 @@ fun darkColorScheme() = MiuixColors(
     onPrimaryContainer = Color.White,
     background = Color.Black,
     onBackground = Color.White,
+    pressBackground = Color(0xFF262626)
 )
