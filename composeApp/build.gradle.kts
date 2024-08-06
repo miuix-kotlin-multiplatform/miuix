@@ -1,3 +1,6 @@
+@file:Suppress("UnstableApiUsage")
+
+import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
@@ -9,6 +12,7 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
 }
 
+val appName = "Miuix UITest"
 val pkgName = "top.yukonga.miuix.uitest"
 val verName = "1.0.0"
 
@@ -69,12 +73,24 @@ android {
         versionCode = 1
         versionName = verName
     }
-
-    packaging.resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
-
+    dependenciesInfo.includeInApk = false
+    packaging {
+        applicationVariants.all {
+            outputs.all {
+                (this as BaseVariantOutputImpl).outputFileName = "$appName-v$versionName($versionCode)-$name.apk"
+            }
+        }
+        resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
+    }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            vcsInfo.include = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 

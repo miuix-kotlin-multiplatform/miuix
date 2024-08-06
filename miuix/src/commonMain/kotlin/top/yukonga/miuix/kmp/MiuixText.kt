@@ -1,5 +1,8 @@
 package top.yukonga.miuix.kmp
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.runtime.Composable
@@ -17,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.ui.MiuixTheme
 
 /**
@@ -30,12 +34,12 @@ import top.yukonga.miuix.kmp.ui.MiuixTheme
  *   from [style] will be used instead.
  *
  * Additionally, for [color], if [color] is not set, and [style] does not have a color, then
- * [LocalMiuixContentColor] will be used.
+ * [MiuixTheme.colors.primary] will be used.
  *
  * @param text the text to be displayed
  * @param modifier the [Modifier] to be applied to this layout node
  * @param color [Color] to apply to the text. If [Color.Unspecified], and [style] has no color set,
- *   this will be [LocalMiuixContentColor].
+ *   this will be [MiuixTheme.colors.primary].
  * @param fontSize the size of glyphs to use when painting the text. See [TextStyle.fontSize].
  * @param fontStyle the typeface variant to use when drawing the letters (e.g., italic). See
  *   [TextStyle.fontStyle].
@@ -90,12 +94,12 @@ fun MiuixText(
     } else if (style.color.isSpecified) {
         style.color
     } else {
-        MiuixTheme.colors.primary
+        MiuixTheme.colorScheme.primary
     }
 
     BasicText(
         text,
-        modifier,
+        modifier = modifier.padding(vertical = 4.dp),
         style.merge(
             color = textColor,
             fontSize = fontSize,
@@ -197,12 +201,12 @@ fun MiuixText(
     } else if (style.color.isSpecified) {
         style.color
     } else {
-        MiuixTheme.colors.primary
+        MiuixTheme.colorScheme.primary
     }
 
     BasicText(
         text = text,
-        modifier = modifier,
+        modifier = modifier.padding(vertical = 4.dp),
         style =
         style.merge(
             color = textColor,

@@ -1,4 +1,3 @@
 <resources>
-    <string name="app_name">miuix</string>
-    <string name="confirm">确认</string>
+    <string name="app_name">Miuix UITest</string>
 </resources>

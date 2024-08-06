@@ -11,19 +11,19 @@ private val LocalMiuixTextStyles = staticCompositionLocalOf { miuixTextStyles() 
 
 @Composable
 fun MiuixTheme(
-    colors: MiuixColors = MiuixTheme.colors,
+    colorScheme: MiuixColors = MiuixTheme.colorScheme,
     textStyles: MiuixTextStyles = MiuixTheme.textStyles,
     content: @Composable () -> Unit
 ) {
-    val miuixTextStyles = remember(colors.onPrimary, colors.onPrimaryContainer) {
+    val miuixTextStyles = remember(colorScheme.onPrimary, colorScheme.onPrimaryContainer) {
         miuixTextStyles(
-            main = textStyles.main.copy(color = colors.onPrimary),
-            title = textStyles.title.copy(color = colors.onPrimaryContainer),
-            paragraph = textStyles.paragraph.copy(color = colors.onPrimary.copy(alpha = 0.7f))
+            main = textStyles.main.copy(color = colorScheme.onPrimary),
+            title = textStyles.title.copy(color = colorScheme.onPrimaryContainer),
+            paragraph = textStyles.paragraph.copy(color = colorScheme.onPrimary.copy(alpha = 0.7f))
         )
     }
     CompositionLocalProvider(
-        LocalMiuixColor provides colors,
+        LocalMiuixColor provides colorScheme,
         LocalMiuixTextStyles provides miuixTextStyles
     ) {
         content()
@@ -31,7 +31,7 @@ fun MiuixTheme(
 }
 
 object MiuixTheme {
-    val colors: MiuixColors
+    val colorScheme: MiuixColors
         @Composable
         @ReadOnlyComposable
         get() = LocalMiuixColor.current
