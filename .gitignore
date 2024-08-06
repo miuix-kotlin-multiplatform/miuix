@@ -9,3 +9,4 @@ captures
 local.properties
 xcuserdata
 .kotlin
+*.lock

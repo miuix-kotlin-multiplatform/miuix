@@ -6,7 +6,7 @@ android-targetSdk = "35"
 androidGradlePlugin = "8.5.1"
 androidx-activity-compose = "1.9.1"
 compose-plugin = "1.7.0-alpha02"
-kotlin = "2.0.0"
+kotlin = "2.0.20-RC"
 nexus-publish = "2.0.0"
 
 [libraries]
