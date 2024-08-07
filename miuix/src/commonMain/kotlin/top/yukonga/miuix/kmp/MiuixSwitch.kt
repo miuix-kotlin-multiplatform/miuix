@@ -42,7 +42,7 @@ fun MiuixSwitch(
         )
     )
     val backgroundColor by animateColorAsState(
-        if (checked) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.thumb
+        if (checked) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.switchThumb
     )
 
     val toggleableModifier =

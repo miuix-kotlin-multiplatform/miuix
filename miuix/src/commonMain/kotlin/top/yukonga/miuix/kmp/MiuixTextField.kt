@@ -89,7 +89,7 @@ fun MiuixTextField(
                             MiuixText(
                                 text = label,
                                 modifier = Modifier.fillMaxWidth(),
-                                color = MiuixTheme.colorScheme.subText
+                                color = MiuixTheme.colorScheme.subTextField
                             )
                         }
                         innerTextField()

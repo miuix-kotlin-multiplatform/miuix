@@ -1,11 +1,11 @@
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
@@ -20,6 +20,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.MiuixBox
 import top.yukonga.miuix.kmp.MiuixCard
+import top.yukonga.miuix.kmp.MiuixDropdown
 import top.yukonga.miuix.kmp.MiuixSlider
 import top.yukonga.miuix.kmp.MiuixSurface
 import top.yukonga.miuix.kmp.MiuixSwitch
@@ -32,6 +33,7 @@ fun UITest() {
     var switch by remember { mutableStateOf(false) }
     var textWishSwitch by remember { mutableStateOf(true) }
     var text by remember { mutableStateOf("") }
+    val option = remember { mutableStateOf("Option 1") }
     var progress by remember { mutableStateOf(0.2f) }
     var progressEffect by remember { mutableStateOf(0.4f) }
     var progressFloat by remember { mutableStateOf(0.6f) }
@@ -47,121 +49,130 @@ fun UITest() {
                 .systemBarsPadding()
                 .padding(top = 18.dp)
         ) {
-            Column {
-                MiuixText(
-                    text = "Text",
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                )
-
-                MiuixSwitch(
-                    checked = switch,
-                    onCheckedChange = { switch = it },
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                )
-
-                MiuixTextWithSwitch(
-                    text = "Text with Switch",
-                    checked = textWishSwitch,
-                    onCheckedChange = { textWishSwitch = it },
-                )
-
-                MiuixTextField(
-                    value = text,
-                    onValueChange = { text = it },
-                    label = "Text Field",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .padding(bottom = 12.dp),
-                    keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                )
-
-                MiuixSlider(
-                    progress = progress,
-                    onProgressChange = { newProgress -> progress = newProgress },
-                    dragShow = true,
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .padding(bottom = 12.dp)
-                )
-
-                MiuixSlider(
-                    effect = true,
-                    progress = progressEffect,
-                    onProgressChange = { newProgress -> progressEffect = newProgress },
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .padding(bottom = 12.dp)
-                )
-
-                MiuixSlider(
-                    progress = progressFloat,
-                    minValue = 0f,
-                    maxValue = 1f,
-                    height = 26.dp,
-                    onProgressChange = { newProgress -> progressFloat = newProgress },
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .padding(bottom = 2.dp)
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
+            LazyColumn {
+                item {
                     MiuixText(
-                        text = "0.0",
+                        text = "Text",
                         modifier = Modifier
                             .padding(horizontal = 24.dp)
-                            .padding(bottom = 12.dp)
                     )
-                    MiuixText(
-                        text = progressFloat.toString(),
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .padding(bottom = 12.dp)
-                    )
-                    MiuixText(
-                        text = "1.0",
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .padding(bottom = 12.dp)
-                    )
-                }
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .padding(bottom = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    MiuixText(text = "0")
+                    MiuixSwitch(
+                        checked = switch,
+                        onCheckedChange = { switch = it },
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                    )
+
+                    MiuixTextWithSwitch(
+                        text = "Text with Switch",
+                        checked = textWishSwitch,
+                        onCheckedChange = { textWishSwitch = it },
+                    )
+
+                    MiuixDropdown(
+                        text = "Dropdown",
+                        options = listOf("Option 1", "Option 2", "Option 3", "Option 4", "Option 5", "Option 6"),
+                        selectedOption = option,
+                        onOptionSelected = { },
+                    )
+
+                    MiuixTextField(
+                        value = text,
+                        onValueChange = { text = it },
+                        label = "Text Field",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp)
+                            .padding(bottom = 15.dp),
+                        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    )
+
                     MiuixSlider(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(horizontal = 12.dp),
-                        progress = progressEffectFloat,
-                        minValue = 0f,
-                        maxValue = 100f,
-                        height = 24.dp,
-                        effect = true,
+                        progress = progress,
+                        onProgressChange = { newProgress -> progress = newProgress },
                         dragShow = true,
-                        decimalPlaces = 0,
-                        onProgressChange = { newProgress -> progressEffectFloat = newProgress },
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .padding(bottom = 15.dp)
                     )
-                    MiuixText(text = "100")
-                }
 
-                MiuixCard(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .padding(bottom = 12.dp)
-                ) {
-                    MiuixText("Card")
+                    MiuixSlider(
+                        effect = true,
+                        progress = progressEffect,
+                        onProgressChange = { newProgress -> progressEffect = newProgress },
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .padding(bottom = 15.dp)
+                    )
+
+                    MiuixSlider(
+                        progress = progressFloat,
+                        minValue = 0f,
+                        maxValue = 1f,
+                        height = 26.dp,
+                        onProgressChange = { newProgress -> progressFloat = newProgress },
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .padding(bottom = 2.dp)
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        MiuixText(
+                            text = "0.0",
+                            modifier = Modifier
+                                .padding(horizontal = 24.dp)
+                                .padding(bottom = 15.dp)
+                        )
+                        MiuixText(
+                            text = progressFloat.toString(),
+                            modifier = Modifier
+                                .padding(horizontal = 24.dp)
+                                .padding(bottom = 15.dp)
+                        )
+                        MiuixText(
+                            text = "1.0",
+                            modifier = Modifier
+                                .padding(horizontal = 24.dp)
+                                .padding(bottom = 15.dp)
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp)
+                            .padding(bottom = 15.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        MiuixText(text = "0")
+                        MiuixSlider(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 12.dp),
+                            progress = progressEffectFloat,
+                            minValue = 0f,
+                            maxValue = 100f,
+                            height = 24.dp,
+                            effect = true,
+                            dragShow = true,
+                            decimalPlaces = 0,
+                            onProgressChange = { newProgress -> progressEffectFloat = newProgress },
+                        )
+                        MiuixText(text = "100")
+                    }
+
+                    MiuixCard(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp)
+                    ) {
+                        MiuixText("Card")
+                    }
+
                 }
             }
         }
