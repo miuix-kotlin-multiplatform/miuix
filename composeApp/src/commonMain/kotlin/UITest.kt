@@ -17,6 +17,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.MiuixBox
 import top.yukonga.miuix.kmp.MiuixCard
+import top.yukonga.miuix.kmp.MiuixSlider
 import top.yukonga.miuix.kmp.MiuixSurface
 import top.yukonga.miuix.kmp.MiuixSwitch
 import top.yukonga.miuix.kmp.MiuixText
@@ -28,6 +29,8 @@ fun UITest() {
     var switch by remember { mutableStateOf(false) }
     var textWishSwitch by remember { mutableStateOf(true) }
     var text by remember { mutableStateOf("") }
+    var progress by remember { mutableStateOf(0.5f) }
+    var progressEffect by remember { mutableStateOf(0.5f) }
     val focusManager = LocalFocusManager.current
 
     MiuixSurface(
@@ -43,15 +46,14 @@ fun UITest() {
                 MiuixText(
                     text = "Text",
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
-
+                        .padding(horizontal = 24.dp)
                 )
 
                 MiuixSwitch(
                     checked = switch,
                     onCheckedChange = { switch = it },
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = 24.dp)
                 )
 
                 MiuixTextWithSwitch(
@@ -66,17 +68,34 @@ fun UITest() {
                     label = "Text Field",
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 8.dp),
+                        .padding(horizontal = 24.dp)
+                        .padding(bottom = 12.dp),
                     keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                )
+
+                MiuixSlider(
+                    progress = progress,
+                    onProgressChange = { newProgress -> progress = newProgress },
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp)
+                        .padding(bottom = 12.dp)
+                )
+
+                MiuixSlider(
+                    effect = true,
+                    progress = progressEffect,
+                    onProgressChange = { newProgress -> progressEffect = newProgress },
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp)
+                        .padding(bottom = 12.dp)
                 )
 
                 MiuixCard(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 8.dp)
+                        .padding(horizontal = 24.dp)
+                        .padding(bottom = 12.dp)
                 ) {
                     MiuixText("Card")
                 }

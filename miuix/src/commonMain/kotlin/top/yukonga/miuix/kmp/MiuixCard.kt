@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
@@ -33,7 +31,7 @@ fun MiuixCard(
     border: BorderStroke? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    Surface(
+    MiuixSurface(
         modifier = modifier,
         shape = shape,
         color = MiuixTheme.colorScheme.primaryContainer,
@@ -71,19 +69,15 @@ fun MiuixCard(
     enabled: Boolean = true,
     shape: Shape = RoundedCornerShape(16.dp),
     border: BorderStroke? = null,
-    interactionSource: MutableInteractionSource? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    @Suppress("NAME_SHADOWING")
-    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
-    Surface(
+    MiuixSurface(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
         shape = shape,
         color = MiuixTheme.colorScheme.primaryContainer,
-        border = border,
-        interactionSource = interactionSource,
+        border = border
     ) {
         Column(
             modifier = Modifier.padding(vertical = 13.dp, horizontal = 16.dp),

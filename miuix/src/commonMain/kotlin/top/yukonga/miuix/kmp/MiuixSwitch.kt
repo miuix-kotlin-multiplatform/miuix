@@ -6,7 +6,6 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
@@ -19,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
@@ -42,7 +42,7 @@ fun MiuixSwitch(
         )
     )
     val backgroundColor by animateColorAsState(
-        if (checked) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.primaryContainer
+        if (checked) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.thumb
     )
 
     val toggleableModifier =
@@ -60,17 +60,15 @@ fun MiuixSwitch(
             Modifier
         }
 
-    Box(
+    MiuixBox(
         modifier = modifier
             .then(toggleableModifier)
             .wrapContentSize(Alignment.Center)
             .requiredSize(52.dp, 28.5.dp)
-            .background(
-                color = backgroundColor,
-                shape = RoundedCornerShape(50.dp)
-            )
+            .clip(RoundedCornerShape(50.dp))
+            .background(backgroundColor)
     ) {
-        Box(
+        MiuixBox(
             modifier = Modifier
                 .padding(start = thumbOffset)
                 .align(Alignment.CenterStart)
