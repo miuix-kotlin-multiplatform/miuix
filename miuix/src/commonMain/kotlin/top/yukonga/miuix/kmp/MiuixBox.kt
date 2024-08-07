@@ -45,9 +45,6 @@ import kotlin.math.max
  * When the content has more than one layout child the layout children will be stacked one
  * on top of the other (positioned as explained above) in the composition order.
  *
- * Example usage:
- * @sample androidx.compose.foundation.layout.samples.SimpleBox
- *
  * @param modifier The modifier to be applied to the layout.
  * @param contentAlignment The default alignment inside the MiuixBox.
  * @param propagateMinConstraints Whether the incoming min constraints should be passed to content.
@@ -202,10 +199,6 @@ private fun Placeable.PlacementScope.placeInMiuixBox(
 /**
  * A MiuixBox with no content that can participate in layout, drawing, pointer input
  * due to the [modifier] applied to it.
- *
- * Example usage:
- *
- * @sample androidx.compose.foundation.layout.samples.SimpleBox
  *
  * @param modifier The modifier to be applied to the layout.
  */
