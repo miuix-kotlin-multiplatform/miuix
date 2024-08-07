@@ -1,7 +1,9 @@
 package top.yukonga.miuix.kmp
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -32,7 +34,13 @@ fun MiuixSwitch(
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
-    val thumbOffset by animateDpAsState(if (checked) 28.dp else 4.dp)
+    val thumbOffset by animateDpAsState(
+        targetValue = if (checked) 28.dp else 4.dp,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioLowBouncy,
+            stiffness = Spring.StiffnessMedium
+        )
+    )
     val backgroundColor by animateColorAsState(
         if (checked) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.primaryContainer
     )

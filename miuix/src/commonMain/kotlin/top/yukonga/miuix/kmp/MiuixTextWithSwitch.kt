@@ -1,14 +1,13 @@
 package top.yukonga.miuix.kmp
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,11 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.ui.MiuixTheme
 
 @Composable
@@ -30,34 +25,23 @@ fun MiuixTextWithSwitch(
     onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    interactionSource: MutableInteractionSource? = null,
 ) {
-    var isPressed by remember { mutableStateOf(false) }
     var isChecked by remember { mutableStateOf(checked) }
-    val defaultBackgroundColor: Color = MiuixTheme.colorScheme.background
-    val pressBackgroundColor: Color = MiuixTheme.colorScheme.pressBackground
-    val backgroundColor by animateColorAsState(if (isPressed) pressBackgroundColor else defaultBackgroundColor)
+    val interactionSource = remember { MutableInteractionSource() }
+    val ripple = ripple(color = MiuixTheme.colorScheme.onBackground.copy(alpha = 0.8f))
 
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(backgroundColor)
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onTap = {
-                        isChecked = !isChecked
-                        onCheckedChange?.invoke(isChecked)
-                        isPressed = false
-                    },
-                    onPress = {
-                        coroutineScope {
-                            launch {
-                                isPressed = true
-                            }
-                        }
-                    }
-                )
-            },
+            .clickable(
+                enabled = enabled,
+                interactionSource = interactionSource,
+                indication = ripple,
+                onClick = {
+                    isChecked = !isChecked
+                    onCheckedChange?.invoke(isChecked)
+                }
+            )
     ) {
         Box(
             modifier = Modifier
@@ -76,8 +60,7 @@ fun MiuixTextWithSwitch(
                 MiuixSwitch(
                     checked = checked,
                     onCheckedChange = onCheckedChange,
-                    enabled = enabled,
-                    interactionSource = interactionSource
+                    enabled = enabled
                 )
             }
         }
