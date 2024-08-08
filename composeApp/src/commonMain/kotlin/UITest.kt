@@ -1,4 +1,3 @@
-import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,9 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
@@ -21,20 +18,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.MiuixButton
 import top.yukonga.miuix.kmp.MiuixCard
 import top.yukonga.miuix.kmp.MiuixDropdown
 import top.yukonga.miuix.kmp.MiuixScaffold
+import top.yukonga.miuix.kmp.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.MiuixSlider
 import top.yukonga.miuix.kmp.MiuixSurface
 import top.yukonga.miuix.kmp.MiuixSwitch
@@ -42,84 +36,12 @@ import top.yukonga.miuix.kmp.MiuixText
 import top.yukonga.miuix.kmp.MiuixTextField
 import top.yukonga.miuix.kmp.MiuixTextWithSwitch
 import top.yukonga.miuix.kmp.MiuixTopAppBar
+import top.yukonga.miuix.kmp.rememberMiuixTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.dpToPx
 
 @Composable
 fun UITest() {
-    val listState = rememberLazyListState()
-    var scrollOffset by remember { mutableStateOf(0) }
-    val maxScrollOffset = dpToPx(48.dp)
-
-    val nestedScrollConnection = remember {
-        object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                val delta = available.y
-                return if (delta > 0) {
-                    // Scrolling down
-                    val listScrollOffset = listState.firstVisibleItemScrollOffset
-                    if (listScrollOffset == 0) {
-                        // LazyColumn is at the top, scroll the AppBar
-                        val newOffset = (scrollOffset - delta).coerceIn(0f, maxScrollOffset)
-                        val consumed = scrollOffset - newOffset
-                        scrollOffset = newOffset.toInt()
-                        Offset(0f, consumed)
-                    } else {
-                        // Scroll the LazyColumn
-                        Offset.Zero
-                    }
-                } else {
-                    // Scrolling up
-                    val newOffset = (scrollOffset - delta).coerceIn(0f, maxScrollOffset)
-                    val consumed = scrollOffset - newOffset
-                    scrollOffset = newOffset.toInt()
-                    Offset(0f, consumed)
-                }
-            }
-
-            override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
-                val delta = available.y
-                return if (delta > 0) {
-                    val listScrollOffset = listState.firstVisibleItemScrollOffset
-                    if (listScrollOffset == 0) {
-                        val newOffset = (scrollOffset - delta).coerceIn(0f, maxScrollOffset)
-                        val consumedDown = scrollOffset - newOffset
-                        scrollOffset = newOffset.toInt()
-                        Offset(0f, consumedDown)
-                    } else {
-                        Offset.Zero
-                    }
-                } else {
-                    val newOffset = (scrollOffset - delta).coerceIn(0f, maxScrollOffset)
-                    val consumedUp = scrollOffset - newOffset
-                    scrollOffset = newOffset.toInt()
-                    Offset(0f, consumedUp)
-                }
-            }
-
-            override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
-                // Handle fling for AppBar first
-                if (available.y < 0) {
-                    // Flinging up
-                    val remainingOffset = (scrollOffset - available.y).coerceIn(0f, maxScrollOffset)
-                    scrollOffset = remainingOffset.toInt()
-                    if (remainingOffset == 0f) {
-                        // If AppBar is fully collapsed, fling LazyColumn
-                        listState.animateScrollBy(available.y)
-                    }
-                } else {
-                    // Flinging down
-                    val remainingOffset = (scrollOffset - available.y).coerceIn(0f, maxScrollOffset)
-                    scrollOffset = remainingOffset.toInt()
-                    if (remainingOffset == maxScrollOffset) {
-                        // If AppBar is fully expanded, fling LazyColumn
-                        listState.animateScrollBy(available.y)
-                    }
-                }
-                return Velocity.Zero
-            }
-        }
-    }
+    val scrollBehavior = MiuixScrollBehavior(rememberMiuixTopAppBarState())
 
     var switch by remember { mutableStateOf(false) }
     var switchTrue by remember { mutableStateOf(true) }
@@ -142,17 +64,15 @@ fun UITest() {
             modifier = Modifier
                 .fillMaxSize()
                 .displayCutoutPadding()
-                .statusBarsPadding()
-                .nestedScroll(nestedScrollConnection),
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
                 MiuixTopAppBar(
-                    title = "miuix",
-                    scrollOffset = scrollOffset
+                    title = "Miuix",
+                    scrollBehavior = scrollBehavior
                 )
             }
         ) {
             LazyColumn(
-                state = listState,
                 modifier = Modifier.padding(
                     top = it.calculateTopPadding()
                 )
