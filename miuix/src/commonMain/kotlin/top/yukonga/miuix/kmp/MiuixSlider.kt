@@ -6,7 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -56,15 +56,15 @@ fun MiuixSlider(
     MiuixBox(
         modifier = modifier
             .pointerInput(Unit) {
-                detectDragGestures(
+                detectHorizontalDragGestures(
                     onDragStart = { offset ->
                         isDragging = true
                         dragOffset = offset.x
                         currentValue = calculateProgress(dragOffset, size.width)
                         onProgressChange(currentValue)
                     },
-                    onDrag = { _, dragAmount ->
-                        dragOffset = (dragOffset + dragAmount.x).coerceIn(0f, size.width.toFloat())
+                    onHorizontalDrag = { _, dragAmount ->
+                        dragOffset = (dragOffset + dragAmount).coerceIn(0f, size.width.toFloat())
                         currentValue = calculateProgress(dragOffset, size.width)
                         onProgressChange(currentValue)
                     },
