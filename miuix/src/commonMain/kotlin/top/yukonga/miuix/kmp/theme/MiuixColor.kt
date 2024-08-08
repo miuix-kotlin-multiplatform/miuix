@@ -21,6 +21,10 @@ class MiuixColor(
     sliderBackground: Color,
     dropdownBackground: Color,
     dropdownSelect: Color,
+    buttonBg: Color,
+    disabledBg: Color,
+    buttonDisableText: Color,
+    submitButtonDisabledText: Color
 ) {
     val primary by mutableStateOf(primary, structuralEqualityPolicy())
     val onPrimary by mutableStateOf(onPrimary, structuralEqualityPolicy())
@@ -35,6 +39,10 @@ class MiuixColor(
     val sliderBackground by mutableStateOf(sliderBackground, structuralEqualityPolicy())
     val dropdownBackground by mutableStateOf(dropdownBackground, structuralEqualityPolicy())
     val dropdownSelect by mutableStateOf(dropdownSelect, structuralEqualityPolicy())
+    val buttonBg by mutableStateOf(buttonBg, structuralEqualityPolicy())
+    val disabledBg by mutableStateOf(disabledBg, structuralEqualityPolicy())
+    val buttonDisableText by mutableStateOf(buttonDisableText, structuralEqualityPolicy())
+    val submitButtonDisabledText by mutableStateOf(submitButtonDisabledText, structuralEqualityPolicy())
 }
 
 fun lightColorScheme() = MiuixColor(
@@ -51,6 +59,10 @@ fun lightColorScheme() = MiuixColor(
     sliderBackground = Color(0xFFEEF1F5),
     dropdownBackground = Color(0xFFFFFFFF),
     dropdownSelect = Color(0xFFEAF2FF),
+    buttonBg = Color(0xFFF0F0F0),
+    disabledBg = Color(0xFFC2D9FF),
+    buttonDisableText = Color.White,
+    submitButtonDisabledText = Color(0xFFFFFFFF)
 )
 
 fun darkColorScheme() = MiuixColor(
@@ -67,4 +79,8 @@ fun darkColorScheme() = MiuixColor(
     sliderBackground = Color(0xFF333333),
     dropdownBackground = Color(0xFF242424),
     dropdownSelect = Color(0xFF23334E),
+    buttonBg = Color(0xFF454545),
+    disabledBg = Color(0xFF253E64),
+    buttonDisableText = Color.Gray,
+    submitButtonDisabledText = Color(0xFF677893)
 )

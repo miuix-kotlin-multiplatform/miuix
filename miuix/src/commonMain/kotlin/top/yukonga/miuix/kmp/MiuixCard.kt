@@ -1,8 +1,6 @@
 package top.yukonga.miuix.kmp
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.interaction.Interaction
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding
@@ -10,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
@@ -22,12 +21,14 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  *
  * @param modifier the [Modifier] to be applied to this card
  * @param shape defines the shape of this card's container, border (when [border] is not null)
+ * @param insideMargin Card inside margins
  * @param border the border to draw around the container of this card
  */
 @Composable
 fun MiuixCard(
     modifier: Modifier = Modifier,
     shape: Shape = RoundedCornerShape(16.dp),
+    insideMargin: DpSize = DpSize(20.dp, 20.dp),
     border: BorderStroke? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -38,49 +39,7 @@ fun MiuixCard(
         border = border,
     ) {
         Column(
-            modifier = Modifier.padding(vertical = 13.dp, horizontal = 16.dp),
-            content = content
-        )
-    }
-}
-
-/**
- *
- * MiuixCard contain contain content and actions that relate information about a subject.
- *
- * This Card handles click events, calling its [onClick] lambda.
- *
- * @param onClick called when this card is clicked
- * @param modifier the [Modifier] to be applied to this card
- * @param enabled controls the enabled state of this card. When `false`, this component will not
- *   respond to user input, and it will appear visually disabled and disabled to accessibility
- *   services.
- * @param shape defines the shape of this card's container, border (when [border] is not null).
- * @param border the border to draw around the container of this card
- * @param interactionSource an optional hoisted [MutableInteractionSource] for observing and
- *   emitting [Interaction]s for this card. You can use this to change the card's appearance or
- *   preview the card in different states. Note that if `null` is provided, interactions will still
- *   happen internally.
- */
-@Composable
-fun MiuixCard(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    shape: Shape = RoundedCornerShape(16.dp),
-    border: BorderStroke? = null,
-    content: @Composable ColumnScope.() -> Unit
-) {
-    MiuixSurface(
-        onClick = onClick,
-        modifier = modifier,
-        enabled = enabled,
-        shape = shape,
-        color = MiuixTheme.colorScheme.primaryContainer,
-        border = border
-    ) {
-        Column(
-            modifier = Modifier.padding(vertical = 13.dp, horizontal = 16.dp),
+            modifier = Modifier.padding(vertical = insideMargin.height, horizontal = insideMargin.width),
             content = content
         )
     }

@@ -45,6 +45,8 @@ fun MiuixSwitch(
         if (checked) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.switchThumb
     )
 
+    val disabledBackgroundColor = if (checked) MiuixTheme.colorScheme.disabledBg else MiuixTheme.colorScheme.primaryContainer
+
     val toggleableModifier =
         if (onCheckedChange != null) {
             Modifier.minimumInteractiveComponentSize()
@@ -66,7 +68,7 @@ fun MiuixSwitch(
             .wrapContentSize(Alignment.Center)
             .requiredSize(52.dp, 28.5.dp)
             .clip(RoundedCornerShape(50.dp))
-            .background(backgroundColor)
+            .background(if (enabled) backgroundColor else disabledBackgroundColor)
     ) {
         MiuixBox(
             modifier = Modifier
