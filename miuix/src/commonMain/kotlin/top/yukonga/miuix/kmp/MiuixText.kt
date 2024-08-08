@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import top.yukonga.miuix.kmp.ui.MiuixTheme
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**
  * High level element that displays text and provides semantics / accessibility information.

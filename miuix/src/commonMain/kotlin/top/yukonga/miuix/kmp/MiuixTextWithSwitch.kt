@@ -14,9 +14,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import top.yukonga.miuix.kmp.ui.MiuixTheme
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 fun MiuixTextWithSwitch(
@@ -24,7 +24,7 @@ fun MiuixTextWithSwitch(
     checked: Boolean,
     onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier,
-    paddingHorizontal: Dp = 24.dp,
+    insideMargin: DpSize = DpSize(24.dp, 0.dp),
     enabled: Boolean = true,
 ) {
     var isChecked by remember { mutableStateOf(checked) }
@@ -47,7 +47,7 @@ fun MiuixTextWithSwitch(
         MiuixBox(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = paddingHorizontal)
+                .padding(horizontal = insideMargin.width, vertical = insideMargin.height)
         ) {
             Row(
                 modifier = modifier.fillMaxWidth(),
@@ -56,6 +56,7 @@ fun MiuixTextWithSwitch(
             ) {
                 MiuixText(
                     text = text,
+                    style = MiuixTheme.textStyles.semi,
                     modifier = Modifier.padding(end = 8.dp)
                 )
                 MiuixSwitch(

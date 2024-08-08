@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import top.yukonga.miuix.kmp.ui.MiuixTheme
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**
  *

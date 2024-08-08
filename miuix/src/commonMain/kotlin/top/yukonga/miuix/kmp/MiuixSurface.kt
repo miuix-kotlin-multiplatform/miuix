@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import top.yukonga.miuix.kmp.ui.MiuixTheme
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 @NonRestartableComposable

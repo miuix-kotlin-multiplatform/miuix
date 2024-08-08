@@ -1,6 +1,7 @@
 package top.yukonga.miuix.kmp
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -39,11 +40,14 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import getWindowSize
@@ -52,7 +56,8 @@ import org.jetbrains.compose.resources.painterResource
 import top.yukonga.miuix.kmp.miuix.generated.resources.Res
 import top.yukonga.miuix.kmp.miuix.generated.resources.ic_arrow_up_down
 import top.yukonga.miuix.kmp.miuix.generated.resources.ic_dropdown_select
-import top.yukonga.miuix.kmp.ui.MiuixTheme
+import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.dpToPx
 
 @Composable
 fun MiuixDropdown(
@@ -60,14 +65,14 @@ fun MiuixDropdown(
     modifier: Modifier = Modifier,
     options: List<String>,
     selectedOption: MutableState<String>,
-    paddingHorizontal: Dp = 24.dp,
-    paddingVertical: Dp = 15.dp,
+    insideMargin: DpSize = DpSize(24.dp, 15.dp),
     onOptionSelected: (String) -> Unit
 ) {
     var isDropdownExpanded by remember { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
+    val textStyle = TextStyle(fontWeight = FontWeight.Medium, fontSize = 15.sp)
     val textWidthDp = options.maxOfOrNull { option ->
-        with(LocalDensity.current) { rememberTextMeasurer().measure(text = option, style = MiuixTheme.textStyles.main).size.width.toDp() }
+        with(LocalDensity.current) { rememberTextMeasurer().measure(text = option, style = textStyle).size.width.toDp() }
     }
     val ripple = ripple(color = MiuixTheme.colorScheme.onBackground.copy(alpha = 0.8f))
     var alignLeft by remember { mutableStateOf(true) }
@@ -78,7 +83,6 @@ fun MiuixDropdown(
     var offsetPx by remember { mutableStateOf(0) }
     val navigationPx = dpToPx(WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()).toInt()
     val px24 = dpToPx(24.dp).toInt()
-
     val coroutineScope = rememberCoroutineScope()
 
     MiuixBox(
@@ -107,7 +111,7 @@ fun MiuixDropdown(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = paddingVertical, horizontal = paddingHorizontal),
+                .padding(vertical = insideMargin.height, horizontal = insideMargin.width),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -118,13 +122,13 @@ fun MiuixDropdown(
             Row {
                 MiuixText(
                     text = selectedOption.value,
-                    fontWeight = FontWeight.Normal,
+                    fontSize = 15.sp,
                     color = MiuixTheme.colorScheme.subDropdown,
                     textAlign = TextAlign.End,
                 )
                 Image(
                     modifier = Modifier
-                        .size(14.dp)
+                        .size(15.dp)
                         .padding(start = 6.dp)
                         .align(Alignment.CenterVertically),
                     painter = painterResource(Res.drawable.ic_arrow_up_down),
@@ -150,19 +154,10 @@ fun MiuixDropdown(
             ) {
                 LazyColumn(
                     modifier = Modifier
-                        .padding(horizontal = 24.dp)
+                        .padding(horizontal = 16.dp)
                         .onGloballyPositioned { layoutCoordinates ->
                             dropdownHeightPx = layoutCoordinates.size.height
-                            offsetPx = if (windowHeightPx - dropdownOffsetPx < dropdownHeightPx) {
-                                windowHeightPx - dropdownHeightPx - navigationPx - px24
-                            } else if (dropdownOffsetPx - (windowHeightPx - dropdownHeightPx) > dropdownHeightPx) {
-                                dropdownOffsetPx + dropdownHeightPx / 2
-                            } else if (windowHeightPx - dropdownOffsetPx > dropdownHeightPx) {
-                                val offset = dropdownOffsetPx - dropdownHeightPx / 2
-                                if (offset > 0) offset else 0
-                            } else {
-                                0
-                            }
+                            offsetPx = calculateOffsetPx(windowHeightPx, dropdownOffsetPx, dropdownHeightPx, navigationPx, px24)
                         }
                         .align(if (alignLeft) AbsoluteAlignment.TopLeft else AbsoluteAlignment.TopRight)
                         .clip(RoundedCornerShape(16.dp))
@@ -170,52 +165,19 @@ fun MiuixDropdown(
                 ) {
                     item {
                         options.forEachIndexed { index, option ->
-                            val dropdownInteractionSource = remember { MutableInteractionSource() }
-                            val additionalTopPadding = if (index == 0) 22.dp else 14.dp
-                            val additionalBottomPadding = if (index == options.size - 1) 22.dp else 14.dp
-                            val textColor = if (selectedOption.value == option) {
-                                MiuixTheme.colorScheme.primary
-                            } else {
-                                MiuixTheme.colorScheme.onBackground
-                            }
-                            val selectColor = if (selectedOption.value == option) {
-                                MiuixTheme.colorScheme.primary
-                            } else {
-                                Color.Transparent
-                            }
-                            val backgroundColor = if (selectedOption.value == option) {
-                                MiuixTheme.colorScheme.dropdownSelect
-                            } else {
-                                MiuixTheme.colorScheme.dropdownBackground
-                            }
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                modifier = Modifier
-                                    .clickable(
-                                        interactionSource = dropdownInteractionSource,
-                                        indication = ripple,
-                                    ) {
-                                        selectedOption.value = option
-                                        onOptionSelected(option)
-                                        isDropdownExpanded = false
-                                    }
-                                    .background(backgroundColor)
-                                    .padding(horizontal = 24.dp)
-                                    .padding(top = additionalTopPadding, bottom = additionalBottomPadding)
-                            ) {
-                                MiuixText(
-                                    modifier = Modifier.width(textWidthDp ?: 50.dp),
-                                    text = option,
-                                    color = textColor,
-                                )
-                                Image(
-                                    modifier = Modifier.padding(start = 48.dp).size(26.dp),
-                                    painter = painterResource(Res.drawable.ic_dropdown_select),
-                                    colorFilter = BlendModeColorFilter(selectColor, BlendMode.SrcIn),
-                                    contentDescription = null,
-                                )
-                            }
+                            DropdownImpl(
+                                option = option,
+                                isSelected = selectedOption.value == option,
+                                onOptionSelected = {
+                                    selectedOption.value = it
+                                    onOptionSelected(it)
+                                    isDropdownExpanded = false
+                                },
+                                textWidthDp = textWidthDp,
+                                index = index,
+                                optionsSize = options.size,
+                                ripple = ripple
+                            )
                         }
                     }
                 }
@@ -225,7 +187,78 @@ fun MiuixDropdown(
 }
 
 @Composable
-fun dpToPx(dpValue: Dp): Float {
-    val density = LocalDensity.current
-    return with(density) { dpValue.toPx() }
+fun DropdownImpl(
+    option: String,
+    isSelected: Boolean,
+    onOptionSelected: (String) -> Unit,
+    textWidthDp: Dp?,
+    index: Int,
+    optionsSize: Int,
+    ripple: Indication
+) {
+    val dropdownInteractionSource = remember { MutableInteractionSource() }
+    val additionalTopPadding = if (index == 0) 24.dp else 14.dp
+    val additionalBottomPadding = if (index == optionsSize - 1) 24.dp else 14.dp
+    val textColor = if (isSelected) {
+        MiuixTheme.colorScheme.primary
+    } else {
+        MiuixTheme.colorScheme.onBackground
+    }
+    val selectColor = if (isSelected) {
+        MiuixTheme.colorScheme.primary
+    } else {
+        Color.Transparent
+    }
+    val backgroundColor = if (isSelected) {
+        MiuixTheme.colorScheme.dropdownSelect
+    } else {
+        MiuixTheme.colorScheme.dropdownBackground
+    }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .clickable(
+                interactionSource = dropdownInteractionSource,
+                indication = ripple,
+            ) {
+                onOptionSelected(option)
+            }
+            .background(backgroundColor)
+            .padding(horizontal = 24.dp)
+            .padding(top = additionalTopPadding, bottom = additionalBottomPadding)
+    ) {
+        MiuixText(
+            modifier = Modifier.width(textWidthDp ?: 50.dp),
+            text = option,
+            fontSize = 15.sp,
+            fontWeight = FontWeight.Medium,
+            color = textColor,
+        )
+        Image(
+            modifier = Modifier.padding(start = 50.dp).size(16.dp),
+            painter = painterResource(Res.drawable.ic_dropdown_select),
+            colorFilter = BlendModeColorFilter(selectColor, BlendMode.SrcIn),
+            contentDescription = null,
+        )
+    }
+}
+
+fun calculateOffsetPx(
+    windowHeightPx: Int,
+    dropdownOffsetPx: Int,
+    dropdownHeightPx: Int,
+    navigationPx: Int,
+    px24: Int
+): Int {
+    return if (windowHeightPx - dropdownOffsetPx < dropdownHeightPx) {
+        windowHeightPx - dropdownHeightPx - navigationPx - px24
+    } else if (dropdownOffsetPx - (windowHeightPx - dropdownHeightPx) > dropdownHeightPx) {
+        dropdownOffsetPx + dropdownHeightPx / 2
+    } else if (windowHeightPx - dropdownOffsetPx > dropdownHeightPx) {
+        val offset = dropdownOffsetPx - dropdownHeightPx / 2
+        if (offset > 0) offset else 0
+    } else {
+        0
+    }
 }

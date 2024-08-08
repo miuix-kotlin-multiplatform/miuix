@@ -27,6 +27,7 @@ import top.yukonga.miuix.kmp.MiuixSwitch
 import top.yukonga.miuix.kmp.MiuixText
 import top.yukonga.miuix.kmp.MiuixTextField
 import top.yukonga.miuix.kmp.MiuixTextWithSwitch
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 fun UITest() {
@@ -53,6 +54,7 @@ fun UITest() {
                 item {
                     MiuixText(
                         text = "Text",
+                        style = MiuixTheme.textStyles.semi,
                         modifier = Modifier
                             .padding(horizontal = 24.dp)
                     )

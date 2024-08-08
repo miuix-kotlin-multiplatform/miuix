@@ -1,4 +1,4 @@
-package top.yukonga.miuix.kmp.ui
+package top.yukonga.miuix.kmp.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -11,13 +11,14 @@ private val LocalMiuixTextStyles = staticCompositionLocalOf { miuixTextStyles() 
 
 @Composable
 fun MiuixTheme(
-    colorScheme: MiuixColors = MiuixTheme.colorScheme,
+    colorScheme: MiuixColor = MiuixTheme.colorScheme,
     textStyles: MiuixTextStyles = MiuixTheme.textStyles,
     content: @Composable () -> Unit
 ) {
     val miuixTextStyles = remember(colorScheme.onPrimary, colorScheme.onPrimaryContainer) {
         miuixTextStyles(
             main = textStyles.main.copy(color = colorScheme.onPrimary),
+            semi = textStyles.semi.copy(color = colorScheme.onPrimary),
             title = textStyles.title.copy(color = colorScheme.onPrimaryContainer),
             paragraph = textStyles.paragraph.copy(color = colorScheme.onPrimary.copy(alpha = 0.7f))
         )
@@ -31,7 +32,7 @@ fun MiuixTheme(
 }
 
 object MiuixTheme {
-    val colorScheme: MiuixColors
+    val colorScheme: MiuixColor
         @Composable
         @ReadOnlyComposable
         get() = LocalMiuixColor.current

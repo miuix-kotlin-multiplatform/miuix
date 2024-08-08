@@ -1,4 +1,4 @@
-package top.yukonga.miuix.kmp.ui
+package top.yukonga.miuix.kmp.theme
 
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -7,7 +7,7 @@ import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.graphics.Color
 
 @Stable
-class MiuixColors(
+class MiuixColor(
     primary: Color,
     onPrimary: Color,
     primaryContainer: Color,
@@ -37,7 +37,7 @@ class MiuixColors(
     val dropdownSelect by mutableStateOf(dropdownSelect, structuralEqualityPolicy())
 }
 
-fun lightColorScheme() = MiuixColors(
+fun lightColorScheme() = MiuixColor(
     primary = Color(0xFF3482FF),
     onPrimary = Color.Black,
     primaryContainer = Color(0xFFF7F7F7),
@@ -53,7 +53,7 @@ fun lightColorScheme() = MiuixColors(
     dropdownSelect = Color(0xFFEAF2FF),
 )
 
-fun darkColorScheme() = MiuixColors(
+fun darkColorScheme() = MiuixColor(
     primary = Color(0xFF277AF7),
     onPrimary = Color.White,
     primaryContainer = Color(0xFF212121),
