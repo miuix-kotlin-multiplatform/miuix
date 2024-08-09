@@ -460,8 +460,8 @@ private suspend fun settleAppBar(
     return Velocity(0f, remainingVelocity)
 }
 
-private val TopAppBarHorizontalPadding = 24.dp
-private val TopAppBarTopPadding = 20.dp
+private val TopAppBarHorizontalPadding = 28.dp
+private val TopAppBarTopPadding = 15.dp
 
 /** A functional interface for providing an app-bar scroll offset. */
 private fun interface ScrolledOffset {
@@ -512,8 +512,8 @@ private fun TopAppBarLayout(
             ) {
                 MiuixText(
                     text = title,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Medium
                 )
             }
             MiuixBox(Modifier.layoutId("actionIcons").padding(end = TopAppBarHorizontalPadding, top = TopAppBarTopPadding)) {
@@ -595,7 +595,6 @@ private fun LargeTextLayout(
                     .graphicsLayer(alpha = 1f - (abs(scrolledOffset.offset()) / expandedHeightPx * 2).coerceIn(0f, 1f))
             ) {
                 MiuixText(
-                    modifier = Modifier.padding(bottom = 8.dp),
                     text = title,
                     fontWeight = FontWeight.Light,
                     fontSize = 32.sp

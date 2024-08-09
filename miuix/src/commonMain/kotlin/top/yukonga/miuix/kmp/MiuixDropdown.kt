@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -61,21 +60,19 @@ import top.yukonga.miuix.kmp.utils.dpToPx
 
 @Composable
 fun MiuixDropdown(
-    text: String,
+    title: String,
     modifier: Modifier = Modifier,
     options: List<String>,
     selectedOption: MutableState<String>,
-    insideMargin: DpSize = DpSize(24.dp, 15.dp),
+    insideMargin: DpSize = DpSize(28.dp, 14.dp),
     onOptionSelected: (String) -> Unit
 ) {
     var isDropdownExpanded by remember { mutableStateOf(false) }
-    val interactionSource = remember { MutableInteractionSource() }
+    var alignLeft by remember { mutableStateOf(true) }
     val textStyle = TextStyle(fontWeight = FontWeight.Medium, fontSize = 15.sp)
     val textWidthDp = options.maxOfOrNull { option ->
         with(LocalDensity.current) { rememberTextMeasurer().measure(text = option, style = textStyle).size.width.toDp() }
     }
-    val ripple = ripple(color = MiuixTheme.colorScheme.onBackground.copy(alpha = 0.8f))
-    var alignLeft by remember { mutableStateOf(true) }
     val density = LocalDensity.current.density
     val windowHeightPx = getWindowSize().height
     var dropdownHeightPx by remember { mutableStateOf(0) }
@@ -83,9 +80,11 @@ fun MiuixDropdown(
     var offsetPx by remember { mutableStateOf(0) }
     val navigationPx = dpToPx(WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()).toInt()
     val px24 = dpToPx(24.dp).toInt()
+    val ripple = ripple(color = MiuixTheme.colorScheme.onBackground.copy(alpha = 0.8f))
     val coroutineScope = rememberCoroutineScope()
+    val interactionSource = remember { MutableInteractionSource() }
 
-    MiuixBox(
+    MiuixBasicComponent(
         modifier = modifier
             .indication(interactionSource, ripple)
             .pointerInput(Unit) {
@@ -106,78 +105,67 @@ fun MiuixDropdown(
             .onGloballyPositioned { coordinates ->
                 val positionInRoot = coordinates.positionInRoot()
                 dropdownOffsetPx = positionInRoot.y.toInt()
-            }
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = insideMargin.height, horizontal = insideMargin.width),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
+            },
+        insideMargin = insideMargin,
+        title = title,
+        rightActions = {
             MiuixText(
-                text = text,
-                fontWeight = FontWeight.SemiBold
+                text = selectedOption.value,
+                fontSize = 15.sp,
+                color = MiuixTheme.colorScheme.subTextBase,
+                textAlign = TextAlign.End,
             )
-            Row {
-                MiuixText(
-                    text = selectedOption.value,
-                    fontSize = 15.sp,
-                    color = MiuixTheme.colorScheme.subDropdown,
-                    textAlign = TextAlign.End,
-                )
-                Image(
-                    modifier = Modifier
-                        .size(15.dp)
-                        .padding(start = 6.dp)
-                        .align(Alignment.CenterVertically),
-                    painter = painterResource(Res.drawable.ic_arrow_up_down),
-                    colorFilter = BlendModeColorFilter(MiuixTheme.colorScheme.subDropdown, BlendMode.SrcIn),
-                    contentDescription = null
-                )
-            }
-        }
-    }
-
-    if (isDropdownExpanded) {
-        Dialog(
-            onDismissRequest = { isDropdownExpanded = false },
-            properties = DialogProperties(usePlatformDefaultWidth = false)
-        ) {
-            MiuixBox(
+            Image(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .pointerInput(Unit) {
-                        detectTapGestures(onPress = { isDropdownExpanded = false })
-                    }
-                    .offset(y = offsetPx.dp / density),
+                    .size(15.dp)
+                    .padding(start = 6.dp)
+                    .align(Alignment.CenterVertically),
+                painter = painterResource(Res.drawable.ic_arrow_up_down),
+                colorFilter = BlendModeColorFilter(MiuixTheme.colorScheme.subDropdown, BlendMode.SrcIn),
+                contentDescription = null
+            )
+        }
+    ) {
+        if (isDropdownExpanded) {
+            Dialog(
+                onDismissRequest = { isDropdownExpanded = false },
+                properties = DialogProperties(usePlatformDefaultWidth = false)
             ) {
-                LazyColumn(
+                MiuixBox(
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .onGloballyPositioned { layoutCoordinates ->
-                            dropdownHeightPx = layoutCoordinates.size.height
-                            offsetPx = calculateOffsetPx(windowHeightPx, dropdownOffsetPx, dropdownHeightPx, navigationPx, px24)
+                        .fillMaxSize()
+                        .pointerInput(Unit) {
+                            detectTapGestures(onPress = { isDropdownExpanded = false })
                         }
-                        .align(if (alignLeft) AbsoluteAlignment.TopLeft else AbsoluteAlignment.TopRight)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(MiuixTheme.colorScheme.dropdownBackground)
+                        .offset(y = offsetPx.dp / density),
                 ) {
-                    item {
-                        options.forEachIndexed { index, option ->
-                            DropdownImpl(
-                                option = option,
-                                isSelected = selectedOption.value == option,
-                                onOptionSelected = {
-                                    selectedOption.value = it
-                                    onOptionSelected(it)
-                                    isDropdownExpanded = false
-                                },
-                                textWidthDp = textWidthDp,
-                                index = index,
-                                optionsSize = options.size,
-                                ripple = ripple
-                            )
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .onGloballyPositioned { layoutCoordinates ->
+                                dropdownHeightPx = layoutCoordinates.size.height
+                                offsetPx = calculateOffsetPx(windowHeightPx, dropdownOffsetPx, dropdownHeightPx, navigationPx, px24)
+                            }
+                            .align(if (alignLeft) AbsoluteAlignment.TopLeft else AbsoluteAlignment.TopRight)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(MiuixTheme.colorScheme.dropdownBackground)
+                    ) {
+                        item {
+                            options.forEachIndexed { index, option ->
+                                DropdownImpl(
+                                    option = option,
+                                    isSelected = selectedOption.value == option,
+                                    onOptionSelected = {
+                                        selectedOption.value = it
+                                        onOptionSelected(it)
+                                        isDropdownExpanded = false
+                                    },
+                                    textWidthDp = textWidthDp,
+                                    index = index,
+                                    optionsSize = options.size,
+                                    ripple = ripple
+                                )
+                            }
                         }
                     }
                 }

@@ -15,6 +15,7 @@ class MiuixColor(
     background: Color,
     onBackground: Color,
     cursor: Color,
+    subTextBase: Color,
     subTextField: Color,
     subDropdown: Color,
     switchThumb: Color,
@@ -33,6 +34,7 @@ class MiuixColor(
     val background by mutableStateOf(background, structuralEqualityPolicy())
     val onBackground by mutableStateOf(onBackground, structuralEqualityPolicy())
     val cursor by mutableStateOf(cursor, structuralEqualityPolicy())
+    val subTextBase by mutableStateOf(subTextBase, structuralEqualityPolicy())
     val subTextField by mutableStateOf(subTextField, structuralEqualityPolicy())
     val subDropdown by mutableStateOf(subDropdown, structuralEqualityPolicy())
     val switchThumb by mutableStateOf(switchThumb, structuralEqualityPolicy())
@@ -53,6 +55,7 @@ fun lightColorScheme() = MiuixColor(
     background = Color.White,
     onBackground = Color.Black,
     cursor = Color(0xFF0D84FF),
+    subTextBase = Color(0xFF666666),
     subTextField = Color(0xFFA8A8A8),
     subDropdown = Color(0xFF999999),
     switchThumb = Color(0xFFE6E6E6),
@@ -73,6 +76,7 @@ fun darkColorScheme() = MiuixColor(
     background = Color.Black,
     onBackground = Color.White,
     cursor = Color(0xFF0074ED),
+    subTextBase = Color(0xFF808080),
     subTextField = Color(0xFF727272),
     subDropdown = Color(0xFF666666),
     switchThumb = Color(0xFF333333),

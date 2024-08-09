@@ -18,7 +18,6 @@ fun MiuixTheme(
     val miuixTextStyles = remember(colorScheme.onPrimary, colorScheme.onPrimaryContainer) {
         miuixTextStyles(
             main = textStyles.main.copy(color = colorScheme.onPrimary),
-            semi = textStyles.semi.copy(color = colorScheme.onPrimary),
             title = textStyles.title.copy(color = colorScheme.onPrimaryContainer),
             paragraph = textStyles.paragraph.copy(color = colorScheme.onPrimary.copy(alpha = 0.7f))
         )

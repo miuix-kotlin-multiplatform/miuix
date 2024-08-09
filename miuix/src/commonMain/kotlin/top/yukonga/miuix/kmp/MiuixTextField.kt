@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -88,7 +89,7 @@ fun MiuixTextField(
                         if (value.isEmpty()) {
                             MiuixText(
                                 text = label,
-                                style = MiuixTheme.textStyles.semi,
+                                fontWeight = FontWeight.Medium,
                                 modifier = Modifier.fillMaxWidth(),
                                 color = MiuixTheme.colorScheme.subTextField
                             )
