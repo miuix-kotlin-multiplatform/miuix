@@ -48,7 +48,7 @@ fun UITest() {
 
     var switch by remember { mutableStateOf(false) }
     var switchTrue by remember { mutableStateOf(true) }
-    var textWithSwitch by remember { mutableStateOf("TextWithSwitch (true)") }
+    var textWithSwitch by remember { mutableStateOf("state: false") }
     var textWishSwitchTrue by remember { mutableStateOf(true) }
     var text by remember { mutableStateOf("") }
     var progress by remember { mutableStateOf(0.2f) }
@@ -57,6 +57,9 @@ fun UITest() {
     var progressEffectFloat by remember { mutableStateOf(50f) }
     var buttonText by remember { mutableStateOf("Button") }
     var submitButtonText by remember { mutableStateOf("Submit") }
+    val dropdownOptions = listOf("Option 1", "Option 2", "Option 3", "Option 4")
+    val dropdownSelectedOption = remember { mutableStateOf("Option 1") }
+    val dropdownSelectedOptionRight = remember { mutableStateOf("Option 1") }
     var clickCount by remember { mutableStateOf(0) }
     var submitClickCount by remember { mutableStateOf(0) }
     val focusManager = LocalFocusManager.current
@@ -176,11 +179,12 @@ fun UITest() {
                         }
 
                         MiuixSuperSwitch(
-                            title = textWithSwitch,
+                            title = "TextWithSwitch",
+                            summary = textWithSwitch,
                             checked = textWishSwitchTrue,
                             onCheckedChange = {
                                 textWishSwitchTrue = it
-                                textWithSwitch = "TextWithSwitch ($it)"
+                                textWithSwitch = "state: $it"
                             },
                         )
 
@@ -235,9 +239,19 @@ fun UITest() {
 
                         MiuixDropdown(
                             title = "Dropdown",
-                            options = listOf("Option 1", "Option 2", "Option 3", "Option 4", "Option 5"),
-                            selectedOption = remember { mutableStateOf("Option 1") },
-                            onOptionSelected = { },
+                            summary = "Summary",
+                            options = dropdownOptions,
+                            selectedOption = dropdownSelectedOption,
+                            onOptionSelected = { newOption -> dropdownSelectedOption.value = newOption },
+                        )
+
+                        MiuixDropdown(
+                            title = "Dropdown",
+                            summary = "AlwaysRight",
+                            alwaysRight = true,
+                            options = dropdownOptions,
+                            selectedOption = dropdownSelectedOptionRight,
+                            onOptionSelected = { newOption -> dropdownSelectedOption.value = newOption },
                         )
 
                         MiuixTextField(

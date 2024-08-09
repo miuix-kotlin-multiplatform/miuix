@@ -61,8 +61,10 @@ import top.yukonga.miuix.kmp.utils.dpToPx
 @Composable
 fun MiuixDropdown(
     title: String,
+    summary: String? = null,
     modifier: Modifier = Modifier,
     options: List<String>,
+    alwaysRight: Boolean = false,
     selectedOption: MutableState<String>,
     insideMargin: DpSize = DpSize(28.dp, 14.dp),
     onOptionSelected: (String) -> Unit
@@ -108,6 +110,7 @@ fun MiuixDropdown(
             },
         insideMargin = insideMargin,
         title = title,
+        summary = summary,
         rightActions = {
             MiuixText(
                 text = selectedOption.value,
@@ -146,7 +149,7 @@ fun MiuixDropdown(
                                 dropdownHeightPx = layoutCoordinates.size.height
                                 offsetPx = calculateOffsetPx(windowHeightPx, dropdownOffsetPx, dropdownHeightPx, navigationPx, px24)
                             }
-                            .align(if (alignLeft) AbsoluteAlignment.TopLeft else AbsoluteAlignment.TopRight)
+                            .align(if (alignLeft && !alwaysRight) AbsoluteAlignment.TopLeft else AbsoluteAlignment.TopRight)
                             .clip(RoundedCornerShape(16.dp))
                             .background(MiuixTheme.colorScheme.dropdownBackground)
                     ) {
@@ -156,7 +159,6 @@ fun MiuixDropdown(
                                     option = option,
                                     isSelected = selectedOption.value == option,
                                     onOptionSelected = {
-                                        selectedOption.value = it
                                         onOptionSelected(it)
                                         isDropdownExpanded = false
                                     },
