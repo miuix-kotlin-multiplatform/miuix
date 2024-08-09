@@ -9,9 +9,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,10 +42,14 @@ import top.yukonga.miuix.kmp.MiuixTextField
 import top.yukonga.miuix.kmp.MiuixTopAppBar
 import top.yukonga.miuix.kmp.rememberMiuixTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.overScrollVertical
+import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
 
 @Composable
 fun UITest() {
     val scrollBehavior = MiuixScrollBehavior(rememberMiuixTopAppBarState())
+    val scrollColumnState = rememberScrollState()
+    val flingBehavior = rememberOverscrollFlingBehavior { scrollColumnState }
 
     var switch by remember { mutableStateOf(false) }
     var switchTrue by remember { mutableStateOf(true) }
@@ -68,8 +73,7 @@ fun UITest() {
         MiuixScaffold(
             modifier = Modifier
                 .fillMaxSize()
-                .displayCutoutPadding()
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
+                .displayCutoutPadding(),
             topBar = {
                 MiuixTopAppBar(
                     title = "Miuix",
@@ -77,300 +81,298 @@ fun UITest() {
                 )
             }
         ) { padding ->
-            LazyColumn(
-                modifier = Modifier.padding(
-                    top = padding.calculateTopPadding()
-                )
+            Column(
+                modifier = Modifier
+                    .nestedScroll(scrollBehavior.nestedScrollConnection)
+                    .padding(top = padding.calculateTopPadding())
+                    .navigationBarsPadding()
+                    .overScrollVertical()
+                    .verticalScroll(
+                        state = scrollColumnState,
+                        flingBehavior = flingBehavior
+                    )
             ) {
-                item {
-                    Column(
-                        modifier = Modifier.navigationBarsPadding()
-                    ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 28.dp, vertical = 15.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    MiuixText(
+                        text = "Text",
+                        fontWeight = FontWeight.Medium
+                    )
+                    MiuixText(
+                        text = "Text",
+                        modifier = Modifier.padding(start = 24.dp)
+                    )
+                    MiuixText(
+                        text = "Text",
+                        fontSize = 15.sp,
+                        color = MiuixTheme.colorScheme.subTextBase,
+                        modifier = Modifier.padding(start = 24.dp)
+                    )
+                    MiuixText(
+                        text = "Text",
+                        color = MiuixTheme.colorScheme.subTextField,
+                        modifier = Modifier.padding(start = 24.dp)
+                    )
+                    MiuixText(
+                        text = "Text",
+                        style = MiuixTheme.textStyles.title,
+                        color = MiuixTheme.colorScheme.subDropdown,
+                        modifier = Modifier.padding(start = 24.dp)
+                    )
+                }
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 28.dp, vertical = 15.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            MiuixText(
-                                text = "Text",
-                                fontWeight = FontWeight.Medium
-                            )
-                            MiuixText(
-                                text = "Text",
-                                modifier = Modifier.padding(start = 24.dp)
-                            )
-                            MiuixText(
-                                text = "Text",
-                                fontSize = 15.sp,
-                                color = MiuixTheme.colorScheme.subTextBase,
-                                modifier = Modifier.padding(start = 24.dp)
-                            )
-                            MiuixText(
-                                text = "Text",
-                                color = MiuixTheme.colorScheme.subTextField,
-                                modifier = Modifier.padding(start = 24.dp)
-                            )
-                            MiuixText(
-                                text = "Text",
-                                style = MiuixTheme.textStyles.title,
-                                color = MiuixTheme.colorScheme.subDropdown,
-                                modifier = Modifier.padding(start = 24.dp)
-                            )
-                        }
-
-                        MiuixBasicComponent(
-                            title = "Title",
-                            summary = "Summary",
-                            leftAction = {
-                                MiuixText(text = "Left")
-                            },
-                            rightActions = {
-                                MiuixText(text = "Right1")
-                                Spacer(Modifier.width(8.dp))
-                                MiuixText(text = "Right2")
-                            }
-                        )
-
-                        MiuixSuperArrow(
-                            leftAction = {
-                                MiuixText(text = "Left")
-                            },
-                            title = "Title",
-                            summary = "Summary",
-                            onClick = {}
-                        )
-
-                        MiuixSuperArrow(
-                            title = "Title",
-                            summary = "Summary",
-                            rightText = "Right",
-                            onClick = {}
-                        )
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 28.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            MiuixSwitch(
-                                checked = switchTrue,
-                                onCheckedChange = { switchTrue = it }
-                            )
-                            MiuixSwitch(
-                                modifier = Modifier.padding(start = 8.dp),
-                                checked = switch,
-                                onCheckedChange = { switch = it }
-                            )
-                            MiuixSwitch(
-                                modifier = Modifier.padding(start = 8.dp),
-                                enabled = false,
-                                checked = true,
-                                onCheckedChange = { }
-                            )
-                            MiuixSwitch(
-                                modifier = Modifier.padding(start = 8.dp),
-                                enabled = false,
-                                checked = false,
-                                onCheckedChange = { }
-                            )
-                        }
-
-                        MiuixSuperSwitch(
-                            title = "TextWithSwitch",
-                            summary = textWithSwitch,
-                            checked = textWishSwitchTrue,
-                            onCheckedChange = {
-                                textWishSwitchTrue = it
-                                textWithSwitch = "state: $it"
-                            },
-                        )
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 28.dp)
-                                .padding(bottom = 12.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            MiuixButton(
-                                modifier = Modifier.weight(1f),
-                                text = buttonText,
-                                onClick = {
-                                    clickCount++
-                                    buttonText = "Click: $clickCount"
-                                }
-                            )
-                            MiuixButton(
-                                modifier = Modifier.weight(1f).padding(start = 12.dp),
-                                text = submitButtonText,
-                                submit = true,
-                                onClick = {
-                                    submitClickCount++
-                                    submitButtonText = "Click: $submitClickCount"
-                                }
-                            )
-
-                        }
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 28.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            MiuixButton(
-                                modifier = Modifier.weight(1f),
-                                text = "Disabled",
-                                submit = true,
-                                enabled = false,
-                                onClick = {}
-                            )
-                            MiuixButton(
-                                modifier = Modifier.weight(1f).padding(start = 12.dp),
-                                text = "Disabled",
-                                submit = false,
-                                enabled = false,
-                                onClick = {}
-                            )
-                        }
-
-                        MiuixDropdown(
-                            title = "Dropdown",
-                            summary = "Summary",
-                            options = dropdownOptions,
-                            selectedOption = dropdownSelectedOption,
-                            onOptionSelected = { newOption -> dropdownSelectedOption.value = newOption },
-                        )
-
-                        MiuixDropdown(
-                            title = "Dropdown",
-                            summary = "AlwaysRight",
-                            alwaysRight = true,
-                            options = dropdownOptions,
-                            selectedOption = dropdownSelectedOptionRight,
-                            onOptionSelected = { newOption -> dropdownSelectedOption.value = newOption },
-                        )
-
-                        MiuixTextField(
-                            value = text,
-                            onValueChange = { text = it },
-                            label = "Text Field",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 28.dp)
-                                .padding(bottom = 15.dp),
-                            keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                        )
-
-                        MiuixSlider(
-                            progress = progress,
-                            onProgressChange = { newProgress -> progress = newProgress },
-                            dragShow = true,
-                            modifier = Modifier
-                                .padding(horizontal = 28.dp)
-                                .padding(bottom = 15.dp)
-                        )
-
-                        MiuixSlider(
-                            progress = progressFloat,
-                            minValue = 0f,
-                            maxValue = 1f,
-                            height = 26.dp,
-                            onProgressChange = { newProgress -> progressFloat = newProgress },
-                            modifier = Modifier
-                                .padding(horizontal = 28.dp)
-                                .padding(bottom = 2.dp)
-                        )
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            MiuixText(
-                                text = "0.0",
-                                modifier = Modifier
-                                    .padding(horizontal = 28.dp)
-                                    .padding(bottom = 15.dp)
-                            )
-                            MiuixText(
-                                text = progressFloat.toString(),
-                                modifier = Modifier
-                                    .padding(horizontal = 28.dp)
-                                    .padding(bottom = 15.dp)
-                            )
-                            MiuixText(
-                                text = "1.0",
-                                modifier = Modifier
-                                    .padding(horizontal = 28.dp)
-                                    .padding(bottom = 15.dp)
-                            )
-                        }
-
-                        MiuixSlider(
-                            effect = true,
-                            progress = progressEffect,
-                            onProgressChange = { newProgress -> progressEffect = newProgress },
-                            modifier = Modifier
-                                .padding(horizontal = 28.dp)
-                                .padding(bottom = 15.dp)
-                        )
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 28.dp)
-                                .padding(bottom = 15.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            MiuixText(text = "0")
-                            MiuixSlider(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(horizontal = 12.dp),
-                                progress = progressEffectFloat,
-                                minValue = 0f,
-                                maxValue = 100f,
-                                height = 24.dp,
-                                effect = true,
-                                dragShow = true,
-                                decimalPlaces = 0,
-                                onProgressChange = { newProgress -> progressEffectFloat = newProgress },
-                            )
-                            MiuixText(text = "100")
-                        }
-
-                        MiuixCard(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 28.dp)
-                                .padding(bottom = 28.dp)
-                        ) {
-                            MiuixText(
-                                text = "Card",
-                                style = MiuixTheme.textStyles.paragraph,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 16.sp
-                            )
-                            Spacer(Modifier.height(10.dp))
-                            MiuixText(
-                                text = "123456789",
-                                style = MiuixTheme.textStyles.paragraph
-                            )
-                            MiuixText(
-                                text = "一二三四五六七八九",
-                                style = MiuixTheme.textStyles.paragraph
-                            )
-                            MiuixText(
-                                text = "!@#$%^&*()_+-=",
-                                style = MiuixTheme.textStyles.paragraph
-                            )
-                        }
-
+                MiuixBasicComponent(
+                    title = "Title",
+                    summary = "Summary",
+                    leftAction = {
+                        MiuixText(text = "Left")
+                    },
+                    rightActions = {
+                        MiuixText(text = "Right1")
+                        Spacer(Modifier.width(8.dp))
+                        MiuixText(text = "Right2")
                     }
+                )
+
+                MiuixSuperArrow(
+                    leftAction = {
+                        MiuixText(text = "Left")
+                    },
+                    title = "Title",
+                    summary = "Summary",
+                    onClick = {}
+                )
+
+                MiuixSuperArrow(
+                    title = "Title",
+                    summary = "Summary",
+                    rightText = "Right",
+                    onClick = {}
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 28.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    MiuixSwitch(
+                        checked = switchTrue,
+                        onCheckedChange = { switchTrue = it }
+                    )
+                    MiuixSwitch(
+                        modifier = Modifier.padding(start = 8.dp),
+                        checked = switch,
+                        onCheckedChange = { switch = it }
+                    )
+                    MiuixSwitch(
+                        modifier = Modifier.padding(start = 8.dp),
+                        enabled = false,
+                        checked = true,
+                        onCheckedChange = { }
+                    )
+                    MiuixSwitch(
+                        modifier = Modifier.padding(start = 8.dp),
+                        enabled = false,
+                        checked = false,
+                        onCheckedChange = { }
+                    )
+                }
+
+                MiuixSuperSwitch(
+                    title = "TextWithSwitch",
+                    summary = textWithSwitch,
+                    checked = textWishSwitchTrue,
+                    onCheckedChange = {
+                        textWishSwitchTrue = it
+                        textWithSwitch = "state: $it"
+                    },
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 28.dp)
+                        .padding(bottom = 12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    MiuixButton(
+                        modifier = Modifier.weight(1f),
+                        text = buttonText,
+                        onClick = {
+                            clickCount++
+                            buttonText = "Click: $clickCount"
+                        }
+                    )
+                    MiuixButton(
+                        modifier = Modifier.weight(1f).padding(start = 12.dp),
+                        text = submitButtonText,
+                        submit = true,
+                        onClick = {
+                            submitClickCount++
+                            submitButtonText = "Click: $submitClickCount"
+                        }
+                    )
+
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 28.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    MiuixButton(
+                        modifier = Modifier.weight(1f),
+                        text = "Disabled",
+                        submit = true,
+                        enabled = false,
+                        onClick = {}
+                    )
+                    MiuixButton(
+                        modifier = Modifier.weight(1f).padding(start = 12.dp),
+                        text = "Disabled",
+                        submit = false,
+                        enabled = false,
+                        onClick = {}
+                    )
+                }
+
+                MiuixDropdown(
+                    title = "Dropdown",
+                    summary = "Summary",
+                    options = dropdownOptions,
+                    selectedOption = dropdownSelectedOption,
+                    onOptionSelected = { newOption -> dropdownSelectedOption.value = newOption },
+                )
+
+                MiuixDropdown(
+                    title = "Dropdown",
+                    summary = "AlwaysRight",
+                    alwaysRight = true,
+                    options = dropdownOptions,
+                    selectedOption = dropdownSelectedOptionRight,
+                    onOptionSelected = { newOption -> dropdownSelectedOptionRight.value = newOption },
+                )
+
+                MiuixTextField(
+                    value = text,
+                    onValueChange = { text = it },
+                    label = "Text Field",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 28.dp)
+                        .padding(bottom = 15.dp),
+                    keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                )
+
+                MiuixSlider(
+                    progress = progress,
+                    onProgressChange = { newProgress -> progress = newProgress },
+                    dragShow = true,
+                    modifier = Modifier
+                        .padding(horizontal = 28.dp)
+                        .padding(bottom = 15.dp)
+                )
+
+                MiuixSlider(
+                    progress = progressFloat,
+                    minValue = 0f,
+                    maxValue = 1f,
+                    height = 26.dp,
+                    onProgressChange = { newProgress -> progressFloat = newProgress },
+                    modifier = Modifier
+                        .padding(horizontal = 28.dp)
+                        .padding(bottom = 2.dp)
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    MiuixText(
+                        text = "0.0",
+                        modifier = Modifier
+                            .padding(horizontal = 28.dp)
+                            .padding(bottom = 15.dp)
+                    )
+                    MiuixText(
+                        text = progressFloat.toString(),
+                        modifier = Modifier
+                            .padding(horizontal = 28.dp)
+                            .padding(bottom = 15.dp)
+                    )
+                    MiuixText(
+                        text = "1.0",
+                        modifier = Modifier
+                            .padding(horizontal = 28.dp)
+                            .padding(bottom = 15.dp)
+                    )
+                }
+
+                MiuixSlider(
+                    effect = true,
+                    progress = progressEffect,
+                    onProgressChange = { newProgress -> progressEffect = newProgress },
+                    modifier = Modifier
+                        .padding(horizontal = 28.dp)
+                        .padding(bottom = 15.dp)
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 28.dp)
+                        .padding(bottom = 15.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    MiuixText(text = "0")
+                    MiuixSlider(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 12.dp),
+                        progress = progressEffectFloat,
+                        minValue = 0f,
+                        maxValue = 100f,
+                        height = 24.dp,
+                        effect = true,
+                        dragShow = true,
+                        decimalPlaces = 0,
+                        onProgressChange = { newProgress -> progressEffectFloat = newProgress },
+                    )
+                    MiuixText(text = "100")
+                }
+
+                MiuixCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 28.dp)
+                        .padding(bottom = 28.dp)
+                ) {
+                    MiuixText(
+                        text = "Card",
+                        style = MiuixTheme.textStyles.paragraph,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 16.sp
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    MiuixText(
+                        text = "123456789",
+                        style = MiuixTheme.textStyles.paragraph
+                    )
+                    MiuixText(
+                        text = "一二三四五六七八九",
+                        style = MiuixTheme.textStyles.paragraph
+                    )
+                    MiuixText(
+                        text = "!@#$%^&*()_+-=",
+                        style = MiuixTheme.textStyles.paragraph
+                    )
                 }
             }
         }

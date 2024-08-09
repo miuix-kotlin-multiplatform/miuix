@@ -105,7 +105,7 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = pkgName
+            packageName = appName
             packageVersion = verName
         }
     }
