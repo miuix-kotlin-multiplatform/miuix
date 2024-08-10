@@ -25,15 +25,6 @@ fun MiuixBasicComponent(
     rightActions: @Composable RowScope.() -> Unit = {},
     content: @Composable (() -> Unit?)? = null
 ) {
-    val rightActionsRow =
-        @Composable {
-            Row(
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically,
-                content = rightActions
-            )
-        }
-
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -41,35 +32,37 @@ fun MiuixBasicComponent(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        if (leftAction != null) {
+        leftAction?.let {
             Box(modifier = Modifier.padding(end = 16.dp)) {
-                leftAction()
+                it()
             }
         }
         Column(
             modifier = Modifier.weight(1f)
         ) {
-            if (title != null) {
+            title?.let {
                 MiuixText(
-                    text = title,
+                    text = it,
                     fontWeight = FontWeight.Medium
                 )
             }
-            if (summary != null) {
+            summary?.let {
                 MiuixText(
-                    text = summary,
+                    text = it,
                     fontSize = MiuixTheme.textStyles.title.fontSize,
                     color = MiuixTheme.colorScheme.subTextBase
                 )
             }
         }
-        Row {
-            Box(modifier = Modifier.padding(start = 8.dp)) {
-                rightActionsRow()
-            }
+        Box(modifier = Modifier.padding(start = 8.dp)) {
+            Row(
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+                content = rightActions
+            )
         }
     }
-    if (content != null) {
-        content()
+    content?.let {
+        it()
     }
 }

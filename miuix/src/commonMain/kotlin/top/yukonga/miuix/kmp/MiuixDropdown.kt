@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -58,7 +57,8 @@ import top.yukonga.miuix.kmp.miuix.generated.resources.Res
 import top.yukonga.miuix.kmp.miuix.generated.resources.ic_arrow_up_down
 import top.yukonga.miuix.kmp.miuix.generated.resources.ic_dropdown_select
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.dpToPx
+import top.yukonga.miuix.kmp.utils.createRipple
+import top.yukonga.miuix.kmp.utils.toPx
 
 val textStyle = TextStyle(fontWeight = FontWeight.Medium, fontSize = 15.sp)
 val currentExpandedDropdown = mutableStateOf<String?>(null)
@@ -85,16 +85,15 @@ fun MiuixDropdown(
     var dropdownHeightPx by remember { mutableStateOf(0) }
     var dropdownOffsetPx by remember { mutableStateOf(0) }
     var offsetPx by remember { mutableStateOf(0) }
-    val navigationPx = dpToPx(WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()).toInt()
-    val px24 = dpToPx(24.dp).toInt()
-    val ripple = ripple(color = MiuixTheme.colorScheme.onBackground.copy(alpha = 0.8f))
+    val navigationPx = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().toPx.toInt()
+    val px24 = 24.dp.toPx.toInt()
     val coroutineScope = rememberCoroutineScope()
     val interactionSource = remember { MutableInteractionSource() }
     val hapticFeedback = LocalHapticFeedback.current
 
     MiuixBasicComponent(
         modifier = modifier
-            .indication(interactionSource, ripple)
+            .indication(interactionSource, createRipple())
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = { offset ->
@@ -182,7 +181,7 @@ fun MiuixDropdown(
                                     textWidthDp = textWidthDp,
                                     index = index,
                                     optionsSize = options.size,
-                                    ripple = ripple
+                                    ripple = createRipple()
                                 )
                             }
                         }

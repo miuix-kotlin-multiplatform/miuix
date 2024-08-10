@@ -29,21 +29,11 @@ fun MiuixButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     submit: Boolean = false,
-    interactionSource: MutableInteractionSource? = null
+    interactionSource: MutableInteractionSource? = remember { MutableInteractionSource() }
 ) {
-    @Suppress("NAME_SHADOWING")
-    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val hapticFeedback = LocalHapticFeedback.current
-    val color = if (enabled) {
-        if (submit) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.buttonBg
-    } else {
-        if (submit) MiuixTheme.colorScheme.disabledBg else MiuixTheme.colorScheme.switchThumb
-    }
-    val textColor = if (enabled) {
-        if (submit) Color.White else MiuixTheme.colorScheme.onBackground
-    } else {
-        if (submit) MiuixTheme.colorScheme.submitButtonDisabledText else MiuixTheme.colorScheme.buttonDisableText
-    }
+    val color = getButtonColor(enabled, submit)
+    val textColor = getTextColor(enabled, submit)
 
     Surface(
         onClick = {
@@ -60,8 +50,7 @@ fun MiuixButton(
             Modifier.defaultMinSize(
                 minWidth = ButtonDefaults.MinWidth,
                 minHeight = ButtonDefaults.MinHeight
-            )
-                .padding(12.dp, 12.dp),
+            ).padding(12.dp, 12.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -71,5 +60,23 @@ fun MiuixButton(
                 fontWeight = FontWeight.Medium
             )
         }
+    }
+}
+
+@Composable
+private fun getButtonColor(enabled: Boolean, submit: Boolean): Color {
+    return if (enabled) {
+        if (submit) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.buttonBg
+    } else {
+        if (submit) MiuixTheme.colorScheme.disabledBg else MiuixTheme.colorScheme.switchThumb
+    }
+}
+
+@Composable
+private fun getTextColor(enabled: Boolean, submit: Boolean): Color {
+    return if (enabled) {
+        if (submit) Color.White else MiuixTheme.colorScheme.onBackground
+    } else {
+        if (submit) MiuixTheme.colorScheme.submitButtonDisabledText else MiuixTheme.colorScheme.buttonDisableText
     }
 }

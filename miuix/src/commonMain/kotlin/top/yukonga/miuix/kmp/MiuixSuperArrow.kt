@@ -5,10 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.BlendModeColorFilter
@@ -20,6 +18,7 @@ import org.jetbrains.compose.resources.painterResource
 import top.yukonga.miuix.kmp.miuix.generated.resources.Res
 import top.yukonga.miuix.kmp.miuix.generated.resources.ic_arrow_right
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.createRipple
 
 @Composable
 fun MiuixSuperArrow(
@@ -33,12 +32,11 @@ fun MiuixSuperArrow(
     enabled: Boolean = true
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    val ripple = ripple(color = MiuixTheme.colorScheme.onBackground.copy(alpha = 0.8f))
 
     MiuixBasicComponent(
         modifier = modifier.clickable(
             interactionSource = interactionSource,
-            indication = ripple,
+            indication = createRipple(),
             enabled = enabled
         ) {
             onClick()
@@ -47,24 +45,26 @@ fun MiuixSuperArrow(
         title = title,
         summary = summary,
         leftAction = leftAction,
-        rightActions = {
-            if (rightText != null) {
-                MiuixText(
-                    text = rightText,
-                    fontSize = 15.sp,
-                    color = MiuixTheme.colorScheme.subTextBase,
-                    textAlign = TextAlign.End,
-                )
-            }
-            Image(
-                modifier = Modifier
-                    .size(15.dp)
-                    .padding(start = 6.dp)
-                    .align(Alignment.CenterVertically),
-                painter = painterResource(Res.drawable.ic_arrow_right),
-                contentDescription = null,
-                colorFilter = BlendModeColorFilter(MiuixTheme.colorScheme.subDropdown, BlendMode.SrcIn),
-            )
-        }
+        rightActions = { createRightActions(rightText) }
+    )
+}
+
+@Composable
+private fun createRightActions(rightText: String?) {
+    if (rightText != null) {
+        MiuixText(
+            text = rightText,
+            fontSize = 15.sp,
+            color = MiuixTheme.colorScheme.subTextBase,
+            textAlign = TextAlign.End,
+        )
+    }
+    Image(
+        modifier = Modifier
+            .size(15.dp)
+            .padding(start = 6.dp),
+        painter = painterResource(Res.drawable.ic_arrow_right),
+        contentDescription = null,
+        colorFilter = BlendModeColorFilter(MiuixTheme.colorScheme.subDropdown, BlendMode.SrcIn),
     )
 }
