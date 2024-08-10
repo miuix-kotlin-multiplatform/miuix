@@ -48,6 +48,9 @@ import androidx.compose.ui.unit.isFinite
 import androidx.compose.ui.unit.isSpecified
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastFirst
+import top.yukonga.miuix.kmp.basic.MiuixBox
+import top.yukonga.miuix.kmp.basic.MiuixSurface
+import top.yukonga.miuix.kmp.basic.MiuixText
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -59,7 +62,7 @@ fun MiuixTopAppBar(
     actions: @Composable RowScope.() -> Unit = {},
     expandedHeight: Dp = TopAppBarExpandedHeight,
     windowInsets: WindowInsets = WindowInsets.statusBars,
-    scrollBehavior: TopAppBarScrollBehavior? = null
+    scrollBehavior: MiuixScrollBehavior? = null
 ) {
     require(expandedHeight.isSpecified && expandedHeight.isFinite) {
         "The expandedHeight is expected to be specified and finite"
@@ -137,7 +140,7 @@ fun MiuixScrollBehavior(
     canScroll: () -> Boolean = { true },
     snapAnimationSpec: AnimationSpec<Float>? = spring(stiffness = Spring.StiffnessMediumLow),
     flingAnimationSpec: DecayAnimationSpec<Float>? = rememberSplineBasedDecay()
-): TopAppBarScrollBehavior =
+): MiuixScrollBehavior =
     ExitUntilCollapsedScrollBehavior(
         state = state,
         snapAnimationSpec = snapAnimationSpec,
@@ -271,7 +274,7 @@ class TopAppBarState(
 }
 
 @Stable
-interface TopAppBarScrollBehavior {
+interface MiuixScrollBehavior {
 
     /**
      * A [TopAppBarState] that is attached to this behavior and is read and updated when scrolling
@@ -328,7 +331,7 @@ private class ExitUntilCollapsedScrollBehavior(
     override val snapAnimationSpec: AnimationSpec<Float>?,
     override val flingAnimationSpec: DecayAnimationSpec<Float>?,
     val canScroll: () -> Boolean = { true }
-) : TopAppBarScrollBehavior {
+) : MiuixScrollBehavior {
     override val isPinned: Boolean = false
     override var nestedScrollConnection =
         object : NestedScrollConnection {

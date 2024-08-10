@@ -1,4 +1,4 @@
-package top.yukonga.miuix.kmp
+package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

@@ -1,4 +1,4 @@
-package top.yukonga.miuix.kmp
+package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween

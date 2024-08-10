@@ -10,6 +10,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
+import top.yukonga.miuix.kmp.basic.MiuixSwitch
 import top.yukonga.miuix.kmp.utils.createRipple
 
 @Composable

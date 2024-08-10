@@ -53,6 +53,9 @@ import androidx.compose.ui.window.DialogProperties
 import getWindowSize
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
+import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
+import top.yukonga.miuix.kmp.basic.MiuixBox
+import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.miuix.generated.resources.Res
 import top.yukonga.miuix.kmp.miuix.generated.resources.ic_arrow_up_down
 import top.yukonga.miuix.kmp.miuix.generated.resources.ic_dropdown_select

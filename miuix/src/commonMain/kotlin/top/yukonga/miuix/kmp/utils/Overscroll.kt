@@ -1,19 +1,8 @@
 package top.yukonga.miuix.kmp.utils
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationState
 import androidx.compose.animation.core.AnimationVector1D
-import androidx.compose.animation.core.DecayAnimationSpec
-import androidx.compose.animation.core.animateDecay
-import androidx.compose.animation.core.exponentialDecay
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.rememberSplineBasedDecay
-import androidx.compose.foundation.gestures.FlingBehavior
-import androidx.compose.foundation.gestures.ScrollScope
-import androidx.compose.foundation.gestures.ScrollableState
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -111,10 +100,10 @@ fun Modifier.overScrollVertical(
                 val offsetAtLast = scrollEasing(offset, realOffset)
                 return if (sign(offset) != sign(offsetAtLast)) {
                     offset = 0f
-                    Offset(x = available.x, y = available.y - realAvailable.y + realOffset)
+                    Offset(x = available.x - realAvailable.x, y = available.y - realAvailable.y + realOffset)
                 } else {
                     offset = offsetAtLast
-                    Offset(x = available.x, y = available.y)
+                    Offset(x = available.x - realAvailable.x, y = available.y)
                 }
             }
 
@@ -124,7 +113,7 @@ fun Modifier.overScrollVertical(
                 }
                 val realAvailable = available - dispatcher.dispatchPostScroll(consumed, available, source)
                 offset = scrollEasing(offset, realAvailable.y)
-                return Offset(x = available.x, y = available.y)
+                return Offset(x = available.x - realAvailable.x, y = available.y)
             }
 
             override suspend fun onPreFling(available: Velocity): Velocity {
@@ -154,7 +143,7 @@ fun Modifier.overScrollVertical(
                 lastFlingAnimator.animateTo(0f, spring(springDamp, springStiff, visibilityThreshold), realAvailable.y) {
                     offset = scrollEasing(offset, value - offset)
                 }
-                return Velocity(x = available.x, available.y)
+                return Velocity(x = available.x - realAvailable.x, y = available.y)
             }
         }
     }
@@ -165,55 +154,4 @@ fun Modifier.overScrollVertical(
         .graphicsLayer {
             translationY = offset
         }
-}
-
-/**
- * You should use it with [overScrollVertical]
- * @param decaySpec You can use instead [rememberSplineBasedDecay]
- * @param getScrollState Pass in your [ScrollableState], for [LazyColumn]/[LazyRow] , it's [LazyListState]
- */
-@Composable
-fun rememberOverscrollFlingBehavior(
-    decaySpec: DecayAnimationSpec<Float> = exponentialDecay(),
-    getScrollState: () -> ScrollableState,
-): FlingBehavior = remember(decaySpec, getScrollState) {
-    object : FlingBehavior {
-        /**
-         * - We should check it every frame of fling
-         * - Should stop fling when returning true and return the remaining speed immediately.
-         * - Without this detection, scrollBy() will continue to consume velocity,
-         * which will cause a velocity error in nestedScroll.
-         */
-        private val Float.canNotBeConsumed: Boolean // this is Velocity
-            get() {
-                val state = getScrollState()
-                return !(this < 0 && state.canScrollBackward || this > 0 && state.canScrollForward)
-            }
-
-        override suspend fun ScrollScope.performFling(initialVelocity: Float): Float {
-            if (initialVelocity.canNotBeConsumed) {
-                return initialVelocity
-            }
-            return if (abs(initialVelocity) > 1f) {
-                var velocityLeft = initialVelocity
-                var lastValue = 0f
-                AnimationState(
-                    initialValue = 0f,
-                    initialVelocity = initialVelocity,
-                ).animateDecay(decaySpec) {
-                    val delta = value - lastValue
-                    val consumed = scrollBy(delta)
-                    lastValue = value
-                    velocityLeft = this.velocity
-                    // avoid rounding errors and stop if anything is unconsumed
-                    if (abs(delta - consumed) > 0.5f || velocityLeft.canNotBeConsumed) {
-                        cancelAnimation()
-                    }
-                }
-                velocityLeft
-            } else {
-                initialVelocity
-            }
-        }
-    }
 }

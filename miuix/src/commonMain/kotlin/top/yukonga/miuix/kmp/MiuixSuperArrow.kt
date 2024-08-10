@@ -15,6 +15,8 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
+import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
+import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.miuix.generated.resources.Res
 import top.yukonga.miuix.kmp.miuix.generated.resources.ic_arrow_right
 import top.yukonga.miuix.kmp.theme.MiuixTheme
