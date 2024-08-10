@@ -43,7 +43,7 @@ fun MiuixTextField(
     onTextLayout: (TextLayoutResult) -> Unit = {},
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
-    val isFocused = interactionSource.collectIsFocusedAsState().value
+    val isFocused by interactionSource.collectIsFocusedAsState()
     val borderWidth by animateDpAsState(if (isFocused) 2.dp else 0.dp)
     val borderColor by animateColorAsState(
         if (isFocused) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.primaryContainer
@@ -76,7 +76,8 @@ fun MiuixTextField(
                     )
             ) {
                 MiuixBox(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .background(
                             color = MiuixTheme.colorScheme.primaryContainer,
                             shape = RoundedCornerShape(16.dp)

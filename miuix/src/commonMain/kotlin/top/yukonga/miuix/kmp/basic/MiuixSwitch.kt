@@ -1,6 +1,5 @@
 package top.yukonga.miuix.kmp.basic
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
@@ -16,6 +15,7 @@ import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
@@ -32,23 +33,26 @@ fun MiuixSwitch(
     onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    interactionSource: MutableInteractionSource? = null,
+    interactionSource: MutableInteractionSource? = remember { MutableInteractionSource() },
 ) {
-    @Suppress("NAME_SHADOWING")
-    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val hapticFeedback = LocalHapticFeedback.current
-    val thumbOffset by animateDpAsState(
-        targetValue = if (checked) 28.dp else 4.dp,
-        animationSpec = spring(
+    val springSpec = remember {
+        spring<Dp>(
             dampingRatio = Spring.DampingRatioLowBouncy,
             stiffness = Spring.StiffnessMedium
         )
+    }
+    val thumbOffset by animateDpAsState(
+        targetValue = if (checked) 28.dp else 4.dp,
+        animationSpec = springSpec
     )
-    val backgroundColor by animateColorAsState(
+    val backgroundColor by rememberUpdatedState(
         if (checked) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.switchThumb
     )
-    val disabledBackgroundColor = if (checked) MiuixTheme.colorScheme.disabledBg else MiuixTheme.colorScheme.primaryContainer
-    val toggleableModifier =
+    val disabledBackgroundColor by rememberUpdatedState(
+        if (checked) MiuixTheme.colorScheme.disabledBg else MiuixTheme.colorScheme.primaryContainer
+    )
+    val toggleableModifier = remember(onCheckedChange, checked, enabled) {
         if (onCheckedChange != null) {
             Modifier.minimumInteractiveComponentSize()
                 .toggleable(
@@ -65,6 +69,7 @@ fun MiuixSwitch(
         } else {
             Modifier
         }
+    }
 
     MiuixBox(
         modifier = modifier

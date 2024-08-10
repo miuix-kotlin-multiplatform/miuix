@@ -28,6 +28,10 @@ fun MiuixSuperSwitch(
     var isChecked by remember { mutableStateOf(checked) }
     val interactionSource = remember { MutableInteractionSource() }
 
+    if (isChecked != checked) {
+        isChecked = checked
+    }
+
     MiuixBasicComponent(
         modifier = modifier.clickable(
             interactionSource = interactionSource,

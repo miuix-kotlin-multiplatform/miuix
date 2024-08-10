@@ -100,11 +100,12 @@ fun MyHorizontalPager(
 ) {
     MiuixHorizontalPager(
         pagerState = pagerState,
+        beyondViewportPageCount = 2,
         pageContent = { page ->
             when (page) {
-                0 -> MainView(topAppBarScrollBehaviorList[0], padding)
-                1 -> SecondView(topAppBarScrollBehaviorList[1], padding)
-                else -> ThirdView(topAppBarScrollBehaviorList[2], padding)
+                0 -> MainPage(topAppBarScrollBehaviorList[0], padding)
+                1 -> SecondPage(topAppBarScrollBehaviorList[1], padding)
+                else -> ThirdPage(topAppBarScrollBehaviorList[2], padding)
             }
         }
     )

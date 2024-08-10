@@ -77,22 +77,25 @@ fun MiuixDropdown(
     insideMargin: DpSize = DpSize(28.dp, 14.dp),
     onOptionSelected: (String) -> Unit
 ) {
-
+    val hapticFeedback = LocalHapticFeedback.current
+    val currentDensity = LocalDensity.current
+    val density = currentDensity.density
     var isDropdownExpanded by remember { mutableStateOf(false) }
     var alignLeft by remember { mutableStateOf(true) }
-    val textWidthDp = options.maxOfOrNull { option ->
-        with(LocalDensity.current) { rememberTextMeasurer().measure(text = option, style = textStyle).size.width.toDp() }
+    val textMeasurer = rememberTextMeasurer()
+    val textWidthDp = remember(options) {
+        options.maxOfOrNull { text ->
+            with(currentDensity) { textMeasurer.measure(text = text, style = textStyle).size.width.toDp() }
+        }
     }
-    val density = LocalDensity.current.density
-    val windowHeightPx = getWindowSize().height
     var dropdownHeightPx by remember { mutableStateOf(0) }
     var dropdownOffsetPx by remember { mutableStateOf(0) }
     var offsetPx by remember { mutableStateOf(0) }
-    val navigationPx = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().toPx.toInt()
-    val px24 = 24.dp.toPx.toInt()
     val coroutineScope = rememberCoroutineScope()
     val interactionSource = remember { MutableInteractionSource() }
-    val hapticFeedback = LocalHapticFeedback.current
+    val windowHeightPx = getWindowSize().height
+    val navigationPx = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().toPx.toInt()
+    val px24 = 24.dp.toPx.toInt()
 
     MiuixBasicComponent(
         modifier = modifier
@@ -184,7 +187,7 @@ fun MiuixDropdown(
                                     textWidthDp = textWidthDp,
                                     index = index,
                                     optionsSize = options.size,
-                                    ripple = createRipple()
+                                    ripple = createRipple(),
                                 )
                             }
                         }
@@ -199,10 +202,10 @@ fun MiuixDropdown(
 fun DropdownImpl(
     option: String,
     isSelected: Boolean,
-    onOptionSelected: (String) -> Unit,
-    textWidthDp: Dp?,
     index: Int,
     optionsSize: Int,
+    onOptionSelected: (String) -> Unit,
+    textWidthDp: Dp?,
     ripple: Indication
 ) {
     val dropdownInteractionSource = remember { MutableInteractionSource() }

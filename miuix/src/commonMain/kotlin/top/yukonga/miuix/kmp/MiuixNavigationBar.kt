@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import top.yukonga.miuix.kmp.basic.MiuixSurface
 import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
@@ -32,48 +33,50 @@ fun MiuixNavigationBar(
     onClick: (Int) -> Unit
 ) {
     require(items.size in 2..5) { "BottomBar must have between 2 and 5 items" }
-    Column(
-        modifier = modifier
-            .navigationBarsPadding()
-            .fillMaxWidth()
-            .background(MiuixTheme.colorScheme.background)
-    ) {
-        HorizontalDivider(
-            thickness = 0.3.dp,
-            color = MiuixTheme.colorScheme.subDropdown
-        )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+    MiuixSurface {
+        Column(
+            modifier = modifier
+                .navigationBarsPadding()
+                .fillMaxWidth()
+                .background(MiuixTheme.colorScheme.background)
         ) {
-            items.forEachIndexed { index, item ->
-                val isSelected = selectedItem.value == index
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .weight(1f / items.size)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        ) {
-                            onClick(index)
-                        }
-                ) {
-                    Icon(
-                        modifier = Modifier.size(32.dp).padding(top = 6.dp),
-                        imageVector = item.icon,
-                        contentDescription = item.label,
-                        tint = if (isSelected) MiuixTheme.colorScheme.onBackground else MiuixTheme.colorScheme.subDropdown
-                    )
-                    MiuixText(
-                        modifier = Modifier.padding(bottom = 14.dp),
-                        text = item.label,
-                        color = if (isSelected) MiuixTheme.colorScheme.onBackground else MiuixTheme.colorScheme.subDropdown,
-                        textAlign = TextAlign.Center,
-                        fontSize = 13.sp,
-                    )
+            HorizontalDivider(
+                thickness = 0.3.dp,
+                color = MiuixTheme.colorScheme.subDropdown
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                items.forEachIndexed { index, item ->
+                    val isSelected = selectedItem.value == index
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .weight(1f / items.size)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) {
+                                onClick(index)
+                            }
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(32.dp).padding(top = 6.dp),
+                            imageVector = item.icon,
+                            contentDescription = item.label,
+                            tint = if (isSelected) MiuixTheme.colorScheme.onBackground else MiuixTheme.colorScheme.subDropdown
+                        )
+                        MiuixText(
+                            modifier = Modifier.padding(bottom = 14.dp),
+                            text = item.label,
+                            color = if (isSelected) MiuixTheme.colorScheme.onBackground else MiuixTheme.colorScheme.subDropdown,
+                            textAlign = TextAlign.Center,
+                            fontSize = 13.sp,
+                        )
+                    }
                 }
             }
         }

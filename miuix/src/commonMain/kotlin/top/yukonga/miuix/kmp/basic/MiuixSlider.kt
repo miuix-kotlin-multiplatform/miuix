@@ -46,20 +46,21 @@ fun MiuixSlider(
     decimalPlaces: Int = 2,
     onProgressChange: (Float) -> Unit
 ) {
+    val hapticFeedback = LocalHapticFeedback.current
     var dragOffset by remember { mutableStateOf(0f) }
     var isDragging by remember { mutableStateOf(false) }
     var currentValue by remember { mutableStateOf(progress) }
     var hapticTriggered by remember { mutableStateOf(false) }
+    val updatedOnProgressChange by rememberUpdatedState(onProgressChange)
+    val factor = remember(decimalPlaces) { 10f.pow(decimalPlaces) }
+    val calculateProgress = remember(minValue, maxValue, factor) {
+        { offset: Float, width: Int ->
+            val newValue = (offset / width) * (maxValue - minValue) + minValue
+            (round(newValue * factor) / factor).coerceIn(minValue, maxValue)
+        }
+    }
     val color = MiuixTheme.colorScheme.primary
     val backgroundColor = MiuixTheme.colorScheme.sliderBackground
-    val hapticFeedback = LocalHapticFeedback.current
-    val updatedOnProgressChange by rememberUpdatedState(onProgressChange)
-
-    val factor = 10f.pow(decimalPlaces)
-    fun calculateProgress(offset: Float, width: Int): Float {
-        val newValue = (offset / width) * (maxValue - minValue) + minValue
-        return (round(newValue * factor) / factor).coerceIn(minValue, maxValue)
-    }
 
     MiuixBox(
         modifier = modifier
@@ -109,7 +110,15 @@ fun MiuixSlider(
 }
 
 @Composable
-fun SliderBackground(modifier: Modifier, backgroundColor: Color, effect: Boolean, progress: Float, minValue: Float, maxValue: Float, color: Color) {
+fun SliderBackground(
+    modifier: Modifier,
+    backgroundColor: Color,
+    effect: Boolean,
+    progress: Float,
+    minValue: Float,
+    maxValue: Float,
+    color: Color
+) {
     Canvas(modifier = modifier.clip(RoundedCornerShape(50.dp)).background(backgroundColor)) {
         val barHeight = size.height
         val barWidth = size.width
@@ -126,7 +135,12 @@ fun SliderBackground(modifier: Modifier, backgroundColor: Color, effect: Boolean
 }
 
 @Composable
-fun DragIndicator(isDragging: Boolean, dragShow: Boolean, currentValue: Float, decimalPlaces: Int) {
+fun DragIndicator(
+    isDragging: Boolean,
+    dragShow: Boolean,
+    currentValue: Float,
+    decimalPlaces: Int
+) {
     AnimatedVisibility(
         modifier = Modifier.fillMaxWidth(),
         visible = isDragging && dragShow,

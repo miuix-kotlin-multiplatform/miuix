@@ -33,7 +33,9 @@ fun MiuixBasicComponent(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         leftAction?.let {
-            Box(modifier = Modifier.padding(end = 16.dp)) {
+            Box(
+                modifier = Modifier.padding(end = 16.dp)
+            ) {
                 it()
             }
         }
@@ -54,7 +56,9 @@ fun MiuixBasicComponent(
                 )
             }
         }
-        Box(modifier = Modifier.padding(start = 8.dp)) {
+        Box(
+            modifier = Modifier.padding(start = 8.dp)
+        ) {
             Row(
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically,

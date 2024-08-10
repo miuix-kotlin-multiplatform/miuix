@@ -50,7 +50,7 @@ fun MiuixButton(
             Modifier.defaultMinSize(
                 minWidth = ButtonDefaults.MinWidth,
                 minHeight = ButtonDefaults.MinHeight
-            ).padding(12.dp, 12.dp),
+            ).padding(16.dp, 16.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {

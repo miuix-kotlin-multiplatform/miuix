@@ -10,12 +10,13 @@ import androidx.compose.ui.Modifier
 fun MiuixHorizontalPager(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
+    beyondViewportPageCount: Int = 1,
     pageContent: @Composable (pageIndex: Int) -> Unit
 ) {
     HorizontalPager(
         modifier = modifier,
         state = pagerState,
-        beyondViewportPageCount = 1,
+        beyondViewportPageCount = beyondViewportPageCount,
         verticalAlignment = Alignment.Top,
         pageContent = { pageContent(it) }
     )
