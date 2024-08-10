@@ -35,10 +35,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.BlendModeColorFilter
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -58,6 +60,9 @@ import top.yukonga.miuix.kmp.miuix.generated.resources.ic_dropdown_select
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.dpToPx
 
+val textStyle = TextStyle(fontWeight = FontWeight.Medium, fontSize = 15.sp)
+val currentExpandedDropdown = mutableStateOf<String?>(null)
+
 @Composable
 fun MiuixDropdown(
     title: String,
@@ -69,9 +74,9 @@ fun MiuixDropdown(
     insideMargin: DpSize = DpSize(28.dp, 14.dp),
     onOptionSelected: (String) -> Unit
 ) {
+
     var isDropdownExpanded by remember { mutableStateOf(false) }
     var alignLeft by remember { mutableStateOf(true) }
-    val textStyle = TextStyle(fontWeight = FontWeight.Medium, fontSize = 15.sp)
     val textWidthDp = options.maxOfOrNull { option ->
         with(LocalDensity.current) { rememberTextMeasurer().measure(text = option, style = textStyle).size.width.toDp() }
     }
@@ -85,6 +90,7 @@ fun MiuixDropdown(
     val ripple = ripple(color = MiuixTheme.colorScheme.onBackground.copy(alpha = 0.8f))
     val coroutineScope = rememberCoroutineScope()
     val interactionSource = remember { MutableInteractionSource() }
+    val hapticFeedback = LocalHapticFeedback.current
 
     MiuixBasicComponent(
         modifier = modifier
@@ -99,8 +105,11 @@ fun MiuixDropdown(
                         }
                     },
                     onTap = { offset ->
-                        isDropdownExpanded = true
-                        alignLeft = offset.x < (size.width / 2)
+                        if (currentExpandedDropdown.value == null) {
+                            isDropdownExpanded = true
+                            currentExpandedDropdown.value = title
+                            alignLeft = offset.x < (size.width / 2)
+                        }
                     }
                 )
             }
@@ -130,15 +139,22 @@ fun MiuixDropdown(
         }
     ) {
         if (isDropdownExpanded) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
             Dialog(
-                onDismissRequest = { isDropdownExpanded = false },
+                onDismissRequest = {
+                    isDropdownExpanded = false
+                    currentExpandedDropdown.value = null
+                },
                 properties = DialogProperties(usePlatformDefaultWidth = false)
             ) {
                 MiuixBox(
                     modifier = Modifier
                         .fillMaxSize()
                         .pointerInput(Unit) {
-                            detectTapGestures(onPress = { isDropdownExpanded = false })
+                            detectTapGestures(onPress = {
+                                isDropdownExpanded = false
+                                currentExpandedDropdown.value = null
+                            })
                         }
                         .offset(y = offsetPx.dp / density),
                 ) {
@@ -161,6 +177,7 @@ fun MiuixDropdown(
                                     onOptionSelected = {
                                         onOptionSelected(it)
                                         isDropdownExpanded = false
+                                        currentExpandedDropdown.value = null
                                     },
                                     textWidthDp = textWidthDp,
                                     index = index,

@@ -21,7 +21,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -44,8 +46,10 @@ fun MiuixSlider(
     var dragOffset by remember { mutableStateOf(0f) }
     var isDragging by remember { mutableStateOf(false) }
     var currentValue by remember { mutableStateOf(progress) }
+    var hapticTriggered by remember { mutableStateOf(false) }
     val color = MiuixTheme.colorScheme.primary
     val backgroundColor = MiuixTheme.colorScheme.sliderBackground
+    val hapticFeedback = LocalHapticFeedback.current
 
     val factor = 10f.pow(decimalPlaces)
     fun calculateProgress(offset: Float, width: Int): Float {
@@ -62,11 +66,18 @@ fun MiuixSlider(
                         dragOffset = offset.x
                         currentValue = calculateProgress(dragOffset, size.width)
                         onProgressChange(currentValue)
+                        hapticTriggered = false
                     },
                     onHorizontalDrag = { _, dragAmount ->
                         dragOffset = (dragOffset + dragAmount).coerceIn(0f, size.width.toFloat())
                         currentValue = calculateProgress(dragOffset, size.width)
                         onProgressChange(currentValue)
+                        if ((currentValue == minValue || currentValue == maxValue) && !hapticTriggered) {
+                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                            hapticTriggered = true
+                        } else if (currentValue != minValue && currentValue != maxValue) {
+                            hapticTriggered = false
+                        }
                     },
                     onDragEnd = {
                         isDragging = false

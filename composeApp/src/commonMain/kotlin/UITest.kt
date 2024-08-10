@@ -50,7 +50,7 @@ fun UITest() {
 
     var switch by remember { mutableStateOf(false) }
     var switchTrue by remember { mutableStateOf(true) }
-    var textWithSwitch by remember { mutableStateOf("state: false") }
+    var textWithSwitch by remember { mutableStateOf("State: false") }
     var textWishSwitchTrue by remember { mutableStateOf(true) }
     var text by remember { mutableStateOf("") }
     var progress by remember { mutableStateOf(0.2f) }
@@ -184,7 +184,7 @@ fun UITest() {
                         checked = textWishSwitchTrue,
                         onCheckedChange = {
                             textWishSwitchTrue = it
-                            textWithSwitch = "state: $it"
+                            textWithSwitch = "State: $it"
                         },
                     )
 

@@ -20,6 +20,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -34,6 +36,7 @@ fun MiuixSwitch(
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
+    val hapticFeedback = LocalHapticFeedback.current
     val thumbOffset by animateDpAsState(
         targetValue = if (checked) 28.dp else 4.dp,
         animationSpec = spring(
@@ -44,15 +47,16 @@ fun MiuixSwitch(
     val backgroundColor by animateColorAsState(
         if (checked) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.switchThumb
     )
-
     val disabledBackgroundColor = if (checked) MiuixTheme.colorScheme.disabledBg else MiuixTheme.colorScheme.primaryContainer
-
     val toggleableModifier =
         if (onCheckedChange != null) {
             Modifier.minimumInteractiveComponentSize()
                 .toggleable(
                     value = checked,
-                    onValueChange = onCheckedChange,
+                    onValueChange = {
+                        onCheckedChange(it)
+                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                    },
                     enabled = enabled,
                     role = Role.Switch,
                     interactionSource = interactionSource,

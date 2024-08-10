@@ -13,6 +13,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -31,6 +33,7 @@ fun MiuixButton(
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
+    val hapticFeedback = LocalHapticFeedback.current
     val color = if (enabled) {
         if (submit) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.buttonBg
     } else {
@@ -43,7 +46,10 @@ fun MiuixButton(
     }
 
     Surface(
-        onClick = onClick,
+        onClick = {
+            onClick()
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+        },
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
         shape = RoundedCornerShape(14.dp),
