@@ -22,10 +22,12 @@ fun ThirdPage(
     LazyColumn(
         state = scrollLazyColumnState,
         modifier = Modifier
-            .padding(top = padding.calculateTopPadding())
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
             .overScrollVertical()
     ) {
+        item {
+            Spacer(modifier = Modifier.height(padding.calculateTopPadding()))
+        }
         items(20) {
             SecondComponent()
             OtherComponent(PaddingValues())

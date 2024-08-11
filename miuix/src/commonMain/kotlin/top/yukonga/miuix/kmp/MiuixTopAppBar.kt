@@ -10,13 +10,15 @@ import androidx.compose.animation.core.animateTo
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.rememberSplineBasedDecay
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -33,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
@@ -44,30 +47,26 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.isFinite
-import androidx.compose.ui.unit.isSpecified
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastFirst
 import top.yukonga.miuix.kmp.basic.MiuixBox
 import top.yukonga.miuix.kmp.basic.MiuixSurface
 import top.yukonga.miuix.kmp.basic.MiuixText
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
 @Composable
 fun MiuixTopAppBar(
     modifier: Modifier = Modifier,
+    color: Color = MiuixTheme.colorScheme.background,
     title: String,
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
-    expandedHeight: Dp = TopAppBarExpandedHeight,
-    windowInsets: WindowInsets = WindowInsets.statusBars,
     scrollBehavior: MiuixScrollBehavior? = null
 ) {
-    require(expandedHeight.isSpecified && expandedHeight.isFinite) {
-        "The expandedHeight is expected to be specified and finite"
-    }
-    val expandedHeightPx = with(LocalDensity.current) { expandedHeight.toPx().coerceAtLeast(0f) }
+
+    val expandedHeightPx = with(LocalDensity.current) { TopAppBarExpandedHeight.toPx().coerceAtLeast(0f) }
     SideEffect {
         // Sets the app bar's height offset to collapse the entire bar's height when content is
         // scrolled.
@@ -85,42 +84,32 @@ fun MiuixTopAppBar(
                 content = actions
             )
         }
-
-    // Compose a Surface with a TopAppBarLayout content.
+    // Compose a MiuixSurface with a MiuixTopAppBarLayout content.
     // The surface's background color is animated as specified above.
     // The height of the app bar is determined by subtracting the bar's height offset from the
     // app bar's defined constant height value (i.e. the ContainerHeight token).
-    MiuixSurface(modifier = modifier) {
-        Column {
-            TopAppBarLayout(
-                modifier = Modifier.windowInsetsPadding(windowInsets)
-                    // clip after padding so we don't show the title over the inset area
-                    .clipToBounds()
-                    .height(60.dp),
-                title = title,
-                navigationIcon = navigationIcon,
-                actions = actionsRow,
-                scrolledOffset = { scrollBehavior?.state?.heightOffset ?: 0f },
-                expandedHeightPx = expandedHeightPx
-            )
-            LargeTextLayout(
-                modifier = Modifier
-                    // clip after padding so we don't show the title over the inset area
-                    .clipToBounds()
-                    .heightIn(max = expandedHeight),
-                title = title,
-                scrolledOffset = { scrollBehavior?.state?.heightOffset ?: 0f },
-                expandedHeightPx = expandedHeightPx
-            )
-        }
+    MiuixSurface(
+        color = color,
+        modifier = modifier
+            .background(color)
+            .windowInsetsPadding(WindowInsets.statusBars)
+            .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
+    ) {
+        MiuixTopAppBarLayout(
+            title = title,
+            navigationIcon = navigationIcon,
+            actions = actionsRow,
+            scrolledOffset = { scrollBehavior?.state?.heightOffset ?: 0f },
+            expandedHeightPx = expandedHeightPx
+        )
     }
 }
 
 /**
- * Returns a [TopAppBarScrollBehavior] that adjusts its properties to affect the colors and
+ * Returns a [MiuixScrollBehavior] that adjusts its properties to affect the colors and
  * height of the top app bar.
  *
- * A top app bar that is set up with this [TopAppBarScrollBehavior] will immediately collapse
+ * A top app bar that is set up with this [MiuixScrollBehavior] will immediately collapse
  * when the nested content is pulled up, and will expand back the collapsed area when the
  * content is pulled all the way down.
  *
@@ -174,7 +163,7 @@ fun rememberMiuixTopAppBarState(
 
 /**
  * A state object that can be hoisted to control and observe the top app bar state. The state is
- * read and updated by a [TopAppBarScrollBehavior] implementation.
+ * read and updated by a [MiuixScrollBehavior] implementation.
  *
  * In most cases, this state will be created via [rememberMiuixTopAppBarState].
  *
@@ -216,7 +205,7 @@ class TopAppBarState(
      * The content offset is used to compute the [overlappedFraction], which can later be read by an
      * implementation.
      *
-     * This value is updated by a [TopAppBarScrollBehavior] whenever a nested scroll connection
+     * This value is updated by a [MiuixScrollBehavior] whenever a nested scroll connection
      * consumes scroll events. A common implementation would update the value to be the sum of all
      * [NestedScrollConnection.onPostScroll] `consumed.y` values.
      */
@@ -246,11 +235,10 @@ class TopAppBarState(
     private val overlappedFraction: Float
         get() =
             if (heightOffsetLimit != 0f) {
-                1 -
-                        ((heightOffsetLimit - contentOffset).coerceIn(
-                            minimumValue = heightOffsetLimit,
-                            maximumValue = 0f
-                        ) / heightOffsetLimit)
+                1 - ((heightOffsetLimit - contentOffset).coerceIn(
+                    minimumValue = heightOffsetLimit,
+                    maximumValue = 0f
+                ) / heightOffsetLimit)
             } else {
                 0f
             }
@@ -310,10 +298,10 @@ interface MiuixScrollBehavior {
 }
 
 /**
- * A [TopAppBarScrollBehavior] that adjusts its properties to affect the colors and height of a top
+ * A [MiuixScrollBehavior] that adjusts its properties to affect the colors and height of a top
  * app bar.
  *
- * A top app bar that is set up with this [TopAppBarScrollBehavior] will immediately collapse when
+ * A top app bar that is set up with this [MiuixScrollBehavior] will immediately collapse when
  * the nested content is pulled up, and will expand back the collapsed area when the content is
  * pulled all the way down.
  *
@@ -383,7 +371,9 @@ private class ExitUntilCollapsedScrollBehavior(
 
             override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
                 val superConsumed = super.onPostFling(consumed, available)
-                return superConsumed + settleAppBar(state, available.y, flingAnimationSpec, snapAnimationSpec)
+                return superConsumed + settleAppBar(
+                    state, available.y, flingAnimationSpec, snapAnimationSpec
+                )
             }
         }
 }
@@ -401,7 +391,6 @@ private suspend fun settleAppBar(
     if (state.collapsedFraction < 0.01f || state.collapsedFraction == 1f) {
         return Velocity.Zero
     }
-    var remainingVelocity = velocity
     // In case there is an initial velocity that was left after a previous user fling, animate to
     // continue the motion to expand or collapse the app bar.
     if (flingAnimationSpec != null && abs(velocity) > 1f) {
@@ -415,7 +404,6 @@ private suspend fun settleAppBar(
             state.heightOffset = initialHeightOffset + delta
             val consumed = abs(initialHeightOffset - state.heightOffset)
             lastValue = value
-            remainingVelocity = this.velocity
             // avoid rounding errors and stop if anything is unconsumed
             if (abs(delta - consumed) > 0.5f) this.cancelAnimation()
         }
@@ -451,14 +439,14 @@ private fun interface ScrolledOffset {
  * (leading icon), a title (header), and action icons (trailing icons). Note that the navigation and
  * the actions are optional.
  *
- * @param modifier a [Modifier]
  * @param title the top app bar title (header)
  * @param navigationIcon a navigation icon [Composable]
  * @param actions actions [Composable]
+ * @param scrolledOffset a function that provides the scroll offset of the top app bar
+ * @param expandedHeightPx the expanded height of the top app bar in pixels
  */
 @Composable
-private fun TopAppBarLayout(
-    modifier: Modifier,
+private fun MiuixTopAppBarLayout(
     title: String,
     navigationIcon: @Composable () -> Unit,
     actions: @Composable () -> Unit,
@@ -467,13 +455,14 @@ private fun TopAppBarLayout(
 ) {
     val extOffset = abs(scrolledOffset.offset()) / expandedHeightPx * 2
     val alpha by animateFloatAsState(
-        targetValue = if (1f - extOffset.coerceIn(0f, 1f) == 0f) 1f else 0f,
+        targetValue = if (1 - extOffset.coerceIn(0f, 1f) == 0f) 1f else 0f,
         animationSpec = tween(durationMillis = 150)
     )
     val translationY by animateFloatAsState(
         targetValue = if (extOffset > 1f) 0f else 10f,
         animationSpec = tween(durationMillis = 150)
     )
+
     Layout(
         {
             MiuixBox(
@@ -495,6 +484,7 @@ private fun TopAppBarLayout(
             ) {
                 MiuixText(
                     text = title,
+                    maxLines = 1,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -506,13 +496,29 @@ private fun TopAppBarLayout(
             ) {
                 actions()
             }
+            MiuixBox(
+                Modifier
+                    .layoutId("largeTitle")
+                    .padding(horizontal = TopAppBarHorizontalPadding)
+                    .graphicsLayer(alpha = 1f - (abs(scrolledOffset.offset()) / expandedHeightPx * 2).coerceIn(0f, 1f))
+            ) {
+                MiuixText(
+                    text = title,
+                    maxLines = 1,
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Light
+                )
+            }
         },
-        modifier = modifier
+        modifier = Modifier
+            .heightIn(max = 60.dp + TopAppBarExpandedHeight)
+            .clipToBounds()
     ) { measurables, constraints ->
         val navigationIconPlaceable =
             measurables
                 .fastFirst { it.layoutId == "navigationIcon" }
                 .measure(constraints.copy(minWidth = 0))
+
         val actionIconsPlaceable =
             measurables
                 .fastFirst { it.layoutId == "actionIcons" }
@@ -525,25 +531,35 @@ private fun TopAppBarLayout(
                 (constraints.maxWidth - navigationIconPlaceable.width - actionIconsPlaceable.width)
                     .coerceAtLeast(0)
             }
+
         val titlePlaceable =
             measurables
                 .fastFirst { it.layoutId == "title" }
                 .measure(constraints.copy(minWidth = 0, maxWidth = maxTitleWidth))
 
+        val largeTitlePlaceable =
+            measurables
+                .fastFirst { it.layoutId == "largeTitle" }
+                .measure(constraints.copy(minWidth = 0, maxWidth = maxTitleWidth))
+
         // Subtract the scrolledOffset from the maxHeight. The scrolledOffset is expected to be
         // equal or smaller than zero.
+        val scrolledOffsetValue = scrolledOffset.offset()
+        val heightOffset = if (scrolledOffsetValue.isNaN()) 0 else scrolledOffsetValue.roundToInt()
+
+
         val layoutHeight =
             if (constraints.maxHeight == Constraints.Infinity) {
                 constraints.maxHeight
             } else {
-                constraints.maxHeight
+                constraints.maxHeight + heightOffset
             }
 
         layout(constraints.maxWidth, layoutHeight) {
             // Navigation icon
             navigationIconPlaceable.placeRelative(
                 x = 0,
-                y = (layoutHeight - titlePlaceable.height) / 2
+                y = 0
             )
 
             // Title
@@ -555,69 +571,19 @@ private fun TopAppBarLayout(
             }
             titlePlaceable.placeRelative(
                 x = baseX,
-                y = (layoutHeight - titlePlaceable.height) / 2
+                y = 0
             )
 
             // Action icons
             actionIconsPlaceable.placeRelative(
                 x = constraints.maxWidth - actionIconsPlaceable.width,
-                y = (layoutHeight - titlePlaceable.height) / 2
+                y = 0
             )
-        }
-    }
-}
 
-@Composable
-private fun LargeTextLayout(
-    modifier: Modifier,
-    title: String,
-    scrolledOffset: ScrolledOffset,
-    expandedHeightPx: Float
-) {
-    Layout(
-        {
-            MiuixBox(
-                Modifier
-                    .layoutId("title")
-                    .padding(horizontal = TopAppBarHorizontalPadding)
-                    .graphicsLayer(alpha = 1f - (abs(scrolledOffset.offset()) / expandedHeightPx * 2).coerceIn(0f, 1f))
-            ) {
-                MiuixText(
-                    text = title,
-                    fontWeight = FontWeight.Light,
-                    fontSize = 32.sp
-                )
-            }
-        },
-        modifier = modifier
-    ) { measurables, constraints ->
-        val maxTitleWidth =
-            if (constraints.maxWidth == Constraints.Infinity) {
-                constraints.maxWidth
-            } else {
-                (constraints.maxWidth).coerceAtLeast(0)
-            }
-        val titlePlaceable =
-            measurables
-                .fastFirst { it.layoutId == "title" }
-                .measure(constraints.copy(minWidth = 0, maxWidth = maxTitleWidth))
-
-        // Subtract the scrolledOffset from the maxHeight. The scrolledOffset is expected to be
-        // equal or smaller than zero.
-        val scrolledOffsetValue = scrolledOffset.offset()
-        val heightOffset = if (scrolledOffsetValue.isNaN()) 0 else scrolledOffsetValue.roundToInt()
-
-        val layoutHeight =
-            if (constraints.maxHeight == Constraints.Infinity) {
-                constraints.maxHeight
-            } else {
-                constraints.maxHeight + heightOffset
-            }
-
-        layout(constraints.maxWidth, layoutHeight) {
-            titlePlaceable.placeRelative(
+            // Large title
+            largeTitlePlaceable.placeRelative(
                 x = 0,
-                y = layoutHeight - titlePlaceable.height
+                y = layoutHeight - largeTitlePlaceable.height
             )
         }
     }

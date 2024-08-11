@@ -13,7 +13,6 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,13 +22,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMaxBy
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-
 
 /**
  * Scaffold implements the basic material design visual layout structure.
@@ -180,11 +177,6 @@ private fun ScaffoldLayout(
         }
     }
 }
-
-@Immutable
-internal class FabPlacement(val left: Int, val width: Int, val height: Int)
-
-private val FabSpacing = 16.dp
 
 private enum class ScaffoldLayoutContent {
     TopBar,

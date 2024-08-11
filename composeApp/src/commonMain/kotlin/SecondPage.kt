@@ -22,10 +22,12 @@ fun SecondPage(
     LazyColumn(
         state = scrollLazyColumnState,
         modifier = Modifier
-            .padding(top = padding.calculateTopPadding())
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
             .overScrollVertical()
     ) {
+        item {
+            Spacer(modifier = Modifier.height(padding.calculateTopPadding()))
+        }
         items(200) {
             MiuixSuperArrow(
                 leftAction = {

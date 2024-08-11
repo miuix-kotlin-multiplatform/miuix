@@ -1,6 +1,10 @@
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.displayCutoutPadding
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -13,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeDefaults
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.haze
@@ -33,11 +38,13 @@ fun UITest() {
     val topAppBarScrollBehavior1 = MiuixScrollBehavior(rememberMiuixTopAppBarState())
     val topAppBarScrollBehavior2 = MiuixScrollBehavior(rememberMiuixTopAppBarState())
 
-    val topAppBarScrollBehaviorList = listOf(topAppBarScrollBehavior0, topAppBarScrollBehavior1, topAppBarScrollBehavior2)
+    val topAppBarScrollBehaviorList =
+        listOf(topAppBarScrollBehavior0, topAppBarScrollBehavior1, topAppBarScrollBehavior2)
 
     val selectedItem = remember { mutableStateOf(0) }
 
-    val pagerState = rememberPagerState(initialPage = 0, initialPageOffsetFraction = 0f, pageCount = { 3 })
+    val pagerState =
+        rememberPagerState(initialPage = 0, initialPageOffsetFraction = 0f, pageCount = { 3 })
 
     val isClickBottomBarChange = remember { mutableStateOf(false) }
 
@@ -69,11 +76,11 @@ fun UITest() {
 
     MiuixSurface {
         MiuixScaffold(
-            modifier = Modifier
-                .fillMaxSize()
-                .displayCutoutPadding(),
+            modifier = Modifier.fillMaxSize(),
             topBar = {
                 MiuixTopAppBar(
+                    modifier = Modifier.hazeChild(hazeState),
+                    color = Color.Transparent,
                     title = "Miuix",
                     scrollBehavior = currentScrollBehavior
                 )
@@ -93,10 +100,16 @@ fun UITest() {
         ) { padding ->
             MyHorizontalPager(
                 modifier = Modifier
+                    .windowInsetsPadding(
+                        WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal)
+                    )
                     .haze(
                         state = hazeState,
                         style = HazeDefaults.style(
-                            backgroundColor = MiuixTheme.colorScheme.background
+                            backgroundColor = MiuixTheme.colorScheme.background,
+                            tint = MiuixTheme.colorScheme.background.copy(alpha = 0.75f),
+                            blurRadius = 25.dp,
+                            noiseFactor = 0f
                         )
                     ),
                 pagerState = pagerState,
