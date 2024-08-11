@@ -12,6 +12,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import dev.chrisbanes.haze.HazeDefaults
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.haze
+import dev.chrisbanes.haze.hazeChild
 import top.yukonga.miuix.kmp.MiuixNavigationBar
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.MiuixTopAppBar
@@ -20,6 +25,7 @@ import top.yukonga.miuix.kmp.basic.MiuixHorizontalPager
 import top.yukonga.miuix.kmp.basic.MiuixScaffold
 import top.yukonga.miuix.kmp.basic.MiuixSurface
 import top.yukonga.miuix.kmp.rememberMiuixTopAppBarState
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 fun UITest() {
@@ -48,6 +54,7 @@ fun UITest() {
         NavigationItem("Third", Icons.Default.Settings)
     )
 
+    val hazeState = remember { HazeState() }
 
     LaunchedEffect(selectedItem.value) {
         pagerState.animateScrollToPage(selectedItem.value)
@@ -73,6 +80,8 @@ fun UITest() {
             },
             bottomBar = {
                 MiuixNavigationBar(
+                    modifier = Modifier.hazeChild(hazeState),
+                    color = Color.Transparent,
                     items = items,
                     selectedItem = selectedItem,
                     onClick = { index ->
@@ -83,6 +92,13 @@ fun UITest() {
             }
         ) { padding ->
             MyHorizontalPager(
+                modifier = Modifier
+                    .haze(
+                        state = hazeState,
+                        style = HazeDefaults.style(
+                            backgroundColor = MiuixTheme.colorScheme.background
+                        )
+                    ),
                 pagerState = pagerState,
                 topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
                 padding = padding
@@ -94,11 +110,13 @@ fun UITest() {
 
 @Composable
 fun MyHorizontalPager(
+    modifier: Modifier = Modifier,
     pagerState: PagerState,
     topAppBarScrollBehaviorList: List<MiuixScrollBehavior>,
     padding: PaddingValues,
 ) {
     MiuixHorizontalPager(
+        modifier = modifier,
         pagerState = pagerState,
         beyondViewportPageCount = 2,
         pageContent = { page ->

@@ -476,12 +476,18 @@ private fun TopAppBarLayout(
     )
     Layout(
         {
-            MiuixBox(Modifier.layoutId("navigationIcon").padding(start = TopAppBarHorizontalPadding, top = TopAppBarTopPadding)) {
+            MiuixBox(
+                Modifier
+                    .layoutId("navigationIcon")
+                    .padding(start = TopAppBarHorizontalPadding, top = TopAppBarTopPadding)
+            ) {
                 navigationIcon()
             }
             MiuixBox(
-                Modifier.layoutId("title")
-                    .padding(horizontal = TopAppBarHorizontalPadding).padding(top = TopAppBarTopPadding)
+                Modifier
+                    .layoutId("title")
+                    .padding(horizontal = TopAppBarHorizontalPadding)
+                    .padding(top = TopAppBarTopPadding)
                     .graphicsLayer(
                         translationY = translationY,
                         alpha = alpha
@@ -493,7 +499,11 @@ private fun TopAppBarLayout(
                     fontWeight = FontWeight.Medium
                 )
             }
-            MiuixBox(Modifier.layoutId("actionIcons").padding(end = TopAppBarHorizontalPadding, top = TopAppBarTopPadding)) {
+            MiuixBox(
+                Modifier
+                    .layoutId("actionIcons")
+                    .padding(end = TopAppBarHorizontalPadding, top = TopAppBarTopPadding)
+            ) {
                 actions()
             }
         },
@@ -567,7 +577,8 @@ private fun LargeTextLayout(
     Layout(
         {
             MiuixBox(
-                Modifier.layoutId("title")
+                Modifier
+                    .layoutId("title")
                     .padding(horizontal = TopAppBarHorizontalPadding)
                     .graphicsLayer(alpha = 1f - (abs(scrolledOffset.offset()) / expandedHeightPx * 2).coerceIn(0f, 1f))
             ) {

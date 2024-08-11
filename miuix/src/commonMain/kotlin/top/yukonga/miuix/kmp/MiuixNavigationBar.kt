@@ -17,6 +17,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -30,15 +31,19 @@ fun MiuixNavigationBar(
     items: List<NavigationItem>,
     selectedItem: MutableState<Int>,
     modifier: Modifier = Modifier,
+    color: Color = MiuixTheme.colorScheme.background,
     onClick: (Int) -> Unit
 ) {
     require(items.size in 2..5) { "BottomBar must have between 2 and 5 items" }
-    MiuixSurface {
+    MiuixSurface(
+        modifier = modifier,
+        color = color
+    ) {
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .navigationBarsPadding()
                 .fillMaxWidth()
-                .background(MiuixTheme.colorScheme.background)
+                .background(Color.Transparent)
         ) {
             HorizontalDivider(
                 thickness = 0.3.dp,
@@ -86,5 +91,4 @@ fun MiuixNavigationBar(
 data class NavigationItem(
     val label: String,
     val icon: ImageVector
-
 )
