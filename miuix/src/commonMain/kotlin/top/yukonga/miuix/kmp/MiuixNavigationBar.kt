@@ -1,10 +1,8 @@
 package top.yukonga.miuix.kmp
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,13 +13,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,7 +32,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 @Composable
 fun MiuixNavigationBar(
     items: List<NavigationItem>,
-    selectedItem: MutableState<Int>,
+    selected: Int,
     modifier: Modifier = Modifier,
     color: Color = MiuixTheme.colorScheme.background,
     onClick: (Int) -> Unit
@@ -59,20 +59,33 @@ fun MiuixNavigationBar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 items.forEachIndexed { index, item ->
-                    val isSelected = selectedItem.value == index
+                    val isSelected = selected == index
+                    var isPressed by remember { mutableStateOf(false) }
                     val tint by animateColorAsState(
-                        targetValue = if (isSelected) MiuixTheme.colorScheme.onBackground else MiuixTheme.colorScheme.subDropdown,
-                        animationSpec = tween(durationMillis = 250)
+                        targetValue = when {
+                            isPressed -> if (isSelected) {
+                                MiuixTheme.colorScheme.onBackground.copy(alpha = 0.8f)
+                            } else {
+                                MiuixTheme.colorScheme.subDropdown.copy(alpha = 0.8f)
+                            }
+
+                            isSelected -> MiuixTheme.colorScheme.onBackground
+                            else -> MiuixTheme.colorScheme.subDropdown
+                        }
                     )
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .weight(1f / items.size)
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null
-                            ) {
-                                onClick(index)
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onPress = {
+                                        isPressed = true
+                                        tryAwaitRelease()
+                                        isPressed = false
+                                    },
+                                    onTap = { onClick(index) }
+                                )
                             }
                     ) {
                         Icon(

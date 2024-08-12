@@ -13,12 +13,17 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.MiuixNavigationBar
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
@@ -29,20 +34,17 @@ import top.yukonga.miuix.kmp.basic.MiuixScaffold
 import top.yukonga.miuix.kmp.basic.MiuixSurface
 import top.yukonga.miuix.kmp.rememberMiuixTopAppBarState
 
+@OptIn(FlowPreview::class)
 @Composable
 fun UITest() {
     val topAppBarScrollBehavior0 = MiuixScrollBehavior(rememberMiuixTopAppBarState())
     val topAppBarScrollBehavior1 = MiuixScrollBehavior(rememberMiuixTopAppBarState())
     val topAppBarScrollBehavior2 = MiuixScrollBehavior(rememberMiuixTopAppBarState())
 
-    val topAppBarScrollBehaviorList =
-        listOf(topAppBarScrollBehavior0, topAppBarScrollBehavior1, topAppBarScrollBehavior2)
+    val topAppBarScrollBehaviorList = listOf(topAppBarScrollBehavior0, topAppBarScrollBehavior1, topAppBarScrollBehavior2)
 
-    val selectedItem = remember { mutableStateOf(0) }
-
-    val pagerState =
-        rememberPagerState(initialPage = 0, initialPageOffsetFraction = 0f, pageCount = { 3 })
-
+    val pagerState = rememberPagerState(pageCount = { 3 })
+    var targetPage by remember { mutableStateOf(pagerState.currentPage) }
     val coroutineScope = rememberCoroutineScope()
 
     val currentScrollBehavior = when (pagerState.currentPage) {
@@ -59,8 +61,8 @@ fun UITest() {
     )
 
     LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPage }.collect { page ->
-            selectedItem.value = page
+        snapshotFlow { pagerState.currentPage }.debounce(50).collectLatest {
+            targetPage = pagerState.currentPage
         }
     }
 
@@ -78,8 +80,9 @@ fun UITest() {
                 MiuixNavigationBar(
                     color = Color.Transparent,
                     items = items,
-                    selectedItem = selectedItem,
+                    selected = targetPage,
                     onClick = { index ->
+                        targetPage = index
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(index)
                         }
