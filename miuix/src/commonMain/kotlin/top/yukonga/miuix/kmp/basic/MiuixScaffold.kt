@@ -21,11 +21,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMaxBy
+import dev.chrisbanes.haze.HazeDefaults
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.haze
+import dev.chrisbanes.haze.hazeChild
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**
@@ -60,6 +66,10 @@ fun MiuixScaffold(
     topBar: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
     snackbarHost: @Composable () -> Unit = {},
+    enableTopBarBlur: Boolean = true,
+    alpha: Float = 0.75f,
+    blurRadius: Dp = 25.dp,
+    noiseFactor: Float = 0f,
     containerColor: Color = MiuixTheme.colorScheme.background,
     contentWindowInsets: WindowInsets = ScaffoldDefaults.contentWindowInsets,
     content: @Composable (PaddingValues) -> Unit
@@ -72,10 +82,37 @@ fun MiuixScaffold(
         },
         color = containerColor,
     ) {
+        val hazeState = remember { HazeState() }
+
         ScaffoldLayout(
-            topBar = topBar,
-            bottomBar = bottomBar,
-            content = content,
+            topBar = {
+                if (enableTopBarBlur) {
+                    MiuixBox(Modifier.hazeChild(hazeState)) {
+                        topBar()
+                    }
+                } else {
+                    topBar()
+                }
+            },
+            bottomBar = {
+                MiuixBox(Modifier.hazeChild(hazeState)) {
+                    bottomBar()
+                }
+            },
+            content = {
+                MiuixBox(
+                    Modifier.haze(
+                        state = hazeState, style = HazeDefaults.style(
+                            backgroundColor = MiuixTheme.colorScheme.background,
+                            tint = MiuixTheme.colorScheme.background.copy(alpha),
+                            blurRadius = blurRadius,
+                            noiseFactor = noiseFactor
+                        )
+                    )
+                ) {
+                    content(it)
+                }
+            },
             snackbar = snackbarHost,
             contentWindowInsets = safeInsets,
         )

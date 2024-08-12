@@ -1,7 +1,4 @@
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
@@ -21,13 +18,11 @@ fun SecondPage(
 
     LazyColumn(
         state = scrollLazyColumnState,
+        contentPadding = PaddingValues(top = padding.calculateTopPadding()),
         modifier = Modifier
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
             .overScrollVertical()
     ) {
-        item {
-            Spacer(modifier = Modifier.height(padding.calculateTopPadding()))
-        }
         items(200) {
             MiuixSuperArrow(
                 leftAction = {
@@ -38,9 +33,6 @@ fun SecondPage(
                 rightText = "Right",
                 onClick = {}
             )
-        }
-        item {
-            Spacer(modifier = Modifier.height(padding.calculateBottomPadding()))
         }
     }
 }

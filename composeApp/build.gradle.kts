@@ -36,7 +36,6 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
 
             implementation(project(":miuix"))
-            implementation(libs.haze)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

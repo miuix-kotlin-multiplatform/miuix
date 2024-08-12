@@ -17,11 +17,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import dev.chrisbanes.haze.HazeDefaults
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.haze
-import dev.chrisbanes.haze.hazeChild
 import top.yukonga.miuix.kmp.MiuixNavigationBar
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.MiuixTopAppBar
@@ -30,7 +25,6 @@ import top.yukonga.miuix.kmp.basic.MiuixHorizontalPager
 import top.yukonga.miuix.kmp.basic.MiuixScaffold
 import top.yukonga.miuix.kmp.basic.MiuixSurface
 import top.yukonga.miuix.kmp.rememberMiuixTopAppBarState
-import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 fun UITest() {
@@ -61,8 +55,6 @@ fun UITest() {
         NavigationItem("Third", Icons.Default.Settings)
     )
 
-    val hazeState = remember { HazeState() }
-
     LaunchedEffect(selectedItem.value) {
         pagerState.animateScrollToPage(selectedItem.value)
     }
@@ -79,7 +71,6 @@ fun UITest() {
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 MiuixTopAppBar(
-                    modifier = Modifier.hazeChild(hazeState),
                     color = Color.Transparent,
                     title = "Miuix",
                     scrollBehavior = currentScrollBehavior
@@ -87,7 +78,6 @@ fun UITest() {
             },
             bottomBar = {
                 MiuixNavigationBar(
-                    modifier = Modifier.hazeChild(hazeState),
                     color = Color.Transparent,
                     items = items,
                     selectedItem = selectedItem,
@@ -102,15 +92,6 @@ fun UITest() {
                 modifier = Modifier
                     .windowInsetsPadding(
                         WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal)
-                    )
-                    .haze(
-                        state = hazeState,
-                        style = HazeDefaults.style(
-                            backgroundColor = MiuixTheme.colorScheme.background,
-                            tint = MiuixTheme.colorScheme.background.copy(alpha = 0.75f),
-                            blurRadius = 25.dp,
-                            noiseFactor = 0f
-                        )
                     ),
                 pagerState = pagerState,
                 topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
