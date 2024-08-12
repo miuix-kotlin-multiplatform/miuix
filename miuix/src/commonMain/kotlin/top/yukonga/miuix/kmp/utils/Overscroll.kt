@@ -62,17 +62,16 @@ internal val DefaultParabolaScrollEasing: (currentOffset: Float, newOffset: Floa
     }
 
 internal const val OutBoundSpringStiff = 150f
-internal const val OutBoundSpringDamp = 0.86f
+internal const val OutBoundSpringDamp = 1f
 
-@Suppress("NAME_SHADOWING")
 fun Modifier.overScrollVertical(
-    scrollEasing: ((currentOffset: Float, newOffset: Float) -> Float)? = null,
-    springStiff: Float = OutBoundSpringStiff,
-    springDamp: Float = OutBoundSpringDamp,
+    onOverscroll: ((Boolean) -> Unit)? = null
 ): Modifier = composed {
-    val scrollEasing by rememberUpdatedState(scrollEasing ?: DefaultParabolaScrollEasing)
-    val springStiff by rememberUpdatedState(springStiff)
-    val springDamp by rememberUpdatedState(springDamp)
+    @Suppress("NAME_SHADOWING")
+    val onOverscroll by rememberUpdatedState(onOverscroll)
+    val scrollEasing by rememberUpdatedState(DefaultParabolaScrollEasing)
+    val springStiff by rememberUpdatedState(OutBoundSpringStiff)
+    val springDamp by rememberUpdatedState(OutBoundSpringDamp)
     val dispatcher = remember { NestedScrollDispatcher() }
     var offset by remember { mutableFloatStateOf(0f) }
 
@@ -98,12 +97,14 @@ fun Modifier.overScrollVertical(
                     return available - realAvailable
                 }
                 val offsetAtLast = scrollEasing(offset, realOffset)
-                return if (sign(offset) != sign(offsetAtLast)) {
+                if (sign(offset) != sign(offsetAtLast)) {
                     offset = 0f
-                    Offset(x = available.x - realAvailable.x, y = available.y - realAvailable.y + realOffset)
+                    onOverscroll?.invoke(false)
+                    return Offset(x = available.x - realAvailable.x, y = available.y - realAvailable.y + realOffset)
                 } else {
                     offset = offsetAtLast
-                    Offset(x = available.x - realAvailable.x, y = available.y)
+                    onOverscroll?.invoke(true)
+                    return Offset(x = available.x - realAvailable.x, y = available.y)
                 }
             }
 
@@ -113,6 +114,8 @@ fun Modifier.overScrollVertical(
                 }
                 val realAvailable = available - dispatcher.dispatchPostScroll(consumed, available, source)
                 offset = scrollEasing(offset, realAvailable.y)
+                println("offset: $offset")
+                onOverscroll?.invoke(abs(offset) > visibilityThreshold)
                 return Offset(x = available.x - realAvailable.x, y = available.y)
             }
 
@@ -133,6 +136,7 @@ fun Modifier.overScrollVertical(
                     leftVelocity = lastFlingAnimator.animateTo(0f, spring(springDamp, springStiff, visibilityThreshold), leftVelocity) {
                         offset = scrollEasing(offset, value - offset)
                     }.endState.velocity
+                    onOverscroll?.invoke(false)
                 }
                 return Velocity(parentConsumed.x, y = available.y - leftVelocity)
             }
@@ -143,6 +147,7 @@ fun Modifier.overScrollVertical(
                 lastFlingAnimator.animateTo(0f, spring(springDamp, springStiff, visibilityThreshold), realAvailable.y) {
                     offset = scrollEasing(offset, value - offset)
                 }
+                onOverscroll?.invoke(false)
                 return Velocity(x = available.x - realAvailable.x, y = available.y)
             }
         }

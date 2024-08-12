@@ -62,7 +62,7 @@ fun MiuixNavigationBar(
                     val isSelected = selectedItem.value == index
                     val tint by animateColorAsState(
                         targetValue = if (isSelected) MiuixTheme.colorScheme.onBackground else MiuixTheme.colorScheme.subDropdown,
-                        animationSpec = tween(durationMillis = 200)
+                        animationSpec = tween(durationMillis = 250)
                     )
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,

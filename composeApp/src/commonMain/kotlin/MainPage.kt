@@ -22,7 +22,11 @@ fun MainPage(
         contentPadding = PaddingValues(top = padding.calculateTopPadding()),
         modifier = Modifier
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
-            .overScrollVertical()
+            .overScrollVertical(
+                onOverscroll = {
+                    topAppBarScrollBehavior.isPinned = it
+                }
+            )
     ) {
         item {
             TextComponent()

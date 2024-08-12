@@ -11,12 +11,14 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
@@ -39,6 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalDensity
@@ -84,6 +87,7 @@ fun MiuixTopAppBar(
                 content = actions
             )
         }
+
     // Compose a MiuixSurface with a MiuixTopAppBarLayout content.
     // The surface's background color is animated as specified above.
     // The height of the app bar is determined by subtracting the bar's height offset from the
@@ -94,6 +98,9 @@ fun MiuixTopAppBar(
             .background(color)
             .windowInsetsPadding(WindowInsets.statusBars)
             .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
+            .pointerInput(Unit) {
+                detectVerticalDragGestures { _, _ -> }
+            }
     ) {
         MiuixTopAppBarLayout(
             title = title,
@@ -276,7 +283,7 @@ interface MiuixScrollBehavior {
      * A pinned app bar will stay fixed in place when content is scrolled and will not react to any
      * drag gestures.
      */
-    val isPinned: Boolean
+    var isPinned: Boolean
 
     /**
      * An optional [AnimationSpec] that defines how the top app bar snaps to either fully collapsed
@@ -315,17 +322,17 @@ interface MiuixScrollBehavior {
  *   [ExitUntilCollapsedScrollBehavior]
  */
 private class ExitUntilCollapsedScrollBehavior(
+    override var isPinned: Boolean = false,
     override val state: TopAppBarState,
     override val snapAnimationSpec: AnimationSpec<Float>?,
     override val flingAnimationSpec: DecayAnimationSpec<Float>?,
     val canScroll: () -> Boolean = { true }
 ) : MiuixScrollBehavior {
-    override val isPinned: Boolean = false
     override var nestedScrollConnection =
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                // Don't intercept if scrolling down.
-                if (!canScroll() || available.y > 0f) return Offset.Zero
+                // Don't intercept if scrolling down & if is pinned.
+                if (!canScroll() || available.y > 0f || isPinned) return Offset.Zero
 
                 val prevHeightOffset = state.heightOffset
                 state.heightOffset += available.y
@@ -460,7 +467,7 @@ private fun MiuixTopAppBarLayout(
     )
     val translationY by animateFloatAsState(
         targetValue = if (extOffset > 1f) 0f else 10f,
-        animationSpec = tween(durationMillis = 150)
+        animationSpec = tween(durationMillis = 250)
     )
 
     Layout(
@@ -499,6 +506,7 @@ private fun MiuixTopAppBarLayout(
             MiuixBox(
                 Modifier
                     .layoutId("largeTitle")
+                    .fillMaxWidth()
                     .padding(horizontal = TopAppBarHorizontalPadding)
                     .graphicsLayer(alpha = 1f - (abs(scrolledOffset.offset()) / expandedHeightPx * 2).coerceIn(0f, 1f))
             ) {

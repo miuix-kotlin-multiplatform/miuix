@@ -1,4 +1,6 @@
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
@@ -21,7 +23,11 @@ fun SecondPage(
         contentPadding = PaddingValues(top = padding.calculateTopPadding()),
         modifier = Modifier
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
-            .overScrollVertical()
+            .overScrollVertical(
+                onOverscroll = {
+                    topAppBarScrollBehavior.isPinned = it
+                }
+            )
     ) {
         items(200) {
             MiuixSuperArrow(
@@ -33,6 +39,9 @@ fun SecondPage(
                 rightText = "Right",
                 onClick = {}
             )
+        }
+        item {
+            Spacer(modifier = Modifier.height(padding.calculateBottomPadding()))
         }
     }
 }
