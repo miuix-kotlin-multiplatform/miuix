@@ -67,6 +67,8 @@ internal const val OutBoundSpringDamp = 1f
 fun Modifier.overScrollVertical(
     onOverscroll: ((Boolean) -> Unit)? = null
 ): Modifier = composed {
+    if (!enableOverscroll()) return@composed this
+
     @Suppress("NAME_SHADOWING")
     val onOverscroll by rememberUpdatedState(onOverscroll)
     val scrollEasing by rememberUpdatedState(DefaultParabolaScrollEasing)
@@ -114,7 +116,6 @@ fun Modifier.overScrollVertical(
                 }
                 val realAvailable = available - dispatcher.dispatchPostScroll(consumed, available, source)
                 offset = scrollEasing(offset, realAvailable.y)
-                println("offset: $offset")
                 onOverscroll?.invoke(abs(offset) > visibilityThreshold)
                 return Offset(x = available.x - realAvailable.x, y = available.y)
             }
@@ -160,3 +161,5 @@ fun Modifier.overScrollVertical(
             translationY = offset
         }
 }
+
+expect fun enableOverscroll(): Boolean
