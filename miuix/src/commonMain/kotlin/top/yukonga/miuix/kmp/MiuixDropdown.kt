@@ -13,10 +13,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,7 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextStyle
@@ -61,7 +61,6 @@ import top.yukonga.miuix.kmp.miuix.generated.resources.ic_arrow_up_down
 import top.yukonga.miuix.kmp.miuix.generated.resources.ic_dropdown_select
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.createRipple
-import top.yukonga.miuix.kmp.utils.toPx
 
 val textStyle = TextStyle(fontWeight = FontWeight.Medium, fontSize = 15.sp)
 val currentExpandedDropdown = mutableStateOf<String?>(null)
@@ -78,14 +77,13 @@ fun MiuixDropdown(
     onOptionSelected: (String) -> Unit
 ) {
     val hapticFeedback = LocalHapticFeedback.current
-    val currentDensity = LocalDensity.current
-    val density = currentDensity.density
+    val density = LocalDensity.current
     var isDropdownExpanded by remember { mutableStateOf(false) }
     var alignLeft by remember { mutableStateOf(true) }
     val textMeasurer = rememberTextMeasurer()
     val textWidthDp = remember(options) {
         options.maxOfOrNull { text ->
-            with(currentDensity) { textMeasurer.measure(text = text, style = textStyle).size.width.toDp() }
+            with(density) { textMeasurer.measure(text = text, style = textStyle).size.width.toDp() }
         }
     }
     var dropdownHeightPx by remember { mutableStateOf(0) }
@@ -95,8 +93,9 @@ fun MiuixDropdown(
     val coroutineScope = rememberCoroutineScope()
     val interactionSource = remember { MutableInteractionSource() }
     val windowHeightPx = getWindowSize().height
-    val navigationPx = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().toPx.toInt()
-    val px24 = 24.dp.toPx.toInt()
+    val statusBarPx = with(density) { WindowInsets.systemBars.asPaddingValues().calculateTopPadding().toPx() }.toInt()
+    val navigationPx = with(density) { WindowInsets.systemBars.asPaddingValues().calculateBottomPadding().toPx() }.toInt()
+    val insideHeightPx = with(density) { insideMargin.height.toPx() }.toInt()
 
     MiuixBasicComponent(
         modifier = modifier
@@ -120,8 +119,8 @@ fun MiuixDropdown(
                 )
             }
             .onGloballyPositioned { coordinates ->
-                val positionInRoot = coordinates.positionInRoot()
-                dropdownOffsetPx = positionInRoot.y.toInt()
+                val positionInWindow = coordinates.positionInWindow()
+                dropdownOffsetPx = positionInWindow.y.toInt() - statusBarPx
                 componentHeight = coordinates.size.height
             },
         insideMargin = insideMargin,
@@ -163,14 +162,14 @@ fun MiuixDropdown(
                                 currentExpandedDropdown.value = null
                             })
                         }
-                        .offset(y = offsetPx.dp / density)
+                        .offset(y = offsetPx.dp / density.density)
                 ) {
                     LazyColumn(
                         modifier = Modifier
                             .padding(horizontal = 16.dp)
                             .onGloballyPositioned { layoutCoordinates ->
                                 dropdownHeightPx = layoutCoordinates.size.height
-                                offsetPx = calculateOffsetPx(windowHeightPx, dropdownOffsetPx, dropdownHeightPx, componentHeight, navigationPx, px24)
+                                offsetPx = calculateOffsetPx(windowHeightPx, dropdownOffsetPx, dropdownHeightPx, componentHeight, navigationPx, insideHeightPx)
                             }
                             .align(if (alignLeft && !alwaysRight) AbsoluteAlignment.TopLeft else AbsoluteAlignment.TopRight)
                             .clip(RoundedCornerShape(16.dp))
@@ -264,16 +263,12 @@ fun calculateOffsetPx(
     dropdownHeightPx: Int,
     componentHeight: Int,
     navigationPx: Int,
-    px24: Int
+    insideHeightPx: Int
 ): Int {
-    return if (dropdownHeightPx / 2 > windowHeightPx - dropdownOffsetPx - componentHeight / 2) {
-        windowHeightPx - dropdownHeightPx - componentHeight / 2 - navigationPx - px24
-    } else if (dropdownOffsetPx - (windowHeightPx - dropdownHeightPx / 2 - componentHeight / 2) > dropdownHeightPx) {
-        dropdownOffsetPx + dropdownHeightPx / 2
-    } else if (windowHeightPx - dropdownOffsetPx > dropdownHeightPx / 2) {
-        val offset = dropdownOffsetPx - dropdownHeightPx / 2 - componentHeight / 2
-        if (offset > 0) offset else 0
+    return if (windowHeightPx - dropdownOffsetPx - navigationPx - insideHeightPx - componentHeight < dropdownHeightPx / 2) {
+        windowHeightPx - dropdownHeightPx - navigationPx - insideHeightPx - componentHeight
     } else {
-        0
+        val offset = dropdownOffsetPx - dropdownHeightPx / 2 + componentHeight / 2
+        if (offset > insideHeightPx) offset else insideHeightPx
     }
 }
