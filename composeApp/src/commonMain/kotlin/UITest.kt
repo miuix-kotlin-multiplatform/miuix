@@ -15,8 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.MiuixNavigationBar
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.MiuixTopAppBar
@@ -40,7 +43,7 @@ fun UITest() {
     val pagerState =
         rememberPagerState(initialPage = 0, initialPageOffsetFraction = 0f, pageCount = { 3 })
 
-    val isClickBottomBarChange = remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
 
     val currentScrollBehavior = when (pagerState.currentPage) {
         0 -> topAppBarScrollBehaviorList[0]
@@ -55,14 +58,9 @@ fun UITest() {
         NavigationItem("Third", Icons.Default.Settings)
     )
 
-    LaunchedEffect(selectedItem.value) {
-        pagerState.animateScrollToPage(selectedItem.value)
-    }
-    LaunchedEffect(pagerState.currentPage) {
-        if (isClickBottomBarChange.value) {
-            isClickBottomBarChange.value = false
-        } else {
-            selectedItem.value = pagerState.currentPage
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }.collect { page ->
+            selectedItem.value = page
         }
     }
 
@@ -82,13 +80,14 @@ fun UITest() {
                     items = items,
                     selectedItem = selectedItem,
                     onClick = { index ->
-                        selectedItem.value = index
-                        isClickBottomBarChange.value = true
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
                     }
                 )
             }
         ) { padding ->
-            MyHorizontalPager(
+            AppHorizontalPager(
                 modifier = Modifier
                     .windowInsetsPadding(
                         WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal)
@@ -103,7 +102,7 @@ fun UITest() {
 }
 
 @Composable
-fun MyHorizontalPager(
+fun AppHorizontalPager(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
     topAppBarScrollBehaviorList: List<MiuixScrollBehavior>,

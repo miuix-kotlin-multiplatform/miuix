@@ -1,8 +1,10 @@
 package top.yukonga.miuix.kmp.basic
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.padding
@@ -46,8 +48,9 @@ fun MiuixSwitch(
         targetValue = if (checked) 28.dp else 4.dp,
         animationSpec = springSpec
     )
-    val backgroundColor by rememberUpdatedState(
-        if (checked) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.switchThumb
+    val backgroundColor by animateColorAsState(
+        if (checked) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.switchThumb,
+        animationSpec = tween(durationMillis = 200)
     )
     val disabledBackgroundColor by rememberUpdatedState(
         if (checked) MiuixTheme.colorScheme.disabledBg else MiuixTheme.colorScheme.primaryContainer

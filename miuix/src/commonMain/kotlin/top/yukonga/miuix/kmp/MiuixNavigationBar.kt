@@ -1,5 +1,7 @@
 package top.yukonga.miuix.kmp
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -14,6 +16,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,6 +60,10 @@ fun MiuixNavigationBar(
             ) {
                 items.forEachIndexed { index, item ->
                     val isSelected = selectedItem.value == index
+                    val tint by animateColorAsState(
+                        targetValue = if (isSelected) MiuixTheme.colorScheme.onBackground else MiuixTheme.colorScheme.subDropdown,
+                        animationSpec = tween(durationMillis = 200)
+                    )
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
@@ -72,12 +79,12 @@ fun MiuixNavigationBar(
                             modifier = Modifier.size(32.dp).padding(top = 6.dp),
                             imageVector = item.icon,
                             contentDescription = item.label,
-                            tint = if (isSelected) MiuixTheme.colorScheme.onBackground else MiuixTheme.colorScheme.subDropdown
+                            tint = tint
                         )
                         MiuixText(
                             modifier = Modifier.padding(bottom = 14.dp),
                             text = item.label,
-                            color = if (isSelected) MiuixTheme.colorScheme.onBackground else MiuixTheme.colorScheme.subDropdown,
+                            color = tint,
                             textAlign = TextAlign.Center,
                             fontSize = 13.sp,
                         )
