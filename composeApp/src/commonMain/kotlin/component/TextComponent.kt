@@ -19,9 +19,9 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import top.yukonga.miuix.kmp.MiuixDropdown
 import top.yukonga.miuix.kmp.MiuixSuperArrow
 import top.yukonga.miuix.kmp.MiuixSuperDialog
+import top.yukonga.miuix.kmp.MiuixSuperDropdown
 import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
 import top.yukonga.miuix.kmp.basic.MiuixButton
 import top.yukonga.miuix.kmp.basic.MiuixText
@@ -82,6 +82,12 @@ fun TextComponent() {
     )
 
     MiuixSuperArrow(
+        title = "Arrow",
+        summary = "With an arrow on right",
+        onClick = {}
+    )
+
+    MiuixSuperArrow(
         leftAction = {
             Image(
                 colorFilter = ColorFilter.tint(MiuixTheme.colorScheme.onBackground),
@@ -89,15 +95,14 @@ fun TextComponent() {
                 contentDescription = "Person",
             )
         },
-        title = "Title",
-        summary = "Summary",
+        title = "Person",
+        summary = "An introduction",
         onClick = {}
     )
 
     MiuixSuperArrow(
-        title = "Title",
-        summary = "Summary",
-        rightText = "Right",
+        title = "Dialog",
+        summary = "Click to display Dialog",
         onClick = {
             showDialog.value = true
         }
@@ -105,17 +110,17 @@ fun TextComponent() {
 
     dialog(showDialog)
 
-    MiuixDropdown(
+    MiuixSuperDropdown(
         title = "Dropdown",
-        summary = "Summary",
+        summary = "Popup near click",
         options = dropdownOptions,
         selectedOption = dropdownSelectedOption,
         onOptionSelected = { newOption -> dropdownSelectedOption.value = newOption },
     )
 
-    MiuixDropdown(
+    MiuixSuperDropdown(
         title = "Dropdown",
-        summary = "AlwaysRight",
+        summary = "Popup always on right",
         alwaysRight = true,
         options = dropdownOptions,
         selectedOption = dropdownSelectedOptionRight,
@@ -130,7 +135,7 @@ fun dialog(showDialog: MutableState<Boolean>) {
         visible = showDialog,
         content = {
             MiuixSuperDialog(
-                title = "Dialog",
+                title = "Title",
                 summary = "Summary",
                 onDismissRequest = { showDialog.value = false },
             ) {

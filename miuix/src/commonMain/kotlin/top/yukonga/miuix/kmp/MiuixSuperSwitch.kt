@@ -1,6 +1,5 @@
 package top.yukonga.miuix.kmp
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -12,7 +11,6 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
 import top.yukonga.miuix.kmp.basic.MiuixSwitch
-import top.yukonga.miuix.kmp.utils.createRipple
 
 @Composable
 fun MiuixSuperSwitch(
@@ -23,7 +21,7 @@ fun MiuixSuperSwitch(
     onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier,
     insideMargin: DpSize = DpSize(28.dp, 7.dp),
-    enabled: Boolean = true
+    enabledClick: Boolean = true
 ) {
     var isChecked by remember { mutableStateOf(checked) }
     val interactionSource = remember { MutableInteractionSource() }
@@ -33,19 +31,18 @@ fun MiuixSuperSwitch(
     }
 
     MiuixBasicComponent(
-        modifier = modifier.clickable(
-            interactionSource = interactionSource,
-            indication = createRipple(),
-            enabled = enabled
-        ) {
-            isChecked = !isChecked
-            onCheckedChange?.invoke(isChecked)
-        },
+        modifier = modifier,
         insideMargin = insideMargin,
         title = title,
         summary = summary,
         leftAction = leftAction,
-        rightActions = { createRightActions(checked, onCheckedChange, enabled) }
+        rightActions = { createRightActions(checked, onCheckedChange, enabledClick) },
+        enabledClick = enabledClick,
+        interactionSource = interactionSource,
+        onClick = {
+            isChecked = !isChecked
+            onCheckedChange?.invoke(isChecked)
+        }
     )
 }
 

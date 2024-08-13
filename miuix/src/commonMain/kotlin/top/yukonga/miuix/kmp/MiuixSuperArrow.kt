@@ -1,7 +1,6 @@
 package top.yukonga.miuix.kmp
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,7 +19,6 @@ import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.miuix.generated.resources.Res
 import top.yukonga.miuix.kmp.miuix.generated.resources.ic_arrow_right
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.createRipple
 
 @Composable
 fun MiuixSuperArrow(
@@ -31,23 +29,20 @@ fun MiuixSuperArrow(
     rightText: String? = null,
     onClick: () -> Unit,
     insideMargin: DpSize = DpSize(28.dp, 14.dp),
-    enabled: Boolean = true
+    enabledClick: Boolean = true
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
     MiuixBasicComponent(
-        modifier = modifier.clickable(
-            interactionSource = interactionSource,
-            indication = createRipple(),
-            enabled = enabled
-        ) {
-            onClick()
-        },
+        modifier = modifier,
         insideMargin = insideMargin,
         title = title,
         summary = summary,
         leftAction = leftAction,
-        rightActions = { createRightActions(rightText) }
+        rightActions = { createRightActions(rightText) },
+        enabledClick = enabledClick,
+        interactionSource = interactionSource,
+        onClick = onClick
     )
 }
 

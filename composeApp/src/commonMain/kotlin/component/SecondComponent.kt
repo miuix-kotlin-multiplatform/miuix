@@ -58,7 +58,7 @@ fun SecondComponent() {
     }
 
     MiuixSuperSwitch(
-        title = "TextWithSwitch",
+        title = "Switch",
         summary = textWithSwitch,
         checked = textWishSwitchTrue,
         onCheckedChange = {

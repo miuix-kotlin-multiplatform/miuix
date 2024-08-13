@@ -62,7 +62,7 @@ import top.yukonga.miuix.kmp.utils.MiuixDialogUtil
 import top.yukonga.miuix.kmp.utils.createRipple
 
 @Composable
-fun MiuixDropdown(
+fun MiuixSuperDropdown(
     title: String,
     summary: String? = null,
     modifier: Modifier = Modifier,
@@ -135,7 +135,8 @@ fun MiuixDropdown(
                 colorFilter = BlendModeColorFilter(MiuixTheme.colorScheme.subDropdown, BlendMode.SrcIn),
                 contentDescription = null
             )
-        }
+        },
+        enabledClick = false
     )
 
     if (isDropdownExpanded.value) hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)

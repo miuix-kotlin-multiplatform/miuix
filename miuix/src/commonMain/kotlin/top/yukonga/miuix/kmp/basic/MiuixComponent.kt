@@ -1,7 +1,9 @@
 package top.yukonga.miuix.kmp.basic
 
+import androidx.compose.foundation.Indication
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -14,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.createRipple
 
 @Composable
 fun MiuixBasicComponent(
@@ -22,17 +25,31 @@ fun MiuixBasicComponent(
     title: String? = null,
     summary: String? = null,
     leftAction: @Composable (() -> Unit?)? = null,
-    rightActions: @Composable RowScope.() -> Unit = {}
+    rightActions: @Composable RowScope.() -> Unit = {},
+    enabledClick: Boolean = true,
+    onClick: (() -> Unit)? = null,
+    interactionSource: MutableInteractionSource? = null,
+    indication: Indication? = null
 ) {
     Row(
-        modifier = modifier
+        modifier = if (enabledClick) {
+            modifier
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = indication ?: createRipple()
+                ) {
+                    onClick?.invoke()
+                }
+        } else {
+            modifier
+        }
             .fillMaxWidth()
             .padding(horizontal = insideMargin.width, vertical = insideMargin.height),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         leftAction?.let {
-            Box(
+            MiuixBox(
                 modifier = Modifier.padding(end = 16.dp)
             ) {
                 it()
@@ -55,7 +72,7 @@ fun MiuixBasicComponent(
                 )
             }
         }
-        Box(
+        MiuixBox(
             modifier = Modifier.padding(start = 8.dp)
         ) {
             Row(

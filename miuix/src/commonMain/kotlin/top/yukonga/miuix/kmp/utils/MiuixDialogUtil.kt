@@ -74,8 +74,8 @@ class MiuixDialogUtil {
             AnimatedVisibility(
                 visible = isPopupVisible,
                 modifier = Modifier.zIndex(2f).fillMaxSize(),
-                enter = fadeIn(animationSpec = tween(150)) + scaleIn(animationSpec = tween(100), initialScale = 0.6f),
-                exit = fadeOut(animationSpec = tween(150)) + scaleOut(animationSpec = tween(300), targetScale = 0.8f)
+                enter = fadeIn(animationSpec = tween(100)) + scaleIn(animationSpec = tween(100), initialScale = 0.9f),
+                exit = fadeOut(animationSpec = tween(100)) + scaleOut(animationSpec = tween(100), targetScale = 0.9f)
             ) {
                 MiuixBox(
                     modifier = Modifier.fillMaxSize()
