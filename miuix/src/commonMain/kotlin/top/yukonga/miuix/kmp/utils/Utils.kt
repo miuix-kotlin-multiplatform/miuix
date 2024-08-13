@@ -6,3 +6,6 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 fun createRipple() = ripple(color = MiuixTheme.colorScheme.onBackground.copy(alpha = 0.8f))
+
+@Composable
+expect fun getCornerRadiusBottom(): Int

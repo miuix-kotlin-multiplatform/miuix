@@ -49,7 +49,7 @@ fun MiuixNavigationBar(
                 .background(Color.Transparent)
         ) {
             HorizontalDivider(
-                thickness = 0.3.dp,
+                thickness = 0.2.dp,
                 color = MiuixTheme.colorScheme.subDropdown
             )
             Row(
@@ -64,9 +64,9 @@ fun MiuixNavigationBar(
                     val tint by animateColorAsState(
                         targetValue = when {
                             isPressed -> if (isSelected) {
-                                MiuixTheme.colorScheme.onBackground.copy(alpha = 0.8f)
+                                MiuixTheme.colorScheme.onBackground.copy(alpha = 0.7f)
                             } else {
-                                MiuixTheme.colorScheme.subDropdown.copy(alpha = 0.8f)
+                                MiuixTheme.colorScheme.subDropdown.copy(alpha = 0.7f)
                             }
 
                             isSelected -> MiuixTheme.colorScheme.onBackground

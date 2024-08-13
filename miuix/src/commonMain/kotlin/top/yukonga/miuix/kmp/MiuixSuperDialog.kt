@@ -13,8 +13,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
@@ -25,17 +25,23 @@ import top.yukonga.miuix.kmp.basic.MiuixAnimatorDialog
 import top.yukonga.miuix.kmp.basic.MiuixBox
 import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.getCornerRadiusBottom
 
 @Composable
 fun MiuixSuperDialog(
     title: String? = null,
     summary: String? = null,
     onDismissRequest: () -> Unit,
-    shape: Shape = RoundedCornerShape(32.dp),
     insideMargin: DpSize = DpSize(14.dp, 14.dp),
     content: @Composable () -> Unit
 ) {
+    val density = LocalDensity.current
     val navigationDp = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
+    val bottomCornerRadius = if (getCornerRadiusBottom() != 0) {
+        (getCornerRadiusBottom() / density.density).dp - 12.dp
+    } else {
+        30.dp
+    }
 
     MiuixAnimatorDialog(
         onDismissRequest = onDismissRequest,
@@ -57,8 +63,8 @@ fun MiuixSuperDialog(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = MiuixTheme.colorScheme.background,
-                        shape = shape
+                        color = MiuixTheme.colorScheme.dropdownBackground,
+                        shape = RoundedCornerShape(bottomCornerRadius)
                     )
                     .padding(24.dp),
             ) {
