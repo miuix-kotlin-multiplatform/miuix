@@ -54,7 +54,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
 import top.yukonga.miuix.kmp.basic.MiuixBox
-import top.yukonga.miuix.kmp.basic.MiuixDialog
+import top.yukonga.miuix.kmp.basic.MiuixBasicDialog
 import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.miuix.generated.resources.Res
 import top.yukonga.miuix.kmp.miuix.generated.resources.ic_arrow_up_down
@@ -146,7 +146,7 @@ fun MiuixDropdown(
     ) {
         if (isDropdownExpanded) {
             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-            MiuixDialog(
+            MiuixBasicDialog(
                 onDismissRequest = {
                     isDropdownExpanded = false
                     currentExpandedDropdown.value = null

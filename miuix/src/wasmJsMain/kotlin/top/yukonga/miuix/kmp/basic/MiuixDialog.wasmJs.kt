@@ -5,7 +5,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 
 @Composable
-actual fun MiuixDialog(
+actual fun MiuixBasicDialog(
     onDismissRequest: () -> Unit,
     properties: DialogProperties,
     content: @Composable () -> Unit
@@ -15,4 +15,13 @@ actual fun MiuixDialog(
         properties = properties,
         content = content
     )
+}
+
+@Composable
+actual fun MiuixAnimatorDialog(
+    onDismissRequest: () -> Unit,
+    properties: DialogProperties,
+    content: @Composable () -> Unit
+) {
+    MiuixBasicDialog(onDismissRequest, properties, content)
 }

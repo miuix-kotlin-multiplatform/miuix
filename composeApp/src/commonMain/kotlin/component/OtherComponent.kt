@@ -44,17 +44,17 @@ fun OtherComponent(padding: PaddingValues) {
     )
 
     MiuixSlider(
-        progress = progress,
-        onProgressChange = { newProgress -> progress = newProgress },
-        dragShow = true,
+        progress = progressFloat,
+        onProgressChange = { newProgress -> progressFloat = newProgress },
         modifier = Modifier
             .padding(horizontal = 28.dp)
             .padding(bottom = 28.dp)
     )
 
     MiuixSlider(
-        progress = progressFloat,
-        onProgressChange = { newProgress -> progressFloat = newProgress },
+        progress = progress,
+        onProgressChange = { newProgress -> progress = newProgress },
+        dragShow = true,
         modifier = Modifier
             .padding(horizontal = 28.dp)
             .padding(bottom = 28.dp)

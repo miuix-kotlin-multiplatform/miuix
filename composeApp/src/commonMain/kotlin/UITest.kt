@@ -61,7 +61,7 @@ fun UITest() {
     )
 
     LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPage }.debounce(50).collectLatest {
+        snapshotFlow { pagerState.currentPage }.debounce(150).collectLatest {
             targetPage = pagerState.currentPage
         }
     }
