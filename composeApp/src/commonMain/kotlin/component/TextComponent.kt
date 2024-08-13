@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -83,6 +84,7 @@ fun TextComponent() {
     MiuixSuperArrow(
         leftAction = {
             Image(
+                colorFilter = ColorFilter.tint(MiuixTheme.colorScheme.onBackground),
                 imageVector = Icons.Default.Person,
                 contentDescription = "Person",
             )
@@ -98,7 +100,6 @@ fun TextComponent() {
         rightText = "Right",
         onClick = {
             showDialog.value = true
-
         }
     )
 

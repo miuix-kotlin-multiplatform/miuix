@@ -89,7 +89,7 @@ fun MiuixDropdown(
     var offsetPx by remember { mutableStateOf(0) }
     val coroutineScope = rememberCoroutineScope()
     val interactionSource = remember { MutableInteractionSource() }
-    val windowHeightPx = getWindowSize().height
+    val windowHeightPx = (getWindowSize().height * density.density).toInt()
     val statusBarPx = with(density) { WindowInsets.statusBars.asPaddingValues().calculateTopPadding().toPx() }.toInt()
     val insideHeightPx = with(density) { insideMargin.height.toPx() }.toInt()
 
