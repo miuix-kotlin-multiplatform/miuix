@@ -13,10 +13,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -93,8 +94,8 @@ fun MiuixDropdown(
     val coroutineScope = rememberCoroutineScope()
     val interactionSource = remember { MutableInteractionSource() }
     val windowHeightPx = getWindowSize().height
-    val statusBarPx = with(density) { WindowInsets.systemBars.asPaddingValues().calculateTopPadding().toPx() }.toInt()
-    val navigationPx = with(density) { WindowInsets.systemBars.asPaddingValues().calculateBottomPadding().toPx() }.toInt()
+    val statusBarPx = with(density) { WindowInsets.statusBars.asPaddingValues().calculateTopPadding().toPx() }.toInt()
+    val navigationPx = with(density) { WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().toPx() }.toInt()
     val insideHeightPx = with(density) { insideMargin.height.toPx() }.toInt()
 
     MiuixBasicComponent(
@@ -143,54 +144,54 @@ fun MiuixDropdown(
                 contentDescription = null
             )
         }
-    ) {
-        if (isDropdownExpanded) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-            MiuixBasicDialog(
-                onDismissRequest = {
-                    isDropdownExpanded = false
-                    currentExpandedDropdown.value = null
-                },
-                properties = DialogProperties(usePlatformDefaultWidth = false)
+    )
+
+    if (isDropdownExpanded) {
+        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+        MiuixBasicDialog(
+            onDismissRequest = {
+                isDropdownExpanded = false
+                currentExpandedDropdown.value = null
+            },
+            properties = DialogProperties(usePlatformDefaultWidth = false)
+        ) {
+            MiuixBox(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pointerInput(Unit) {
+                        detectTapGestures(onPress = {
+                            isDropdownExpanded = false
+                            currentExpandedDropdown.value = null
+                        })
+                    }
+                    .offset(y = offsetPx.dp / density.density)
             ) {
-                MiuixBox(
+                LazyColumn(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .pointerInput(Unit) {
-                            detectTapGestures(onPress = {
-                                isDropdownExpanded = false
-                                currentExpandedDropdown.value = null
-                            })
+                        .padding(horizontal = 16.dp)
+                        .onGloballyPositioned { layoutCoordinates ->
+                            dropdownHeightPx = layoutCoordinates.size.height
+                            offsetPx = calculateOffsetPx(windowHeightPx, dropdownOffsetPx, dropdownHeightPx, componentHeight, navigationPx, insideHeightPx)
                         }
-                        .offset(y = offsetPx.dp / density.density)
+                        .align(if (alignLeft && !alwaysRight) AbsoluteAlignment.TopLeft else AbsoluteAlignment.TopRight)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(MiuixTheme.colorScheme.dropdownBackground)
                 ) {
-                    LazyColumn(
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                            .onGloballyPositioned { layoutCoordinates ->
-                                dropdownHeightPx = layoutCoordinates.size.height
-                                offsetPx = calculateOffsetPx(windowHeightPx, dropdownOffsetPx, dropdownHeightPx, componentHeight, navigationPx, insideHeightPx)
-                            }
-                            .align(if (alignLeft && !alwaysRight) AbsoluteAlignment.TopLeft else AbsoluteAlignment.TopRight)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(MiuixTheme.colorScheme.dropdownBackground)
-                    ) {
-                        item {
-                            options.forEachIndexed { index, option ->
-                                DropdownImpl(
-                                    option = option,
-                                    isSelected = selectedOption.value == option,
-                                    onOptionSelected = {
-                                        onOptionSelected(it)
-                                        isDropdownExpanded = false
-                                        currentExpandedDropdown.value = null
-                                    },
-                                    textWidthDp = textWidthDp,
-                                    index = index,
-                                    optionsSize = options.size,
-                                    ripple = createRipple(),
-                                )
-                            }
+                    item {
+                        options.forEachIndexed { index, option ->
+                            DropdownImpl(
+                                option = option,
+                                isSelected = selectedOption.value == option,
+                                onOptionSelected = {
+                                    onOptionSelected(it)
+                                    isDropdownExpanded = false
+                                    currentExpandedDropdown.value = null
+                                },
+                                textWidthDp = textWidthDp,
+                                index = index,
+                                optionsSize = options.size,
+                                ripple = createRipple(),
+                            )
                         }
                     }
                 }

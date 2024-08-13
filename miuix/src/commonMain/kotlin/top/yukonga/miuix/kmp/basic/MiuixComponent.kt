@@ -22,8 +22,7 @@ fun MiuixBasicComponent(
     title: String? = null,
     summary: String? = null,
     leftAction: @Composable (() -> Unit?)? = null,
-    rightActions: @Composable RowScope.() -> Unit = {},
-    content: @Composable (() -> Unit?)? = null
+    rightActions: @Composable RowScope.() -> Unit = {}
 ) {
     Row(
         modifier = modifier
@@ -65,8 +64,5 @@ fun MiuixBasicComponent(
                 content = rightActions
             )
         }
-    }
-    content?.let {
-        it()
     }
 }

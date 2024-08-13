@@ -3,12 +3,9 @@ package top.yukonga.miuix.kmp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,7 +33,6 @@ fun MiuixSuperDialog(
     content: @Composable () -> Unit
 ) {
     val density = LocalDensity.current
-    val navigationDp = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
     val bottomCornerRadius = if (getCornerRadiusBottom() != 0) {
         (getCornerRadiusBottom() / density.density).dp - 12.dp
     } else {
@@ -52,7 +48,7 @@ fun MiuixSuperDialog(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = insideMargin.width)
-                .padding(bottom = insideMargin.width + navigationDp)
+                .padding(bottom = insideMargin.height)
                 .pointerInput(Unit) {
                     detectTapGestures(onPress = {
                         onDismissRequest.invoke()
