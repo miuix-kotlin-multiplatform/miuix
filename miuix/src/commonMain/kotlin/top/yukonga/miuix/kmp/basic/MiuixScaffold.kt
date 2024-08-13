@@ -66,6 +66,7 @@ fun MiuixScaffold(
     topBar: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
     snackbarHost: @Composable () -> Unit = {},
+    dialogHost: @Composable () -> Unit = {},
     enableTopBarBlur: Boolean = true,
     alpha: Float = 0.75f,
     blurRadius: Dp = 25.dp,
@@ -114,6 +115,7 @@ fun MiuixScaffold(
                 }
             },
             snackbar = snackbarHost,
+            dialog = dialogHost,
             contentWindowInsets = safeInsets,
         )
     }
@@ -122,16 +124,22 @@ fun MiuixScaffold(
 @Composable
 private fun ScaffoldLayout(
     topBar: @Composable () -> Unit,
-    content: @Composable (PaddingValues) -> Unit,
     snackbar: @Composable () -> Unit,
+    bottomBar: @Composable () -> Unit,
+    dialog: @Composable () -> Unit,
+    content: @Composable (PaddingValues) -> Unit,
     contentWindowInsets: WindowInsets,
-    bottomBar: @Composable () -> Unit
 ) {
     SubcomposeLayout { constraints ->
         val layoutWidth = constraints.maxWidth
         val layoutHeight = constraints.maxHeight
 
         val looseConstraints = constraints.copy(minWidth = 0, minHeight = 0)
+
+        val dialogPlaceables =
+            subcompose(ScaffoldLayoutContent.Dialog, dialog).fastMap {
+                it.measure(looseConstraints)
+            }
 
         val topBarPlaceables =
             subcompose(ScaffoldLayoutContent.TopBar, topBar).fastMap {
@@ -199,7 +207,7 @@ private fun ScaffoldLayout(
 
         layout(layoutWidth, layoutHeight) {
             // Placing to control drawing order to match default elevation of each placeable
-
+            dialogPlaceables.fastForEach { it.place(0, 0) }
             bodyContentPlaceables.fastForEach { it.place(0, 0) }
             topBarPlaceables.fastForEach { it.place(0, 0) }
             snackbarPlaceables.fastForEach {
@@ -217,9 +225,10 @@ private fun ScaffoldLayout(
 
 private enum class ScaffoldLayoutContent {
     TopBar,
-    MainContent,
+    BottomBar,
     Snackbar,
-    BottomBar
+    Dialog,
+    MainContent
 }
 
 internal class MutableWindowInsets(initialInsets: WindowInsets = WindowInsets(0, 0, 0, 0)) :

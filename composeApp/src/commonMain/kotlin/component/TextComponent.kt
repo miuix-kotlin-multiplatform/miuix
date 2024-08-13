@@ -10,10 +10,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -26,10 +25,11 @@ import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
 import top.yukonga.miuix.kmp.basic.MiuixButton
 import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.MiuixDialogUtil
 
 @Composable
 fun TextComponent() {
-    var showDialog by remember { mutableStateOf(false) }
+    val showDialog = remember { mutableStateOf(false) }
     val dropdownOptions = listOf("Option 1", "Option 2", "Option 3", "Option 4")
     val dropdownSelectedOption = remember { mutableStateOf("Option 1") }
     val dropdownSelectedOptionRight = remember { mutableStateOf("Option 1") }
@@ -97,9 +97,12 @@ fun TextComponent() {
         summary = "Summary",
         rightText = "Right",
         onClick = {
-            showDialog = true
+            showDialog.value = true
+
         }
     )
+
+    dialog(showDialog)
 
     MiuixDropdown(
         title = "Dropdown",
@@ -118,28 +121,35 @@ fun TextComponent() {
         onOptionSelected = { newOption -> dropdownSelectedOptionRight.value = newOption },
     )
 
-    if (showDialog) {
-        MiuixSuperDialog(
-            title = "Dialog",
-            summary = "Summary",
-            onDismissRequest = { showDialog = false }
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween
+}
+
+@Composable
+fun dialog(showDialog: MutableState<Boolean>) {
+    MiuixDialogUtil.showDialog(
+        visible = showDialog,
+        content = {
+            MiuixSuperDialog(
+                title = "Dialog",
+                summary = "Summary",
+                onDismissRequest = { showDialog.value = false },
             ) {
-                MiuixButton(
-                    modifier = Modifier.weight(1f),
-                    text = "Cancel",
-                    onClick = { showDialog = false }
-                )
-                Spacer(Modifier.width(20.dp))
-                MiuixButton(
-                    modifier = Modifier.weight(1f),
-                    text = "Confirm",
-                    submit = true,
-                    onClick = { showDialog = false }
-                )
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    MiuixButton(
+                        modifier = Modifier.weight(1f),
+                        text = "Cancel",
+                        onClick = { showDialog.value = false }
+                    )
+                    Spacer(Modifier.width(20.dp))
+                    MiuixButton(
+                        modifier = Modifier.weight(1f),
+                        text = "Confirm",
+                        submit = true,
+                        onClick = { showDialog.value = false }
+                    )
+                }
             }
         }
-    }
+    )
 }

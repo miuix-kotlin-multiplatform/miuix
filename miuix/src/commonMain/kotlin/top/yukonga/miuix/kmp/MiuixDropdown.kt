@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -49,22 +48,18 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.DialogProperties
 import getWindowSize
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
 import top.yukonga.miuix.kmp.basic.MiuixBox
-import top.yukonga.miuix.kmp.basic.MiuixBasicDialog
 import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.miuix.generated.resources.Res
 import top.yukonga.miuix.kmp.miuix.generated.resources.ic_arrow_up_down
 import top.yukonga.miuix.kmp.miuix.generated.resources.ic_dropdown_select
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.MiuixDialogUtil
 import top.yukonga.miuix.kmp.utils.createRipple
-
-val textStyle = TextStyle(fontWeight = FontWeight.Medium, fontSize = 15.sp)
-val currentExpandedDropdown = mutableStateOf<String?>(null)
 
 @Composable
 fun MiuixDropdown(
@@ -79,9 +74,10 @@ fun MiuixDropdown(
 ) {
     val hapticFeedback = LocalHapticFeedback.current
     val density = LocalDensity.current
-    var isDropdownExpanded by remember { mutableStateOf(false) }
+    val isDropdownExpanded = remember { mutableStateOf(false) }
     var alignLeft by remember { mutableStateOf(true) }
     val textMeasurer = rememberTextMeasurer()
+    val textStyle = TextStyle(fontWeight = FontWeight.Medium, fontSize = 16.sp)
     val textWidthDp = remember(options) {
         options.maxOfOrNull { text ->
             with(density) { textMeasurer.measure(text = text, style = textStyle).size.width.toDp() }
@@ -95,7 +91,6 @@ fun MiuixDropdown(
     val interactionSource = remember { MutableInteractionSource() }
     val windowHeightPx = getWindowSize().height
     val statusBarPx = with(density) { WindowInsets.statusBars.asPaddingValues().calculateTopPadding().toPx() }.toInt()
-    val navigationPx = with(density) { WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().toPx() }.toInt()
     val insideHeightPx = with(density) { insideMargin.height.toPx() }.toInt()
 
     MiuixBasicComponent(
@@ -111,17 +106,14 @@ fun MiuixDropdown(
                         }
                     },
                     onTap = { offset ->
-                        if (currentExpandedDropdown.value == null) {
-                            isDropdownExpanded = true
-                            currentExpandedDropdown.value = title
-                            alignLeft = offset.x < (size.width / 2)
-                        }
+                        isDropdownExpanded.value = true
+                        alignLeft = offset.x < (size.width / 2)
                     }
                 )
             }
             .onGloballyPositioned { coordinates ->
                 val positionInWindow = coordinates.positionInWindow()
-                dropdownOffsetPx = positionInWindow.y.toInt() - statusBarPx
+                dropdownOffsetPx = positionInWindow.y.toInt()
                 componentHeight = coordinates.size.height
             },
         insideMargin = insideMargin,
@@ -146,22 +138,17 @@ fun MiuixDropdown(
         }
     )
 
-    if (isDropdownExpanded) {
-        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-        MiuixBasicDialog(
-            onDismissRequest = {
-                isDropdownExpanded = false
-                currentExpandedDropdown.value = null
-            },
-            properties = DialogProperties(usePlatformDefaultWidth = false)
-        ) {
+    if (isDropdownExpanded.value) hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+
+    MiuixDialogUtil.showPopup(
+        visible = isDropdownExpanded,
+        content = {
             MiuixBox(
                 modifier = Modifier
                     .fillMaxSize()
                     .pointerInput(Unit) {
                         detectTapGestures(onPress = {
-                            isDropdownExpanded = false
-                            currentExpandedDropdown.value = null
+                            isDropdownExpanded.value = false
                         })
                     }
                     .offset(y = offsetPx.dp / density.density)
@@ -171,7 +158,7 @@ fun MiuixDropdown(
                         .padding(horizontal = 16.dp)
                         .onGloballyPositioned { layoutCoordinates ->
                             dropdownHeightPx = layoutCoordinates.size.height
-                            offsetPx = calculateOffsetPx(windowHeightPx, dropdownOffsetPx, dropdownHeightPx, componentHeight, navigationPx, insideHeightPx)
+                            offsetPx = calculateOffsetPx(windowHeightPx, dropdownOffsetPx, dropdownHeightPx, componentHeight, insideHeightPx, statusBarPx)
                         }
                         .align(if (alignLeft && !alwaysRight) AbsoluteAlignment.TopLeft else AbsoluteAlignment.TopRight)
                         .clip(RoundedCornerShape(16.dp))
@@ -184,8 +171,7 @@ fun MiuixDropdown(
                                 isSelected = selectedOption.value == option,
                                 onOptionSelected = {
                                     onOptionSelected(it)
-                                    isDropdownExpanded = false
-                                    currentExpandedDropdown.value = null
+                                    isDropdownExpanded.value = false
                                 },
                                 textWidthDp = textWidthDp,
                                 index = index,
@@ -197,7 +183,7 @@ fun MiuixDropdown(
                 }
             }
         }
-    }
+    )
 }
 
 @Composable
@@ -263,13 +249,13 @@ fun calculateOffsetPx(
     dropdownOffsetPx: Int,
     dropdownHeightPx: Int,
     componentHeight: Int,
-    navigationPx: Int,
-    insideHeightPx: Int
+    insideHeightPx: Int,
+    statusBarPx: Int
 ): Int {
-    return if (windowHeightPx - dropdownOffsetPx - navigationPx - insideHeightPx - componentHeight < dropdownHeightPx / 2) {
-        windowHeightPx - dropdownHeightPx - navigationPx - insideHeightPx - componentHeight
+    return if (windowHeightPx - dropdownOffsetPx - insideHeightPx - componentHeight < dropdownHeightPx / 2) {
+        windowHeightPx - dropdownHeightPx - insideHeightPx - componentHeight
     } else {
         val offset = dropdownOffsetPx - dropdownHeightPx / 2 + componentHeight / 2
-        if (offset > insideHeightPx) offset else insideHeightPx
+        if (offset > insideHeightPx + statusBarPx) offset else insideHeightPx + statusBarPx
     }
 }
