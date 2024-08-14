@@ -31,6 +31,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -71,8 +72,10 @@ fun MiuixTopAppBar(
     scrollBehavior: MiuixScrollBehavior? = null,
     defaultWindowInsetsPadding: Boolean = true,
 ) {
-
-    val expandedHeightPx = with(LocalDensity.current) { TopAppBarExpandedHeight.toPx().coerceAtLeast(0f) }
+    val density = LocalDensity.current
+    val expandedHeightPx by rememberUpdatedState(
+        with(density) { TopAppBarExpandedHeight.toPx().coerceAtLeast(0f) }
+    )
     SideEffect {
         // Sets the app bar's height offset to collapse the entire bar's height when content is
         // scrolled.

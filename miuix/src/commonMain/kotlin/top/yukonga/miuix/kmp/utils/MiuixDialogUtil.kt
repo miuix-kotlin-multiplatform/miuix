@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,8 +35,10 @@ class MiuixDialogUtil {
             visible: MutableState<Boolean>,
             content: (@Composable () -> Unit)? = null,
         ) {
-            isDialogVisible = visible.value
-            dialogContext = content
+            val updatedVisible by rememberUpdatedState(visible.value)
+            val updatedContent by rememberUpdatedState(content)
+            isDialogVisible = updatedVisible
+            dialogContext = updatedContent
         }
 
         @Composable
@@ -43,8 +46,10 @@ class MiuixDialogUtil {
             visible: MutableState<Boolean>,
             content: (@Composable () -> Unit)? = null,
         ) {
-            isPopupVisible = visible.value
-            popupContext = content
+            val updatedVisible by rememberUpdatedState(visible.value)
+            val updatedContent by rememberUpdatedState(content)
+            isPopupVisible = updatedVisible
+            popupContext = updatedContent
         }
 
         @Composable
@@ -86,5 +91,3 @@ class MiuixDialogUtil {
         }
     }
 }
-
-

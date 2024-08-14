@@ -28,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
@@ -92,11 +93,19 @@ fun MiuixSuperDropdown(
     var dropdownOffsetPx by remember { mutableStateOf(0) }
     var componentHeightPx by remember { mutableStateOf(0) }
     var offsetPx by remember { mutableStateOf(0) }
-    val windowHeightPx = getWindowSize().height
-    val statusBarPx = with(density) { WindowInsets.statusBars.asPaddingValues().calculateTopPadding().toPx() }.roundToInt()
-    val navigationBarPx = with(density) { WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
-    val captionBarPx = with(density) { WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
-    val insideHeightPx = with(density) { insideMargin.height.toPx() }.roundToInt()
+    val windowHeightPx by rememberUpdatedState(getWindowSize().height)
+    val statusBarPx by rememberUpdatedState(
+        with(density) { WindowInsets.statusBars.asPaddingValues().calculateTopPadding().toPx() }.roundToInt()
+    )
+    val navigationBarPx by rememberUpdatedState(
+        with(density) { WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
+    )
+    val captionBarPx by rememberUpdatedState(
+        with(density) { WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
+    )
+    val insideHeightPx by rememberUpdatedState(
+        with(density) { insideMargin.height.toPx() }.roundToInt()
+    )
 
     MiuixBasicComponent(
         modifier = modifier

@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,7 +48,9 @@ fun MiuixNavigationBar(
     defaultWindowInsetsPadding: Boolean = true,
 ) {
     require(items.size in 2..5) { "BottomBar must have between 2 and 5 items" }
-    val captionBarBottomPadding = WindowInsets.captionBar.only(WindowInsetsSides.Bottom).asPaddingValues().calculateBottomPadding()
+    val captionBarBottomPadding by rememberUpdatedState(
+        WindowInsets.captionBar.only(WindowInsetsSides.Bottom).asPaddingValues().calculateBottomPadding()
+    )
     val animatedCaptionBarHeight: Dp by animateDpAsState(
         targetValue = if (captionBarBottomPadding > 0.dp) captionBarBottomPadding else 0.dp,
         animationSpec = tween(durationMillis = 300)
