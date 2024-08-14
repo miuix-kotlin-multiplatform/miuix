@@ -62,6 +62,7 @@ import top.yukonga.miuix.kmp.miuix.generated.resources.ic_dropdown_select
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixDialogUtil
 import top.yukonga.miuix.kmp.utils.createRipple
+import kotlin.math.roundToInt
 
 @Composable
 fun MiuixSuperDropdown(
@@ -76,6 +77,8 @@ fun MiuixSuperDropdown(
 ) {
     val hapticFeedback = LocalHapticFeedback.current
     val density = LocalDensity.current
+    val coroutineScope = rememberCoroutineScope()
+    val interactionSource = remember { MutableInteractionSource() }
     val isDropdownExpanded = remember { mutableStateOf(false) }
     var alignLeft by remember { mutableStateOf(true) }
     val textMeasurer = rememberTextMeasurer()
@@ -87,15 +90,13 @@ fun MiuixSuperDropdown(
     }
     var dropdownHeightPx by remember { mutableStateOf(0) }
     var dropdownOffsetPx by remember { mutableStateOf(0) }
-    var componentHeight by remember { mutableStateOf(0) }
+    var componentHeightPx by remember { mutableStateOf(0) }
     var offsetPx by remember { mutableStateOf(0) }
-    val coroutineScope = rememberCoroutineScope()
-    val interactionSource = remember { MutableInteractionSource() }
     val windowHeightPx = getWindowSize().height
-    val statusBarPx = with(density) { WindowInsets.statusBars.asPaddingValues().calculateTopPadding().toPx() }.toInt()
-    val navigationBarPx = with(density) { WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().toPx() }.toInt()
-    val captionBarPx = with(density) { WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().toPx() }.toInt()
-    val insideHeightPx = with(density) { insideMargin.height.toPx() }.toInt()
+    val statusBarPx = with(density) { WindowInsets.statusBars.asPaddingValues().calculateTopPadding().toPx() }.roundToInt()
+    val navigationBarPx = with(density) { WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
+    val captionBarPx = with(density) { WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
+    val insideHeightPx = with(density) { insideMargin.height.toPx() }.roundToInt()
 
     MiuixBasicComponent(
         modifier = modifier
@@ -118,7 +119,7 @@ fun MiuixSuperDropdown(
             .onGloballyPositioned { coordinates ->
                 val positionInWindow = coordinates.positionInWindow()
                 dropdownOffsetPx = positionInWindow.y.toInt()
-                componentHeight = coordinates.size.height
+                componentHeightPx = coordinates.size.height
             },
         insideMargin = insideMargin,
         title = title,
@@ -164,7 +165,7 @@ fun MiuixSuperDropdown(
                         .onGloballyPositioned { layoutCoordinates ->
                             dropdownHeightPx = layoutCoordinates.size.height
                             offsetPx = calculateOffsetPx(
-                                windowHeightPx, dropdownOffsetPx, dropdownHeightPx, componentHeight,
+                                windowHeightPx, dropdownOffsetPx, dropdownHeightPx, componentHeightPx,
                                 insideHeightPx, statusBarPx, navigationBarPx, captionBarPx
                             )
                         }

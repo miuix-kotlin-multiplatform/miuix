@@ -53,6 +53,7 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.window)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
