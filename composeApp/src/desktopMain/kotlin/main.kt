@@ -16,7 +16,7 @@ fun main() = application {
         onCloseRequest = ::exitApplication,
         title = "Miuix",
     ) {
-        WindowSizeProvider.init(state)
+        WindowSizeProvider.init(window)
         App()
     }
 }
