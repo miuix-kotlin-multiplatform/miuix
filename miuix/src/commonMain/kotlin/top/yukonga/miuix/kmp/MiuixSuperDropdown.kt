@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.captionBar
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -89,8 +91,10 @@ fun MiuixSuperDropdown(
     var offsetPx by remember { mutableStateOf(0) }
     val coroutineScope = rememberCoroutineScope()
     val interactionSource = remember { MutableInteractionSource() }
-    val windowHeightPx = (getWindowSize().height * density.density).toInt()
+    val windowHeightPx = getWindowSize().height
     val statusBarPx = with(density) { WindowInsets.statusBars.asPaddingValues().calculateTopPadding().toPx() }.toInt()
+    val navigationBarPx = with(density) { WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().toPx() }.toInt()
+    val captionBarPx = with(density) { WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().toPx() }.toInt()
     val insideHeightPx = with(density) { insideMargin.height.toPx() }.toInt()
 
     MiuixBasicComponent(
@@ -159,7 +163,10 @@ fun MiuixSuperDropdown(
                         .padding(horizontal = 16.dp)
                         .onGloballyPositioned { layoutCoordinates ->
                             dropdownHeightPx = layoutCoordinates.size.height
-                            offsetPx = calculateOffsetPx(windowHeightPx, dropdownOffsetPx, dropdownHeightPx, componentHeight, insideHeightPx, statusBarPx)
+                            offsetPx = calculateOffsetPx(
+                                windowHeightPx, dropdownOffsetPx, dropdownHeightPx, componentHeight,
+                                insideHeightPx, statusBarPx, navigationBarPx, captionBarPx
+                            )
                         }
                         .align(if (alignLeft && !alwaysRight) AbsoluteAlignment.TopLeft else AbsoluteAlignment.TopRight)
                         .clip(RoundedCornerShape(16.dp))
@@ -251,10 +258,12 @@ fun calculateOffsetPx(
     dropdownHeightPx: Int,
     componentHeight: Int,
     insideHeightPx: Int,
-    statusBarPx: Int
+    statusBarPx: Int,
+    navigationBarPx: Int,
+    captionBarPx: Int
 ): Int {
-    return if (windowHeightPx - dropdownOffsetPx - insideHeightPx - componentHeight < dropdownHeightPx / 2) {
-        windowHeightPx - dropdownHeightPx - insideHeightPx - componentHeight
+    return if (windowHeightPx - dropdownOffsetPx < dropdownHeightPx / 2 + captionBarPx + navigationBarPx + insideHeightPx + componentHeight / 2) {
+        windowHeightPx - dropdownHeightPx - insideHeightPx - captionBarPx - navigationBarPx
     } else {
         val offset = dropdownOffsetPx - dropdownHeightPx / 2 + componentHeight / 2
         if (offset > insideHeightPx + statusBarPx) offset else insideHeightPx + statusBarPx

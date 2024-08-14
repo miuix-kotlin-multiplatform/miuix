@@ -102,7 +102,7 @@ fun TextComponent() {
 
     MiuixSuperArrow(
         title = "Dialog",
-        summary = "Click to display Dialog",
+        summary = "Click to show Dialog",
         onClick = {
             showDialog.value = true
         }

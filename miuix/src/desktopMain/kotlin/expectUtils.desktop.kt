@@ -1,4 +1,5 @@
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.window.WindowState
 
 object WindowSizeProvider {
@@ -15,5 +16,8 @@ object WindowSizeProvider {
 
 @Composable
 actual fun getWindowSize(): WindowSize {
-    return WindowSizeProvider.getWindowSize()
+    val density = LocalDensity.current.density
+    val height = (WindowSizeProvider.getWindowSize().height / density).toInt()
+    val width = (WindowSizeProvider.getWindowSize().width / density).toInt()
+    return WindowSize(width, height)
 }

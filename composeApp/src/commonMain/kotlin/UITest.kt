@@ -1,16 +1,11 @@
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,10 +37,13 @@ fun UITest() {
     val topAppBarScrollBehavior0 = MiuixScrollBehavior(rememberMiuixTopAppBarState())
     val topAppBarScrollBehavior1 = MiuixScrollBehavior(rememberMiuixTopAppBarState())
     val topAppBarScrollBehavior2 = MiuixScrollBehavior(rememberMiuixTopAppBarState())
+    val topAppBarScrollBehavior3 = MiuixScrollBehavior(rememberMiuixTopAppBarState())
 
-    val topAppBarScrollBehaviorList = listOf(topAppBarScrollBehavior0, topAppBarScrollBehavior1, topAppBarScrollBehavior2)
+    val topAppBarScrollBehaviorList = listOf(
+        topAppBarScrollBehavior0, topAppBarScrollBehavior1, topAppBarScrollBehavior2, topAppBarScrollBehavior3
+    )
 
-    val pagerState = rememberPagerState(pageCount = { 3 })
+    val pagerState = rememberPagerState(pageCount = { 4 })
     var targetPage by remember { mutableStateOf(pagerState.currentPage) }
     val coroutineScope = rememberCoroutineScope()
 
@@ -53,13 +51,15 @@ fun UITest() {
         0 -> topAppBarScrollBehaviorList[0]
         1 -> topAppBarScrollBehaviorList[1]
         2 -> topAppBarScrollBehaviorList[2]
+        3 -> topAppBarScrollBehaviorList[3]
         else -> throw IllegalStateException("Unsupported page")
     }
 
     val items = listOf(
         NavigationItem("Main", Icons.Default.Phone),
         NavigationItem("Second", Icons.Default.Email),
-        NavigationItem("Third", Icons.Default.Settings)
+        NavigationItem("Third", Icons.Default.Place),
+        NavigationItem("Fourth", Icons.Default.Settings)
     )
 
     LaunchedEffect(pagerState) {
@@ -113,12 +113,12 @@ fun AppHorizontalPager(
     MiuixHorizontalPager(
         modifier = modifier,
         pagerState = pagerState,
-        beyondViewportPageCount = 2,
         pageContent = { page ->
             when (page) {
                 0 -> MainPage(topAppBarScrollBehaviorList[0], padding)
                 1 -> SecondPage(topAppBarScrollBehaviorList[1], padding)
-                else -> ThirdPage(topAppBarScrollBehaviorList[2], padding)
+                2 -> ThirdPage(topAppBarScrollBehaviorList[2], padding)
+                else -> FourthPage(topAppBarScrollBehaviorList[3], padding)
             }
         }
     )
