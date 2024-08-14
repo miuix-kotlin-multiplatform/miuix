@@ -23,8 +23,8 @@ fun SecondComponent() {
     var switchTrue by remember { mutableStateOf(true) }
     var buttonText by remember { mutableStateOf("Button") }
     var submitButtonText by remember { mutableStateOf("Submit") }
-    var textWithSwitch by remember { mutableStateOf("State: true") }
-    var textWishSwitchTrue by remember { mutableStateOf(true) }
+    var textWithSwitch by remember { mutableStateOf("State: false") }
+    var textWishSwitchState by remember { mutableStateOf(false) }
     var clickCount by remember { mutableStateOf(0) }
     var submitClickCount by remember { mutableStateOf(0) }
 
@@ -35,19 +35,13 @@ fun SecondComponent() {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         MiuixSwitch(
-            checked = switchTrue,
-            onCheckedChange = { switchTrue = it }
-        )
-        MiuixSwitch(
-            modifier = Modifier.padding(start = 8.dp),
             checked = switch,
             onCheckedChange = { switch = it }
         )
         MiuixSwitch(
             modifier = Modifier.padding(start = 8.dp),
-            enabled = false,
-            checked = true,
-            onCheckedChange = { }
+            checked = switchTrue,
+            onCheckedChange = { switchTrue = it }
         )
         MiuixSwitch(
             modifier = Modifier.padding(start = 8.dp),
@@ -55,14 +49,20 @@ fun SecondComponent() {
             checked = false,
             onCheckedChange = { }
         )
+        MiuixSwitch(
+            modifier = Modifier.padding(start = 8.dp),
+            enabled = false,
+            checked = true,
+            onCheckedChange = { }
+        )
     }
 
     MiuixSuperSwitch(
         title = "Switch",
         summary = textWithSwitch,
-        checked = textWishSwitchTrue,
+        checked = textWishSwitchState,
         onCheckedChange = {
-            textWishSwitchTrue = it
+            textWishSwitchState = it
             textWithSwitch = "State: $it"
         },
     )

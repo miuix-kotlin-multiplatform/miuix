@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.onConsumedWindowInsetsChanged
-import androidx.compose.material3.ScaffoldDefaults
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -72,7 +72,7 @@ fun MiuixScaffold(
     blurRadius: Dp = 25.dp,
     noiseFactor: Float = 0f,
     containerColor: Color = MiuixTheme.colorScheme.background,
-    contentWindowInsets: WindowInsets = ScaffoldDefaults.contentWindowInsets,
+    contentWindowInsets: WindowInsets = WindowInsets.statusBars,
     content: @Composable (PaddingValues) -> Unit
 ) {
     val safeInsets = remember(contentWindowInsets) { MutableWindowInsets(contentWindowInsets) }

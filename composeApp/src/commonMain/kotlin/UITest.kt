@@ -3,6 +3,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.PagerState
@@ -93,10 +94,6 @@ fun UITest() {
             dialogHost = { MiuixDialogHost() }
         ) { padding ->
             AppHorizontalPager(
-                modifier = Modifier
-                    .windowInsetsPadding(
-                        WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal)
-                    ),
                 pagerState = pagerState,
                 topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
                 padding = padding

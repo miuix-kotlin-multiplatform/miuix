@@ -17,9 +17,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.captionBar
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
@@ -66,7 +68,8 @@ fun MiuixTopAppBar(
     title: String,
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
-    scrollBehavior: MiuixScrollBehavior? = null
+    scrollBehavior: MiuixScrollBehavior? = null,
+    defaultWindowInsetsPadding: Boolean = true,
 ) {
 
     val expandedHeightPx = with(LocalDensity.current) { TopAppBarExpandedHeight.toPx().coerceAtLeast(0f) }
@@ -94,10 +97,16 @@ fun MiuixTopAppBar(
     // app bar's defined constant height value (i.e. the ContainerHeight token).
     MiuixSurface(
         color = color,
-        modifier = modifier
+        modifier = if (defaultWindowInsetsPadding) {
+            modifier
+                .windowInsetsPadding(WindowInsets.statusBars)
+                .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
+                .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal))
+                .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
+        } else {
+            modifier
+        }
             .background(color)
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
             .pointerInput(Unit) {
                 detectVerticalDragGestures { _, _ -> }
             }
@@ -463,7 +472,7 @@ private fun MiuixTopAppBarLayout(
     val extOffset = abs(scrolledOffset.offset()) / expandedHeightPx * 2
     val alpha by animateFloatAsState(
         targetValue = if (1 - extOffset.coerceIn(0f, 1f) == 0f) 1f else 0f,
-        animationSpec = tween(durationMillis = 150)
+        animationSpec = tween(durationMillis = 250)
     )
     val translationY by animateFloatAsState(
         targetValue = if (extOffset > 1f) 0f else 10f,

@@ -1,13 +1,20 @@
 package top.yukonga.miuix.kmp
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.captionBar
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.HorizontalDivider
@@ -23,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.MiuixSurface
@@ -35,16 +43,24 @@ fun MiuixNavigationBar(
     selected: Int,
     modifier: Modifier = Modifier,
     color: Color = MiuixTheme.colorScheme.background,
-    onClick: (Int) -> Unit
+    onClick: (Int) -> Unit,
+    defaultWindowInsetsPadding: Boolean = true,
 ) {
     require(items.size in 2..5) { "BottomBar must have between 2 and 5 items" }
-    MiuixSurface(
-        modifier = modifier,
-        color = color
-    ) {
+    val captionBarBottomPadding = WindowInsets.captionBar.only(WindowInsetsSides.Bottom).asPaddingValues().calculateBottomPadding()
+    val animatedCaptionBarHeight: Dp by animateDpAsState(
+        targetValue = if (captionBarBottomPadding > 0.dp) captionBarBottomPadding else 0.dp,
+        animationSpec = tween(durationMillis = 300)
+    )
+    MiuixSurface(color = color) {
         Column(
-            modifier = Modifier
-                .navigationBarsPadding()
+            modifier = if (defaultWindowInsetsPadding) {
+                modifier
+                    .navigationBarsPadding()
+                    .padding(bottom = animatedCaptionBarHeight)
+            } else {
+                modifier
+            }
                 .fillMaxWidth()
                 .background(Color.Transparent)
         ) {
