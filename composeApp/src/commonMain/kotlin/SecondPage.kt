@@ -10,6 +10,7 @@ import top.yukonga.miuix.kmp.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.MiuixSuperArrow
 import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.utils.overScrollVertical
+import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
 
 @Composable
 fun SecondPage(
@@ -20,14 +21,11 @@ fun SecondPage(
 
     LazyColumn(
         state = scrollLazyColumnState,
+        flingBehavior = rememberOverscrollFlingBehavior { scrollLazyColumnState },
         contentPadding = PaddingValues(top = padding.calculateTopPadding()),
         modifier = Modifier
+            .overScrollVertical(onOverscroll = { topAppBarScrollBehavior.isPinned = it })
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
-            .overScrollVertical(
-                onOverscroll = {
-                    topAppBarScrollBehavior.isPinned = it
-                }
-            )
     ) {
         items(200) {
             MiuixSuperArrow(

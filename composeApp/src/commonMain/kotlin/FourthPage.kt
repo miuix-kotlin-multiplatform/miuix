@@ -10,6 +10,7 @@ import component.OtherComponent
 import component.SecondComponent
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.utils.overScrollVertical
+import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
 
 @Composable
 fun FourthPage(
@@ -20,14 +21,11 @@ fun FourthPage(
 
     LazyColumn(
         state = scrollLazyColumnState,
+        flingBehavior = rememberOverscrollFlingBehavior { scrollLazyColumnState },
         contentPadding = PaddingValues(top = padding.calculateTopPadding()),
         modifier = Modifier
+            .overScrollVertical(onOverscroll = { topAppBarScrollBehavior.isPinned = it })
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
-            .overScrollVertical(
-                onOverscroll = {
-                    topAppBarScrollBehavior.isPinned = it
-                }
-            )
     ) {
         items(20) {
             SecondComponent()

@@ -11,6 +11,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.MiuixSuperDropdown
 import top.yukonga.miuix.kmp.utils.overScrollVertical
+import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
 
 @Composable
 fun ThirdPage(
@@ -23,14 +24,11 @@ fun ThirdPage(
 
     LazyColumn(
         state = scrollLazyColumnState,
+        flingBehavior = rememberOverscrollFlingBehavior { scrollLazyColumnState },
         contentPadding = PaddingValues(top = padding.calculateTopPadding()),
         modifier = Modifier
+            .overScrollVertical(onOverscroll = { topAppBarScrollBehavior.isPinned = it })
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
-            .overScrollVertical(
-                onOverscroll = {
-                    topAppBarScrollBehavior.isPinned = it
-                }
-            )
     ) {
         items(100) {
             MiuixSuperDropdown(

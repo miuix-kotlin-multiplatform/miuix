@@ -1,5 +1,6 @@
 package top.yukonga.miuix.kmp.basic
 
+import androidx.compose.foundation.gestures.TargetedFlingBehavior
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.displayCutout
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,7 +20,8 @@ fun MiuixHorizontalPager(
     pagerState: PagerState,
     beyondViewportPageCount: Int = 1,
     defaultWindowInsetsPadding: Boolean = true,
-    pageContent: @Composable (pageIndex: Int) -> Unit
+    pageContent: @Composable (pageIndex: Int) -> Unit,
+    flingBehavior: TargetedFlingBehavior = PagerDefaults.flingBehavior(state = pagerState),
 ) {
     HorizontalPager(
         modifier =
@@ -32,6 +35,7 @@ fun MiuixHorizontalPager(
         state = pagerState,
         beyondViewportPageCount = beyondViewportPageCount,
         verticalAlignment = Alignment.Top,
-        pageContent = { pageContent(it) }
+        pageContent = { pageContent(it) },
+        flingBehavior = flingBehavior
     )
 }

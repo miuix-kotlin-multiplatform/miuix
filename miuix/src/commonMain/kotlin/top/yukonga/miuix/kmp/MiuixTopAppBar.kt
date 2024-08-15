@@ -31,6 +31,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.listSaver
@@ -149,12 +150,14 @@ fun MiuixScrollBehavior(
     snapAnimationSpec: AnimationSpec<Float>? = spring(stiffness = Spring.StiffnessMediumLow),
     flingAnimationSpec: DecayAnimationSpec<Float>? = rememberSplineBasedDecay()
 ): MiuixScrollBehavior =
-    ExitUntilCollapsedScrollBehavior(
-        state = state,
-        snapAnimationSpec = snapAnimationSpec,
-        flingAnimationSpec = flingAnimationSpec,
-        canScroll = canScroll
-    )
+    remember(state, canScroll, snapAnimationSpec, flingAnimationSpec) {
+        ExitUntilCollapsedScrollBehavior(
+            state = state,
+            snapAnimationSpec = snapAnimationSpec,
+            flingAnimationSpec = flingAnimationSpec,
+            canScroll = canScroll
+        )
+    }
 
 /** The default expanded height of a [MiuixTopAppBar]. */
 val TopAppBarExpandedHeight: Dp = 48.dp
@@ -196,7 +199,6 @@ class TopAppBarState(
     initialHeightOffset: Float,
     initialContentOffset: Float
 ) {
-
     /**
      * The top app bar's height offset limit in pixels, which represents the limit that a top app
      * bar is allowed to collapse to.
@@ -254,10 +256,11 @@ class TopAppBarState(
     private val overlappedFraction: Float
         get() =
             if (heightOffsetLimit != 0f) {
-                1 - ((heightOffsetLimit - contentOffset).coerceIn(
-                    minimumValue = heightOffsetLimit,
-                    maximumValue = 0f
-                ) / heightOffsetLimit)
+                1 -
+                        ((heightOffsetLimit - contentOffset).coerceIn(
+                            minimumValue = heightOffsetLimit,
+                            maximumValue = 0f
+                        ) / heightOffsetLimit)
             } else {
                 0f
             }
@@ -368,7 +371,7 @@ private class ExitUntilCollapsedScrollBehavior(
                 if (available.y < 0f || consumed.y < 0f) {
                     // When scrolling up, just update the state's height offset.
                     val oldHeightOffset = state.heightOffset
-                    state.heightOffset += available.y
+                    state.heightOffset += consumed.y
                     return Offset(0f, state.heightOffset - oldHeightOffset)
                 }
 
@@ -390,9 +393,8 @@ private class ExitUntilCollapsedScrollBehavior(
 
             override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
                 val superConsumed = super.onPostFling(consumed, available)
-                return superConsumed + settleAppBar(
-                    state, available.y, flingAnimationSpec, snapAnimationSpec
-                )
+                return superConsumed +
+                        settleAppBar(state, available.y, flingAnimationSpec, snapAnimationSpec)
             }
         }
 }
@@ -417,15 +419,16 @@ private suspend fun settleAppBar(
         AnimationState(
             initialValue = 0f,
             initialVelocity = velocity,
-        ).animateDecay(flingAnimationSpec) {
-            val delta = value - lastValue
-            val initialHeightOffset = state.heightOffset
-            state.heightOffset = initialHeightOffset + delta
-            val consumed = abs(initialHeightOffset - state.heightOffset)
-            lastValue = value
-            // avoid rounding errors and stop if anything is unconsumed
-            if (abs(delta - consumed) > 0.5f) this.cancelAnimation()
-        }
+        )
+            .animateDecay(flingAnimationSpec) {
+                val delta = value - lastValue
+                val initialHeightOffset = state.heightOffset
+                state.heightOffset = initialHeightOffset + delta
+                val consumed = abs(initialHeightOffset - state.heightOffset)
+                lastValue = value
+                // avoid rounding errors and stop if anything is unconsumed
+                if (abs(delta - consumed) > 0.5f) this.cancelAnimation()
+            }
     }
     // Snap if animation specs were provided.
     if (snapAnimationSpec != null) {
@@ -442,6 +445,7 @@ private suspend fun settleAppBar(
             }
         }
     }
+
     return Velocity.Zero
 }
 

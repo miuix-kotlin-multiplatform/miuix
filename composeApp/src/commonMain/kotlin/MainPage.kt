@@ -9,6 +9,7 @@ import component.SecondComponent
 import component.TextComponent
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.utils.overScrollVertical
+import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
 
 @Composable
 fun MainPage(
@@ -19,14 +20,11 @@ fun MainPage(
 
     LazyColumn(
         state = scrollLazyColumnState,
+        flingBehavior = rememberOverscrollFlingBehavior { scrollLazyColumnState },
         contentPadding = PaddingValues(top = padding.calculateTopPadding()),
         modifier = Modifier
+            .overScrollVertical(onOverscroll = { topAppBarScrollBehavior.isPinned = it })
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
-            .overScrollVertical(
-                onOverscroll = {
-                    topAppBarScrollBehavior.isPinned = it
-                }
-            )
     ) {
         item {
             TextComponent()
