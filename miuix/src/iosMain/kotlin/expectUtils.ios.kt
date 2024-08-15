@@ -13,3 +13,6 @@ actual fun getWindowSize(): WindowSize {
     val height = screenBounds.useContents { size.height } * density
     return WindowSize(width.toInt(), height.toInt())
 }
+
+@Composable
+actual fun platform(): String = "iOS"

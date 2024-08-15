@@ -28,3 +28,6 @@ actual fun getWindowSize(): WindowSize {
         height = (windowSize.height * density).toInt()
     )
 }
+
+@Composable
+actual fun platform(): String  = "Desktop"

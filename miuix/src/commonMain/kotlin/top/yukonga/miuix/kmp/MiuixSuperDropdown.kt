@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.sp
 import getWindowSize
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
+import platform
 import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
 import top.yukonga.miuix.kmp.basic.MiuixBox
 import top.yukonga.miuix.kmp.basic.MiuixText
@@ -64,6 +65,9 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixDialogUtil
 import top.yukonga.miuix.kmp.utils.createRipple
 import kotlin.math.roundToInt
+
+
+expect fun modifierPlatform(isHovered: MutableState<Boolean>): Modifier
 
 @Composable
 fun MiuixSuperDropdown(
@@ -89,6 +93,7 @@ fun MiuixSuperDropdown(
             with(density) { textMeasurer.measure(text = text, style = textStyle).size.width.toDp() }
         }
     }
+    val isHovered = remember { mutableStateOf(false) }
     var dropdownHeightPx by remember { mutableStateOf(0) }
     var dropdownOffsetPx by remember { mutableStateOf(0) }
     var componentHeightPx by remember { mutableStateOf(0) }
@@ -108,7 +113,12 @@ fun MiuixSuperDropdown(
     )
 
     MiuixBasicComponent(
-        modifier = modifier
+        modifier = if (platform() == "Desktop") {
+            modifierPlatform(isHovered = isHovered)
+        } else {
+            modifier
+        }
+            .background(if (isHovered.value) MiuixTheme.colorScheme.onBackground.copy(0.08f) else Color.Transparent)
             .indication(interactionSource, createRipple())
             .pointerInput(Unit) {
                 detectTapGestures(
