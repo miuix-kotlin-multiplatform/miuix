@@ -22,14 +22,18 @@ import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
+expect fun getRoundedCorner(): Dp
+
+@Composable
 fun MiuixSuperDialog(
     title: String? = null,
     summary: String? = null,
     onDismissRequest: () -> Unit,
     insideMargin: DpSize = DpSize(14.dp, 14.dp),
-    bottomCornerRadius: Dp = 32.dp,
     content: @Composable () -> Unit
 ) {
+    val bottomCornerRadius = if (getRoundedCorner() != 0.dp) getRoundedCorner() - insideMargin.width else 30.dp
+
     MiuixBox(
         contentAlignment = Alignment.BottomCenter,
         modifier = Modifier
