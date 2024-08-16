@@ -76,6 +76,7 @@ fun MiuixScaffold(
     snackbarHost: @Composable () -> Unit = {},
     dialogHost: @Composable () -> Unit = {},
     enableTopBarBlur: Boolean = true,
+    enableBottomBarBlur: Boolean = true,
     alpha: Float = 0.75f,
     blurRadius: Dp = 25.dp,
     noiseFactor: Float = 0f,
@@ -104,7 +105,11 @@ fun MiuixScaffold(
                 }
             },
             bottomBar = {
-                MiuixBox(Modifier.hazeChild(hazeState)) {
+                if (enableBottomBarBlur) {
+                    MiuixBox(Modifier.hazeChild(hazeState)) {
+                        bottomBar()
+                    }
+                } else {
                     bottomBar()
                 }
             },

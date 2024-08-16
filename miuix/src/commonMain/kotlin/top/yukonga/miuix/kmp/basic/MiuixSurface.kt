@@ -36,18 +36,16 @@ fun MiuixSurface(
     border: BorderStroke? = null,
     content: @Composable () -> Unit
 ) {
-    CompositionLocalProvider {
-        MiuixBox(
-            modifier = modifier
-                .background(color = color, shape = shape)
-                .border(
-                    border = border ?: BorderStroke(0.dp, Color.Transparent),
-                    shape = shape
-                ),
-            propagateMinConstraints = true
-        ) {
-            content()
-        }
+    MiuixBox(
+        modifier = modifier
+            .background(color = color, shape = shape)
+            .border(
+                border = border ?: BorderStroke(0.dp, Color.Transparent),
+                shape = shape
+            ),
+        propagateMinConstraints = true
+    ) {
+        content()
     }
 }
 

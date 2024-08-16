@@ -14,7 +14,8 @@ import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
 @Composable
 fun MainPage(
     topAppBarScrollBehavior: MiuixScrollBehavior,
-    padding: PaddingValues
+    padding: PaddingValues,
+    enableOverScroll: Boolean
 ) {
     val scrollLazyColumnState = rememberLazyListState()
 
@@ -22,8 +23,12 @@ fun MainPage(
         state = scrollLazyColumnState,
         flingBehavior = rememberOverscrollFlingBehavior { scrollLazyColumnState },
         contentPadding = PaddingValues(top = padding.calculateTopPadding()),
-        modifier = Modifier
-            .overScrollVertical(onOverscroll = { topAppBarScrollBehavior.isPinned = it })
+        modifier = if (enableOverScroll) {
+            Modifier
+                .overScrollVertical(onOverscroll = { topAppBarScrollBehavior.isPinned = it })
+        } else {
+            Modifier
+        }
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
     ) {
         item {

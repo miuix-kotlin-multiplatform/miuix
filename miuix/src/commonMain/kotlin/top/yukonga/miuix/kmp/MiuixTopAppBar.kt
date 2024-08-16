@@ -10,7 +10,6 @@ import androidx.compose.animation.core.animateTo
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.rememberSplineBasedDecay
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -37,6 +36,7 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -87,6 +87,7 @@ fun MiuixTopAppBar(
     scrollBehavior: MiuixScrollBehavior? = null,
     defaultWindowInsetsPadding: Boolean = true,
 ) {
+    val backgroundColor = staticCompositionLocalOf { color }
     val density = LocalDensity.current
     val expandedHeightPx by rememberUpdatedState(
         with(density) { TopAppBarExpandedHeight.toPx().coerceAtLeast(0f) }
@@ -108,7 +109,6 @@ fun MiuixTopAppBar(
                 content = actions
             )
         }
-
     // Compose a MiuixSurface with a MiuixTopAppBarLayout content.
     // The surface's background color is animated as specified above.
     // The height of the app bar is determined by subtracting the bar's height offset from the
@@ -117,14 +117,12 @@ fun MiuixTopAppBar(
         color = color,
         modifier = if (defaultWindowInsetsPadding) {
             modifier
-                .windowInsetsPadding(WindowInsets.statusBars)
                 .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
                 .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal))
                 .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
         } else {
             modifier
         }
-            .background(color)
             .pointerInput(Unit) {
                 detectVerticalDragGestures { _, _ -> }
             }
@@ -548,7 +546,7 @@ private fun MiuixTopAppBarLayout(
                 )
             }
         },
-        modifier = Modifier
+        modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
             .heightIn(max = 60.dp + TopAppBarExpandedHeight)
             .clipToBounds()
     ) { measurables, constraints ->

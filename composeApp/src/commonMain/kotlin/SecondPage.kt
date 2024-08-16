@@ -4,10 +4,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.MiuixSuperArrow
+import top.yukonga.miuix.kmp.MiuixSuperDropdown
 import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.utils.overScrollVertical
 import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
@@ -15,27 +18,32 @@ import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
 @Composable
 fun SecondPage(
     topAppBarScrollBehavior: MiuixScrollBehavior,
-    padding: PaddingValues
+    padding: PaddingValues,
+    enableOverScroll: Boolean
 ) {
     val scrollLazyColumnState = rememberLazyListState()
+    val dropdownOptions = listOf("Option 1", "Option 2", "Option 3", "Option 4")
+    val dropdownSelectedOption = remember { mutableStateOf("Option 1") }
 
     LazyColumn(
         state = scrollLazyColumnState,
         flingBehavior = rememberOverscrollFlingBehavior { scrollLazyColumnState },
         contentPadding = PaddingValues(top = padding.calculateTopPadding()),
-        modifier = Modifier
-            .overScrollVertical(onOverscroll = { topAppBarScrollBehavior.isPinned = it })
+        modifier = if (enableOverScroll) {
+            Modifier
+                .overScrollVertical(onOverscroll = { topAppBarScrollBehavior.isPinned = it })
+        } else {
+            Modifier
+        }
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
     ) {
-        items(200) {
-            MiuixSuperArrow(
-                leftAction = {
-                    MiuixText(text = "Left")
-                },
-                title = "Title",
-                summary = "Summary",
-                rightText = "Right",
-                onClick = {}
+        items(100) {
+            MiuixSuperDropdown(
+                title = "Dropdown",
+                summary = "Popup near click",
+                options = dropdownOptions,
+                selectedOption = dropdownSelectedOption,
+                onOptionSelected = { newOption -> dropdownSelectedOption.value = newOption },
             )
         }
         item {

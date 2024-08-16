@@ -31,6 +31,7 @@ fun MiuixHorizontalPager(
     beyondViewportPageCount: Int = 1,
     defaultWindowInsetsPadding: Boolean = true,
     pageContent: @Composable (pageIndex: Int) -> Unit,
+    userScrollEnabled: Boolean = true,
     flingBehavior: TargetedFlingBehavior = PagerDefaults.flingBehavior(state = pagerState),
 ) {
     HorizontalPager(
@@ -46,6 +47,7 @@ fun MiuixHorizontalPager(
         beyondViewportPageCount = beyondViewportPageCount,
         verticalAlignment = Alignment.Top,
         pageContent = { pageContent(it) },
+        userScrollEnabled = userScrollEnabled,
         flingBehavior = flingBehavior
     )
 }
