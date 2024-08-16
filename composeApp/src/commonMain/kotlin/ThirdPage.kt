@@ -1,9 +1,11 @@
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.MiuixSuperSwitch
 import top.yukonga.miuix.kmp.utils.overScrollVertical
@@ -37,13 +39,13 @@ fun ThirdPage(
         modifier = if (enableOverScroll) {
             Modifier
                 .overScrollVertical(onOverscroll = { topAppBarScrollBehavior.isPinned = it })
+                .height(getWindowSize().height.dp)
         } else {
             Modifier
         }
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
     ) {
         item {
-
             MiuixSuperSwitch(
                 title = "Show FPS Monitor",
                 checked = showFPSMonitor,
@@ -74,11 +76,13 @@ fun ThirdPage(
                 checked = enableBottomBarBlur,
                 onCheckedChange = onEnableBottomBarBlurChange
             )
-            if (platform() != "WasmJs" && platform() != "Desktop") MiuixSuperSwitch(
-                title = "Enable Over Scroll",
-                checked = enableOverScroll,
-                onCheckedChange = onEnableOverScrollChange
-            )
+            if (platform() != "WasmJs" && platform() != "Desktop") {
+                MiuixSuperSwitch(
+                    title = "Enable Over Scroll",
+                    checked = enableOverScroll,
+                    onCheckedChange = onEnableOverScrollChange
+                )
+            }
         }
     }
 }
