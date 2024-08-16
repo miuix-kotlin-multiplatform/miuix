@@ -20,6 +20,18 @@ import top.yukonga.miuix.kmp.miuix.generated.resources.Res
 import top.yukonga.miuix.kmp.miuix.generated.resources.ic_arrow_right
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
+/**
+ * A arrow with a title and a summary.
+ *
+ * @param modifier The modifier to be applied to the [MiuixSuperArrow].
+ * @param title The title of the [MiuixSuperArrow].
+ * @param summary The summary of the [MiuixSuperArrow].
+ * @param leftAction The [Composable] content that on the left side of the [MiuixSuperArrow].
+ * @param rightText The text on the right side of the [MiuixSuperArrow].
+ * @param onClick The callback when the [MiuixSuperArrow] is clicked.
+ * @param insideMargin The margin inside the [MiuixSuperArrow].
+ * @param enabledClick Whether the [MiuixSuperArrow] is clickable.
+ */
 @Composable
 fun MiuixSuperArrow(
     modifier: Modifier = Modifier,
@@ -46,6 +58,11 @@ fun MiuixSuperArrow(
     )
 }
 
+/**
+ * Create the right actions of the [MiuixSuperArrow].
+ *
+ * @param rightText The text on the right side of the [MiuixSuperArrow].
+ */
 @Composable
 private fun createRightActions(rightText: String?) {
     if (rightText != null) {

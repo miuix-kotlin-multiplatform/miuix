@@ -38,6 +38,16 @@ import top.yukonga.miuix.kmp.basic.MiuixSurface
 import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
+/**
+ * A navigation bar that with 2 to 5 items.
+ *
+ * @param items The items of the [MiuixNavigationBar].
+ * @param selected The selected index of the [MiuixNavigationBar].
+ * @param modifier The modifier to be applied to the [MiuixNavigationBar].
+ * @param color The color of the [MiuixNavigationBar].
+ * @param onClick The callback when the item of the [MiuixNavigationBar] is clicked.
+ * @param defaultWindowInsetsPadding whether to apply default window insets padding to the [MiuixNavigationBar].
+ */
 @Composable
 fun MiuixNavigationBar(
     items: List<NavigationItem>,
@@ -127,6 +137,12 @@ fun MiuixNavigationBar(
     }
 }
 
+/**
+ * The data class for [MiuixNavigationBar].
+ *
+ * @param label The label of the item.
+ * @param icon The icon of the item.
+ */
 data class NavigationItem(
     val label: String,
     val icon: ImageVector

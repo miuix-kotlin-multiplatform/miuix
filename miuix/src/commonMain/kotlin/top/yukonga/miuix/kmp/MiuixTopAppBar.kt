@@ -63,6 +63,20 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
+/**
+ * A top app bar that can collapse and expand based on the scroll position of the content below it.
+ *
+ * The [MiuixTopAppBar] can be configured with a title, a navigation icon, and action icons. The large
+ * title will collapse when the content is scrolled up and expand when the content is scrolled down.
+ *
+ * @param modifier The modifier to be applied to the  [MiuixTopAppBar].
+ * @param color The background color of the [MiuixTopAppBar].
+ * @param title The title of the [MiuixTopAppBar].
+ * @param navigationIcon The [Composable] content that represents the navigation icon.
+ * @param actions The [Composable] content that represents the action icons.
+ * @param scrollBehavior The [MiuixScrollBehavior] that controls the behavior of the [MiuixTopAppBar].
+ * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [MiuixTopAppBar].
+ */
 @Composable
 fun MiuixTopAppBar(
     modifier: Modifier = Modifier,

@@ -25,6 +25,26 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
+/**
+ * A text field component with Miuix style.
+ *
+ * @param value The text to be displayed in the text field.
+ * @param onValueChange The callback to be called when the value changes.
+ * @param modifier The modifier to be applied to the [MiuixTextField].
+ * @param label The label to be displayed when the [MiuixTextField] is empty.
+ * @param enabled Whether the [MiuixTextField] is enabled.
+ * @param readOnly Whether the [MiuixTextField] is read-only.
+ * @param textStyle The text style to be applied to the [MiuixTextField].
+ * @param keyboardOptions The keyboard options to be applied to the [MiuixTextField].
+ * @param keyboardActions The keyboard actions to be applied to the [MiuixTextField].
+ * @param singleLine Whether the text field is single line.
+ * @param maxLines The maximum number of lines allowed to be displayed in [MiuixTextField].
+ * @param minLines The minimum number of lines allowed to be displayed in [MiuixTextField]. It is required
+ *   that 1 <= [minLines] <= [maxLines].
+ * @param visualTransformation The visual transformation to be applied to the [MiuixTextField].
+ * @param onTextLayout The callback to be called when the text layout changes.
+ * @param interactionSource The interaction source to be applied to the [MiuixTextField].
+ */
 @Composable
 fun MiuixTextField(
     value: String,

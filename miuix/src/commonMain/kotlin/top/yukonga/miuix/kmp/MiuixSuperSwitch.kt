@@ -12,6 +12,18 @@ import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
 import top.yukonga.miuix.kmp.basic.MiuixSwitch
 
+/**
+ * A switch with a title and a summary.
+ *
+ * @param title The title of the [MiuixSuperSwitch].
+ * @param summary The summary of the [MiuixSuperSwitch].
+ * @param leftAction The [Composable] content that on the left side of the [MiuixSuperSwitch].
+ * @param checked The checked state of the [MiuixSuperSwitch].
+ * @param onCheckedChange The callback when the checked state of the [MiuixSuperSwitch] is changed.
+ * @param modifier The modifier to be applied to the [MiuixSuperSwitch].
+ * @param insideMargin The margin inside the [MiuixSuperSwitch].
+ * @param enabledClick Whether the [MiuixSuperSwitch] is clickable.
+ */
 @Composable
 fun MiuixSuperSwitch(
     title: String,
@@ -36,25 +48,18 @@ fun MiuixSuperSwitch(
         title = title,
         summary = summary,
         leftAction = leftAction,
-        rightActions = { createRightActions(checked, onCheckedChange, enabledClick) },
+        rightActions = {
+            MiuixSwitch(
+                checked = checked,
+                onCheckedChange = onCheckedChange,
+                enabled = enabledClick
+            )
+        },
         enabledClick = enabledClick,
         interactionSource = interactionSource,
         onClick = {
             isChecked = !isChecked
             onCheckedChange?.invoke(isChecked)
         }
-    )
-}
-
-@Composable
-private fun createRightActions(
-    checked: Boolean,
-    onCheckedChange: ((Boolean) -> Unit)?,
-    enabled: Boolean
-) {
-    MiuixSwitch(
-        checked = checked,
-        onCheckedChange = onCheckedChange,
-        enabled = enabled
     )
 }

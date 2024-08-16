@@ -6,6 +6,28 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.graphics.Color
 
+/**
+ * The default color scheme for the Miuix components.
+ *
+ * @param primary The primary color.
+ * @param onPrimary The color of the text on primary color.
+ * @param primaryContainer The color of the primary container.
+ * @param onPrimaryContainer The color of the text on primary container.
+ * @param background The background color.
+ * @param onBackground The color of the text on background.
+ * @param cursor The cursor color.
+ * @param subTextBase The base color of the sub text.
+ * @param subTextField The color of the sub text field.
+ * @param subDropdown The color of the sub dropdown.
+ * @param switchThumb The color of the switch thumb.
+ * @param sliderBackground The background color of the slider.
+ * @param dropdownBackground The background color of the dropdown.
+ * @param dropdownSelect The color of the selected item in the dropdown.
+ * @param buttonBg The background color of the button.
+ * @param disabledBg The background color of the disabled button.
+ * @param buttonDisableText The text color of the disabled button.
+ * @param submitButtonDisabledText The text color of the disabled submit button.
+ */
 @Stable
 class MiuixColor(
     primary: Color,

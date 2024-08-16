@@ -18,6 +18,20 @@ import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.createRipple
 
+/**
+ * A basic component with Miuix style. Widely used in other extension components.
+ *
+ * @param modifier The modifier to be applied to the [MiuixBasicComponent].
+ * @param insideMargin The margin inside the [MiuixBasicComponent].
+ * @param title The title of the [MiuixBasicComponent].
+ * @param summary The summary of the [MiuixBasicComponent].
+ * @param leftAction The [Composable] content that on the left side of the [MiuixBasicComponent].
+ * @param rightActions The [Composable] content on the right side of the [MiuixBasicComponent].
+ * @param enabledClick Whether the [MiuixBasicComponent] is clickable.
+ * @param onClick The callback when the [MiuixBasicComponent] is clicked.
+ * @param interactionSource The interaction source to be applied to the [MiuixBasicComponent].
+ * @param indication The indication to be applied to the [MiuixBasicComponent].
+ */
 @Composable
 fun MiuixBasicComponent(
     modifier: Modifier = Modifier,

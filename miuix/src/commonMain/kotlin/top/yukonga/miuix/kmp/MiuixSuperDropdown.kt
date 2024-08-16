@@ -66,9 +66,21 @@ import top.yukonga.miuix.kmp.utils.MiuixDialogUtil
 import top.yukonga.miuix.kmp.utils.createRipple
 import kotlin.math.roundToInt
 
-
+/**Returns modifier to be used for the current platform */
 expect fun modifierPlatform(isHovered: MutableState<Boolean>): Modifier
 
+/**
+ * A dropdown with a title and a summary.
+ *
+ * @param title The title of the [MiuixSuperDropdown].
+ * @param summary The summary of the [MiuixSuperDropdown].
+ * @param modifier The modifier to be applied to the [MiuixSuperDropdown].
+ * @param options The options of the [MiuixSuperDropdown].
+ * @param alwaysRight Whether the popup is always show on the right side.
+ * @param selectedOption The selected option of the [MiuixSuperDropdown].
+ * @param insideMargin The margin inside the [MiuixSuperDropdown].
+ * @param onOptionSelected The callback when the option of the popup is selected.
+ */
 @Composable
 fun MiuixSuperDropdown(
     title: String,
@@ -203,7 +215,7 @@ fun MiuixSuperDropdown(
                                 },
                                 textWidthDp = textWidthDp,
                                 index = index,
-                                optionsSize = options.size,
+                                optionsNumber = options.size,
                                 ripple = createRipple(),
                             )
                         }
@@ -214,19 +226,30 @@ fun MiuixSuperDropdown(
     )
 }
 
+/**
+ * The implementation of the dropdown.
+ *
+ * @param option The option text of the dropdown.
+ * @param isSelected Whether the option is selected.
+ * @param index The index of the current option in the options.
+ * @param optionsNumber The total number of options.
+ * @param onOptionSelected The callback when the option is selected.
+ * @param textWidthDp The maximum width of text in options.
+ * @param ripple The ripple effect of the dropdown.
+ */
 @Composable
 fun DropdownImpl(
     option: String,
     isSelected: Boolean,
     index: Int,
-    optionsSize: Int,
+    optionsNumber: Int,
     onOptionSelected: (String) -> Unit,
     textWidthDp: Dp?,
     ripple: Indication
 ) {
     val dropdownInteractionSource = remember { MutableInteractionSource() }
     val additionalTopPadding = if (index == 0) 24.dp else 14.dp
-    val additionalBottomPadding = if (index == optionsSize - 1) 24.dp else 14.dp
+    val additionalBottomPadding = if (index == optionsNumber - 1) 24.dp else 14.dp
     val textColor = if (isSelected) {
         MiuixTheme.colorScheme.primary
     } else {
@@ -272,6 +295,19 @@ fun DropdownImpl(
     }
 }
 
+/**
+ * Calculate the offset of the dropdown.
+ *
+ * @param windowHeightPx The height of the window.
+ * @param dropdownOffsetPx The default offset of the dropdown.
+ * @param dropdownHeightPx The height of the dropdown.
+ * @param componentHeight The height of the click component.
+ * @param insideHeightPx The height of the component inside.
+ * @param statusBarPx The height of the status bar padding.
+ * @param navigationBarPx The height of the navigation bar padding.
+ * @param captionBarPx The height of the caption bar padding.
+ * @return The offset of the current dropdown.
+ */
 fun calculateOffsetPx(
     windowHeightPx: Int,
     dropdownOffsetPx: Int,

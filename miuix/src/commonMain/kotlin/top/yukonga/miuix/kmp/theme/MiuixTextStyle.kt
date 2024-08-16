@@ -5,6 +5,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 
+
+/**
+ * The default text styles for the Miuix components.
+ *
+ * @param main The main text style.
+ * @param title The title text style.
+ * @param paragraph The paragraph text style.
+ */
 @Immutable
 class MiuixTextStyles(
     val main: TextStyle,

@@ -21,9 +21,21 @@ import top.yukonga.miuix.kmp.basic.MiuixBox
 import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
+/**
+ * Returns the rounded corner of the current device.
+ */
 @Composable
 expect fun getRoundedCorner(): Dp
 
+/**
+ * A dialog with a title, a summary, and a content.
+ *
+ * @param title The title of the [MiuixSuperDialog].
+ * @param summary The summary of the [MiuixSuperDialog].
+ * @param onDismissRequest The callback when the [MiuixSuperDialog] is dismissed.
+ * @param insideMargin The margin inside the [MiuixSuperDialog].
+ * @param content The [Composable] content of the [MiuixSuperDialog].
+ */
 @Composable
 fun MiuixSuperDialog(
     title: String? = null,

@@ -34,6 +34,20 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import kotlin.math.pow
 import kotlin.math.round
 
+/**
+ * A slider component with Miuix style.
+ *
+ * @param modifier The modifier to be applied to the [MiuixSlider].
+ * @param progress The current progress of the [MiuixSlider].
+ * @param minValue The minimum value of the [MiuixSlider]. It is required
+ *   that [minValue] < [maxValue].
+ * @param maxValue The maximum value of the [MiuixSlider].
+ * @param height The height of the [MiuixSlider].
+ * @param effect Whether to show the effect of the [MiuixSlider].
+ * @param dragShow Whether to show the drag indicator of the [MiuixSlider].
+ * @param decimalPlaces The number of decimal places to be displayed in the drag indicator.
+ * @param onProgressChange The callback to be called when the progress changes.
+ */
 @Composable
 fun MiuixSlider(
     modifier: Modifier = Modifier,

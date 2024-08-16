@@ -35,6 +35,15 @@ import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import kotlin.math.absoluteValue
 
+/**
+ * A switch with Miuix style.
+ *
+ * @param checked The checked state of the switch.
+ * @param onCheckedChange The callback to be called when the checked state changes.
+ * @param modifier The modifier to be applied to the [MiuixSwitch].
+ * @param enabled Whether the [MiuixSwitch] is enabled.
+ * @param interactionSource The interaction source to be applied to the [MiuixSwitch].
+ */
 @Composable
 fun MiuixSwitch(
     checked: Boolean,

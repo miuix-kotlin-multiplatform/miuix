@@ -14,15 +14,15 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**
  *
- * MiuixCard contain contain content and actions that relate information about a subject.
+ * A card component with Miuix style.
+ * Card contain contain content and actions that relate information about a subject.
  *
- * This Card does not handle input events - see the other Card overloads if you want a clickable or
- * selectable Card.
+ * This [MiuixCard] does not handle input events
  *
- * @param modifier the [Modifier] to be applied to this card
- * @param shape defines the shape of this card's container, border (when [border] is not null)
- * @param insideMargin Card inside margins
- * @param border the border to draw around the container of this card
+ * @param modifier The modifier to be applied to the [MiuixCard].
+ * @param shape defines the shape of this card's container, border (when [border] is not null).
+ * @param insideMargin The margin inside the [MiuixCard].
+ * @param border the border to draw around the container of this card.
  */
 @Composable
 fun MiuixCard(

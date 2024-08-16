@@ -22,6 +22,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
+/**
+ * A button component with Miuix style.
+ *
+ * @param text The text of the [MiuixButton].
+ * @param onClick The callback when the [MiuixButton] is clicked.
+ * @param modifier The modifier to be applied to the [MiuixButton].
+ * @param enabled Whether the [MiuixButton] is enabled.
+ * @param submit Whether the [MiuixButton] is a submit button.
+ * @param interactionSource The interaction source to be applied to the [MiuixButton].
+ */
 @Composable
 fun MiuixButton(
     text: String,

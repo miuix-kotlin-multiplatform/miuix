@@ -22,6 +22,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.zIndex
 import top.yukonga.miuix.kmp.basic.MiuixBox
 
+
+/**
+ * A util class for showing dialog and popup.
+ */
 class MiuixDialogUtil {
 
     companion object {
@@ -30,6 +34,12 @@ class MiuixDialogUtil {
         private var popupContext: (@Composable () -> Unit)? = null
         private var dialogContext: (@Composable () -> Unit)? = null
 
+        /**
+         * Show a dialog.
+         *
+         * @param visible The visibility of the dialog.
+         * @param content The [Composable] content of the dialog.
+         */
         @Composable
         fun showDialog(
             visible: MutableState<Boolean>,
@@ -41,6 +51,12 @@ class MiuixDialogUtil {
             dialogContext = updatedContent
         }
 
+        /**
+         * Show a popup.
+         *
+         * @param visible The visibility of the popup.
+         * @param content The [Composable] content of the popup.
+         */
         @Composable
         fun showPopup(
             visible: MutableState<Boolean>,
@@ -52,6 +68,9 @@ class MiuixDialogUtil {
             popupContext = updatedContent
         }
 
+        /**
+         * A host for dialog and popup. Needs to be added this to the [MiuixScaffold]
+         */
         @Composable
         fun MiuixDialogHost() {
             AnimatedVisibility(

@@ -35,6 +35,7 @@ import dev.chrisbanes.haze.hazeChild
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**
+ * A scaffold component with Miuix style.
  * Scaffold implements the basic material design visual layout structure.
  *
  * This component provides API to put together several material components to construct your screen,
@@ -42,12 +43,19 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  * will work together correctly.
  *
  * To show a [Snackbar], use [SnackbarHostState.showSnackbar].
+ * To show a [MiuixDialog], use [MiuixDialogUtil.showDialog].
 
  * @param modifier the [Modifier] to be applied to this scaffold
  * @param topBar top app bar of the screen
  * @param bottomBar bottom bar of the screen
  * @param snackbarHost component to host [Snackbar]s that are pushed to be shown via
  *   [SnackbarHostState.showSnackbar], typically a [SnackbarHost]
+ * @param dialogHost component to host [MiuixDialog]s that are pushed to be shown via
+ *   [MiuixDialogUtil.showDialog] & [MiuixDialogUtil.showPopup], typically a [MiuixDialogHost]
+ * @param enableTopBarBlur whether to enable blur effect on the [MiuixTopAppBar].
+ * @param alpha the alpha value of the blur effect. Default is 0.75f.
+ * @param blurRadius the radius of the blur effect. Default is 25.dp.
+ * @param noiseFactor the noise factor of the blur effect. Default is 0f.
  * @param containerColor the color used for the background of this scaffold. Use [Color.Transparent]
  *   to have no color.
  * @param contentWindowInsets window insets to be passed to [content] slot via [PaddingValues]

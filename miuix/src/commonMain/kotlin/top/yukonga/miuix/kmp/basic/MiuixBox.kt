@@ -31,7 +31,8 @@ import androidx.compose.ui.util.fastForEachIndexed
 import kotlin.math.max
 
 /**
- * A layout composable with [content].
+ * A box composable with Miuix style. A layout composable with [content].
+ *
  * The [MiuixBox] will size itself to fit the content, subject to the incoming constraints.
  * When children are smaller than the parent, by default they will be positioned inside
  * the [MiuixBox] according to the [contentAlignment]. For individually specifying the alignments

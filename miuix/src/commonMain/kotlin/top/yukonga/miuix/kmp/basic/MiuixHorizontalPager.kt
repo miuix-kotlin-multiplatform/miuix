@@ -14,6 +14,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
+/**
+ * A horizontal pager with Miuix style.
+ *
+ * @param modifier The modifier to be applied to the [MiuixHorizontalPager].
+ * @param pagerState The state of the [MiuixHorizontalPager].
+ * @param beyondViewportPageCount The count of pages beyond the viewport.
+ * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [MiuixHorizontalPager].
+ * @param pageContent The content of the [MiuixHorizontalPager].
+ * @param flingBehavior The fling behavior of the [MiuixHorizontalPager].
+ */
 @Composable
 fun MiuixHorizontalPager(
     modifier: Modifier = Modifier,
