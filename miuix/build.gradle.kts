@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     alias(libs.plugins.android.library)
@@ -20,33 +19,14 @@ kotlin {
 
     jvm("desktop")
 
-    listOf(
-        iosX64(), iosArm64(), iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "miuix"
-            isStatic = true
-        }
-    }
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        moduleName = "miuix"
-        browser {
-            commonWebpackConfig {
-                outputFileName = "miuix.js"
-                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                    static = (static ?: mutableListOf()).apply {
-                        // Serve sources to debug inside browser
-                        add(project.projectDir.path)
-                    }
-                }
-            }
-        }
-        binaries.executable()
+        browser()
     }
-
-    @OptIn(ExperimentalWasmDsl::class) wasmJs()
 
     sourceSets {
         val desktopMain by getting

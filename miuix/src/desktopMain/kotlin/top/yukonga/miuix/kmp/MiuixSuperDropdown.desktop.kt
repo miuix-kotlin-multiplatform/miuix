@@ -7,7 +7,7 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 
 @OptIn(ExperimentalComposeUiApi::class)
-actual fun modifierPlatform(isHovered: MutableState<Boolean>): Modifier = Modifier
+actual fun modifierPlatform(modifier: Modifier, isHovered: MutableState<Boolean>): Modifier = modifier
     .onPointerEvent(PointerEventType.Move) {
         isHovered.value = true
     }

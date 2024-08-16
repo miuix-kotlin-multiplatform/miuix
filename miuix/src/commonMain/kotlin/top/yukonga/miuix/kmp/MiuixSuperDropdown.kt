@@ -54,7 +54,6 @@ import androidx.compose.ui.unit.sp
 import getWindowSize
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
-import platform
 import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
 import top.yukonga.miuix.kmp.basic.MiuixBox
 import top.yukonga.miuix.kmp.basic.MiuixText
@@ -67,7 +66,7 @@ import top.yukonga.miuix.kmp.utils.createRipple
 import kotlin.math.roundToInt
 
 /**Returns modifier to be used for the current platform */
-expect fun modifierPlatform(isHovered: MutableState<Boolean>): Modifier
+expect fun modifierPlatform(modifier: Modifier, isHovered: MutableState<Boolean>): Modifier
 
 /**
  * A dropdown with a title and a summary.
@@ -125,11 +124,7 @@ fun MiuixSuperDropdown(
     )
 
     MiuixBasicComponent(
-        modifier = if (platform() == "Desktop") {
-            modifierPlatform(isHovered = isHovered)
-        } else {
-            modifier
-        }
+        modifier = modifierPlatform(modifier = modifier, isHovered = isHovered)
             .background(if (isHovered.value) MiuixTheme.colorScheme.onBackground.copy(0.08f) else Color.Transparent)
             .indication(interactionSource, createRipple())
             .pointerInput(Unit) {
