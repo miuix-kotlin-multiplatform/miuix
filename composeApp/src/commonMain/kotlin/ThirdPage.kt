@@ -74,7 +74,7 @@ fun ThirdPage(
                 checked = enableBottomBarBlur,
                 onCheckedChange = onEnableBottomBarBlurChange
             )
-            MiuixSuperSwitch(
+            if (platform() != "WasmJs" && platform() != "Desktop") MiuixSuperSwitch(
                 title = "Enable Over Scroll",
                 checked = enableOverScroll,
                 onCheckedChange = onEnableOverScrollChange
