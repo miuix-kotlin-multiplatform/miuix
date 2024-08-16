@@ -23,7 +23,9 @@ private fun getSystemCornerRadius(): Dp {
     } else {
         getCornerRadiusBottom()
     }
-    return (roundedCornerRadius / density).dp
+    val cornerDp = (roundedCornerRadius / density).dp
+    if (cornerDp < 15.dp) return 0.dp
+    return cornerDp
 }
 
 // from https://dev.mi.com/distribute/doc/details?pId=1631
