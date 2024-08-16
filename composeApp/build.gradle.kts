@@ -3,6 +3,7 @@
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
@@ -15,11 +16,25 @@ plugins {
 val appName = "Miuix"
 val pkgName = "top.yukonga.miuix.uitest"
 val verName = "1.0.0"
+val xcf = XCFramework(appName + "Framework")
 
 kotlin {
     jvmToolchain(17)
 
     androidTarget()
+
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach {
+        it.binaries.framework {
+            baseName = appName + "Framework"
+            isStatic = true
+            freeCompilerArgs += "-Xbinary=bundleId=$pkgName.framework"
+            xcf.add(this)
+        }
+    }
 
     jvm("desktop")
 
