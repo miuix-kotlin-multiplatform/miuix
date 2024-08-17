@@ -4,6 +4,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationState
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.DecayAnimationSpec
+import androidx.compose.animation.core.Spring.StiffnessMediumLow
 import androidx.compose.animation.core.animateDecay
 import androidx.compose.animation.core.exponentialDecay
 import androidx.compose.animation.core.spring
@@ -30,6 +31,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Velocity
 import kotlinx.coroutines.launch
 import kotlin.math.abs
+import kotlin.math.exp
 import kotlin.math.sign
 import kotlin.math.sqrt
 
@@ -49,11 +51,13 @@ import kotlin.math.sqrt
  * so we need this variable to have the same expectations on different devices.
  */
 @Stable
-fun parabolaScrollEasing(currentOffset: Float, newOffset: Float, p: Float = 50f, density: Float = 4f): Float {
+fun parabolaScrollEasing(currentOffset: Float, newOffset: Float, p: Float = 25f, density: Float = 4f): Float {
     val realP = p * density
-    val ratio = (realP / (sqrt(realP * abs(currentOffset + newOffset / 2).coerceAtLeast(Float.MIN_VALUE)))).coerceIn(Float.MIN_VALUE, 1f)
+    val distance = abs(currentOffset + newOffset / 2)
+    val ratio = (realP / (sqrt(realP * distance.coerceAtLeast(Float.MIN_VALUE)))).coerceIn(Float.MIN_VALUE, 1f)
+    val nonLinearRatio = ratio * (1 - exp(-distance / realP))
     return if (sign(currentOffset) == sign(newOffset)) {
-        currentOffset + newOffset * ratio
+        currentOffset + newOffset * nonLinearRatio
     } else {
         currentOffset + newOffset
     }
@@ -68,7 +72,7 @@ internal val DefaultParabolaScrollEasing: (currentOffset: Float, newOffset: Floa
         }
     }
 
-internal const val OutBoundSpringStiff = 150f
+internal const val OutBoundSpringStiff = 200f
 internal const val OutBoundSpringDamp = 1f
 
 /**

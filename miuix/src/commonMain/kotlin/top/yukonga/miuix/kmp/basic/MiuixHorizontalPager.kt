@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
  * @param beyondViewportPageCount The count of pages beyond the viewport.
  * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [MiuixHorizontalPager].
  * @param pageContent The content of the [MiuixHorizontalPager].
+ * @param userScrollEnabled Whether the scrolling via the user gestures or accessibility actions is allowed. Not recommended for use with overscroll.
  * @param flingBehavior The fling behavior of the [MiuixHorizontalPager].
  */
 @Composable
@@ -31,7 +32,7 @@ fun MiuixHorizontalPager(
     beyondViewportPageCount: Int = 1,
     defaultWindowInsetsPadding: Boolean = true,
     pageContent: @Composable (pageIndex: Int) -> Unit,
-    userScrollEnabled: Boolean = true,
+    userScrollEnabled: Boolean = false,
     flingBehavior: TargetedFlingBehavior = PagerDefaults.flingBehavior(state = pagerState),
 ) {
     HorizontalPager(

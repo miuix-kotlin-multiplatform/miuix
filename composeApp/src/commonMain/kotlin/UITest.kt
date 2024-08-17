@@ -71,7 +71,7 @@ fun UITest() {
     val showFPSMonitor = remember { mutableStateOf(false) }
     val showTopAppBar = remember { mutableStateOf(true) }
     val showBottomBar = remember { mutableStateOf(true) }
-    val enablePageUserScroll = remember { mutableStateOf(true) }
+    val enablePageUserScroll = remember { mutableStateOf(false) }
     val enableTopBarBlur = remember { mutableStateOf(true) }
     val enableBottomBarBlur = remember { mutableStateOf(true) }
     val enableOverScroll = remember { mutableStateOf(true) }
