@@ -1,15 +1,11 @@
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.MiuixSuperSwitch
-import top.yukonga.miuix.kmp.utils.overScrollVertical
-import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
+import top.yukonga.miuix.kmp.basic.MiuixLazyColumn
 
 @Composable
 fun ThirdPage(
@@ -30,20 +26,11 @@ fun ThirdPage(
     enableOverScroll: Boolean,
     onEnableOverScrollChange: (Boolean) -> Unit
 ) {
-    val scrollLazyColumnState = rememberLazyListState()
-
-    LazyColumn(
-        state = scrollLazyColumnState,
-        flingBehavior = rememberOverscrollFlingBehavior { scrollLazyColumnState },
+    MiuixLazyColumn(
+        modifier = Modifier.height(getWindowSize().height.dp),
+        enableOverScroll = enableOverScroll,
         contentPadding = PaddingValues(top = padding.calculateTopPadding()),
-        modifier = if (enableOverScroll) {
-            Modifier
-                .overScrollVertical(onOverscroll = { topAppBarScrollBehavior.isPinned = it })
-                .height(getWindowSize().height.dp)
-        } else {
-            Modifier
-        }
-            .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
+        topAppBarScrollBehavior = topAppBarScrollBehavior
     ) {
         item {
             MiuixSuperSwitch(

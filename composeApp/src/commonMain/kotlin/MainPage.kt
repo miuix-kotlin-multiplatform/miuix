@@ -1,15 +1,10 @@
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import component.OtherComponent
 import component.SecondComponent
 import component.TextComponent
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
-import top.yukonga.miuix.kmp.utils.overScrollVertical
-import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
+import top.yukonga.miuix.kmp.basic.MiuixLazyColumn
 
 @Composable
 fun MainPage(
@@ -17,19 +12,10 @@ fun MainPage(
     padding: PaddingValues,
     enableOverScroll: Boolean
 ) {
-    val scrollLazyColumnState = rememberLazyListState()
-
-    LazyColumn(
-        state = scrollLazyColumnState,
-        flingBehavior = rememberOverscrollFlingBehavior { scrollLazyColumnState },
+    MiuixLazyColumn(
+        enableOverScroll = enableOverScroll,
         contentPadding = PaddingValues(top = padding.calculateTopPadding()),
-        modifier = if (enableOverScroll) {
-            Modifier
-                .overScrollVertical(onOverscroll = { topAppBarScrollBehavior.isPinned = it })
-        } else {
-            Modifier
-        }
-            .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
+        topAppBarScrollBehavior = topAppBarScrollBehavior
     ) {
         item {
             TextComponent()

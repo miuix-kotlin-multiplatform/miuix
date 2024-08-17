@@ -195,6 +195,7 @@ fun Modifier.overScrollOutOfBound(
             }
 
             override suspend fun onPreFling(available: Velocity): Velocity {
+                onOverscroll?.invoke(false)
                 if (::lastFlingAnimator.isInitialized && lastFlingAnimator.isRunning) {
                     lastFlingAnimator.stop()
                 }
@@ -215,7 +216,6 @@ fun Modifier.overScrollOutOfBound(
                     leftVelocity = lastFlingAnimator.animateTo(0f, spring(springDamp, springStiff, visibilityThreshold), leftVelocity) {
                         offset = scrollEasing(offset, value - offset)
                     }.endState.velocity
-                    onOverscroll?.invoke(false)
                 }
                 return if (isVertical) {
                     Velocity(parentConsumed.x, y = available.y - leftVelocity)
@@ -225,16 +225,15 @@ fun Modifier.overScrollOutOfBound(
             }
 
             override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
+                onOverscroll?.invoke(false)
                 val realAvailable = when {
                     nestedScrollToParent -> available - dispatcher.dispatchPostFling(consumed, available)
                     else -> available
                 }
-
                 lastFlingAnimator = Animatable(offset)
                 lastFlingAnimator.animateTo(0f, spring(springDamp, springStiff, visibilityThreshold), if (isVertical) realAvailable.y else realAvailable.x) {
                     offset = scrollEasing(offset, value - offset)
                 }
-                onOverscroll?.invoke(false)
                 return if (isVertical) {
                     Velocity(x = available.x - realAvailable.x, y = available.y)
                 } else {

@@ -53,8 +53,7 @@ fun UITest() {
     val currentScrollBehavior = when (pagerState.currentPage) {
         0 -> topAppBarScrollBehaviorList[0]
         1 -> topAppBarScrollBehaviorList[1]
-        2 -> topAppBarScrollBehaviorList[2]
-        else -> throw IllegalStateException("Unsupported page")
+        else -> topAppBarScrollBehaviorList[2]
     }
 
     val items = listOf(
@@ -171,12 +170,14 @@ fun AppHorizontalPager(
                     padding = padding,
                     enableOverScroll = enableOverScroll,
                 )
+
                 1 -> SecondPage(
                     topAppBarScrollBehavior = topAppBarScrollBehaviorList[1],
                     padding = padding,
                     enableOverScroll = enableOverScroll,
                 )
-                2 -> ThirdPage(
+
+                else -> ThirdPage(
                     topAppBarScrollBehavior = topAppBarScrollBehaviorList[2],
                     padding = padding,
                     showFPSMonitor = showFPSMonitor,
@@ -194,8 +195,6 @@ fun AppHorizontalPager(
                     enableOverScroll = enableOverScroll,
                     onEnableOverScrollChange = onEnableOverScrollChange
                 )
-
-                else -> throw IllegalStateException("Unsupported page")
             }
         }
     )
