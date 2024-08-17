@@ -14,5 +14,4 @@ actual fun getWindowSize(): WindowSize {
     return WindowSize(widthPx, heightPx)
 }
 
-@Composable
-actual fun platform(): String = "Android"
+actual fun platform(): Platform = Platform.Android

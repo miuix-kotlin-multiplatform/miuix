@@ -29,5 +29,4 @@ actual fun getWindowSize(): WindowSize {
     )
 }
 
-@Composable
-actual fun platform(): String  = "Desktop"
+actual fun platform(): Platform  = Platform.Desktop

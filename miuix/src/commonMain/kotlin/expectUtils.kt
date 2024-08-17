@@ -9,7 +9,11 @@ expect fun getWindowSize(): WindowSize
 
 
 /** Returns the current platform name */
-@Composable
-expect fun platform(): String
+expect fun platform(): Platform
 
-
+enum class Platform {
+    Android,
+    IOS,
+    Desktop,
+    WasmJs
+}
