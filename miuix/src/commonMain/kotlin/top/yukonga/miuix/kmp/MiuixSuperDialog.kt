@@ -53,13 +53,14 @@ fun MiuixSuperDialog(
             .padding(horizontal = insideMargin.width)
             .padding(bottom = insideMargin.height)
             .pointerInput(Unit) {
-                detectTapGestures(onPress = {
-                    onDismissRequest.invoke()
-                })
+                detectTapGestures(onTap = { onDismissRequest() })
             }
     ) {
         Column(
             modifier = Modifier
+                .pointerInput(Unit) {
+                    detectTapGestures { /* Do nothing to consume the click */ }
+                }
                 .fillMaxWidth()
                 .background(
                     color = MiuixTheme.colorScheme.dropdownBackground,

@@ -36,7 +36,6 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -87,7 +86,6 @@ fun MiuixTopAppBar(
     scrollBehavior: MiuixScrollBehavior? = null,
     defaultWindowInsetsPadding: Boolean = true,
 ) {
-    val backgroundColor = staticCompositionLocalOf { color }
     val density = LocalDensity.current
     val expandedHeightPx by rememberUpdatedState(
         with(density) { TopAppBarExpandedHeight.toPx().coerceAtLeast(0f) }
@@ -503,7 +501,7 @@ private fun MiuixTopAppBarLayout(
             MiuixBox(
                 Modifier
                     .layoutId("navigationIcon")
-                    .padding(start = TopAppBarHorizontalPadding, top = TopAppBarTopPadding)
+                    .padding(start = TopAppBarHorizontalPadding)
             ) {
                 navigationIcon()
             }
@@ -527,7 +525,7 @@ private fun MiuixTopAppBarLayout(
             MiuixBox(
                 Modifier
                     .layoutId("actionIcons")
-                    .padding(end = TopAppBarHorizontalPadding, top = TopAppBarTopPadding)
+                    .padding(end = TopAppBarHorizontalPadding)
             ) {
                 actions()
             }
@@ -546,7 +544,8 @@ private fun MiuixTopAppBarLayout(
                 )
             }
         },
-        modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
+        modifier = Modifier
+            .windowInsetsPadding(WindowInsets.statusBars)
             .heightIn(max = 60.dp + TopAppBarExpandedHeight)
             .clipToBounds()
     ) { measurables, constraints ->

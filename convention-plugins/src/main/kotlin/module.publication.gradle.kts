@@ -18,13 +18,13 @@ publishing {
         // Provide artifacts information required by Maven Central
         pom {
             name.set("Miuix-like UI")
-            description.set("Miuix-like UI library for Kotlin Multiplatform")
-            url.set("https://github.com/YuKongA/miuix-kotlin-multiplatform")
+            description.set("A MiuiX-like UI for Kotlin Multiplatform")
+            url.set("https://github.com/miuix-kotlin-multiplatform/miuix")
 
             licenses {
                 license {
                     name.set("Apache-2.0 license")
-                    url.set("https://github.com/YuKongA/miuix-kotlin-multiplatform/blob/main/LICENSE")
+                    url.set("https://github.com/miuix-kotlin-multiplatform/miuix/blob/main/LICENSE")
                 }
             }
             developers {
@@ -35,8 +35,14 @@ publishing {
                 }
             }
             scm {
-                url.set("https://github.com/YuKongA/miuix-kotlin-multiplatform")
+                url.set("https://github.com/miuix-kotlin-multiplatform/miuix")
             }
+        }
+    }
+
+    repositories {
+        maven {
+            url = uri(layout.buildDirectory.dir("repo"))
         }
     }
 }

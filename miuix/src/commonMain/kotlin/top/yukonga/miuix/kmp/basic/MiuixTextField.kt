@@ -22,6 +22,7 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
@@ -107,14 +108,13 @@ fun MiuixTextField(
                     MiuixBox(
                         contentAlignment = Alignment.CenterStart
                     ) {
-                        if (value.isEmpty()) {
-                            MiuixText(
-                                text = label,
-                                fontWeight = FontWeight.Medium,
-                                modifier = Modifier.fillMaxWidth(),
-                                color = MiuixTheme.colorScheme.subTextField
-                            )
-                        }
+                        MiuixText(
+                            text = label,
+                            textAlign = if (value.isEmpty()) TextAlign.Start else TextAlign.End,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier.fillMaxWidth(),
+                            color = MiuixTheme.colorScheme.subTextField
+                        )
                         innerTextField()
                     }
                 }
