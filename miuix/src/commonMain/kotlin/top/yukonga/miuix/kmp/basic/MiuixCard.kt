@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -28,14 +29,16 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 fun MiuixCard(
     modifier: Modifier = Modifier,
     shape: Shape = RoundedCornerShape(16.dp),
+    isSecondary: Boolean = false,
     insideMargin: DpSize = DpSize(20.dp, 20.dp),
     border: BorderStroke? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
+    val color = if (isSecondary) MiuixTheme.colorScheme.secondaryContainer else MiuixTheme.colorScheme.primaryContainer
     MiuixSurface(
         modifier = modifier,
         shape = shape,
-        color = MiuixTheme.colorScheme.primaryContainer,
+        color = color,
         border = border,
     ) {
         Column(

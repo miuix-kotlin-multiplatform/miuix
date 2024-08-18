@@ -33,8 +33,10 @@ class MiuixColor(
     primary: Color,
     onPrimary: Color,
     primaryContainer: Color,
+    secondaryContainer: Color,
     onPrimaryContainer: Color,
     background: Color,
+    secondaryBackground: Color,
     onBackground: Color,
     cursor: Color,
     subTextBase: Color,
@@ -52,8 +54,10 @@ class MiuixColor(
     val primary by mutableStateOf(primary, structuralEqualityPolicy())
     val onPrimary by mutableStateOf(onPrimary, structuralEqualityPolicy())
     val primaryContainer by mutableStateOf(primaryContainer, structuralEqualityPolicy())
+    val secondaryContainer by mutableStateOf(secondaryContainer, structuralEqualityPolicy())
     val onPrimaryContainer by mutableStateOf(onPrimaryContainer, structuralEqualityPolicy())
     val background by mutableStateOf(background, structuralEqualityPolicy())
+    val secondaryBackground by mutableStateOf(secondaryBackground, structuralEqualityPolicy())
     val onBackground by mutableStateOf(onBackground, structuralEqualityPolicy())
     val cursor by mutableStateOf(cursor, structuralEqualityPolicy())
     val subTextBase by mutableStateOf(subTextBase, structuralEqualityPolicy())
@@ -73,8 +77,10 @@ fun lightColorScheme() = MiuixColor(
     primary = Color(0xFF3482FF),
     onPrimary = Color.Black,
     primaryContainer = Color(0xFFF7F7F7),
+    secondaryContainer = Color.White,
     onPrimaryContainer = Color.Black,
     background = Color.White,
+    secondaryBackground = Color(0xFFF5F5F5),
     onBackground = Color.Black,
     cursor = Color(0xFF0D84FF),
     subTextBase = Color(0xFF666666),
@@ -94,8 +100,10 @@ fun darkColorScheme() = MiuixColor(
     primary = Color(0xFF277AF7),
     onPrimary = Color.White,
     primaryContainer = Color(0xFF212121),
+    secondaryContainer = Color(0xFF1F1F1F),
     onPrimaryContainer = Color.White,
     background = Color.Black,
+    secondaryBackground = Color.Black,
     onBackground = Color.White,
     cursor = Color(0xFF0074ED),
     subTextBase = Color(0xFF808080),

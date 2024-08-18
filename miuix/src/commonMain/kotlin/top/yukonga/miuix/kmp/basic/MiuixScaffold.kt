@@ -117,8 +117,8 @@ fun MiuixScaffold(
                 MiuixBox(
                     Modifier.haze(
                         state = hazeState, style = HazeDefaults.style(
-                            backgroundColor = MiuixTheme.colorScheme.background,
-                            tint = MiuixTheme.colorScheme.background.copy(alpha),
+                            backgroundColor = containerColor,
+                            tint = containerColor.copy(alpha),
                             blurRadius = blurRadius,
                             noiseFactor = noiseFactor
                         )

@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -24,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**
@@ -54,6 +56,7 @@ fun MiuixTextField(
     label: String = "",
     enabled: Boolean = true,
     readOnly: Boolean = false,
+    isSecondary: Boolean = false,
     textStyle: TextStyle = MiuixTheme.textStyles.main,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
@@ -69,6 +72,9 @@ fun MiuixTextField(
     val borderColor by animateColorAsState(
         if (isFocused) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.primaryContainer
     )
+    val labelOffsetY by animateDpAsState(if (value.isNotEmpty()) (-10).dp else 0.dp)
+    val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty()) 7.dp else 0.dp)
+    val labelFontSize by animateDpAsState(if (value.isNotEmpty()) 10.dp else 16.dp)
 
     BasicTextField(
         value = value,
@@ -100,22 +106,29 @@ fun MiuixTextField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
-                            color = MiuixTheme.colorScheme.primaryContainer,
+                            color = if (isSecondary) MiuixTheme.colorScheme.secondaryContainer else MiuixTheme.colorScheme.primaryContainer,
                             shape = RoundedCornerShape(16.dp)
                         )
                         .padding(16.dp)
                 ) {
                     MiuixBox(
-                        contentAlignment = Alignment.CenterStart
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         MiuixText(
                             text = label,
-                            textAlign = if (value.isEmpty()) TextAlign.Start else TextAlign.End,
+                            textAlign = TextAlign.Start,
                             fontWeight = FontWeight.Medium,
-                            modifier = Modifier.fillMaxWidth(),
+                            fontSize = labelFontSize.value.sp,
+                            modifier = Modifier.offset(y = labelOffsetY),
                             color = MiuixTheme.colorScheme.subTextField
                         )
-                        innerTextField()
+                        MiuixBox(
+                            modifier = Modifier
+                                .offset(y = innerTextOffsetY),
+                            contentAlignment = Alignment.BottomStart
+                        ) {
+                            innerTextField()
+                        }
                     }
                 }
             }
