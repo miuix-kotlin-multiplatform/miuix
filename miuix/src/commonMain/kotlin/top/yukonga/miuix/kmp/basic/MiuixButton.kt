@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -44,8 +42,7 @@ fun MiuixButton(
     val hapticFeedback = LocalHapticFeedback.current
     val color = getButtonColor(enabled, submit)
     val textColor = getTextColor(enabled, submit)
-
-    Surface(
+    MiuixSurface(
         onClick = {
             onClick()
             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -57,10 +54,9 @@ fun MiuixButton(
         interactionSource = interactionSource
     ) {
         Row(
-            Modifier.defaultMinSize(
-                minWidth = ButtonDefaults.MinWidth,
-                minHeight = ButtonDefaults.MinHeight
-            ).padding(16.dp, 16.dp),
+            Modifier
+                .defaultMinSize(minWidth = 58.dp, minHeight = 40.dp)
+                .padding(16.dp, 16.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {

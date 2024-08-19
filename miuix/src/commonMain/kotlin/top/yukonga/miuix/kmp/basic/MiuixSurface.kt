@@ -10,8 +10,10 @@ import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.NonRestartableComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
@@ -59,6 +61,7 @@ fun MiuixSurface(
  * @param color The color of the [MiuixSurface].
  * @param border The border of the [MiuixSurface].
  * @param content The content of the [MiuixSurface].
+ * @param interactionSource The interaction source to be applied to the [MiuixSurface].
  */
 @Composable
 @NonRestartableComposable
@@ -69,22 +72,19 @@ fun MiuixSurface(
     shape: Shape = RectangleShape,
     color: Color = MiuixTheme.colorScheme.background,
     border: BorderStroke? = null,
+    interactionSource: MutableInteractionSource? = remember { MutableInteractionSource() },
     content: @Composable () -> Unit
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
     val ripple = ripple(color = MiuixTheme.colorScheme.onBackground.copy(alpha = 0.8f))
     CompositionLocalProvider {
         MiuixBox(
             modifier = modifier
-                .minimumInteractiveComponentSize()
-                .background(
+                .surface(
                     shape = shape,
-                    color = color
+                    backgroundColor = color,
+                    border = border
                 )
-                .border(
-                    border = border ?: BorderStroke(0.dp, Color.Transparent),
-                    shape = shape
-                )
+                .minimumInteractiveComponentSize()
                 .clickable(
                     interactionSource = interactionSource,
                     indication = ripple,
@@ -97,3 +97,17 @@ fun MiuixSurface(
         }
     }
 }
+
+
+@Stable
+private fun Modifier.surface(
+    shape: Shape,
+    backgroundColor: Color,
+    border: BorderStroke?,
+) =
+    this.then(
+        Modifier
+            .then(if (border != null) Modifier.border(border, shape) else Modifier)
+            .background(color = backgroundColor, shape = shape)
+            .clip(shape)
+    )
