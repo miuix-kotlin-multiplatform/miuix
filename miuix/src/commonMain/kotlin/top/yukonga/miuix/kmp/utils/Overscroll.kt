@@ -108,7 +108,7 @@ fun Modifier.overScrollHorizontal(
  * and the new offset from the gesture.
  * modify it to cooperate with [springStiff] to customize the sliding damping effect.
  * The current default easing comes from iOS, you don't need to modify it!
- * @param springStiff springStiff for overscroll effect，For better user experience, the new value is not recommended to be higher than[Spring.StiffnessMediumLow]
+ * @param springStiff springStiff for overscroll effect，For better user experience, the new value is not recommended to be higher than[StiffnessMediumLow]
  * @param springDamp springDamp for overscroll effect，generally do not need to set
  */
 @Suppress("NAME_SHADOWING")
@@ -121,7 +121,6 @@ fun Modifier.overScrollOutOfBound(
     onOverscroll: ((Boolean) -> Unit)? = null
 ): Modifier = composed {
     if (!enableOverscroll()) return@composed this
-
     val onOverscroll by rememberUpdatedState(onOverscroll)
     val nestedScrollToParent by rememberUpdatedState(nestedScrollToParent)
     val scrollEasing by rememberUpdatedState(scrollEasing ?: DefaultParabolaScrollEasing)

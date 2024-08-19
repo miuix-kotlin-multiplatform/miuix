@@ -10,7 +10,6 @@ import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import kotlin.math.pow
 import kotlin.math.round
 
@@ -133,7 +133,7 @@ fun SliderBackground(
     maxValue: Float,
     color: Color
 ) {
-    Canvas(modifier = modifier.clip(RoundedCornerShape(50.dp)).background(backgroundColor)) {
+    Canvas(modifier = modifier.clip(SquircleShape(100.dp)).background(backgroundColor)) {
         val barHeight = size.height
         val barWidth = size.width
         val progressWidth = barWidth * ((progress - minValue) / (maxValue - minValue))

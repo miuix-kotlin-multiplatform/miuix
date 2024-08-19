@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -63,6 +62,7 @@ import top.yukonga.miuix.kmp.miuix.generated.resources.ic_dropdown_select
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixDialogUtil
 import top.yukonga.miuix.kmp.utils.createRipple
+import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import kotlin.math.roundToInt
 
 /**Returns modifier to be used for the current platform */
@@ -196,7 +196,7 @@ fun MiuixSuperDropdown(
                             )
                         }
                         .align(if (alignLeft && !alwaysRight) AbsoluteAlignment.TopLeft else AbsoluteAlignment.TopRight)
-                        .clip(RoundedCornerShape(16.dp))
+                        .clip(SquircleShape(18.dp))
                         .background(MiuixTheme.colorScheme.dropdownBackground)
                 ) {
                     item {

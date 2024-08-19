@@ -3,6 +3,7 @@ package top.yukonga.miuix.kmp
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -13,11 +14,11 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.captionBar
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +28,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
@@ -147,3 +149,18 @@ data class NavigationItem(
     val label: String,
     val icon: ImageVector
 )
+
+@Composable
+fun HorizontalDivider(
+    modifier: Modifier = Modifier,
+    thickness: Dp,
+    color: Color
+) =
+    Canvas(modifier.fillMaxWidth().height(thickness)) {
+        drawLine(
+            color = color,
+            strokeWidth = thickness.toPx(),
+            start = Offset(0f, thickness.toPx() / 2),
+            end = Offset(size.width, thickness.toPx() / 2),
+        )
+    }

@@ -9,7 +9,6 @@ import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -27,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
 /**
  * A text field component with Miuix style.
@@ -68,7 +68,7 @@ fun MiuixTextField(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
     val isFocused by interactionSource.collectIsFocusedAsState()
-    val borderWidth by animateDpAsState(if (isFocused) 2.dp else 0.dp)
+    val borderWidth by animateDpAsState(if (isFocused) 1.6.dp else 0.dp)
     val borderColor by animateColorAsState(
         if (isFocused) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.primaryContainer
     )
@@ -96,19 +96,19 @@ fun MiuixTextField(
             MiuixBox(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(
+                        color = if (isSecondary) MiuixTheme.colorScheme.secondaryContainer else MiuixTheme.colorScheme.primaryContainer,
+                        shape = SquircleShape(18.dp)
+                    )
                     .border(
                         width = borderWidth,
                         color = borderColor,
-                        shape = RoundedCornerShape(16.dp)
+                        shape = SquircleShape(18.dp)
                     )
             ) {
                 MiuixBox(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(
-                            color = if (isSecondary) MiuixTheme.colorScheme.secondaryContainer else MiuixTheme.colorScheme.primaryContainer,
-                            shape = RoundedCornerShape(16.dp)
-                        )
                         .padding(16.dp)
                 ) {
                     MiuixBox(

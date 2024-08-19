@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -19,6 +18,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
 /**
  * A button component with Miuix style.
@@ -49,7 +49,7 @@ fun MiuixButton(
         },
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
-        shape = RoundedCornerShape(14.dp),
+        shape = SquircleShape(16.dp),
         color = color,
         interactionSource = interactionSource
     ) {

@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,6 +32,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import kotlin.math.absoluteValue
 
 /**
@@ -108,7 +108,7 @@ fun MiuixSwitch(
             .then(toggleableModifier)
             .wrapContentSize(Alignment.Center)
             .requiredSize(52.dp, 28.5.dp)
-            .clip(RoundedCornerShape(50.dp))
+            .clip(SquircleShape(100.dp))
             .background(if (enabled) backgroundColor else disabledBackgroundColor)
             .pointerInput(Unit) {
                 detectTapGestures(
@@ -171,7 +171,7 @@ fun MiuixSwitch(
                 .padding(start = thumbOffset)
                 .align(Alignment.CenterStart)
                 .size(thumbSize)
-                .background(Color.White, shape = RoundedCornerShape(50.dp))
+                .background(Color.White, shape = SquircleShape(100.dp))
         )
     }
 }
