@@ -32,7 +32,6 @@ import top.yukonga.miuix.kmp.basic.MiuixScaffold
 import top.yukonga.miuix.kmp.basic.MiuixSurface
 import top.yukonga.miuix.kmp.rememberMiuixTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.MiuixDialogUtil.Companion.MiuixDialogHost
 import utils.FPSMonitor
 
 @OptIn(FlowPreview::class)
@@ -104,8 +103,7 @@ fun UITest() {
                         }
                     )
                 }
-            },
-            dialogHost = { MiuixDialogHost() }
+            }
         ) { padding ->
             AppHorizontalPager(
                 pagerState = pagerState,

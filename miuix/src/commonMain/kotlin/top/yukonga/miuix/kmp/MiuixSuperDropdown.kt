@@ -28,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
@@ -60,7 +61,8 @@ import top.yukonga.miuix.kmp.miuix.generated.resources.Res
 import top.yukonga.miuix.kmp.miuix.generated.resources.ic_arrow_up_down
 import top.yukonga.miuix.kmp.miuix.generated.resources.ic_dropdown_select
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.MiuixDialogUtil
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showPopup
 import top.yukonga.miuix.kmp.utils.createRipple
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import kotlin.math.roundToInt
@@ -96,7 +98,7 @@ fun MiuixSuperDropdown(
     val coroutineScope = rememberCoroutineScope()
     val interactionSource = remember { MutableInteractionSource() }
     val isDropdownExpanded = remember { mutableStateOf(false) }
-    var alignLeft by remember { mutableStateOf(true) }
+    var alignLeft by rememberSaveable { mutableStateOf(true) }
     val textMeasurer = rememberTextMeasurer()
     val textStyle = TextStyle(fontWeight = FontWeight.Medium, fontSize = 16.sp)
     val textWidthDp = remember(options) {
@@ -172,53 +174,56 @@ fun MiuixSuperDropdown(
 
     if (isDropdownExpanded.value) hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
 
-    MiuixDialogUtil.showPopup(
-        visible = isDropdownExpanded,
-        content = {
-            MiuixBox(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .pointerInput(Unit) {
-                        detectTapGestures(onPress = {
-                            isDropdownExpanded.value = false
-                        })
-                    }
-                    .offset(y = offsetPx.dp / density.density)
-            ) {
-                LazyColumn(
+    if (isDropdownExpanded.value) {
+        showPopup(
+            content = {
+                MiuixBox(
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .onGloballyPositioned { layoutCoordinates ->
-                            dropdownHeightPx = layoutCoordinates.size.height
-                            offsetPx = calculateOffsetPx(
-                                windowHeightPx, dropdownOffsetPx, dropdownHeightPx, componentHeightPx,
-                                insideHeightPx, statusBarPx, navigationBarPx, captionBarPx
-                            )
+                        .fillMaxSize()
+                        .pointerInput(Unit) {
+                            detectTapGestures(onPress = {
+                                dismissPopup()
+                                isDropdownExpanded.value = false
+                            })
                         }
-                        .align(if (alignLeft && !alwaysRight) AbsoluteAlignment.TopLeft else AbsoluteAlignment.TopRight)
-                        .clip(SquircleShape(18.dp))
-                        .background(MiuixTheme.colorScheme.dropdownBackground)
+                        .offset(y = offsetPx.dp / density.density)
                 ) {
-                    item {
-                        options.forEachIndexed { index, option ->
-                            DropdownImpl(
-                                option = option,
-                                isSelected = selectedOption.value == option,
-                                onOptionSelected = {
-                                    onOptionSelected(it)
-                                    isDropdownExpanded.value = false
-                                },
-                                textWidthDp = textWidthDp,
-                                index = index,
-                                optionsNumber = options.size,
-                                ripple = createRipple(),
-                            )
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .onGloballyPositioned { layoutCoordinates ->
+                                dropdownHeightPx = layoutCoordinates.size.height
+                                offsetPx = calculateOffsetPx(
+                                    windowHeightPx, dropdownOffsetPx, dropdownHeightPx, componentHeightPx,
+                                    insideHeightPx, statusBarPx, navigationBarPx, captionBarPx
+                                )
+                            }
+                            .align(if (alignLeft && !alwaysRight) AbsoluteAlignment.TopLeft else AbsoluteAlignment.TopRight)
+                            .clip(SquircleShape(18.dp))
+                            .background(MiuixTheme.colorScheme.dropdownBackground)
+                    ) {
+                        item {
+                            options.forEachIndexed { index, option ->
+                                DropdownImpl(
+                                    option = option,
+                                    isSelected = selectedOption.value == option,
+                                    onOptionSelected = {
+                                        onOptionSelected(it)
+                                        dismissPopup()
+                                        isDropdownExpanded.value = false
+                                    },
+                                    textWidthDp = textWidthDp,
+                                    index = index,
+                                    optionsNumber = options.size,
+                                    ripple = createRipple(),
+                                )
+                            }
                         }
                     }
                 }
             }
-        }
-    )
+        )
+    }
 }
 
 /**

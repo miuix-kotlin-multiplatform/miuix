@@ -12,11 +12,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.zIndex
@@ -24,57 +20,63 @@ import top.yukonga.miuix.kmp.basic.MiuixBox
 
 
 /**
- * A util class for showing dialog and popup.
+ * A util class for show popup and dialog.
  */
-class MiuixDialogUtil {
+class MiuixPopupUtil {
 
     companion object {
-        private var isPopupVisible by mutableStateOf(false)
-        private var isDialogVisible by mutableStateOf(false)
-        private var popupContext: (@Composable () -> Unit)? = null
-        private var dialogContext: (@Composable () -> Unit)? = null
+        private var isPopupShowing = mutableStateOf(false)
+        private var isDialogShowing = mutableStateOf(false)
+        private var popupContext = mutableStateOf<(@Composable () -> Unit)?>(null)
+        private var dialogContext = mutableStateOf<(@Composable () -> Unit)?>(null)
 
         /**
          * Show a dialog.
          *
-         * @param visible The visibility of the dialog.
          * @param content The [Composable] content of the dialog.
          */
         @Composable
         fun showDialog(
-            visible: MutableState<Boolean>,
             content: (@Composable () -> Unit)? = null,
         ) {
-            val updatedVisible by rememberUpdatedState(visible.value)
-            val updatedContent by rememberUpdatedState(content)
-            isDialogVisible = updatedVisible
-            dialogContext = updatedContent
+            isDialogShowing.value = true
+            dialogContext.value = content
+        }
+
+        /**
+         * Dismiss the dialog.
+         */
+        fun dismissDialog() {
+            isDialogShowing.value = false
         }
 
         /**
          * Show a popup.
          *
-         * @param visible The visibility of the popup.
          * @param content The [Composable] content of the popup.
          */
         @Composable
         fun showPopup(
-            visible: MutableState<Boolean>,
             content: (@Composable () -> Unit)? = null,
         ) {
-            val updatedVisible by rememberUpdatedState(visible.value)
-            val updatedContent by rememberUpdatedState(content)
-            isPopupVisible = updatedVisible
-            popupContext = updatedContent
+            isPopupShowing.value = true
+            popupContext.value = content
         }
 
         /**
-         * A host for dialog and popup. Needs to be added this to the [MiuixScaffold]
+         * Dismiss the dialog.
+         */
+        fun dismissPopup() {
+            isPopupShowing.value = false
+        }
+
+        /**
+         * A host for show popup and dialog. Already added to the [MiuixScaffold] by default.
          */
         @Composable
-        fun MiuixDialogHost() {
+        fun MiuixPopupHost() {
             AnimatedVisibility(
-                visible = isDialogVisible || isPopupVisible,
+                visible = isDialogShowing.value || isPopupShowing.value,
                 modifier = Modifier.zIndex(1f).fillMaxSize(),
             ) {
                 MiuixBox(
@@ -84,7 +86,7 @@ class MiuixDialogUtil {
                 )
             }
             AnimatedVisibility(
-                visible = isDialogVisible,
+                visible = isDialogShowing.value,
                 modifier = Modifier.zIndex(2f).fillMaxSize(),
                 enter = slideInVertically(animationSpec = tween(300)) { fullHeight -> fullHeight },
                 exit = slideOutVertically(animationSpec = tween(300)) { fullHeight -> fullHeight }
@@ -92,11 +94,11 @@ class MiuixDialogUtil {
                 MiuixBox(
                     modifier = Modifier.fillMaxSize().navigationBarsPadding()
                 ) {
-                    dialogContext?.invoke()
+                    dialogContext.value?.invoke()
                 }
             }
             AnimatedVisibility(
-                visible = isPopupVisible,
+                visible = isPopupShowing.value,
                 modifier = Modifier.zIndex(2f).fillMaxSize(),
                 enter = fadeIn(animationSpec = tween(100)) + scaleIn(animationSpec = tween(100), initialScale = 0.9f),
                 exit = fadeOut(animationSpec = tween(100)) + scaleOut(animationSpec = tween(100), targetScale = 0.9f)
@@ -104,7 +106,7 @@ class MiuixDialogUtil {
                 MiuixBox(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    popupContext?.invoke()
+                    popupContext.value?.invoke()
                 }
             }
         }

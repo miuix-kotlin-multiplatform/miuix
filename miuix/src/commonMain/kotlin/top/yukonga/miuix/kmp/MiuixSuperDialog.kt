@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.MiuixBox
 import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
 /**
@@ -53,7 +54,10 @@ fun MiuixSuperDialog(
             .padding(horizontal = insideMargin.width)
             .padding(bottom = insideMargin.height)
             .pointerInput(Unit) {
-                detectTapGestures(onTap = { onDismissRequest() })
+                detectTapGestures(onTap = {
+                    dismissDialog()
+                    onDismissRequest()
+                })
             }
     ) {
         Column(

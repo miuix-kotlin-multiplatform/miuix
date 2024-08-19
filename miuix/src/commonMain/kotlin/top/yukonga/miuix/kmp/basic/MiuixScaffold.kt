@@ -32,7 +32,10 @@ import dev.chrisbanes.haze.HazeDefaults
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.haze
 import dev.chrisbanes.haze.hazeChild
+import top.yukonga.miuix.kmp.MiuixTopAppBar
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtil
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.MiuixPopupHost
 
 /**
  * A scaffold component with Miuix style.
@@ -43,15 +46,14 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  * will work together correctly.
  *
  * To show a [Snackbar], use [SnackbarHostState.showSnackbar].
- * To show a [MiuixDialog], use [MiuixDialogUtil.showDialog].
-
+ * To show a [MiuixDialog], use [MiuixPopupUtil.showDialog].
+ * To show a [MiuixPopup], use [MiuixPopupUtil.showPopup].
+ *
  * @param modifier the [Modifier] to be applied to this scaffold
  * @param topBar top app bar of the screen
  * @param bottomBar bottom bar of the screen
  * @param snackbarHost component to host [Snackbar]s that are pushed to be shown via
  *   [SnackbarHostState.showSnackbar], typically a [SnackbarHost]
- * @param dialogHost component to host [MiuixDialog]s that are pushed to be shown via
- *   [MiuixDialogUtil.showDialog] & [MiuixDialogUtil.showPopup], typically a [MiuixDialogHost]
  * @param enableTopBarBlur whether to enable blur effect on the [MiuixTopAppBar].
  * @param alpha the alpha value of the blur effect. Default is 0.75f.
  * @param blurRadius the radius of the blur effect. Default is 25.dp.
@@ -74,7 +76,6 @@ fun MiuixScaffold(
     topBar: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
     snackbarHost: @Composable () -> Unit = {},
-    dialogHost: @Composable () -> Unit = {},
     enableTopBarBlur: Boolean = true,
     enableBottomBarBlur: Boolean = true,
     alpha: Float = 0.75f,
@@ -128,7 +129,7 @@ fun MiuixScaffold(
                 }
             },
             snackbar = snackbarHost,
-            dialog = dialogHost,
+            popup = { MiuixPopupHost() },
             contentWindowInsets = safeInsets,
         )
     }
@@ -139,7 +140,7 @@ private fun ScaffoldLayout(
     topBar: @Composable () -> Unit,
     snackbar: @Composable () -> Unit,
     bottomBar: @Composable () -> Unit,
-    dialog: @Composable () -> Unit,
+    popup: @Composable () -> Unit,
     content: @Composable (PaddingValues) -> Unit,
     contentWindowInsets: WindowInsets,
 ) {
@@ -149,8 +150,8 @@ private fun ScaffoldLayout(
 
         val looseConstraints = constraints.copy(minWidth = 0, minHeight = 0)
 
-        val dialogPlaceables =
-            subcompose(ScaffoldLayoutContent.Dialog, dialog).fastMap {
+        val popupPlaceables =
+            subcompose(ScaffoldLayoutContent.Popup, popup).fastMap {
                 it.measure(looseConstraints)
             }
 
@@ -181,7 +182,6 @@ private fun ScaffoldLayout(
                 .fastMap { it.measure(looseConstraints) }
 
         val bottomBarHeight = bottomBarPlaceables.fastMaxBy { it.height }?.height
-
 
         val snackbarOffsetFromBottom =
             if (snackbarHeight != 0) {
@@ -220,7 +220,7 @@ private fun ScaffoldLayout(
 
         layout(layoutWidth, layoutHeight) {
             // Placing to control drawing order to match default elevation of each placeable
-            dialogPlaceables.fastForEach { it.place(0, 0) }
+            popupPlaceables.fastForEach { it.place(0, 0) }
             bodyContentPlaceables.fastForEach { it.place(0, 0) }
             topBarPlaceables.fastForEach { it.place(0, 0) }
             snackbarPlaceables.fastForEach {
@@ -240,7 +240,7 @@ private enum class ScaffoldLayoutContent {
     TopBar,
     BottomBar,
     Snackbar,
-    Dialog,
+    Popup,
     MainContent
 }
 

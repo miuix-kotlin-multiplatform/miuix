@@ -26,7 +26,8 @@ import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
 import top.yukonga.miuix.kmp.basic.MiuixButton
 import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.MiuixDialogUtil
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showDialog
 
 @Composable
 fun TextComponent() {
@@ -131,31 +132,40 @@ fun TextComponent() {
 
 @Composable
 fun dialog(showDialog: MutableState<Boolean>) {
-    MiuixDialogUtil.showDialog(
-        visible = showDialog,
-        content = {
-            MiuixSuperDialog(
-                title = "Title",
-                summary = "Summary",
-                onDismissRequest = { showDialog.value = false },
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween
+    if (showDialog.value) {
+        showDialog(
+            content = {
+                MiuixSuperDialog(
+                    title = "Title",
+                    summary = "Summary",
+                    onDismissRequest = {
+                        showDialog.value = false
+                    },
                 ) {
-                    MiuixButton(
-                        modifier = Modifier.weight(1f),
-                        text = "Cancel",
-                        onClick = { showDialog.value = false }
-                    )
-                    Spacer(Modifier.width(20.dp))
-                    MiuixButton(
-                        modifier = Modifier.weight(1f),
-                        text = "Confirm",
-                        submit = true,
-                        onClick = { showDialog.value = false }
-                    )
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        MiuixButton(
+                            modifier = Modifier.weight(1f),
+                            text = "Cancel",
+                            onClick = {
+                                dismissDialog()
+                                showDialog.value = false
+                            }
+                        )
+                        Spacer(Modifier.width(20.dp))
+                        MiuixButton(
+                            modifier = Modifier.weight(1f),
+                            text = "Confirm",
+                            submit = true,
+                            onClick = {
+                                dismissDialog()
+                                showDialog.value = false
+                            }
+                        )
+                    }
                 }
             }
-        }
-    )
+        )
+    }
 }
