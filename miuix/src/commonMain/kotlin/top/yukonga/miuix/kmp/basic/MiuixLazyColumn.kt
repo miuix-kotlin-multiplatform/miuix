@@ -18,7 +18,7 @@ import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
  * @param enableOverScroll Whether to enable over-scroll.
  * @param contentPadding The padding to apply to the content.
  * @param topAppBarScrollBehavior The scroll behavior of the top app bar.
- * @param content The content of the [LazyColumn].
+ * @param content The [Composable] content of the [LazyColumn].
  */
 @Composable
 fun MiuixLazyColumn(

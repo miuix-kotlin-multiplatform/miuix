@@ -23,6 +23,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -34,9 +36,12 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
  * @param value The text to be displayed in the text field.
  * @param onValueChange The callback to be called when the value changes.
  * @param modifier The modifier to be applied to the [MiuixTextField].
+ * @param insideMargin The margin inside the [MiuixTextField].
+ * @param cornerRadius The corner radius of the [MiuixTextField].
  * @param label The label to be displayed when the [MiuixTextField] is empty.
  * @param enabled Whether the [MiuixTextField] is enabled.
  * @param readOnly Whether the [MiuixTextField] is read-only.
+ * @param isSecondary Whether the [MiuixTextField] is secondary.
  * @param textStyle The text style to be applied to the [MiuixTextField].
  * @param keyboardOptions The keyboard options to be applied to the [MiuixTextField].
  * @param keyboardActions The keyboard actions to be applied to the [MiuixTextField].
@@ -53,6 +58,8 @@ fun MiuixTextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    insideMargin: DpSize = DpSize(16.dp, 18.dp),
+    cornerRadius: Dp = 18.dp,
     label: String = "",
     enabled: Boolean = true,
     readOnly: Boolean = false,
@@ -72,8 +79,8 @@ fun MiuixTextField(
     val borderColor by animateColorAsState(
         if (isFocused) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.primaryContainer
     )
-    val labelOffsetY by animateDpAsState(if (value.isNotEmpty()) (-10).dp else 0.dp)
-    val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty()) 7.dp else 0.dp)
+    val labelOffsetY by animateDpAsState(if (value.isNotEmpty()) -(insideMargin.height / 2) else 0.dp)
+    val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty()) (insideMargin.height / 2) else 0.dp)
     val labelFontSize by animateDpAsState(if (value.isNotEmpty()) 10.dp else 16.dp)
 
     BasicTextField(
@@ -98,18 +105,17 @@ fun MiuixTextField(
                     .fillMaxWidth()
                     .background(
                         color = if (isSecondary) MiuixTheme.colorScheme.secondaryContainer else MiuixTheme.colorScheme.primaryContainer,
-                        shape = SquircleShape(18.dp)
+                        shape = SquircleShape(cornerRadius)
                     )
                     .border(
                         width = borderWidth,
                         color = borderColor,
-                        shape = SquircleShape(18.dp)
+                        shape = SquircleShape(cornerRadius)
                     )
             ) {
                 MiuixBox(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
+                        .fillMaxWidth().padding(horizontal = insideMargin.width, vertical = insideMargin.height)
                 ) {
                     MiuixBox(
                         modifier = Modifier.fillMaxWidth()

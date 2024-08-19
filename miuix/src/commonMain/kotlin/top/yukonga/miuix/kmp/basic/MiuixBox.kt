@@ -1,18 +1,11 @@
 package top.yukonga.miuix.kmp.basic
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.LayoutScopeMarker
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasurePolicy
@@ -49,7 +42,7 @@ import kotlin.math.max
  * @param modifier The modifier to be applied to the layout.
  * @param contentAlignment The default alignment inside the MiuixBox.
  * @param propagateMinConstraints Whether the incoming min constraints should be passed to content.
- * @param content The content of the [MiuixBox].
+ * @param content The [Composable] content of the [MiuixBox].
  */
 @Composable
 inline fun MiuixBox(
@@ -306,25 +299,3 @@ private class MiuixBoxChildDataNode(
 ) : ParentDataModifierNode, Modifier.Node() {
     override fun Density.modifyParentData(parentData: Any?) = this@MiuixBoxChildDataNode
 }
-
-@Stable
-private fun Modifier.surface(
-    shape: Shape,
-    backgroundColor: Color,
-    border: BorderStroke?,
-    shadowElevation: Float,
-) =
-    this.then(
-        if (shadowElevation > 0f) {
-            Modifier.graphicsLayer(
-                shadowElevation = shadowElevation,
-                shape = shape,
-                clip = false
-            )
-        } else {
-            Modifier
-        }
-    )
-        .then(if (border != null) Modifier.border(border, shape) else Modifier)
-        .background(color = backgroundColor, shape = shape)
-        .clip(shape)

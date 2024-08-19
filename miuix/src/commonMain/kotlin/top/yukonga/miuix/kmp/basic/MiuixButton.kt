@@ -16,6 +16,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
@@ -28,6 +29,7 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
  * @param modifier The modifier to be applied to the [MiuixButton].
  * @param enabled Whether the [MiuixButton] is enabled.
  * @param submit Whether the [MiuixButton] is a submit button.
+ * @param cornerRadius The corner radius of the [MiuixButton].
  * @param interactionSource The interaction source to be applied to the [MiuixButton].
  */
 @Composable
@@ -37,6 +39,7 @@ fun MiuixButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     submit: Boolean = false,
+    cornerRadius: Dp = 18.dp,
     interactionSource: MutableInteractionSource? = remember { MutableInteractionSource() }
 ) {
     val hapticFeedback = LocalHapticFeedback.current
@@ -49,7 +52,7 @@ fun MiuixButton(
         },
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
-        shape = SquircleShape(16.dp),
+        shape = SquircleShape(cornerRadius),
         color = color,
         interactionSource = interactionSource
     ) {

@@ -9,7 +9,7 @@ plugins {
 }
 
 kotlin {
-    withSourcesJar(false)
+    withSourcesJar(true)
 
     jvmToolchain(17)
 

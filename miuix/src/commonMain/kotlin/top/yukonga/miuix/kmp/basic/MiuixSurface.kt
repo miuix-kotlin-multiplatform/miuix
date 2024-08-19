@@ -27,7 +27,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  * @param shape The shape of the [MiuixSurface].
  * @param color The color of the [MiuixSurface].
  * @param border The border of the [MiuixSurface].
- * @param content The content of the [MiuixSurface].
+ * @param content The [Composable] content of the [MiuixSurface].
  */
 @Composable
 @NonRestartableComposable
@@ -60,8 +60,8 @@ fun MiuixSurface(
  * @param shape The shape of the [MiuixSurface].
  * @param color The color of the [MiuixSurface].
  * @param border The border of the [MiuixSurface].
- * @param content The content of the [MiuixSurface].
  * @param interactionSource The interaction source to be applied to the [MiuixSurface].
+ * @param content The [Composable] content of the [MiuixSurface].
  */
 @Composable
 @NonRestartableComposable

@@ -35,10 +35,7 @@ fun OtherComponent(padding: PaddingValues) {
         value = text,
         onValueChange = { text = it },
         label = "Text Field",
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 28.dp)
-            .padding(vertical = 28.dp),
+        modifier = Modifier.padding(28.dp),
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
     )
