@@ -8,9 +8,9 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+
+val LocalContentColor = compositionLocalOf { Color.Black }
 
 /**
  * A surface component with Miuix style.
@@ -76,25 +78,24 @@ fun MiuixSurface(
     content: @Composable () -> Unit
 ) {
     val ripple = ripple(color = MiuixTheme.colorScheme.onBackground.copy(alpha = 0.8f))
-    CompositionLocalProvider {
-        MiuixBox(
-            modifier = modifier
-                .surface(
-                    shape = shape,
-                    backgroundColor = color,
-                    border = border
-                )
-                .minimumInteractiveComponentSize()
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = ripple,
-                    enabled = enabled,
-                    onClick = onClick
-                ),
-            propagateMinConstraints = true
-        ) {
-            content()
-        }
+
+    MiuixBox(
+        modifier = modifier
+            .surface(
+                shape = shape,
+                backgroundColor = color,
+                border = border
+            )
+            .minimumInteractiveComponentSize()
+            .clickable(
+                interactionSource = interactionSource,
+                indication = ripple,
+                enabled = enabled,
+                onClick = onClick
+            ),
+        propagateMinConstraints = true
+    ) {
+        content()
     }
 }
 
