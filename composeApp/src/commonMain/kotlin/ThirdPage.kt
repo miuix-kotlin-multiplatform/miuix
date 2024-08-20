@@ -6,6 +6,7 @@ import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.MiuixSuperSwitch
 import top.yukonga.miuix.kmp.basic.MiuixLazyColumn
+import top.yukonga.miuix.kmp.utils.enableOverscroll
 
 @Composable
 fun ThirdPage(
@@ -65,9 +66,9 @@ fun ThirdPage(
             )
             MiuixSuperSwitch(
                 title = "Enable Over Scroll",
-                checked = if (platform() != Platform.WasmJs && platform() != Platform.Desktop) enableOverScroll else false,
+                checked = if (enableOverscroll()) enableOverScroll else false,
                 onCheckedChange = onEnableOverScrollChange,
-                enabled = platform() != Platform.WasmJs && platform() != Platform.Desktop,
+                enabled = enableOverscroll(),
             )
         }
     }
