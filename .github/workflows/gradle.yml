@@ -33,9 +33,30 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
+          distribution: 'zulu'
           java-version: '17'
-          distribution: 'temurin'
       - name: Build with Gradle
         uses: gradle/actions/setup-gradle@v4
       - name: Run the Test
         run: ./gradlew ${{ matrix.target }}
+
+  simple:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      - name: Build with Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Build example app
+        run: ./gradlew :composeApp:assembleRelease
+      - name: Upload android artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AndroidExampleApp
+          path: composeApp/build/outputs/apk/release
