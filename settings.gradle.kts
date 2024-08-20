@@ -16,5 +16,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "miuix-kotlin-multiplatform"
+rootProject.name = "miuix"
 include(":miuix", ":composeApp")
