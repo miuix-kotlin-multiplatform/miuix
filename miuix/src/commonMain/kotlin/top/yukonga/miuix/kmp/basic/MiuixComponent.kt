@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -27,7 +28,6 @@ import top.yukonga.miuix.kmp.utils.createRipple
  * @param summary The summary of the [MiuixBasicComponent].
  * @param leftAction The [Composable] content that on the left side of the [MiuixBasicComponent].
  * @param rightActions The [Composable] content on the right side of the [MiuixBasicComponent].
- * @param enabledClick Whether the [MiuixBasicComponent] is clickable.
  * @param onClick The callback when the [MiuixBasicComponent] is clicked.
  * @param interactionSource The interaction source to be applied to the [MiuixBasicComponent].
  * @param indication The indication to be applied to the [MiuixBasicComponent].
@@ -40,19 +40,18 @@ fun MiuixBasicComponent(
     summary: String? = null,
     leftAction: @Composable (() -> Unit?)? = null,
     rightActions: @Composable RowScope.() -> Unit = {},
-    enabledClick: Boolean = true,
     onClick: (() -> Unit)? = null,
-    interactionSource: MutableInteractionSource? = null,
-    indication: Indication? = null
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    indication: Indication = createRipple()
 ) {
     Row(
-        modifier = if (enabledClick) {
+        modifier = if (onClick != null) {
             modifier
                 .clickable(
                     interactionSource = interactionSource,
-                    indication = indication ?: createRipple()
+                    indication = indication
                 ) {
-                    onClick?.invoke()
+                    onClick.invoke()
                 }
         } else {
             modifier

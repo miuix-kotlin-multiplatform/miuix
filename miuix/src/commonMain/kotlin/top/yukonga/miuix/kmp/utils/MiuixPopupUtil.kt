@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.zIndex
 import top.yukonga.miuix.kmp.basic.MiuixBox
-
+import top.yukonga.miuix.kmp.basic.MiuixScaffold
 
 /**
  * A util class for show popup and dialog.

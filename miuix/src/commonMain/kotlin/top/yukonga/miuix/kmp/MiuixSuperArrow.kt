@@ -30,7 +30,6 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  * @param rightText The text on the right side of the [MiuixSuperArrow].
  * @param onClick The callback when the [MiuixSuperArrow] is clicked.
  * @param insideMargin The margin inside the [MiuixSuperArrow].
- * @param enabledClick Whether the [MiuixSuperArrow] is clickable.
  */
 @Composable
 fun MiuixSuperArrow(
@@ -39,12 +38,9 @@ fun MiuixSuperArrow(
     summary: String? = null,
     leftAction: @Composable (() -> Unit)? = null,
     rightText: String? = null,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
     insideMargin: DpSize = DpSize(28.dp, 14.dp),
-    enabledClick: Boolean = true
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-
     MiuixBasicComponent(
         modifier = modifier,
         insideMargin = insideMargin,
@@ -52,8 +48,6 @@ fun MiuixSuperArrow(
         summary = summary,
         leftAction = leftAction,
         rightActions = { createRightActions(rightText) },
-        enabledClick = enabledClick,
-        interactionSource = interactionSource,
         onClick = onClick
     )
 }

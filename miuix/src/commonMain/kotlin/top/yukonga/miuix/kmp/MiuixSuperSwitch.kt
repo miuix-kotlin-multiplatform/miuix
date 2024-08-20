@@ -22,7 +22,7 @@ import top.yukonga.miuix.kmp.basic.MiuixSwitch
  * @param onCheckedChange The callback when the checked state of the [MiuixSuperSwitch] is changed.
  * @param modifier The modifier to be applied to the [MiuixSuperSwitch].
  * @param insideMargin The margin inside the [MiuixSuperSwitch].
- * @param enabledClick Whether the [MiuixSuperSwitch] is clickable.
+ * @param enabled Whether the [MiuixSuperSwitch] is clickable.
  */
 @Composable
 fun MiuixSuperSwitch(
@@ -33,7 +33,7 @@ fun MiuixSuperSwitch(
     onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier,
     insideMargin: DpSize = DpSize(28.dp, 7.dp),
-    enabledClick: Boolean = true
+    enabled: Boolean = true
 ) {
     var isChecked by remember { mutableStateOf(checked) }
     val interactionSource = remember { MutableInteractionSource() }
@@ -52,14 +52,15 @@ fun MiuixSuperSwitch(
             MiuixSwitch(
                 checked = checked,
                 onCheckedChange = onCheckedChange,
-                enabled = enabledClick
+                enabled = enabled
             )
         },
-        enabledClick = enabledClick,
         interactionSource = interactionSource,
         onClick = {
-            isChecked = !isChecked
-            onCheckedChange?.invoke(isChecked)
+            if (enabled) {
+                isChecked = !isChecked
+                onCheckedChange?.invoke(isChecked)
+            }
         }
     )
 }

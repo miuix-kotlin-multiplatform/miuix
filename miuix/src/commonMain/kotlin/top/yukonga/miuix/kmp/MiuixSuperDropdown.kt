@@ -1,7 +1,6 @@
 package top.yukonga.miuix.kmp
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -168,8 +167,7 @@ fun MiuixSuperDropdown(
                 colorFilter = BlendModeColorFilter(MiuixTheme.colorScheme.subDropdown, BlendMode.SrcIn),
                 contentDescription = null
             )
-        },
-        enabledClick = false
+        }
     )
 
     if (isDropdownExpanded.value) hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -214,8 +212,7 @@ fun MiuixSuperDropdown(
                                     },
                                     textWidthDp = textWidthDp,
                                     index = index,
-                                    optionsNumber = options.size,
-                                    ripple = createRipple(),
+                                    optionsNumber = options.size
                                 )
                             }
                         }
@@ -244,8 +241,7 @@ fun DropdownImpl(
     index: Int,
     optionsNumber: Int,
     onOptionSelected: (String) -> Unit,
-    textWidthDp: Dp?,
-    ripple: Indication
+    textWidthDp: Dp?
 ) {
     val dropdownInteractionSource = remember { MutableInteractionSource() }
     val additionalTopPadding = if (index == 0) 24.dp else 14.dp
@@ -271,7 +267,7 @@ fun DropdownImpl(
         modifier = Modifier
             .clickable(
                 interactionSource = dropdownInteractionSource,
-                indication = ripple,
+                indication = createRipple(),
             ) {
                 onOptionSelected(option)
             }

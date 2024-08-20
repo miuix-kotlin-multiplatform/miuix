@@ -79,7 +79,8 @@ fun TextComponent() {
             MiuixText(text = "Right1")
             Spacer(Modifier.width(8.dp))
             MiuixText(text = "Right2")
-        }
+        },
+        onClick = {}
     )
 
     MiuixSuperArrow(
