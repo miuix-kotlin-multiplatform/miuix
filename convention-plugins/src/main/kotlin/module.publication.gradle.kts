@@ -17,7 +17,7 @@ publishing {
 
         // Provide artifacts information required by Maven Central
         pom {
-            name.set("Miuix-like UI")
+            name.set("miuix")
             description.set("A MiuiX-like UI for Kotlin Multiplatform")
             url.set("https://github.com/miuix-kotlin-multiplatform/miuix")
 

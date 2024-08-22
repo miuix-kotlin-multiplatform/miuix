@@ -1,6 +1,7 @@
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.platform.LocalDensity
+import kotlin.math.roundToInt
 
 object WindowSizeProvider {
     private var composeWindow: ComposeWindow? = null
@@ -24,9 +25,9 @@ actual fun getWindowSize(): WindowSize {
     val density = LocalDensity.current.density
     val windowSize = WindowSizeProvider.getWindowSize()
     return WindowSize(
-        width = (windowSize.width * density).toInt(),
-        height = (windowSize.height * density).toInt()
+        width = (windowSize.width * density).roundToInt(),
+        height = (windowSize.height * density).roundToInt()
     )
 }
 
-actual fun platform(): Platform  = Platform.Desktop
+actual fun platform(): Platform = Platform.Desktop
