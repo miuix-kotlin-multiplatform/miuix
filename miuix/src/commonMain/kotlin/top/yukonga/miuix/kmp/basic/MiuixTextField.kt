@@ -15,6 +15,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
@@ -76,9 +77,8 @@ fun MiuixTextField(
 ) {
     val isFocused by interactionSource.collectIsFocusedAsState()
     val borderWidth by animateDpAsState(if (isFocused) 1.6.dp else 0.dp)
-    val borderColor by animateColorAsState(
-        if (isFocused) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.primaryContainer
-    )
+    val backgroundColor by rememberUpdatedState(if (isSecondary) MiuixTheme.colorScheme.secondaryContainer else MiuixTheme.colorScheme.primaryContainer)
+    val borderColor by animateColorAsState(if (isFocused) MiuixTheme.colorScheme.primary else backgroundColor)
     val labelOffsetY by animateDpAsState(if (value.isNotEmpty()) -(insideMargin.height / 2) else 0.dp)
     val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty()) (insideMargin.height / 2) else 0.dp)
     val labelFontSize by animateDpAsState(if (value.isNotEmpty()) 10.dp else 16.dp)
@@ -104,7 +104,7 @@ fun MiuixTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = if (isSecondary) MiuixTheme.colorScheme.secondaryContainer else MiuixTheme.colorScheme.primaryContainer,
+                        color = backgroundColor,
                         shape = SquircleShape(cornerRadius)
                     )
                     .border(

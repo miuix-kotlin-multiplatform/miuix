@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -86,18 +85,17 @@ fun MiuixSwitch(
     )
     val toggleableModifier = remember(onCheckedChange, isChecked, enabled) {
         if (onCheckedChange != null) {
-            Modifier.minimumInteractiveComponentSize()
-                .toggleable(
-                    value = isChecked,
-                    onValueChange = {
-                        onCheckedChange(it)
-                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                    },
-                    enabled = enabled,
-                    role = Role.Switch,
-                    interactionSource = interactionSource,
-                    indication = null
-                )
+            Modifier.toggleable(
+                value = isChecked,
+                onValueChange = {
+                    onCheckedChange(it)
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                },
+                enabled = enabled,
+                role = Role.Switch,
+                interactionSource = interactionSource,
+                indication = null
+            )
         } else {
             Modifier
         }
@@ -107,6 +105,7 @@ fun MiuixSwitch(
         modifier = modifier
             .then(toggleableModifier)
             .wrapContentSize(Alignment.Center)
+            .size(52.dp, 28.5.dp)
             .requiredSize(52.dp, 28.5.dp)
             .clip(SquircleShape(100.dp))
             .background(if (enabled) backgroundColor else disabledBackgroundColor)
