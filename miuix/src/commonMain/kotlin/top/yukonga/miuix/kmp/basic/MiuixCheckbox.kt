@@ -37,7 +37,6 @@ fun MiuixCheckbox(
     interactionSource: MutableInteractionSource? = remember { MutableInteractionSource() }
 ) {
     val isChecked by rememberUpdatedState(checked)
-    println("isChecked: $isChecked")
     var isPressed by remember { mutableStateOf(false) }
     val backgroundColor by animateColorAsState(
         if (isChecked) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.switchThumb,

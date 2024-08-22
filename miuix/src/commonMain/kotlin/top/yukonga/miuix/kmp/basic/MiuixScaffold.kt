@@ -28,8 +28,9 @@ import androidx.compose.ui.unit.offset
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMaxBy
-import dev.chrisbanes.haze.HazeDefaults
 import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.haze
 import dev.chrisbanes.haze.hazeChild
 import top.yukonga.miuix.kmp.MiuixTopAppBar
@@ -117,9 +118,9 @@ fun MiuixScaffold(
             content = {
                 MiuixBox(
                     Modifier.haze(
-                        state = hazeState, style = HazeDefaults.style(
+                        state = hazeState, style = HazeStyle(
                             backgroundColor = containerColor,
-                            tint = containerColor.copy(alpha),
+                            tint = HazeTint.Color(containerColor.copy(alpha)),
                             blurRadius = blurRadius,
                             noiseFactor = noiseFactor
                         )
