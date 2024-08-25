@@ -8,6 +8,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -18,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
@@ -30,6 +33,9 @@ import top.yukonga.miuix.kmp.NavigationItem
 import top.yukonga.miuix.kmp.basic.MiuixHorizontalPager
 import top.yukonga.miuix.kmp.basic.MiuixScaffold
 import top.yukonga.miuix.kmp.basic.MiuixSurface
+import top.yukonga.miuix.kmp.icon.ArrowBack
+import top.yukonga.miuix.kmp.icon.GitHub
+import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.rememberMiuixTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import utils.FPSMonitor
@@ -75,6 +81,8 @@ fun UITest() {
     val enableBottomBarBlur = remember { mutableStateOf(true) }
     val enableOverScroll = remember { mutableStateOf(true) }
 
+    val uriHandler = LocalUriHandler.current
+
     MiuixSurface {
         MiuixScaffold(
             modifier = Modifier.fillMaxSize(),
@@ -83,6 +91,30 @@ fun UITest() {
             topBar = {
                 if (showTopAppBar.value) {
                     MiuixTopAppBar(
+                        navigationIcon = {
+                            IconButton(
+                                modifier = Modifier.padding(start = 12.dp),
+                                onClick = {}
+                            ) {
+                                Icon(
+                                    imageVector = MiuixIcons.ArrowBack,
+                                    contentDescription = "ArrowBack"
+                                )
+                            }
+                        },
+                        actions = {
+                            IconButton(
+                                modifier = Modifier.padding(end = 12.dp),
+                                onClick = {
+                                    uriHandler.openUri("https://github.com/miuix-kotlin-multiplatform/miuix")
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = MiuixIcons.GitHub,
+                                    contentDescription = "GitHub"
+                                )
+                            }
+                        },
                         color = if (enableTopBarBlur.value) Color.Transparent else MiuixTheme.colorScheme.background,
                         title = "Miuix",
                         scrollBehavior = currentScrollBehavior

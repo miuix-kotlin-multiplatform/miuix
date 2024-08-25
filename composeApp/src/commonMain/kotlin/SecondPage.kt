@@ -23,7 +23,7 @@ fun SecondPage(
         contentPadding = PaddingValues(top = padding.calculateTopPadding()),
         topAppBarScrollBehavior = topAppBarScrollBehavior
     ) {
-        items(100) {
+        items(25) {
             MiuixSuperDropdown(
                 title = "Dropdown",
                 summary = "Popup near click",

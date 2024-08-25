@@ -460,7 +460,6 @@ private suspend fun settleAppBar(
 }
 
 private val TopAppBarHorizontalPadding = 28.dp
-private val TopAppBarTopPadding = 15.dp
 
 /** A functional interface for providing an app-bar scroll offset. */
 private fun interface ScrolledOffset {
@@ -501,7 +500,6 @@ private fun MiuixTopAppBarLayout(
             MiuixBox(
                 Modifier
                     .layoutId("navigationIcon")
-                    .padding(start = TopAppBarHorizontalPadding)
             ) {
                 navigationIcon()
             }
@@ -509,7 +507,6 @@ private fun MiuixTopAppBarLayout(
                 Modifier
                     .layoutId("title")
                     .padding(horizontal = TopAppBarHorizontalPadding)
-                    .padding(top = TopAppBarTopPadding)
                     .graphicsLayer(
                         translationY = translationY,
                         alpha = alpha
@@ -525,7 +522,6 @@ private fun MiuixTopAppBarLayout(
             MiuixBox(
                 Modifier
                     .layoutId("actionIcons")
-                    .padding(end = TopAppBarHorizontalPadding)
             ) {
                 actions()
             }
@@ -575,7 +571,7 @@ private fun MiuixTopAppBarLayout(
         val largeTitlePlaceable =
             measurables
                 .fastFirst { it.layoutId == "largeTitle" }
-                .measure(constraints.copy(minWidth = 0, maxWidth = maxTitleWidth))
+                .measure(constraints.copy(minWidth = 0))
 
         // Subtract the scrolledOffset from the maxHeight. The scrolledOffset is expected to be
         // equal or smaller than zero.
@@ -591,10 +587,12 @@ private fun MiuixTopAppBarLayout(
             }
 
         layout(constraints.maxWidth, layoutHeight) {
+            val verticalCenter = 60.dp.roundToPx() / 2
+
             // Navigation icon
             navigationIconPlaceable.placeRelative(
                 x = 0,
-                y = 0
+                y = verticalCenter - navigationIconPlaceable.height / 2
             )
 
             // Title
@@ -606,13 +604,13 @@ private fun MiuixTopAppBarLayout(
             }
             titlePlaceable.placeRelative(
                 x = baseX,
-                y = 0
+                y = verticalCenter - titlePlaceable.height / 2
             )
 
             // Action icons
             actionIconsPlaceable.placeRelative(
                 x = constraints.maxWidth - actionIconsPlaceable.width,
-                y = 0
+                y = verticalCenter - actionIconsPlaceable.height / 2
             )
 
             // Large title

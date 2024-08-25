@@ -52,13 +52,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import getWindowSize
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.painterResource
 import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
 import top.yukonga.miuix.kmp.basic.MiuixBox
 import top.yukonga.miuix.kmp.basic.MiuixText
-import top.yukonga.miuix.kmp.miuix.generated.resources.Res
-import top.yukonga.miuix.kmp.miuix.generated.resources.ic_arrow_up_down
-import top.yukonga.miuix.kmp.miuix.generated.resources.ic_dropdown_select
+import top.yukonga.miuix.kmp.icon.ArrowUpDown
+import top.yukonga.miuix.kmp.icon.Check
+import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showPopup
@@ -163,7 +162,7 @@ fun MiuixSuperDropdown(
                     .size(15.dp)
                     .padding(start = 6.dp)
                     .align(Alignment.CenterVertically),
-                painter = painterResource(Res.drawable.ic_arrow_up_down),
+                imageVector = MiuixIcons.ArrowUpDown,
                 colorFilter = BlendModeColorFilter(MiuixTheme.colorScheme.subDropdown, BlendMode.SrcIn),
                 contentDescription = null
             )
@@ -284,7 +283,7 @@ fun DropdownImpl(
         )
         Image(
             modifier = Modifier.padding(start = 50.dp).size(16.dp),
-            painter = painterResource(Res.drawable.ic_dropdown_select),
+            imageVector = MiuixIcons.Check,
             colorFilter = BlendModeColorFilter(selectColor, BlendMode.SrcIn),
             contentDescription = null,
         )
