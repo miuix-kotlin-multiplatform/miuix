@@ -32,9 +32,8 @@ import top.yukonga.miuix.kmp.MiuixTopAppBar
 import top.yukonga.miuix.kmp.NavigationItem
 import top.yukonga.miuix.kmp.basic.MiuixHorizontalPager
 import top.yukonga.miuix.kmp.basic.MiuixScaffold
-import top.yukonga.miuix.kmp.basic.MiuixSurface
-import top.yukonga.miuix.kmp.icon.ArrowBack
-import top.yukonga.miuix.kmp.icon.GitHub
+import top.yukonga.miuix.kmp.icon.icons.ArrowBack
+import top.yukonga.miuix.kmp.icon.icons.GitHub
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.rememberMiuixTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -83,80 +82,80 @@ fun UITest() {
 
     val uriHandler = LocalUriHandler.current
 
-    MiuixSurface {
-        MiuixScaffold(
-            modifier = Modifier.fillMaxSize(),
-            enableTopBarBlur = enableTopBarBlur.value,
-            enableBottomBarBlur = enableBottomBarBlur.value,
-            topBar = {
-                if (showTopAppBar.value) {
-                    MiuixTopAppBar(
-                        navigationIcon = {
-                            IconButton(
-                                modifier = Modifier.padding(start = 12.dp),
-                                onClick = {}
-                            ) {
-                                Icon(
-                                    imageVector = MiuixIcons.ArrowBack,
-                                    contentDescription = "ArrowBack"
-                                )
-                            }
-                        },
-                        actions = {
-                            IconButton(
-                                modifier = Modifier.padding(end = 12.dp),
-                                onClick = {
-                                    uriHandler.openUri("https://github.com/miuix-kotlin-multiplatform/miuix")
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = MiuixIcons.GitHub,
-                                    contentDescription = "GitHub"
-                                )
-                            }
-                        },
-                        color = if (enableTopBarBlur.value) Color.Transparent else MiuixTheme.colorScheme.background,
-                        title = "Miuix",
-                        scrollBehavior = currentScrollBehavior
-                    )
-                }
-            },
-            bottomBar = {
-                if (showBottomBar.value) {
-                    MiuixNavigationBar(
-                        color = if (enableBottomBarBlur.value) Color.Transparent else MiuixTheme.colorScheme.background,
-                        items = items,
-                        selected = targetPage,
-                        onClick = { index ->
-                            targetPage = index
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(index)
-                            }
+    MiuixScaffold(
+        modifier = Modifier.fillMaxSize(),
+        enableTopBarBlur = enableTopBarBlur.value,
+        enableBottomBarBlur = enableBottomBarBlur.value,
+        topBar = {
+            if (showTopAppBar.value) {
+                MiuixTopAppBar(
+                    navigationIcon = {
+                        IconButton(
+                            modifier = Modifier.padding(start = 12.dp),
+                            onClick = {}
+                        ) {
+                            Icon(
+                                imageVector = MiuixIcons.ArrowBack,
+                                tint = MiuixTheme.colorScheme.onBackground,
+                                contentDescription = "ArrowBack"
+                            )
                         }
-                    )
-                }
+                    },
+                    actions = {
+                        IconButton(
+                            modifier = Modifier.padding(end = 12.dp),
+                            onClick = {
+                                uriHandler.openUri("https://github.com/miuix-kotlin-multiplatform/miuix")
+                            }
+                        ) {
+                            Icon(
+                                imageVector = MiuixIcons.GitHub,
+                                tint = MiuixTheme.colorScheme.onBackground,
+                                contentDescription = "GitHub"
+                            )
+                        }
+                    },
+                    color = if (enableTopBarBlur.value) Color.Transparent else MiuixTheme.colorScheme.background,
+                    title = "Miuix",
+                    scrollBehavior = currentScrollBehavior
+                )
             }
-        ) { padding ->
-            AppHorizontalPager(
-                pagerState = pagerState,
-                topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
-                padding = padding,
-                showFPSMonitor = showFPSMonitor.value,
-                onShowFPSMonitorChange = { showFPSMonitor.value = it },
-                showTopAppBar = showTopAppBar.value,
-                onShowTopAppBarChange = { showTopAppBar.value = it },
-                showBottomBar = showBottomBar.value,
-                onShowBottomBarChange = { showBottomBar.value = it },
-                enablePageUserScroll = enablePageUserScroll.value,
-                onEnablePageUserScrollChange = { enablePageUserScroll.value = it },
-                enableTopBarBlur = enableTopBarBlur.value,
-                onEnableTopBarBlurChange = { enableTopBarBlur.value = it },
-                enableBottomBarBlur = enableBottomBarBlur.value,
-                onEnableBottomBarBlurChange = { enableBottomBarBlur.value = it },
-                enableOverScroll = enableOverScroll.value,
-                onEnableOverScrollChange = { enableOverScroll.value = it }
-            )
+        },
+        bottomBar = {
+            if (showBottomBar.value) {
+                MiuixNavigationBar(
+                    color = if (enableBottomBarBlur.value) Color.Transparent else MiuixTheme.colorScheme.background,
+                    items = items,
+                    selected = targetPage,
+                    onClick = { index ->
+                        targetPage = index
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    }
+                )
+            }
         }
+    ) { padding ->
+        AppHorizontalPager(
+            pagerState = pagerState,
+            topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
+            padding = padding,
+            showFPSMonitor = showFPSMonitor.value,
+            onShowFPSMonitorChange = { showFPSMonitor.value = it },
+            showTopAppBar = showTopAppBar.value,
+            onShowTopAppBarChange = { showTopAppBar.value = it },
+            showBottomBar = showBottomBar.value,
+            onShowBottomBarChange = { showBottomBar.value = it },
+            enablePageUserScroll = enablePageUserScroll.value,
+            onEnablePageUserScrollChange = { enablePageUserScroll.value = it },
+            enableTopBarBlur = enableTopBarBlur.value,
+            onEnableTopBarBlurChange = { enableTopBarBlur.value = it },
+            enableBottomBarBlur = enableBottomBarBlur.value,
+            onEnableBottomBarBlurChange = { enableBottomBarBlur.value = it },
+            enableOverScroll = enableOverScroll.value,
+            onEnableOverScrollChange = { enableOverScroll.value = it }
+        )
     }
 
     if (showFPSMonitor.value) {

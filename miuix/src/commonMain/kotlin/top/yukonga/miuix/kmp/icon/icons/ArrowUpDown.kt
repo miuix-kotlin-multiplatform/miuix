@@ -1,9 +1,10 @@
-package top.yukonga.miuix.kmp.icon
+package top.yukonga.miuix.kmp.icon.icons
 
 import androidx.compose.material.icons.materialPath
 import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import top.yukonga.miuix.kmp.icon.MiuixIcons
 
 val MiuixIcons.ArrowUpDown: ImageVector
     get() {

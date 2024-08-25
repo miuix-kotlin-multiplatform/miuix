@@ -63,7 +63,7 @@ fun MiuixNavigationBar(
     val captionBarBottomPadding by rememberUpdatedState(
         WindowInsets.captionBar.only(WindowInsetsSides.Bottom).asPaddingValues().calculateBottomPadding()
     )
-    val animatedCaptionBarHeight: Dp by animateDpAsState(
+    val animatedCaptionBarHeight by animateDpAsState(
         targetValue = if (captionBarBottomPadding > 0.dp) captionBarBottomPadding else 0.dp,
         animationSpec = tween(durationMillis = 300)
     )

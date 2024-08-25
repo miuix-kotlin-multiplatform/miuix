@@ -64,7 +64,6 @@ fun MiuixTextField(
     label: String = "",
     enabled: Boolean = true,
     readOnly: Boolean = false,
-    isSecondary: Boolean = false,
     textStyle: TextStyle = MiuixTheme.textStyles.main,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
@@ -77,8 +76,8 @@ fun MiuixTextField(
 ) {
     val isFocused by interactionSource.collectIsFocusedAsState()
     val borderWidth by animateDpAsState(if (isFocused) 1.6.dp else 0.dp)
-    val backgroundColor by rememberUpdatedState(if (isSecondary) MiuixTheme.colorScheme.secondaryContainer else MiuixTheme.colorScheme.primaryContainer)
-    val borderColor by animateColorAsState(if (isFocused) MiuixTheme.colorScheme.primary else backgroundColor)
+    val backgroundColor by rememberUpdatedState(MiuixTheme.colorScheme.secondary)
+    val borderColor by animateColorAsState(if (isFocused) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.secondary)
     val labelOffsetY by animateDpAsState(if (value.isNotEmpty()) -(insideMargin.height / 2) else 0.dp)
     val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty()) (insideMargin.height / 2) else 0.dp)
     val labelFontSize by animateDpAsState(if (value.isNotEmpty()) 10.dp else 16.dp)
@@ -98,7 +97,7 @@ fun MiuixTextField(
         visualTransformation = visualTransformation,
         onTextLayout = onTextLayout,
         interactionSource = interactionSource,
-        cursorBrush = SolidColor(MiuixTheme.colorScheme.cursor),
+        cursorBrush = SolidColor(MiuixTheme.colorScheme.primary),
         decorationBox = { innerTextField ->
             MiuixBox(
                 modifier = Modifier

@@ -55,8 +55,8 @@ import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
 import top.yukonga.miuix.kmp.basic.MiuixBox
 import top.yukonga.miuix.kmp.basic.MiuixText
-import top.yukonga.miuix.kmp.icon.ArrowUpDown
-import top.yukonga.miuix.kmp.icon.Check
+import top.yukonga.miuix.kmp.icon.icons.ArrowUpDown
+import top.yukonga.miuix.kmp.icon.icons.Check
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup

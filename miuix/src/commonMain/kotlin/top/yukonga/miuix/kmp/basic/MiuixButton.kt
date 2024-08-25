@@ -75,9 +75,9 @@ fun MiuixButton(
 @Composable
 private fun getButtonColor(enabled: Boolean, submit: Boolean): Color {
     return if (enabled) {
-        if (submit) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.buttonBg
+        if (submit) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.secondary
     } else {
-        if (submit) MiuixTheme.colorScheme.disabledBg else MiuixTheme.colorScheme.switchThumb
+        if (submit) MiuixTheme.colorScheme.submitDisabledBg else MiuixTheme.colorScheme.disabledBg
     }
 }
 

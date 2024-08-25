@@ -28,8 +28,8 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 fun OtherComponent(padding: PaddingValues) {
     val focusManager = LocalFocusManager.current
     var text by remember { mutableStateOf("") }
-    var progress by remember { mutableStateOf(0.2f) }
-    var progressFloat by remember { mutableStateOf(0.6f) }
+    var progress by remember { mutableStateOf(0.25f) }
+    val progressDisable by remember { mutableStateOf(0.5f) }
 
     MiuixTextField(
         value = text,
@@ -41,17 +41,17 @@ fun OtherComponent(padding: PaddingValues) {
     )
 
     MiuixSlider(
-        progress = progressFloat,
-        onProgressChange = { newProgress -> progressFloat = newProgress },
+        progress = progress,
+        onProgressChange = { newProgress -> progress = newProgress },
         modifier = Modifier
             .padding(horizontal = 28.dp)
             .padding(bottom = 28.dp)
     )
 
     MiuixSlider(
-        progress = progress,
-        onProgressChange = { newProgress -> progress = newProgress },
-        dragShow = true,
+        progress = progressDisable,
+        onProgressChange = {},
+        enabled = false,
         modifier = Modifier
             .padding(horizontal = 28.dp)
             .padding(bottom = 28.dp)
