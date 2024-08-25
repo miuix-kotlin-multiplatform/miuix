@@ -1,6 +1,5 @@
 package component
 
-import MiuixCheckbox
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.MiuixSuperCheckbox
 import top.yukonga.miuix.kmp.MiuixSuperSwitch
 import top.yukonga.miuix.kmp.basic.MiuixButton
+import top.yukonga.miuix.kmp.basic.MiuixCheckbox
 import top.yukonga.miuix.kmp.basic.MiuixSwitch
 
 @Composable

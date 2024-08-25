@@ -1,3 +1,5 @@
+package top.yukonga.miuix.kmp.basic
+
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween

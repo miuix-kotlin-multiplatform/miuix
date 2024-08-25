@@ -1,6 +1,5 @@
 package top.yukonga.miuix.kmp
 
-import MiuixCheckbox
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
@@ -12,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
+import top.yukonga.miuix.kmp.basic.MiuixCheckbox
 
 @Composable
 fun MiuixSuperCheckbox(
