@@ -51,12 +51,41 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '17'
-      - name: Build with Gradle
+      - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
       - name: Build example app
-        run: ./gradlew :composeApp:assembleRelease
+        run: |
+          echo ${{ secrets.SIGNING_KEY }} | base64 -d > keystore.jks
+          ./gradlew :composeApp:assemble
+        env:
+          KEYSTORE_PATH: "../keystore.jks"
+          KEYSTORE_PASS: ${{ secrets.KEY_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
       - name: Upload android artifact
         uses: actions/upload-artifact@v4
         with:
           name: AndroidExampleApp
           path: composeApp/build/outputs/apk/release
+      - name: Find apk
+        run: |
+          echo "RELEASE=$(find 'composeApp/build/outputs/apk/release' -name '*.apk')" >> $GITHUB_ENV
+          echo "DEBUG=$(find 'composeApp/build/outputs/apk/debug' -name '*.apk')" >> $GITHUB_ENV
+      - name: Post to Telegram ci channel
+        if: ${{ success() && github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && github.ref_type != 'tag' }}
+        env:
+          CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          RELEASE: ${{ env.RELEASE }}
+          DEBUG: ${{ env.DEBUG }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          COMMIT_URL: ${{ github.event.head_commit.url }}
+        run: |
+          if [ ! -z "${{ secrets.BOT_TOKEN }}" ]; then
+            event_path=$GITHUB_EVENT_PATH
+            commit_count=$(jq -r '.commits | length' $event_path)
+            { echo -e 'Github CI\n'; git log -$commit_count --pretty=format:"%h %s"; } > ${{ github.workspace }}/git_log
+            ESCAPED="$(cat ${{ github.workspace }}/git_log | gawk '{gsub(/[_*[\]()~`>#+=\|{}.!-]/,"\\\\\\\\&")}1' | sed -e 's|"|\\"|g' -e 's|^[0-9a-z]\+|__&__|' | hexdump -v -e '/1 "%02X"' | sed 's/\(..\)/%\1/g')"
+            cd ${{ github.workspace }}
+             curl -v "https://api.telegram.org/bot${BOT_TOKEN}/sendMediaGroup?chat_id=${CHANNEL_ID}&media=%5B%7B%22type%22%3A%22document%22%2C%22media%22%3A%22attach%3A%2F%2Frelease%22%7D%2C%7B%22type%22%3A%22document%22%2C%22media%22%3A%22attach%3A%2F%2Fdebug%22%2C%22caption%22%3A%22${ESCAPED}%22%2C%22parse_mode%22%3A%22MarkdownV2%22%7D%5D" -F release="@$RELEASE" -F debug="@$DEBUG"
+          fi
