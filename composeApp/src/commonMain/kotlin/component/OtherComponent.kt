@@ -35,7 +35,7 @@ fun OtherComponent(padding: PaddingValues) {
         value = text,
         onValueChange = { text = it },
         label = "Text Field",
-        modifier = Modifier.padding(28.dp),
+        modifier = Modifier.padding(horizontal = 28.dp, vertical = 20.dp),
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
     )
@@ -45,7 +45,7 @@ fun OtherComponent(padding: PaddingValues) {
         onProgressChange = { newProgress -> progress = newProgress },
         modifier = Modifier
             .padding(horizontal = 28.dp)
-            .padding(bottom = 28.dp)
+            .padding(bottom = 20.dp)
     )
 
     MiuixSlider(
@@ -54,14 +54,14 @@ fun OtherComponent(padding: PaddingValues) {
         enabled = false,
         modifier = Modifier
             .padding(horizontal = 28.dp)
-            .padding(bottom = 28.dp)
+            .padding(bottom = 20.dp)
     )
 
     MiuixCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 28.dp)
-            .padding(bottom = 28.dp + padding.calculateBottomPadding())
+            .padding(bottom = 20.dp + padding.calculateBottomPadding())
     ) {
         MiuixText(
             text = "Card",

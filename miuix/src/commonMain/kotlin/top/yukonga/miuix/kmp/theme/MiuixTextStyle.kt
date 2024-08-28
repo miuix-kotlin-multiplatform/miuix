@@ -30,17 +30,17 @@ fun miuixTextStyles(
     paragraph = paragraph
 )
 
-val DefaultTextStyle: TextStyle
+private val DefaultTextStyle: TextStyle
     get() = TextStyle(
         fontSize = 16.sp,
     )
 
-val TitleTextStyle: TextStyle
+private val TitleTextStyle: TextStyle
     get() = TextStyle(
         fontSize = 12.sp
     )
 
-val ParagraphTextStyle: TextStyle
+private val ParagraphTextStyle: TextStyle
     get() = TextStyle(
         fontSize = 16.sp,
         lineHeight = 1.2f.em

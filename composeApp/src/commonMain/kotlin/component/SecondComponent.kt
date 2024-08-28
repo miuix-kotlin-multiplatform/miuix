@@ -66,7 +66,6 @@ fun SecondComponent() {
         )
     }
 
-
     MiuixSuperCheckbox(
         title = "Checkbox",
         summary = miuixSuperCheckbox,
@@ -119,8 +118,7 @@ fun SecondComponent() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 28.dp)
-            .padding(bottom = 20.dp),
+            .padding(horizontal = 28.dp, vertical = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         MiuixButton(

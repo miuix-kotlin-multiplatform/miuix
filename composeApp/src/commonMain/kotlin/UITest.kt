@@ -5,9 +5,9 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -64,9 +64,9 @@ fun UITest(
     }
 
     val items = listOf(
-        NavigationItem("Main", Icons.Default.Phone),
-        NavigationItem("Second", Icons.Default.Email),
-        NavigationItem("Settings", Icons.Default.Settings)
+        NavigationItem("HomePage", Icons.Rounded.Home),
+        NavigationItem("DropDown", Icons.Rounded.Star),
+        NavigationItem("Settings", Icons.Rounded.Settings)
     )
 
     LaunchedEffect(pagerState) {
@@ -94,7 +94,7 @@ fun UITest(
                 MiuixTopAppBar(
                     navigationIcon = {
                         IconButton(
-                            modifier = Modifier.padding(start = 12.dp),
+                            modifier = Modifier.padding(start = 16.dp),
                             onClick = {}
                         ) {
                             Icon(
@@ -106,7 +106,7 @@ fun UITest(
                     },
                     actions = {
                         IconButton(
-                            modifier = Modifier.padding(end = 12.dp),
+                            modifier = Modifier.padding(end = 16.dp),
                             onClick = {
                                 uriHandler.openUri("https://github.com/miuix-kotlin-multiplatform/miuix")
                             }
