@@ -1,14 +1,14 @@
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.theme.darkColorScheme
-import top.yukonga.miuix.kmp.theme.lightColorScheme
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import ui.AppTheme
 
 @Composable
-fun App() {
-    MiuixTheme(
-        colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
-    ) {
-        UITest()
+fun App(
+    colorMode: MutableState<Int> = remember { mutableStateOf(0) }
+) {
+    AppTheme(colorMode = colorMode.value) {
+        UITest(colorMode = colorMode)
     }
 }

@@ -16,7 +16,7 @@ fun SecondPage(
     enableOverScroll: Boolean
 ) {
     val dropdownOptions = listOf("Option 1", "Option 2", "Option 3", "Option 4")
-    val dropdownSelectedOption = remember { mutableStateOf("Option 1") }
+    val dropdownSelectedOption = remember { mutableStateOf(0) }
 
     MiuixLazyColumn(
         enableOverScroll = enableOverScroll,
@@ -27,9 +27,9 @@ fun SecondPage(
             MiuixSuperDropdown(
                 title = "Dropdown",
                 summary = "Popup near click",
-                options = dropdownOptions,
-                selectedOption = dropdownSelectedOption,
-                onOptionSelected = { newOption -> dropdownSelectedOption.value = newOption },
+                items = dropdownOptions,
+                selectedIndex = dropdownSelectedOption.value,
+                onSelectedIndexChange = { newOption -> dropdownSelectedOption.value = newOption },
             )
         }
         item {

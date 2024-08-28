@@ -55,9 +55,9 @@ import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
 import top.yukonga.miuix.kmp.basic.MiuixBox
 import top.yukonga.miuix.kmp.basic.MiuixText
+import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.ArrowUpDown
 import top.yukonga.miuix.kmp.icon.icons.Check
-import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showPopup
@@ -74,22 +74,22 @@ expect fun modifierPlatform(modifier: Modifier, isHovered: MutableState<Boolean>
  * @param title The title of the [MiuixSuperDropdown].
  * @param summary The summary of the [MiuixSuperDropdown].
  * @param modifier The modifier to be applied to the [MiuixSuperDropdown].
- * @param options The options of the [MiuixSuperDropdown].
+ * @param items The options of the [MiuixSuperDropdown].
  * @param alwaysRight Whether the popup is always show on the right side.
- * @param selectedOption The selected option of the [MiuixSuperDropdown].
  * @param insideMargin The margin inside the [MiuixSuperDropdown].
- * @param onOptionSelected The callback when the option of the popup is selected.
+ * @param selectedIndex The index of the selected option.
+ * @param onSelectedIndexChange The callback when the index is selected.
  */
 @Composable
 fun MiuixSuperDropdown(
     title: String,
     summary: String? = null,
     modifier: Modifier = Modifier,
-    options: List<String>,
+    items: List<String>,
     alwaysRight: Boolean = false,
-    selectedOption: MutableState<String>,
     insideMargin: DpSize = DpSize(28.dp, 14.dp),
-    onOptionSelected: (String) -> Unit
+    selectedIndex: Int,
+    onSelectedIndexChange: (Int) -> Unit
 ) {
     val hapticFeedback = LocalHapticFeedback.current
     val density = LocalDensity.current
@@ -99,8 +99,8 @@ fun MiuixSuperDropdown(
     var alignLeft by rememberSaveable { mutableStateOf(true) }
     val textMeasurer = rememberTextMeasurer()
     val textStyle = TextStyle(fontWeight = FontWeight.Medium, fontSize = 16.sp)
-    val textWidthDp = remember(options) {
-        options.maxOfOrNull { text ->
+    val textWidthDp = remember(items) {
+        items.maxOfOrNull { text ->
             with(density) { textMeasurer.measure(text = text, style = textStyle).size.width.toDp() }
         }
     }
@@ -111,13 +111,19 @@ fun MiuixSuperDropdown(
     var offsetPx by remember { mutableStateOf(0) }
     val windowHeightPx by rememberUpdatedState(getWindowSize().height)
     val statusBarPx by rememberUpdatedState(
-        with(density) { WindowInsets.statusBars.asPaddingValues().calculateTopPadding().toPx() }.roundToInt()
+        with(density) {
+            WindowInsets.statusBars.asPaddingValues().calculateTopPadding().toPx()
+        }.roundToInt()
     )
     val navigationBarPx by rememberUpdatedState(
-        with(density) { WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
+        with(density) {
+            WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().toPx()
+        }.roundToInt()
     )
     val captionBarPx by rememberUpdatedState(
-        with(density) { WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
+        with(density) {
+            WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().toPx()
+        }.roundToInt()
     )
     val insideHeightPx by rememberUpdatedState(
         with(density) { insideMargin.height.toPx() }.roundToInt()
@@ -152,7 +158,7 @@ fun MiuixSuperDropdown(
         summary = summary,
         rightActions = {
             MiuixText(
-                text = selectedOption.value,
+                text = items[selectedIndex],
                 fontSize = 15.sp,
                 color = MiuixTheme.colorScheme.subTextBase,
                 textAlign = TextAlign.End,
@@ -163,7 +169,10 @@ fun MiuixSuperDropdown(
                     .padding(start = 6.dp)
                     .align(Alignment.CenterVertically),
                 imageVector = MiuixIcons.ArrowUpDown,
-                colorFilter = BlendModeColorFilter(MiuixTheme.colorScheme.subDropdown, BlendMode.SrcIn),
+                colorFilter = BlendModeColorFilter(
+                    MiuixTheme.colorScheme.subDropdown,
+                    BlendMode.SrcIn
+                ),
                 contentDescription = null
             )
         }
@@ -191,8 +200,14 @@ fun MiuixSuperDropdown(
                             .onGloballyPositioned { layoutCoordinates ->
                                 dropdownHeightPx = layoutCoordinates.size.height
                                 offsetPx = calculateOffsetPx(
-                                    windowHeightPx, dropdownOffsetPx, dropdownHeightPx, componentHeightPx,
-                                    insideHeightPx, statusBarPx, navigationBarPx, captionBarPx
+                                    windowHeightPx,
+                                    dropdownOffsetPx,
+                                    dropdownHeightPx,
+                                    componentHeightPx,
+                                    insideHeightPx,
+                                    statusBarPx,
+                                    navigationBarPx,
+                                    captionBarPx
                                 )
                             }
                             .align(if (alignLeft && !alwaysRight) AbsoluteAlignment.TopLeft else AbsoluteAlignment.TopRight)
@@ -200,18 +215,17 @@ fun MiuixSuperDropdown(
                             .background(MiuixTheme.colorScheme.dropdownBackground)
                     ) {
                         item {
-                            options.forEachIndexed { index, option ->
+                            items.forEachIndexed { index, option ->
                                 DropdownImpl(
-                                    option = option,
-                                    isSelected = selectedOption.value == option,
-                                    onOptionSelected = {
-                                        onOptionSelected(it)
+                                    options = items,
+                                    isSelected = items[selectedIndex] == option,
+                                    onSelectedIndexChange = {
+                                        onSelectedIndexChange(it)
                                         dismissPopup()
                                         isDropdownExpanded.value = false
                                     },
                                     textWidthDp = textWidthDp,
-                                    index = index,
-                                    optionsNumber = options.size
+                                    index = index
                                 )
                             }
                         }
@@ -225,26 +239,23 @@ fun MiuixSuperDropdown(
 /**
  * The implementation of the dropdown.
  *
- * @param option The option text of the dropdown.
+ * @param options The options of the dropdown.
  * @param isSelected Whether the option is selected.
  * @param index The index of the current option in the options.
- * @param optionsNumber The total number of options.
- * @param onOptionSelected The callback when the option is selected.
+ * @param onSelectedIndexChange The callback when the index is selected.
  * @param textWidthDp The maximum width of text in options.
- * @param ripple The ripple effect of the dropdown.
  */
 @Composable
 fun DropdownImpl(
-    option: String,
+    options: List<String>,
     isSelected: Boolean,
     index: Int,
-    optionsNumber: Int,
-    onOptionSelected: (String) -> Unit,
+    onSelectedIndexChange: (Int) -> Unit,
     textWidthDp: Dp?
 ) {
     val dropdownInteractionSource = remember { MutableInteractionSource() }
     val additionalTopPadding = if (index == 0) 24.dp else 14.dp
-    val additionalBottomPadding = if (index == optionsNumber - 1) 24.dp else 14.dp
+    val additionalBottomPadding = if (index == options.size - 1) 24.dp else 14.dp
     val textColor = if (isSelected) {
         MiuixTheme.colorScheme.primary
     } else {
@@ -268,7 +279,7 @@ fun DropdownImpl(
                 interactionSource = dropdownInteractionSource,
                 indication = createRipple(),
             ) {
-                onOptionSelected(option)
+                onSelectedIndexChange(index)
             }
             .background(backgroundColor)
             .padding(horizontal = 24.dp)
@@ -276,7 +287,7 @@ fun DropdownImpl(
     ) {
         MiuixText(
             modifier = Modifier.width(textWidthDp ?: 50.dp),
-            text = option,
+            text = options[index],
             fontSize = 15.sp,
             fontWeight = FontWeight.Medium,
             color = textColor,

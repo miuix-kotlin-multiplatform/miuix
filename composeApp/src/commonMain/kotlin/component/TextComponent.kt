@@ -33,8 +33,8 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showDialog
 fun TextComponent() {
     val showDialog = remember { mutableStateOf(false) }
     val dropdownOptions = listOf("Option 1", "Option 2", "Option 3", "Option 4")
-    val dropdownSelectedOption = remember { mutableStateOf("Option 1") }
-    val dropdownSelectedOptionRight = remember { mutableStateOf("Option 1") }
+    val dropdownSelectedOption = remember { mutableStateOf(0) }
+    val dropdownSelectedOptionRight = remember { mutableStateOf(1) }
 
     Row(
         modifier = Modifier
@@ -115,18 +115,18 @@ fun TextComponent() {
     MiuixSuperDropdown(
         title = "Dropdown",
         summary = "Popup near click",
-        options = dropdownOptions,
-        selectedOption = dropdownSelectedOption,
-        onOptionSelected = { newOption -> dropdownSelectedOption.value = newOption },
+        items = dropdownOptions,
+        selectedIndex = dropdownSelectedOption.value,
+        onSelectedIndexChange = { newOption -> dropdownSelectedOption.value = newOption },
     )
 
     MiuixSuperDropdown(
         title = "Dropdown",
         summary = "Popup always on right",
         alwaysRight = true,
-        options = dropdownOptions,
-        selectedOption = dropdownSelectedOptionRight,
-        onOptionSelected = { newOption -> dropdownSelectedOptionRight.value = newOption },
+        items = dropdownOptions,
+        selectedIndex = dropdownSelectedOptionRight.value,
+        onSelectedIndexChange = { newOption -> dropdownSelectedOptionRight.value = newOption },
     )
 
 }

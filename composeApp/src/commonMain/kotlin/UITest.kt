@@ -12,6 +12,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,16 +33,18 @@ import top.yukonga.miuix.kmp.MiuixTopAppBar
 import top.yukonga.miuix.kmp.NavigationItem
 import top.yukonga.miuix.kmp.basic.MiuixHorizontalPager
 import top.yukonga.miuix.kmp.basic.MiuixScaffold
+import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.ArrowBack
 import top.yukonga.miuix.kmp.icon.icons.GitHub
-import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.rememberMiuixTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import utils.FPSMonitor
 
 @OptIn(FlowPreview::class)
 @Composable
-fun UITest() {
+fun UITest(
+    colorMode: MutableState<Int>,
+) {
     val topAppBarScrollBehavior0 = MiuixScrollBehavior(rememberMiuixTopAppBarState())
     val topAppBarScrollBehavior1 = MiuixScrollBehavior(rememberMiuixTopAppBarState())
     val topAppBarScrollBehavior2 = MiuixScrollBehavior(rememberMiuixTopAppBarState())
@@ -154,7 +157,8 @@ fun UITest() {
             enableBottomBarBlur = enableBottomBarBlur.value,
             onEnableBottomBarBlurChange = { enableBottomBarBlur.value = it },
             enableOverScroll = enableOverScroll.value,
-            onEnableOverScrollChange = { enableOverScroll.value = it }
+            onEnableOverScrollChange = { enableOverScroll.value = it },
+            colorMode = colorMode,
         )
     }
 
@@ -186,7 +190,8 @@ fun AppHorizontalPager(
     enableBottomBarBlur: Boolean,
     onEnableBottomBarBlurChange: (Boolean) -> Unit,
     enableOverScroll: Boolean,
-    onEnableOverScrollChange: (Boolean) -> Unit
+    onEnableOverScrollChange: (Boolean) -> Unit,
+    colorMode: MutableState<Int>
 ) {
     MiuixHorizontalPager(
         modifier = modifier,
@@ -222,7 +227,8 @@ fun AppHorizontalPager(
                     enableBottomBarBlur = enableBottomBarBlur,
                     onEnableBottomBarBlurChange = onEnableBottomBarBlurChange,
                     enableOverScroll = enableOverScroll,
-                    onEnableOverScrollChange = onEnableOverScrollChange
+                    onEnableOverScrollChange = onEnableOverScrollChange,
+                    colorMode = colorMode
                 )
             }
         }

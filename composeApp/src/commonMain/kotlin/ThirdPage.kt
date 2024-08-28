@@ -1,9 +1,11 @@
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
+import top.yukonga.miuix.kmp.MiuixSuperDropdown
 import top.yukonga.miuix.kmp.MiuixSuperSwitch
 import top.yukonga.miuix.kmp.basic.MiuixLazyColumn
 import top.yukonga.miuix.kmp.utils.enableOverscroll
@@ -25,7 +27,8 @@ fun ThirdPage(
     enableBottomBarBlur: Boolean,
     onEnableBottomBarBlurChange: (Boolean) -> Unit,
     enableOverScroll: Boolean,
-    onEnableOverScrollChange: (Boolean) -> Unit
+    onEnableOverScrollChange: (Boolean) -> Unit,
+    colorMode: MutableState<Int>
 ) {
     MiuixLazyColumn(
         modifier = Modifier.height(getWindowSize().height.dp),
@@ -69,6 +72,12 @@ fun ThirdPage(
                 checked = if (enableOverscroll()) enableOverScroll else false,
                 onCheckedChange = onEnableOverScrollChange,
                 enabled = enableOverscroll(),
+            )
+            MiuixSuperDropdown(
+                title = "Color Mode",
+                items = listOf("System", "Light", "Dark"),
+                selectedIndex = colorMode.value,
+                onSelectedIndexChange = { colorMode.value = it }
             )
         }
     }
