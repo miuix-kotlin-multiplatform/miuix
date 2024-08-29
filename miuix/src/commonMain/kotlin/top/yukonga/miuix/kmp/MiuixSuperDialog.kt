@@ -85,6 +85,7 @@ fun MiuixSuperDialog(
                 MiuixText(
                     modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
                     text = it,
+                    textAlign = TextAlign.Center
                 )
             }
             content()
