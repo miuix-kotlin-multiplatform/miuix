@@ -86,7 +86,7 @@ android {
         applicationId = pkgName
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
+        versionCode = 11
         versionName = verName
     }
     val properties = Properties()
