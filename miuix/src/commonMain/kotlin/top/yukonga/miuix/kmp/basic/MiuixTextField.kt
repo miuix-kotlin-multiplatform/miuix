@@ -15,9 +15,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
@@ -38,11 +38,12 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
  * @param onValueChange The callback to be called when the value changes.
  * @param modifier The modifier to be applied to the [MiuixTextField].
  * @param insideMargin The margin inside the [MiuixTextField].
+ * @param backgroundColor The background color of the [MiuixTextField].
  * @param cornerRadius The corner radius of the [MiuixTextField].
  * @param label The label to be displayed when the [MiuixTextField] is empty.
+ * @param labelColor The color of the label.
  * @param enabled Whether the [MiuixTextField] is enabled.
  * @param readOnly Whether the [MiuixTextField] is read-only.
- * @param isSecondary Whether the [MiuixTextField] is secondary.
  * @param textStyle The text style to be applied to the [MiuixTextField].
  * @param keyboardOptions The keyboard options to be applied to the [MiuixTextField].
  * @param keyboardActions The keyboard actions to be applied to the [MiuixTextField].
@@ -60,8 +61,10 @@ fun MiuixTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     insideMargin: DpSize = DpSize(16.dp, 18.dp),
+    backgroundColor: Color = MiuixTheme.colorScheme.secondary,
     cornerRadius: Dp = 18.dp,
     label: String = "",
+    labelColor: Color = MiuixTheme.colorScheme.subTextField,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     textStyle: TextStyle = MiuixTheme.textStyles.main,
@@ -76,8 +79,7 @@ fun MiuixTextField(
 ) {
     val isFocused by interactionSource.collectIsFocusedAsState()
     val borderWidth by animateDpAsState(if (isFocused) 1.6.dp else 0.dp)
-    val backgroundColor by rememberUpdatedState(MiuixTheme.colorScheme.secondary)
-    val borderColor by animateColorAsState(if (isFocused) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.secondary)
+    val borderColor by animateColorAsState(if (isFocused) MiuixTheme.colorScheme.primary else backgroundColor)
     val labelOffsetY by animateDpAsState(if (value.isNotEmpty()) -(insideMargin.height / 2) else 0.dp)
     val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty()) (insideMargin.height / 2) else 0.dp)
     val labelFontSize by animateDpAsState(if (value.isNotEmpty()) 10.dp else 16.dp)
@@ -125,7 +127,7 @@ fun MiuixTextField(
                             fontWeight = FontWeight.Medium,
                             fontSize = labelFontSize.value.sp,
                             modifier = Modifier.offset(y = labelOffsetY),
-                            color = MiuixTheme.colorScheme.subTextField
+                            color = labelColor
                         )
                         MiuixBox(
                             modifier = Modifier
