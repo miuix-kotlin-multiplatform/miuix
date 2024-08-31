@@ -55,7 +55,8 @@ fun ThirdPage(
             MiuixSuperSwitch(
                 title = "Enable Page User Scroll",
                 checked = enablePageUserScroll,
-                onCheckedChange = onEnablePageUserScrollChange
+                onCheckedChange = onEnablePageUserScrollChange,
+                enabled = platform() != Platform.WasmJs,
             )
             MiuixSuperSwitch(
                 title = "Enable Top Bar Blur",
