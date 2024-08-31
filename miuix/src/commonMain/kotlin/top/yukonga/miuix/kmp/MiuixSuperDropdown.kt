@@ -181,13 +181,17 @@ fun MiuixSuperDropdown(
     if (isDropdownExpanded.value) hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
 
     if (isDropdownExpanded.value) {
+        BackHandler(
+            dismiss = { dismissPopup() },
+            onDismissRequest = { isDropdownExpanded.value = false }
+        )
         showPopup(
             content = {
                 MiuixBox(
                     modifier = Modifier
                         .fillMaxSize()
                         .pointerInput(Unit) {
-                            detectTapGestures(onPress = {
+                            detectTapGestures(onTap = {
                                 dismissPopup()
                                 isDropdownExpanded.value = false
                             })

@@ -3,6 +3,7 @@ package top.yukonga.miuix.kmp
 import android.annotation.SuppressLint
 import android.os.Build
 import android.view.RoundedCorner
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -35,4 +36,15 @@ fun getCornerRadiusBottom(): Int {
     val context = LocalContext.current
     val resourceId = context.resources.getIdentifier("rounded_corner_radius_bottom", "dimen", "android")
     return if (resourceId > 0) context.resources.getDimensionPixelSize(resourceId) else 0
+}
+
+@Composable
+actual fun BackHandler(
+    dismiss: () -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    BackHandler {
+        dismiss()
+        onDismissRequest()
+    }
 }

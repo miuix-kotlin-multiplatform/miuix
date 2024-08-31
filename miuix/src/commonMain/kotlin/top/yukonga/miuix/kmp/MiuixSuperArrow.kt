@@ -13,8 +13,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
 import top.yukonga.miuix.kmp.basic.MiuixText
-import top.yukonga.miuix.kmp.icon.icons.ArrowRight
 import top.yukonga.miuix.kmp.icon.MiuixIcons
+import top.yukonga.miuix.kmp.icon.icons.ArrowRight
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**

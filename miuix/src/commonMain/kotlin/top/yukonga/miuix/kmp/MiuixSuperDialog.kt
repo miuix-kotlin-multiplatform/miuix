@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -16,6 +18,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import getWindowSize
 import top.yukonga.miuix.kmp.basic.MiuixBox
 import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -27,6 +30,12 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
  */
 @Composable
 expect fun getRoundedCorner(): Dp
+
+@Composable
+expect fun BackHandler(
+    dismiss: () -> Unit,
+    onDismissRequest: () -> Unit
+)
 
 /**
  * A dialog with a title, a summary, and a content.
@@ -45,10 +54,16 @@ fun MiuixSuperDialog(
     insideMargin: DpSize = DpSize(14.dp, 14.dp),
     content: @Composable () -> Unit
 ) {
-    val bottomCornerRadius = if (getRoundedCorner() != 0.dp) getRoundedCorner() - insideMargin.width else 32.dp
+    val bottomCornerRadius = rememberUpdatedState(if (getRoundedCorner() != 0.dp) getRoundedCorner() - insideMargin.width else 32.dp)
+    val getWindowSize = rememberUpdatedState(getWindowSize())
+    val contentAlignment = if (getWindowSize.value.width > getWindowSize.value.height) Alignment.Center else Alignment.BottomCenter
+
+    BackHandler(
+        dismiss = { dismissDialog() },
+        onDismissRequest = onDismissRequest
+    )
 
     MiuixBox(
-        contentAlignment = Alignment.BottomCenter,
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = insideMargin.width)
@@ -62,13 +77,14 @@ fun MiuixSuperDialog(
     ) {
         Column(
             modifier = Modifier
+                .then(if (contentAlignment != Alignment.Center) Modifier.fillMaxWidth() else Modifier.widthIn(max = 400.dp))
                 .pointerInput(Unit) {
                     detectTapGestures { /* Do nothing to consume the click */ }
                 }
-                .fillMaxWidth()
+                .align(contentAlignment)
                 .background(
                     color = MiuixTheme.colorScheme.dropdownBackground,
-                    shape = SquircleShape(bottomCornerRadius)
+                    shape = SquircleShape(bottomCornerRadius.value)
                 )
                 .padding(24.dp),
         ) {

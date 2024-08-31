@@ -6,3 +6,10 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 actual fun getRoundedCorner(): Dp = 0.dp
+
+@Composable
+actual fun BackHandler(
+    dismiss: () -> Unit,
+    onDismissRequest: () -> Unit
+) {
+}

@@ -3,7 +3,7 @@ import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.platform.LocalDensity
 import kotlin.math.roundToInt
 
-object WindowSizeProvider {
+object WindowProvider {
     private var composeWindow: ComposeWindow? = null
 
     fun init(window: ComposeWindow) {
@@ -23,7 +23,7 @@ object WindowSizeProvider {
 @Composable
 actual fun getWindowSize(): WindowSize {
     val density = LocalDensity.current.density
-    val windowSize = WindowSizeProvider.getWindowSize()
+    val windowSize = WindowProvider.getWindowSize()
     return WindowSize(
         width = (windowSize.width * density).roundToInt(),
         height = (windowSize.height * density).roundToInt()
