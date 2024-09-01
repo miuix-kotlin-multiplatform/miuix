@@ -15,12 +15,14 @@ import androidx.compose.ui.graphics.Color
  * @param background The background color.
  * @param onBackground The color of the text on background.
  * @param subTextBase The base color of the sub text.
- * @param subTextField The color of the sub text field.
  * @param subDropdown The color of the sub dropdown.
  * @param secondary The secondary color.
  * @param dropdownBackground The background color of the dropdown.
  * @param dropdownSelect The color of the selected item in the dropdown.
+ * @param textFieldBg The background color of the text field.
+ * @param textFieldSub The color of the sub text field.
  * @param disabledBg The background color of the disabled button.
+ * @param submitDisabledBg The background color of the disabled submit button.
  * @param buttonDisableText The text color of the disabled button.
  * @param submitButtonDisabledText The text color of the disabled submit button.
  */
@@ -32,11 +34,12 @@ class MiuixColor(
     background: Color,
     onBackground: Color,
     subTextBase: Color,
-    subTextField: Color,
     subDropdown: Color,
     secondary: Color,
     dropdownBackground: Color,
     dropdownSelect: Color,
+    textFieldBg: Color,
+    textFieldSub: Color,
     disabledBg: Color,
     submitDisabledBg: Color,
     buttonDisableText: Color,
@@ -48,13 +51,14 @@ class MiuixColor(
     val background by mutableStateOf(background, structuralEqualityPolicy())
     val onBackground by mutableStateOf(onBackground, structuralEqualityPolicy())
     val subTextBase by mutableStateOf(subTextBase, structuralEqualityPolicy())
-    val subTextField by mutableStateOf(subTextField, structuralEqualityPolicy())
     val subDropdown by mutableStateOf(subDropdown, structuralEqualityPolicy())
     val secondary by mutableStateOf(secondary, structuralEqualityPolicy())
     val dropdownBackground by mutableStateOf(dropdownBackground, structuralEqualityPolicy())
     val dropdownSelect by mutableStateOf(dropdownSelect, structuralEqualityPolicy())
-    val submitDisabledBg by mutableStateOf(disabledBg, structuralEqualityPolicy())
+    val textFieldBg by mutableStateOf(textFieldBg, structuralEqualityPolicy())
+    val textFieldSub by mutableStateOf(textFieldSub, structuralEqualityPolicy())
     val disabledBg by mutableStateOf(submitDisabledBg, structuralEqualityPolicy())
+    val submitDisabledBg by mutableStateOf(disabledBg, structuralEqualityPolicy())
     val buttonDisableText by mutableStateOf(buttonDisableText, structuralEqualityPolicy())
     val submitButtonDisabledText by mutableStateOf(submitButtonDisabledText, structuralEqualityPolicy())
 }
@@ -66,11 +70,13 @@ fun lightColorScheme() = MiuixColor(
     background = Color(0xFFF5F5F5),
     onBackground = Color.Black,
     subTextBase = Color(0xFF666666),
-    subTextField = Color(0xFFA8A8A8),
+
     subDropdown = Color(0xFF999999),
     secondary = Color(0xFFE6E6E6),
     dropdownBackground = Color(0xFFFFFFFF),
     dropdownSelect = Color(0xFFEAF2FF),
+    textFieldBg = Color(0xFFF0F0F0),
+    textFieldSub = Color(0xFFA8A8A8),
     disabledBg = Color(0xFFC2D9FF),
     submitDisabledBg = Color(0xFFEEEEEC),
     buttonDisableText = Color.LightGray,
@@ -84,11 +90,12 @@ fun darkColorScheme() = MiuixColor(
     background = Color.Black,
     onBackground = Color.White,
     subTextBase = Color(0xFF808080),
-    subTextField = Color(0xFF727272),
     subDropdown = Color(0xFF666666),
     secondary = Color(0xFF333333),
     dropdownBackground = Color(0xFF242424),
     dropdownSelect = Color(0xFF23334E),
+    textFieldBg = Color(0xFF363636),
+    textFieldSub = Color(0xFF727272),
     disabledBg = Color(0xFF253E64),
     submitDisabledBg = Color(0xFF222223),
     buttonDisableText = Color(0xFF666666),

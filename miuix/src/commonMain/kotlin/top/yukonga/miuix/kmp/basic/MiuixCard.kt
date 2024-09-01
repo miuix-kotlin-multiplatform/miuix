@@ -29,7 +29,7 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 @Composable
 fun MiuixCard(
     modifier: Modifier = Modifier,
-    insideMargin: DpSize = DpSize(20.dp, 20.dp),
+    insideMargin: DpSize = DpSize(0.dp, 0.dp),
     cornerRadius: Dp = 18.dp,
     color: Color = MiuixTheme.colorScheme.primaryContainer,
     content: @Composable ColumnScope.() -> Unit

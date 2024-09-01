@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.MiuixCard
@@ -68,7 +69,8 @@ fun OtherComponent(padding: PaddingValues) {
     MiuixCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 28.dp, vertical = 20.dp)
+            .padding(horizontal = 28.dp, vertical = 20.dp),
+        insideMargin = DpSize(18.dp, 18.dp)
     ) {
         CardView()
     }
@@ -78,7 +80,8 @@ fun OtherComponent(padding: PaddingValues) {
             .fillMaxWidth()
             .padding(horizontal = 28.dp)
             .padding(bottom = 20.dp + padding.calculateBottomPadding()),
-        color = MiuixTheme.colorScheme.primary
+        color = MiuixTheme.colorScheme.primary,
+        insideMargin = DpSize(18.dp, 18.dp)
     ) {
         CardView(color = Color.White)
     }

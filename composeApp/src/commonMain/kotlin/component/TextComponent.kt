@@ -58,7 +58,7 @@ fun TextComponent() {
         )
         MiuixText(
             text = "Text",
-            color = MiuixTheme.colorScheme.subTextField,
+            color = MiuixTheme.colorScheme.textFieldSub,
             modifier = Modifier.padding(start = 24.dp)
         )
         MiuixText(
