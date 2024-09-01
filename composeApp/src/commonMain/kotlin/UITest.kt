@@ -94,7 +94,7 @@ fun UITest(
                 MiuixTopAppBar(
                     navigationIcon = {
                         IconButton(
-                            modifier = Modifier.padding(start = 16.dp),
+                            modifier = Modifier.padding(start = 12.dp),
                             onClick = {}
                         ) {
                             Icon(
@@ -106,7 +106,7 @@ fun UITest(
                     },
                     actions = {
                         IconButton(
-                            modifier = Modifier.padding(end = 16.dp),
+                            modifier = Modifier.padding(end = 12.dp),
                             onClick = {
                                 uriHandler.openUri("https://github.com/miuix-kotlin-multiplatform/miuix")
                             }

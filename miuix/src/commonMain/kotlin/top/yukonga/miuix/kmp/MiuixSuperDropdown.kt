@@ -87,7 +87,7 @@ fun MiuixSuperDropdown(
     modifier: Modifier = Modifier,
     items: List<String>,
     alwaysRight: Boolean = false,
-    insideMargin: DpSize = DpSize(28.dp, 14.dp),
+    insideMargin: DpSize = DpSize(24.dp, 14.dp),
     selectedIndex: Int,
     onSelectedIndexChange: (Int) -> Unit
 ) {

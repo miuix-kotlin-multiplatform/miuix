@@ -459,7 +459,7 @@ private suspend fun settleAppBar(
     return Velocity.Zero
 }
 
-private val TopAppBarHorizontalPadding = 28.dp
+private val TopAppBarHorizontalPadding = 24.dp
 
 /** A functional interface for providing an app-bar scroll offset. */
 private fun interface ScrolledOffset {

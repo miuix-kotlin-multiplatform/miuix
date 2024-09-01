@@ -1,7 +1,6 @@
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import component.OtherComponent
-import component.SecondComponent
 import component.TextComponent
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.MiuixLazyColumn
@@ -19,9 +18,6 @@ fun MainPage(
     ) {
         item {
             TextComponent()
-        }
-        item {
-            SecondComponent()
         }
         item {
             OtherComponent(padding)

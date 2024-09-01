@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -47,7 +48,7 @@ fun MiuixBasicComponent(
 ) {
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val indication = indication ?: createRipple()
-    val insideMargin = remember { insideMargin } ?: remember { DpSize(28.dp, 14.dp) }
+    val insideMargin = remember { insideMargin } ?: remember { DpSize(24.dp, 14.dp) }
     val paddingModifier = remember(insideMargin) {
         Modifier.padding(horizontal = insideMargin.width, vertical = insideMargin.height)
     }

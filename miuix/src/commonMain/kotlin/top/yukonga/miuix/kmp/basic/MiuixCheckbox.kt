@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.requiredSize
@@ -94,6 +95,19 @@ fun MiuixCheckbox(
                         if (enabled) {
                             onCheckedChange?.invoke(!isChecked)
                         }
+                    }
+                )
+            }
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragEnd = {
+                        isPressed = false
+                    },
+                    onDragCancel = {
+                        isPressed = false
+                    },
+                    onDrag = { change, _ ->
+                        change.consume()
                     }
                 )
             }

@@ -31,9 +31,10 @@ fun MiuixSuperCheckbox(
     summary: String? = null,
     rightActions: @Composable RowScope.() -> Unit = {},
     checked: Boolean,
+    checkboxLocation: CheckboxLocation = CheckboxLocation.Left,
     onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier,
-    insideMargin: DpSize = DpSize(28.dp, 14.dp),
+    insideMargin: DpSize = DpSize(24.dp, 14.dp),
     enabled: Boolean = true
 ) {
     var isChecked by remember { mutableStateOf(checked) }
@@ -48,14 +49,25 @@ fun MiuixSuperCheckbox(
         insideMargin = insideMargin,
         title = title,
         summary = summary,
-        leftAction = {
-            MiuixCheckbox(
-                checked = isChecked,
-                onCheckedChange = updatedOnCheckedChange,
-                enabled = enabled
-            )
+        leftAction = if (checkboxLocation == CheckboxLocation.Left) {
+            {
+                MiuixCheckbox(
+                    checked = isChecked,
+                    onCheckedChange = updatedOnCheckedChange,
+                    enabled = enabled
+                )
+            }
+        } else null,
+        rightActions = {
+            rightActions()
+            if (checkboxLocation == CheckboxLocation.Right) {
+                MiuixCheckbox(
+                    checked = isChecked,
+                    onCheckedChange = updatedOnCheckedChange,
+                    enabled = enabled
+                )
+            }
         },
-        rightActions = rightActions,
         onClick = {
             if (enabled) {
                 isChecked = !isChecked
@@ -63,4 +75,9 @@ fun MiuixSuperCheckbox(
             }
         }
     )
+}
+
+enum class CheckboxLocation {
+    Left,
+    Right,
 }

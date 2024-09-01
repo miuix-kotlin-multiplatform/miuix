@@ -38,7 +38,7 @@ fun MiuixSuperArrow(
     leftAction: @Composable (() -> Unit)? = null,
     rightText: String? = null,
     onClick: (() -> Unit)? = null,
-    insideMargin: DpSize = DpSize(28.dp, 14.dp)
+    insideMargin: DpSize = DpSize(24.dp, 14.dp)
 ) {
     val updatedOnClick by rememberUpdatedState(onClick)
     MiuixBasicComponent(

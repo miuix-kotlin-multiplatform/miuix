@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
  * @param submitDisabledBg The background color of the disabled submit button.
  * @param buttonDisableText The text color of the disabled button.
  * @param submitButtonDisabledText The text color of the disabled submit button.
+ * @param smallTitle The color of the small title.
  */
 @Stable
 class MiuixColor(
@@ -43,7 +44,8 @@ class MiuixColor(
     disabledBg: Color,
     submitDisabledBg: Color,
     buttonDisableText: Color,
-    submitButtonDisabledText: Color
+    submitButtonDisabledText: Color,
+    smallTitle: Color
 ) {
     val primary by mutableStateOf(primary, structuralEqualityPolicy())
     val onPrimary by mutableStateOf(onPrimary, structuralEqualityPolicy())
@@ -61,6 +63,7 @@ class MiuixColor(
     val submitDisabledBg by mutableStateOf(disabledBg, structuralEqualityPolicy())
     val buttonDisableText by mutableStateOf(buttonDisableText, structuralEqualityPolicy())
     val submitButtonDisabledText by mutableStateOf(submitButtonDisabledText, structuralEqualityPolicy())
+    val smallTitle by mutableStateOf(smallTitle, structuralEqualityPolicy())
 }
 
 fun lightColorScheme() = MiuixColor(
@@ -70,7 +73,6 @@ fun lightColorScheme() = MiuixColor(
     background = Color(0xFFF5F5F5),
     onBackground = Color.Black,
     subTextBase = Color(0xFF666666),
-
     subDropdown = Color(0xFF999999),
     secondary = Color(0xFFE6E6E6),
     dropdownBackground = Color(0xFFFFFFFF),
@@ -80,7 +82,8 @@ fun lightColorScheme() = MiuixColor(
     disabledBg = Color(0xFFC2D9FF),
     submitDisabledBg = Color(0xFFEEEEEC),
     buttonDisableText = Color.LightGray,
-    submitButtonDisabledText = Color(0xFFFFFFFF)
+    submitButtonDisabledText = Color(0xFFFFFFFF),
+    smallTitle = Color(0xCC000000)
 )
 
 fun darkColorScheme() = MiuixColor(
@@ -99,5 +102,6 @@ fun darkColorScheme() = MiuixColor(
     disabledBg = Color(0xFF253E64),
     submitDisabledBg = Color(0xFF222223),
     buttonDisableText = Color(0xFF666666),
-    submitButtonDisabledText = Color(0xFF677893)
+    submitButtonDisabledText = Color(0xFF677893),
+    smallTitle = Color(0xCCFFFFFF)
 )
