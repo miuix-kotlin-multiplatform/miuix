@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.LayoutScopeMarker
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
@@ -59,22 +60,21 @@ inline fun MiuixBox(
     )
 }
 
-private fun cacheFor(
-    propagateMinConstraints: Boolean
-) = HashMap<Alignment, MeasurePolicy>(9).apply {
-    fun putAlignment(it: Alignment) {
-        put(it, MiuixBoxMeasurePolicy(it, propagateMinConstraints))
+private fun cacheFor(propagateMinConstraints: Boolean) =
+    HashMap<Alignment, MeasurePolicy>(9).apply {
+        fun putAlignment(it: Alignment) {
+            put(it, MiuixBoxMeasurePolicy(it, propagateMinConstraints))
+        }
+        putAlignment(Alignment.TopStart)
+        putAlignment(Alignment.TopCenter)
+        putAlignment(Alignment.TopEnd)
+        putAlignment(Alignment.CenterStart)
+        putAlignment(Alignment.Center)
+        putAlignment(Alignment.CenterEnd)
+        putAlignment(Alignment.BottomStart)
+        putAlignment(Alignment.BottomCenter)
+        putAlignment(Alignment.BottomEnd)
     }
-    putAlignment(Alignment.TopStart)
-    putAlignment(Alignment.TopCenter)
-    putAlignment(Alignment.TopEnd)
-    putAlignment(Alignment.CenterStart)
-    putAlignment(Alignment.Center)
-    putAlignment(Alignment.CenterEnd)
-    putAlignment(Alignment.BottomStart)
-    putAlignment(Alignment.BottomCenter)
-    putAlignment(Alignment.BottomEnd)
-}
 
 private val cache1 = cacheFor(true)
 private val cache2 = cacheFor(false)
@@ -88,6 +88,22 @@ internal fun maybeCachedMiuixBoxMeasurePolicy(
     return cache[alignment] ?: MiuixBoxMeasurePolicy(alignment, propagateMinConstraints)
 }
 
+@PublishedApi
+@Composable
+internal fun rememberBoxMeasurePolicy(
+    alignment: Alignment,
+    propagateMinConstraints: Boolean
+): MeasurePolicy =
+    if (alignment == Alignment.TopStart && !propagateMinConstraints) {
+        DefaultBoxMeasurePolicy
+    } else {
+        remember(alignment, propagateMinConstraints) {
+            MiuixBoxMeasurePolicy(alignment, propagateMinConstraints)
+        }
+    }
+
+private val DefaultBoxMeasurePolicy: MeasurePolicy = MiuixBoxMeasurePolicy(Alignment.TopStart, false)
+
 private data class MiuixBoxMeasurePolicy(
     private val alignment: Alignment,
     private val propagateMinConstraints: Boolean
@@ -97,17 +113,15 @@ private data class MiuixBoxMeasurePolicy(
         constraints: Constraints
     ): MeasureResult {
         if (measurables.isEmpty()) {
-            return layout(
-                constraints.minWidth,
-                constraints.minHeight
-            ) {}
+            return layout(constraints.minWidth, constraints.minHeight) {}
         }
 
-        val contentConstraints = if (propagateMinConstraints) {
-            constraints
-        } else {
-            constraints.copy(minWidth = 0, minHeight = 0)
-        }
+        val contentConstraints =
+            if (propagateMinConstraints) {
+                constraints
+            } else {
+                constraints.copy(minWidth = 0, minHeight = 0)
+            }
 
         if (measurables.size == 1) {
             val measurable = measurables[0]
@@ -133,14 +147,14 @@ private data class MiuixBoxMeasurePolicy(
         val placeables = arrayOfNulls<Placeable>(measurables.size)
         // First measure non match parent size children to get the size of the MiuixBox.
         var hasMatchParentSizeChildren = false
-        var mWidth = constraints.minWidth
-        var mHeight = constraints.minHeight
+        var boxWidth = constraints.minWidth
+        var boxHeight = constraints.minHeight
         measurables.fastForEachIndexed { index, measurable ->
             if (!measurable.matchesParentSize) {
                 val placeable = measurable.measure(contentConstraints)
                 placeables[index] = placeable
-                mWidth = max(mWidth, placeable.width)
-                mHeight = max(mHeight, placeable.height)
+                boxWidth = max(boxWidth, placeable.width)
+                boxHeight = max(boxHeight, placeable.height)
             } else {
                 hasMatchParentSizeChildren = true
             }
@@ -149,12 +163,13 @@ private data class MiuixBoxMeasurePolicy(
         // Now measure match parent size children, if any.
         if (hasMatchParentSizeChildren) {
             // The infinity check is needed for default intrinsic measurements.
-            val matchParentSizeConstraints = Constraints(
-                minWidth = if (mWidth != Constraints.Infinity) mWidth else 0,
-                minHeight = if (mHeight != Constraints.Infinity) mHeight else 0,
-                maxWidth = mWidth,
-                maxHeight = mHeight
-            )
+            val matchParentSizeConstraints =
+                Constraints(
+                    minWidth = if (boxWidth != Constraints.Infinity) boxWidth else 0,
+                    minHeight = if (boxHeight != Constraints.Infinity) boxHeight else 0,
+                    maxWidth = boxWidth,
+                    maxHeight = boxHeight
+                )
             measurables.fastForEachIndexed { index, measurable ->
                 if (measurable.matchesParentSize) {
                     placeables[index] = measurable.measure(matchParentSizeConstraints)
@@ -163,11 +178,11 @@ private data class MiuixBoxMeasurePolicy(
         }
 
         // Specify the size of the MiuixBox and position its children.
-        return layout(mWidth, mHeight) {
+        return layout(boxWidth, boxHeight) {
             placeables.forEachIndexed { index, placeable ->
                 placeable as Placeable
                 val measurable = measurables[index]
-                placeInMiuixBox(placeable, measurable, layoutDirection, mWidth, mHeight, alignment)
+                placeInMiuixBox(placeable, measurable, layoutDirection, boxWidth, boxHeight, alignment)
             }
         }
     }
@@ -182,11 +197,12 @@ private fun Placeable.PlacementScope.placeInMiuixBox(
     alignment: Alignment
 ) {
     val childAlignment = measurable.MiuixBoxChildDataNode?.alignment ?: alignment
-    val position = childAlignment.align(
-        IntSize(placeable.width, placeable.height),
-        IntSize(mWidth, mHeight),
-        layoutDirection
-    )
+    val position =
+        childAlignment.align(
+            IntSize(placeable.width, placeable.height),
+            IntSize(mWidth, mHeight),
+            layoutDirection
+        )
     placeable.place(position)
 }
 
@@ -236,35 +252,39 @@ interface MiuixBoxScope {
 
 internal object MiuixBoxScopeInstance : MiuixBoxScope {
     @Stable
-    override fun Modifier.align(alignment: Alignment) = this.then(
-        MiuixBoxChildDataElement(
-            alignment = alignment,
-            matchParentSize = false,
-            inspectorInfo = debugInspectorInfo {
-                name = "align"
-                value = alignment
-            }
-        ))
+    override fun Modifier.align(alignment: Alignment) =
+        this.then(
+            MiuixBoxChildDataElement(
+                alignment = alignment,
+                matchParentSize = false,
+                inspectorInfo =
+                debugInspectorInfo {
+                    name = "align"
+                    value = alignment
+                }
+            )
+        )
 
     @Stable
-    override fun Modifier.matchParentSize() = this.then(
-        MiuixBoxChildDataElement(
-            alignment = Alignment.Center,
-            matchParentSize = true,
-            inspectorInfo = debugInspectorInfo {
-                name = "matchParentSize"
-            }
-        ))
+    override fun Modifier.matchParentSize() =
+        this.then(
+            MiuixBoxChildDataElement(
+                alignment = Alignment.Center,
+                matchParentSize = true,
+                inspectorInfo = debugInspectorInfo { name = "matchParentSize" }
+            )
+        )
 }
 
-private val Measurable.MiuixBoxChildDataNode: MiuixBoxChildDataNode? get() = parentData as? MiuixBoxChildDataNode
-private val Measurable.matchesParentSize: Boolean get() = MiuixBoxChildDataNode?.matchParentSize ?: false
+private val Measurable.MiuixBoxChildDataNode: MiuixBoxChildDataNode?
+    get() = parentData as? MiuixBoxChildDataNode
+private val Measurable.matchesParentSize: Boolean
+    get() = MiuixBoxChildDataNode?.matchParentSize ?: false
 
 private class MiuixBoxChildDataElement(
     val alignment: Alignment,
     val matchParentSize: Boolean,
     val inspectorInfo: InspectorInfo.() -> Unit
-
 ) : ModifierNodeElement<MiuixBoxChildDataNode>() {
     override fun create(): MiuixBoxChildDataNode {
         return MiuixBoxChildDataNode(alignment, matchParentSize)

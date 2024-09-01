@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
@@ -29,14 +30,19 @@ fun MiuixLazyColumn(
     content: LazyListScope.() -> Unit
 ) {
     val scrollLazyColumnState = rememberLazyListState()
-    val firstModifier = if (enableOverScroll) {
-        modifier.overScrollVertical(onOverscroll = { topAppBarScrollBehavior?.isPinned = it })
-    } else {
-        modifier
+    val firstModifier = remember(enableOverScroll) {
+        if (enableOverScroll) {
+            modifier.overScrollVertical(onOverscroll = { topAppBarScrollBehavior?.isPinned = it })
+        } else {
+            modifier
+        }
     }
-    val finalModifier = topAppBarScrollBehavior?.let {
-        firstModifier.nestedScroll(it.nestedScrollConnection)
-    } ?: firstModifier
+    val finalModifier = remember(topAppBarScrollBehavior) {
+        topAppBarScrollBehavior?.let {
+            firstModifier.nestedScroll(it.nestedScrollConnection)
+        } ?: firstModifier
+    }
+
     LazyColumn(
         state = scrollLazyColumnState,
         flingBehavior = rememberOverscrollFlingBehavior { scrollLazyColumnState },

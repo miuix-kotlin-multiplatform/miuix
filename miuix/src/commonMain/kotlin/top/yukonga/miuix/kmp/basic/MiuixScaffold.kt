@@ -87,15 +87,23 @@ fun MiuixScaffold(
     content: @Composable (PaddingValues) -> Unit
 ) {
     val safeInsets = remember(contentWindowInsets) { MutableWindowInsets(contentWindowInsets) }
+    val hazeState = remember { HazeState() }
+    val hazeStyle = remember(containerColor, alpha, blurRadius, noiseFactor) {
+        HazeStyle(
+            backgroundColor = containerColor,
+            tint = HazeTint.Color(containerColor.copy(alpha)),
+            blurRadius = blurRadius,
+            noiseFactor = noiseFactor
+        )
+    }
+
     MiuixSurface(
         modifier = modifier.onConsumedWindowInsetsChanged { consumedWindowInsets ->
             // Exclude currently consumed window insets from user provided contentWindowInsets
             safeInsets.insets = contentWindowInsets.exclude(consumedWindowInsets)
         },
-        color = containerColor,
+        color = containerColor
     ) {
-        val hazeState = remember { HazeState() }
-
         ScaffoldLayout(
             topBar = {
                 if (enableTopBarBlur) {
@@ -118,12 +126,8 @@ fun MiuixScaffold(
             content = {
                 MiuixBox(
                     Modifier.haze(
-                        state = hazeState, style = HazeStyle(
-                            backgroundColor = containerColor,
-                            tint = HazeTint.Color(containerColor.copy(alpha)),
-                            blurRadius = blurRadius,
-                            noiseFactor = noiseFactor
-                        )
+                        state = hazeState,
+                        style = hazeStyle
                     )
                 ) {
                     content(it)
@@ -143,7 +147,7 @@ private fun ScaffoldLayout(
     bottomBar: @Composable () -> Unit,
     popup: @Composable () -> Unit,
     content: @Composable (PaddingValues) -> Unit,
-    contentWindowInsets: WindowInsets,
+    contentWindowInsets: WindowInsets
 ) {
     SubcomposeLayout { constraints ->
         val layoutWidth = constraints.maxWidth

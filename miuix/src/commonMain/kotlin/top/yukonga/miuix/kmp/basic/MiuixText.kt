@@ -79,7 +79,6 @@ fun MiuixText(
     onTextLayout: ((TextLayoutResult) -> Unit)? = null,
     style: TextStyle = MiuixTheme.textStyles.main
 ) {
-
     val textColor by rememberUpdatedState(if (color.isSpecified) color else if (style.color.isSpecified) style.color else MiuixTheme.colorScheme.primary)
 
     BasicText(

@@ -33,7 +33,7 @@ fun MiuixHorizontalPager(
     defaultWindowInsetsPadding: Boolean = true,
     pageContent: @Composable (pageIndex: Int) -> Unit,
     userScrollEnabled: Boolean = false,
-    flingBehavior: TargetedFlingBehavior = PagerDefaults.flingBehavior(state = pagerState),
+    flingBehavior: TargetedFlingBehavior = PagerDefaults.flingBehavior(state = pagerState)
 ) {
     HorizontalPager(
         modifier =

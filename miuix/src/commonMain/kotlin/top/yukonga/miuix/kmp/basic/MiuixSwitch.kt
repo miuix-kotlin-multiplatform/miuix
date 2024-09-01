@@ -37,8 +37,8 @@ import kotlin.math.absoluteValue
 /**
  * A switch with Miuix style.
  *
- * @param checked The checked state of the switch.
- * @param onCheckedChange The callback to be called when the checked state changes.
+ * @param checked The checked state of the [MiuixSwitch].
+ * @param onCheckedChange The callback to be called when the state of the [MiuixSwitch] changes.
  * @param modifier The modifier to be applied to the [MiuixSwitch].
  * @param enabled Whether the [MiuixSwitch] is enabled.
  * @param interactionSource The interaction source to be applied to the [MiuixSwitch].
@@ -49,8 +49,10 @@ fun MiuixSwitch(
     onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    interactionSource: MutableInteractionSource? = remember { MutableInteractionSource() },
+    interactionSource: MutableInteractionSource? = null
 ) {
+    @Suppress("NAME_SHADOWING")
+    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val isChecked by rememberUpdatedState(checked)
     val hapticFeedback = LocalHapticFeedback.current
     var hasVibrated by remember { mutableStateOf(false) }

@@ -29,14 +29,25 @@ import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
+/**
+ * A checkbox component with Miuix style.
+ *
+ * @param checked The current state of the [MiuixCheckbox].
+ * @param onCheckedChange The callback to be called when the state of the [MiuixCheckbox] changes.
+ * @param modifier The modifier to be applied to the [MiuixCheckbox].
+ * @param enabled Whether the [MiuixCheckbox] is enabled.
+ * @param interactionSource The interaction source to be applied to the [MiuixCheckbox].
+ */
 @Composable
 fun MiuixCheckbox(
     checked: Boolean,
     onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    interactionSource: MutableInteractionSource? = remember { MutableInteractionSource() }
+    interactionSource: MutableInteractionSource? = null
 ) {
+    @Suppress("NAME_SHADOWING")
+    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val isChecked by rememberUpdatedState(checked)
     var isPressed by remember { mutableStateOf(false) }
     val backgroundColor by animateColorAsState(

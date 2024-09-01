@@ -15,6 +15,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -75,8 +76,13 @@ fun MiuixTextField(
     minLines: Int = 1,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     onTextLayout: (TextLayoutResult) -> Unit = {},
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    interactionSource: MutableInteractionSource? = null
 ) {
+    @Suppress("NAME_SHADOWING")
+    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
+    val paddingModifier = remember(insideMargin) {
+        Modifier.padding(horizontal = insideMargin.width, vertical = insideMargin.height)
+    }
     val isFocused by interactionSource.collectIsFocusedAsState()
     val borderWidth by animateDpAsState(if (isFocused) 1.6.dp else 0.dp)
     val borderColor by animateColorAsState(if (isFocused) MiuixTheme.colorScheme.primary else backgroundColor)
@@ -84,9 +90,12 @@ fun MiuixTextField(
     val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty()) (insideMargin.height / 2) else 0.dp)
     val labelFontSize by animateDpAsState(if (value.isNotEmpty()) 10.dp else 16.dp)
 
+    val updatedOnValueChange by rememberUpdatedState(onValueChange)
+    val updatedOnTextLayout by rememberUpdatedState(onTextLayout)
+
     BasicTextField(
         value = value,
-        onValueChange = onValueChange,
+        onValueChange = updatedOnValueChange,
         modifier = modifier,
         enabled = enabled,
         readOnly = readOnly,
@@ -97,7 +106,7 @@ fun MiuixTextField(
         maxLines = maxLines,
         minLines = minLines,
         visualTransformation = visualTransformation,
-        onTextLayout = onTextLayout,
+        onTextLayout = updatedOnTextLayout,
         interactionSource = interactionSource,
         cursorBrush = SolidColor(MiuixTheme.colorScheme.primary),
         decorationBox = { innerTextField ->
@@ -116,7 +125,8 @@ fun MiuixTextField(
             ) {
                 MiuixBox(
                     modifier = Modifier
-                        .fillMaxWidth().padding(horizontal = insideMargin.width, vertical = insideMargin.height)
+                        .fillMaxWidth()
+                        .then(paddingModifier)
                 ) {
                     MiuixBox(
                         modifier = Modifier.fillMaxWidth()

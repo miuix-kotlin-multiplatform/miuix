@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,11 +42,14 @@ fun MiuixButton(
     enabled: Boolean = true,
     submit: Boolean = false,
     cornerRadius: Dp = 18.dp,
-    interactionSource: MutableInteractionSource? = remember { MutableInteractionSource() }
+    interactionSource: MutableInteractionSource? = null
 ) {
+    @Suppress("NAME_SHADOWING")
+    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val hapticFeedback = LocalHapticFeedback.current
-    val color = getButtonColor(enabled, submit)
-    val textColor = getTextColor(enabled, submit)
+    val color by rememberUpdatedState(getButtonColor(enabled, submit))
+    val textColor by rememberUpdatedState(getTextColor(enabled, submit))
+
     MiuixSurface(
         onClick = {
             onClick()

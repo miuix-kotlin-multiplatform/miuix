@@ -98,7 +98,7 @@ fun MiuixSuperDropdown(
     val isDropdownExpanded = remember { mutableStateOf(false) }
     var alignLeft by rememberSaveable { mutableStateOf(true) }
     val textMeasurer = rememberTextMeasurer()
-    val textStyle = TextStyle(fontWeight = FontWeight.Medium, fontSize = 16.sp)
+    val textStyle = remember { TextStyle(fontWeight = FontWeight.Medium, fontSize = 16.sp) }
     val textWidthDp = remember(items) {
         items.maxOfOrNull { text ->
             with(density) { textMeasurer.measure(text = text, style = textStyle).size.width.toDp() }

@@ -4,6 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.BlendModeColorFilter
@@ -36,8 +38,9 @@ fun MiuixSuperArrow(
     leftAction: @Composable (() -> Unit)? = null,
     rightText: String? = null,
     onClick: (() -> Unit)? = null,
-    insideMargin: DpSize = DpSize(28.dp, 14.dp),
+    insideMargin: DpSize = DpSize(28.dp, 14.dp)
 ) {
+    val updatedOnClick by rememberUpdatedState(onClick)
     MiuixBasicComponent(
         modifier = modifier,
         insideMargin = insideMargin,
@@ -45,7 +48,7 @@ fun MiuixSuperArrow(
         summary = summary,
         leftAction = leftAction,
         rightActions = { createRightActions(rightText) },
-        onClick = onClick
+        onClick = updatedOnClick
     )
 }
 

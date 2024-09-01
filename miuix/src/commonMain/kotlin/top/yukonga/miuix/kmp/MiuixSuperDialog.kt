@@ -8,6 +8,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,12 +54,18 @@ fun MiuixSuperDialog(
     title: String? = null,
     summary: String? = null,
     onDismissRequest: () -> Unit,
-    insideMargin: DpSize = DpSize(14.dp, 14.dp),
+    insideMargin: DpSize? = null,
     content: @Composable () -> Unit
 ) {
-    val bottomCornerRadius = rememberUpdatedState(if (getRoundedCorner() != 0.dp) getRoundedCorner() - insideMargin.width else 32.dp)
-    val getWindowSize = rememberUpdatedState(getWindowSize())
-    val contentAlignment = if (getWindowSize.value.width > getWindowSize.value.height) Alignment.Center else Alignment.BottomCenter
+    @Suppress("NAME_SHADOWING")
+    val insideMargin = remember { insideMargin } ?: remember { DpSize(14.dp, 14.dp) }
+    val paddingModifier = remember(insideMargin) {
+        Modifier.padding(horizontal = insideMargin.width).padding(bottom = insideMargin.height)
+    }
+    val roundedCorner by rememberUpdatedState(getRoundedCorner())
+    val bottomCornerRadius by remember { derivedStateOf { if (roundedCorner != 0.dp) roundedCorner - insideMargin.width else 32.dp } }
+    val getWindowSize by rememberUpdatedState(getWindowSize())
+    val contentAlignment by remember { derivedStateOf { if (getWindowSize.width > getWindowSize.height) Alignment.Center else Alignment.BottomCenter } }
 
     BackHandler(
         dismiss = { dismissDialog() },
@@ -66,14 +75,13 @@ fun MiuixSuperDialog(
     MiuixBox(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = insideMargin.width)
-            .padding(bottom = insideMargin.height)
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
                     dismissDialog()
                     onDismissRequest()
                 })
             }
+            .then(paddingModifier)
     ) {
         Column(
             modifier = Modifier
@@ -84,7 +92,7 @@ fun MiuixSuperDialog(
                 .align(contentAlignment)
                 .background(
                     color = MiuixTheme.colorScheme.dropdownBackground,
-                    shape = SquircleShape(bottomCornerRadius.value)
+                    shape = SquircleShape(bottomCornerRadius)
                 )
                 .padding(24.dp),
         ) {

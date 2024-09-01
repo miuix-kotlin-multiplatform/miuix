@@ -28,13 +28,14 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 @Composable
 fun OtherComponent(padding: PaddingValues) {
     val focusManager = LocalFocusManager.current
-    var text by remember { mutableStateOf("") }
-    var progress by remember { mutableStateOf(0.25f) }
+    var text1 by remember { mutableStateOf("") }
+    var text2 by remember { mutableStateOf("Text") }
+    var progress by remember { mutableStateOf(0.5f) }
     val progressDisable by remember { mutableStateOf(0.5f) }
 
     MiuixTextField(
-        value = text,
-        onValueChange = { text = it },
+        value = text1,
+        onValueChange = { text1 = it },
         label = "Text Field",
         modifier = Modifier.padding(horizontal = 28.dp, vertical = 20.dp),
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
@@ -42,8 +43,8 @@ fun OtherComponent(padding: PaddingValues) {
     )
 
     MiuixTextField(
-        value = text,
-        onValueChange = { text = it },
+        value = text2,
+        onValueChange = { text2 = it },
         backgroundColor = MiuixTheme.colorScheme.primaryContainer,
         label = "Text Field",
         modifier = Modifier.padding(horizontal = 28.dp),

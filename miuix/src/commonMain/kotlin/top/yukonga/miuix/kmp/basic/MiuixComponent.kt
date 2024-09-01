@@ -33,17 +33,25 @@ import top.yukonga.miuix.kmp.utils.createRipple
  * @param indication The indication to be applied to the [MiuixBasicComponent].
  */
 @Composable
+@Suppress("NAME_SHADOWING")
 fun MiuixBasicComponent(
     modifier: Modifier = Modifier,
-    insideMargin: DpSize = DpSize(28.dp, 16.dp),
+    insideMargin: DpSize? = null,
     title: String? = null,
     summary: String? = null,
     leftAction: @Composable (() -> Unit?)? = null,
     rightActions: @Composable RowScope.() -> Unit = {},
     onClick: (() -> Unit)? = null,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    indication: Indication = createRipple()
+    interactionSource: MutableInteractionSource? = null,
+    indication: Indication? = null
 ) {
+    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
+    val indication = indication ?: createRipple()
+    val insideMargin = remember { insideMargin } ?: remember { DpSize(28.dp, 14.dp) }
+    val paddingModifier = remember(insideMargin) {
+        Modifier.padding(horizontal = insideMargin.width, vertical = insideMargin.height)
+    }
+
     Row(
         modifier = if (onClick != null) {
             modifier
@@ -57,7 +65,7 @@ fun MiuixBasicComponent(
             modifier
         }
             .fillMaxWidth()
-            .padding(horizontal = insideMargin.width, vertical = insideMargin.height),
+            .then(paddingModifier),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

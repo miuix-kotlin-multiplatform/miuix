@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.Color
  * @param primary The primary color.
  * @param onPrimary The color of the text on primary color.
  * @param primaryContainer The color of the primary container.
- * @param onPrimaryContainer The color of the text on primary container.
  * @param background The background color.
  * @param onBackground The color of the text on background.
  * @param subTextBase The base color of the sub text.

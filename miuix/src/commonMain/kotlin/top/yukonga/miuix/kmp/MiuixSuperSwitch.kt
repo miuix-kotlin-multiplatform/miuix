@@ -1,10 +1,10 @@
 package top.yukonga.miuix.kmp
 
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpSize
@@ -36,7 +36,7 @@ fun MiuixSuperSwitch(
     enabled: Boolean = true
 ) {
     var isChecked by remember { mutableStateOf(checked) }
-    val interactionSource = remember { MutableInteractionSource() }
+    val updatedOnCheckedChange by rememberUpdatedState(onCheckedChange)
 
     if (isChecked != checked) {
         isChecked = checked
@@ -50,16 +50,15 @@ fun MiuixSuperSwitch(
         leftAction = leftAction,
         rightActions = {
             MiuixSwitch(
-                checked = checked,
-                onCheckedChange = onCheckedChange,
+                checked = isChecked,
+                onCheckedChange = updatedOnCheckedChange,
                 enabled = enabled
             )
         },
-        interactionSource = interactionSource,
         onClick = {
             if (enabled) {
                 isChecked = !isChecked
-                onCheckedChange?.invoke(isChecked)
+                updatedOnCheckedChange?.invoke(isChecked)
             }
         }
     )

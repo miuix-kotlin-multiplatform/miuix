@@ -84,7 +84,7 @@ fun MiuixTopAppBar(
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     scrollBehavior: MiuixScrollBehavior? = null,
-    defaultWindowInsetsPadding: Boolean = true,
+    defaultWindowInsetsPadding: Boolean = true
 ) {
     val density = LocalDensity.current
     val expandedHeightPx by rememberUpdatedState(

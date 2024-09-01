@@ -67,8 +67,8 @@ fun MiuixSlider(
             (round(newValue * factor) / factor).coerceIn(minValue, maxValue)
         }
     }
-    val color = if (enabled) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.submitDisabledBg
-    val backgroundColor = if (enabled) MiuixTheme.colorScheme.secondary else MiuixTheme.colorScheme.disabledBg
+    val color = rememberUpdatedState(if (enabled) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.submitDisabledBg)
+    val backgroundColor = rememberUpdatedState(if (enabled) MiuixTheme.colorScheme.secondary else MiuixTheme.colorScheme.disabledBg)
 
     MiuixBox(
         modifier = if (enabled) {
@@ -104,12 +104,12 @@ fun MiuixSlider(
     ) {
         SliderBackground(
             modifier = Modifier.fillMaxWidth().height(height),
-            backgroundColor = backgroundColor,
+            backgroundColor = backgroundColor.value,
             effect = effect,
             progress = progress,
             minValue = minValue,
             maxValue = maxValue,
-            color = color
+            color = color.value
         )
     }
 }

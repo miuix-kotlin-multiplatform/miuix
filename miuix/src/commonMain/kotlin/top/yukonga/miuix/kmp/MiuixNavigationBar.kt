@@ -57,7 +57,7 @@ fun MiuixNavigationBar(
     modifier: Modifier = Modifier,
     color: Color = MiuixTheme.colorScheme.background,
     onClick: (Int) -> Unit,
-    defaultWindowInsetsPadding: Boolean = true,
+    defaultWindowInsetsPadding: Boolean = true
 ) {
     require(items.size in 2..5) { "BottomBar must have between 2 and 5 items" }
     val captionBarBottomPadding by rememberUpdatedState(
