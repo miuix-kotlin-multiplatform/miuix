@@ -20,6 +20,8 @@ fun ThirdPage(
     onShowTopAppBarChange: (Boolean) -> Unit,
     showBottomBar: Boolean,
     onShowBottomBarChange: (Boolean) -> Unit,
+    showFloatingActionButton: Boolean,
+    onShowFloatingActionButtonChange: (Boolean) -> Unit,
     enablePageUserScroll: Boolean,
     onEnablePageUserScrollChange: (Boolean) -> Unit,
     enableTopBarBlur: Boolean,
@@ -51,6 +53,11 @@ fun ThirdPage(
                 title = "Show Bottom Bar",
                 checked = showBottomBar,
                 onCheckedChange = onShowBottomBarChange
+            )
+            MiuixSuperSwitch(
+                title = "Show Floating Action Button",
+                checked = showFloatingActionButton,
+                onCheckedChange = onShowFloatingActionButtonChange
             )
             MiuixSuperSwitch(
                 title = "Enable Page User Scroll",

@@ -217,7 +217,7 @@ fun MiuixSuperDropdown(
                             }
                             .align(if (alignLeft && !alwaysRight) AbsoluteAlignment.TopLeft else AbsoluteAlignment.TopRight)
                             .graphicsLayer(
-                                shadowElevation = 50f,
+                                shadowElevation = 18f,
                                 shape = SquircleShape(18.dp),
                                 clip = false
                             )

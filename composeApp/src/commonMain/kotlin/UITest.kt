@@ -77,6 +77,7 @@ fun UITest(
     val showFPSMonitor = remember { mutableStateOf(false) }
     val showTopAppBar = remember { mutableStateOf(true) }
     val showBottomBar = remember { mutableStateOf(true) }
+    val showFloatingActionButton = remember { mutableStateOf(true) }
     val enablePageUserScroll = remember { mutableStateOf(false) }
     val enableTopBarBlur = remember { mutableStateOf(true) }
     val enableBottomBarBlur = remember { mutableStateOf(true) }
@@ -113,16 +114,18 @@ fun UITest(
             }
         },
         floatingActionButton = {
-            MiuixFloatingActionButton(
-                onClick = {
-                    uriHandler.openUri("https://github.com/miuix-kotlin-multiplatform/miuix")
+            if (showFloatingActionButton.value) {
+                MiuixFloatingActionButton(
+                    onClick = {
+                        uriHandler.openUri("https://github.com/miuix-kotlin-multiplatform/miuix")
+                    }
+                ) {
+                    Icon(
+                        imageVector = MiuixIcons.GitHub,
+                        tint = Color.White,
+                        contentDescription = "GitHub"
+                    )
                 }
-            ) {
-                Icon(
-                    imageVector = MiuixIcons.GitHub,
-                    tint = Color.White,
-                    contentDescription = "GitHub"
-                )
             }
         }
     ) { padding ->
@@ -136,6 +139,8 @@ fun UITest(
             onShowTopAppBarChange = { showTopAppBar.value = it },
             showBottomBar = showBottomBar.value,
             onShowBottomBarChange = { showBottomBar.value = it },
+            showFloatingActionButton = showFloatingActionButton.value,
+            onShowFloatingActionButtonChange = { showFloatingActionButton.value = it },
             enablePageUserScroll = enablePageUserScroll.value,
             onEnablePageUserScrollChange = { enablePageUserScroll.value = it },
             enableTopBarBlur = enableTopBarBlur.value,
@@ -169,6 +174,8 @@ fun AppHorizontalPager(
     onShowTopAppBarChange: (Boolean) -> Unit,
     showBottomBar: Boolean,
     onShowBottomBarChange: (Boolean) -> Unit,
+    showFloatingActionButton: Boolean,
+    onShowFloatingActionButtonChange: (Boolean) -> Unit,
     enablePageUserScroll: Boolean,
     onEnablePageUserScrollChange: (Boolean) -> Unit,
     enableTopBarBlur: Boolean,
@@ -206,6 +213,8 @@ fun AppHorizontalPager(
                     onShowTopAppBarChange = onShowTopAppBarChange,
                     showBottomBar = showBottomBar,
                     onShowBottomBarChange = onShowBottomBarChange,
+                    showFloatingActionButton = showFloatingActionButton,
+                    onShowFloatingActionButtonChange = onShowFloatingActionButtonChange,
                     enablePageUserScroll = enablePageUserScroll,
                     onEnablePageUserScrollChange = onEnablePageUserScrollChange,
                     enableTopBarBlur = enableTopBarBlur,

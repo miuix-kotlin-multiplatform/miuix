@@ -92,7 +92,7 @@ fun MiuixSuperDialog(
                 }
                 .align(contentAlignment)
                 .graphicsLayer(
-                    shadowElevation = 50f,
+                    shadowElevation = 18f,
                     shape = SquircleShape(bottomCornerRadius),
                     clip = false
                 )

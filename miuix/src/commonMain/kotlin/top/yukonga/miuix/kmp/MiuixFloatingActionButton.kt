@@ -23,7 +23,7 @@ fun MiuixFloatingActionButton(
     modifier: Modifier = Modifier,
     shape: Shape = RoundedCornerShape(50.dp),
     containerColor: Color = MiuixTheme.colorScheme.primary,
-    shadowElevation: Float = 15f,
+    shadowElevation: Float = 18f,
     interactionSource: MutableInteractionSource? = null,
     content: @Composable () -> Unit,
 ) {
