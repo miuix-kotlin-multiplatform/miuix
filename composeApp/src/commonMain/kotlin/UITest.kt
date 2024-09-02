@@ -9,7 +9,6 @@ import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -27,6 +26,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
+import top.yukonga.miuix.kmp.MiuixFloatingActionButton
 import top.yukonga.miuix.kmp.MiuixNavigationBar
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.MiuixTopAppBar
@@ -34,7 +34,6 @@ import top.yukonga.miuix.kmp.NavigationItem
 import top.yukonga.miuix.kmp.basic.MiuixHorizontalPager
 import top.yukonga.miuix.kmp.basic.MiuixScaffold
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.ArrowBack
 import top.yukonga.miuix.kmp.icon.icons.GitHub
 import top.yukonga.miuix.kmp.rememberMiuixTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -92,32 +91,6 @@ fun UITest(
         topBar = {
             if (showTopAppBar.value) {
                 MiuixTopAppBar(
-                    navigationIcon = {
-                        IconButton(
-                            modifier = Modifier.padding(start = 12.dp),
-                            onClick = {}
-                        ) {
-                            Icon(
-                                imageVector = MiuixIcons.ArrowBack,
-                                tint = MiuixTheme.colorScheme.onBackground,
-                                contentDescription = "ArrowBack"
-                            )
-                        }
-                    },
-                    actions = {
-                        IconButton(
-                            modifier = Modifier.padding(end = 12.dp),
-                            onClick = {
-                                uriHandler.openUri("https://github.com/miuix-kotlin-multiplatform/miuix")
-                            }
-                        ) {
-                            Icon(
-                                imageVector = MiuixIcons.GitHub,
-                                tint = MiuixTheme.colorScheme.onBackground,
-                                contentDescription = "GitHub"
-                            )
-                        }
-                    },
                     color = if (enableTopBarBlur.value) Color.Transparent else MiuixTheme.colorScheme.background,
                     title = "Miuix",
                     scrollBehavior = currentScrollBehavior
@@ -136,6 +109,19 @@ fun UITest(
                             pagerState.animateScrollToPage(index)
                         }
                     }
+                )
+            }
+        },
+        floatingActionButton = {
+            MiuixFloatingActionButton(
+                onClick = {
+                    uriHandler.openUri("https://github.com/miuix-kotlin-multiplatform/miuix")
+                }
+            ) {
+                Icon(
+                    imageVector = MiuixIcons.GitHub,
+                    tint = Color.White,
+                    contentDescription = "GitHub"
                 )
             }
         }
