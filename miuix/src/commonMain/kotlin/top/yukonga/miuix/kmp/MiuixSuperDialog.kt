@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -90,6 +91,11 @@ fun MiuixSuperDialog(
                     detectTapGestures { /* Do nothing to consume the click */ }
                 }
                 .align(contentAlignment)
+                .graphicsLayer(
+                    shadowElevation = 50f,
+                    shape = SquircleShape(bottomCornerRadius),
+                    clip = false
+                )
                 .background(
                     color = MiuixTheme.colorScheme.dropdownBackground,
                     shape = SquircleShape(bottomCornerRadius)

@@ -36,6 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.BlendModeColorFilter
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -215,6 +216,11 @@ fun MiuixSuperDropdown(
                                 )
                             }
                             .align(if (alignLeft && !alwaysRight) AbsoluteAlignment.TopLeft else AbsoluteAlignment.TopRight)
+                            .graphicsLayer(
+                                shadowElevation = 50f,
+                                shape = SquircleShape(18.dp),
+                                clip = false
+                            )
                             .clip(SquircleShape(18.dp))
                             .background(MiuixTheme.colorScheme.dropdownBackground)
                     ) {
