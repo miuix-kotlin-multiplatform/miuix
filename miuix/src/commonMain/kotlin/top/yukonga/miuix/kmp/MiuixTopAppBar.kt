@@ -71,6 +71,7 @@ import kotlin.math.roundToInt
  * @param modifier The modifier to be applied to the  [MiuixTopAppBar].
  * @param color The background color of the [MiuixTopAppBar].
  * @param title The title of the [MiuixTopAppBar].
+ * @param largeTitle The large title of the [MiuixTopAppBar], If not specified, it will be the same as title.
  * @param navigationIcon The [Composable] content that represents the navigation icon.
  * @param actions The [Composable] content that represents the action icons.
  * @param scrollBehavior The [MiuixScrollBehavior] that controls the behavior of the [MiuixTopAppBar].
@@ -81,6 +82,7 @@ fun MiuixTopAppBar(
     modifier: Modifier = Modifier,
     color: Color = MiuixTheme.colorScheme.background,
     title: String,
+    largeTitle: String? = null,
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     scrollBehavior: MiuixScrollBehavior? = null,
@@ -127,6 +129,7 @@ fun MiuixTopAppBar(
     ) {
         MiuixTopAppBarLayout(
             title = title,
+            largeTitle = largeTitle ?: title,
             navigationIcon = navigationIcon,
             actions = actionsRow,
             scrolledOffset = { scrollBehavior?.state?.heightOffset ?: 0f },
@@ -480,6 +483,7 @@ private fun interface ScrolledOffset {
 @Composable
 private fun MiuixTopAppBarLayout(
     title: String,
+    largeTitle: String,
     navigationIcon: @Composable () -> Unit,
     actions: @Composable () -> Unit,
     scrolledOffset: ScrolledOffset,
@@ -533,7 +537,7 @@ private fun MiuixTopAppBarLayout(
                     .graphicsLayer(alpha = 1f - (abs(scrolledOffset.offset()) / expandedHeightPx * 2).coerceIn(0f, 1f))
             ) {
                 MiuixText(
-                    text = title,
+                    text = largeTitle,
                     maxLines = 1,
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Light
