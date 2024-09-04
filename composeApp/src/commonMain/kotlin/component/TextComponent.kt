@@ -1,5 +1,10 @@
 package component
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -55,6 +60,7 @@ fun TextComponent() {
     var miuixSuperRightCheckboxState by remember { mutableStateOf(false) }
     var miuixSuperSwitch by remember { mutableStateOf("State: false") }
     var miuixSuperSwitchState by remember { mutableStateOf(false) }
+    var miuixSuperSwitchAnimState by remember { mutableStateOf(false) }
 
     Row(
         modifier = Modifier
@@ -88,6 +94,39 @@ fun TextComponent() {
             modifier = Modifier.padding(start = 18.dp)
         )
     }
+
+    MiuixBasicComponent(
+        title = "Title",
+        summary = "Summary",
+        leftAction = {
+            MiuixText(text = "Left")
+        },
+        rightActions = {
+            MiuixText(text = "Right1")
+            Spacer(Modifier.width(8.dp))
+            MiuixText(text = "Right2")
+        },
+        onClick = {}
+    )
+
+    MiuixSuperArrow(
+        title = "Arrow",
+        summary = "With an arrow on right",
+        onClick = {}
+    )
+
+    MiuixSuperArrow(
+        leftAction = {
+            Image(
+                colorFilter = ColorFilter.tint(MiuixTheme.colorScheme.onBackground),
+                imageVector = Icons.Default.Person,
+                contentDescription = "Person",
+            )
+        },
+        title = "Person",
+        summary = "An introduction",
+        onClick = {}
+    )
 
     Row(
         modifier = Modifier
@@ -157,71 +196,6 @@ fun TextComponent() {
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
-
-        MiuixBasicComponent(
-            insideMargin = DpSize(16.dp, 16.dp),
-            title = "Title",
-            summary = "Summary",
-            leftAction = {
-                MiuixText(text = "Left")
-            },
-            rightActions = {
-                MiuixText(text = "Right1")
-                Spacer(Modifier.width(8.dp))
-                MiuixText(text = "Right2")
-            },
-            onClick = {}
-        )
-
-        MiuixSuperArrow(
-            insideMargin = DpSize(18.dp, 18.dp),
-            title = "Arrow",
-            summary = "With an arrow on right",
-            onClick = {}
-        )
-
-        MiuixSuperArrow(
-            insideMargin = DpSize(18.dp, 18.dp),
-            leftAction = {
-                Image(
-                    colorFilter = ColorFilter.tint(MiuixTheme.colorScheme.onBackground),
-                    imageVector = Icons.Default.Person,
-                    contentDescription = "Person",
-                )
-            },
-            title = "Person",
-            summary = "An introduction",
-            onClick = {}
-        )
-
-        MiuixSuperArrow(
-            insideMargin = DpSize(18.dp, 18.dp),
-            title = "Dialog",
-            summary = "Click to show Dialog",
-            onClick = {
-                showDialog.value = true
-            }
-        )
-
-        MiuixSuperDropdown(
-            insideMargin = DpSize(18.dp, 18.dp),
-            title = "Dropdown",
-            summary = "Popup near click",
-            items = dropdownOptions,
-            selectedIndex = dropdownSelectedOption.value,
-            onSelectedIndexChange = { newOption -> dropdownSelectedOption.value = newOption },
-        )
-
-        MiuixSuperDropdown(
-            insideMargin = DpSize(18.dp, 18.dp),
-            title = "Dropdown",
-            summary = "Popup always on right",
-            alwaysRight = true,
-            items = dropdownOptions,
-            selectedIndex = dropdownSelectedOptionRight.value,
-            onSelectedIndexChange = { newOption -> dropdownSelectedOptionRight.value = newOption },
-        )
-
         MiuixSuperCheckbox(
             insideMargin = DpSize(18.dp, 18.dp),
             title = "Checkbox",
@@ -254,12 +228,56 @@ fun TextComponent() {
         MiuixSuperSwitch(
             insideMargin = DpSize(18.dp, 18.dp),
             title = "Switch",
-            summary = miuixSuperSwitch,
-            checked = miuixSuperSwitchState,
+            summary = "Click to expand a Switch",
+            checked = miuixSuperSwitchAnimState,
             onCheckedChange = {
-                miuixSuperSwitchState = it
-                miuixSuperSwitch = "State: $it"
+                miuixSuperSwitchAnimState = it
             },
+        )
+
+        AnimatedVisibility(
+            visible = miuixSuperSwitchAnimState,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
+        ) {
+            MiuixSuperSwitch(
+                insideMargin = DpSize(18.dp, 18.dp),
+                title = "Switch",
+                summary = miuixSuperSwitch,
+                checked = miuixSuperSwitchState,
+                onCheckedChange = {
+                    miuixSuperSwitchState = it
+                    miuixSuperSwitch = "State: $it"
+                },
+            )
+        }
+
+        MiuixSuperArrow(
+            insideMargin = DpSize(18.dp, 18.dp),
+            title = "Dialog",
+            summary = "Click to show a Dialog",
+            onClick = {
+                showDialog.value = true
+            }
+        )
+
+        MiuixSuperDropdown(
+            insideMargin = DpSize(18.dp, 18.dp),
+            title = "Dropdown",
+            summary = "Popup near click",
+            items = dropdownOptions,
+            selectedIndex = dropdownSelectedOption.value,
+            onSelectedIndexChange = { newOption -> dropdownSelectedOption.value = newOption },
+        )
+
+        MiuixSuperDropdown(
+            insideMargin = DpSize(18.dp, 18.dp),
+            title = "Dropdown",
+            summary = "Popup always on right",
+            alwaysRight = true,
+            items = dropdownOptions,
+            selectedIndex = dropdownSelectedOptionRight.value,
+            onSelectedIndexChange = { newOption -> dropdownSelectedOptionRight.value = newOption },
         )
 
     }

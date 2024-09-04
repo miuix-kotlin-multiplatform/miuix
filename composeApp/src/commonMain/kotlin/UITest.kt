@@ -1,3 +1,10 @@
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -90,7 +97,11 @@ fun UITest(
         enableTopBarBlur = enableTopBarBlur.value,
         enableBottomBarBlur = enableBottomBarBlur.value,
         topBar = {
-            if (showTopAppBar.value) {
+            AnimatedVisibility(
+                visible = showTopAppBar.value,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
                 MiuixTopAppBar(
                     color = if (enableTopBarBlur.value) Color.Transparent else MiuixTheme.colorScheme.background,
                     title = "Miuix",
@@ -99,7 +110,11 @@ fun UITest(
             }
         },
         bottomBar = {
-            if (showBottomBar.value) {
+            AnimatedVisibility(
+                visible = showBottomBar.value,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
                 MiuixNavigationBar(
                     color = if (enableBottomBarBlur.value) Color.Transparent else MiuixTheme.colorScheme.background,
                     items = items,
@@ -114,7 +129,11 @@ fun UITest(
             }
         },
         floatingActionButton = {
-            if (showFloatingActionButton.value) {
+            AnimatedVisibility(
+                visible = showFloatingActionButton.value,
+                enter = fadeIn() + expandHorizontally(),
+                exit = fadeOut() + shrinkHorizontally()
+            ) {
                 MiuixFloatingActionButton(
                     onClick = {
                         uriHandler.openUri("https://github.com/miuix-kotlin-multiplatform/miuix")
@@ -153,7 +172,11 @@ fun UITest(
         )
     }
 
-    if (showFPSMonitor.value) {
+    AnimatedVisibility(
+        visible = showFPSMonitor.value,
+        enter = fadeIn() + expandHorizontally(),
+        exit = fadeOut() + shrinkHorizontally()
+    ) {
         FPSMonitor(
             modifier = Modifier
                 .statusBarsPadding()
