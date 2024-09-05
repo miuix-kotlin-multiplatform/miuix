@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -48,6 +49,8 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
  * @param textStyle The text style to be applied to the [MiuixTextField].
  * @param keyboardOptions The keyboard options to be applied to the [MiuixTextField].
  * @param keyboardActions The keyboard actions to be applied to the [MiuixTextField].
+ * @param leadingIcon The leading icon to be displayed in the [MiuixTextField].
+ * @param trailingIcon The trailing icon to be displayed in the [MiuixTextField].
  * @param singleLine Whether the text field is single line.
  * @param maxLines The maximum number of lines allowed to be displayed in [MiuixTextField].
  * @param minLines The minimum number of lines allowed to be displayed in [MiuixTextField]. It is required
@@ -71,6 +74,8 @@ fun MiuixTextField(
     textStyle: TextStyle = MiuixTheme.textStyles.main,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     singleLine: Boolean = false,
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,
@@ -80,8 +85,11 @@ fun MiuixTextField(
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
-    val paddingModifier = remember(insideMargin) {
-        Modifier.padding(horizontal = insideMargin.width, vertical = insideMargin.height)
+    val paddingModifier = remember(insideMargin, leadingIcon, trailingIcon) {
+        if (leadingIcon == null && trailingIcon == null) Modifier.padding(insideMargin.width, vertical = insideMargin.height)
+        else if (leadingIcon == null) Modifier.padding(start = insideMargin.width).padding(vertical = insideMargin.height)
+        else if (trailingIcon == null) Modifier.padding(end = insideMargin.width).padding(vertical = insideMargin.height)
+        else Modifier.padding(vertical = insideMargin.height)
     }
     val isFocused by interactionSource.collectIsFocusedAsState()
     val borderWidth by animateDpAsState(if (isFocused) 1.6.dp else 0.dp)
@@ -123,13 +131,17 @@ fun MiuixTextField(
                         shape = SquircleShape(cornerRadius)
                     )
             ) {
-                MiuixBox(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .then(paddingModifier)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
+                    if (leadingIcon != null) {
+                        leadingIcon()
+                    }
                     MiuixBox(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .weight(1f)
+                            .then(paddingModifier)
                     ) {
                         MiuixText(
                             text = label,
@@ -146,6 +158,9 @@ fun MiuixTextField(
                         ) {
                             innerTextField()
                         }
+                    }
+                    if (trailingIcon != null) {
+                        trailingIcon()
                     }
                 }
             }

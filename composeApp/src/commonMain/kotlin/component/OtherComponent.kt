@@ -98,7 +98,7 @@ fun OtherComponent(padding: PaddingValues) {
         label = "Text Field",
         modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp),
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
     )
 
     MiuixTextField(
