@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,7 +40,7 @@ fun OtherComponent(padding: PaddingValues) {
     var submitClickCount by remember { mutableStateOf(0) }
     val focusManager = LocalFocusManager.current
     var text1 by remember { mutableStateOf("") }
-    var text2 by remember { mutableStateOf("Text") }
+    var text2 by remember { mutableStateOf(TextFieldValue("")) }
     var progress by remember { mutableStateOf(0.5f) }
     val progressDisable by remember { mutableStateOf(0.5f) }
 
