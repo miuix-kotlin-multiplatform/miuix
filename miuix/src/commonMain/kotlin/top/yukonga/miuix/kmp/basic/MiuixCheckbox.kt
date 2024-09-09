@@ -2,6 +2,7 @@ package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -21,8 +22,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Matrix
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathMeasure
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.vector.PathParser
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.Role
@@ -51,15 +56,12 @@ fun MiuixCheckbox(
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val isChecked by rememberUpdatedState(checked)
     var isPressed by remember { mutableStateOf(false) }
-    val backgroundColor by animateColorAsState(
-        if (isChecked) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.secondary,
-        animationSpec = tween(durationMillis = 200)
-    )
-    val disabledBackgroundColor by rememberUpdatedState(
-        if (isChecked) MiuixTheme.colorScheme.submitDisabledBg else MiuixTheme.colorScheme.disabledBg
-    )
+    val backgroundColor by animateColorAsState(if (isChecked) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.secondary)
+    val disabledBackgroundColor by rememberUpdatedState(if (isChecked) MiuixTheme.colorScheme.submitDisabledBg else MiuixTheme.colorScheme.disabledBg)
     val checkboxSize by animateDpAsState(if (isPressed) 20.dp else 22.dp)
-    val checkmarkColor by animateColorAsState(if (checked) Color.White else Color.Transparent)
+    val checkmarkColor by animateColorAsState(if (checked) Color.White else backgroundColor)
+    val rotationAngle by animateFloatAsState(if (checked) 0f else 25f, animationSpec = tween(durationMillis = 200))
+    val pathProgress by animateFloatAsState(if (checked) 1f else 0f, animationSpec = tween(durationMillis = 400))
     val toggleableModifier = remember(onCheckedChange, isChecked, enabled) {
         if (onCheckedChange != null) {
             Modifier.toggleable(
@@ -123,7 +125,14 @@ fun MiuixCheckbox(
                 scale(scaleFactor, scaleFactor)
                 translate(0f, 960f)
             })
-            drawPath(path, checkmarkColor)
+            rotate(rotationAngle, pivot = Offset(size.width / 2, size.height / 2)) {
+                val pathMeasure = PathMeasure()
+                pathMeasure.setPath(path, false)
+                val length = pathMeasure.length
+                val animatedPath = Path()
+                pathMeasure.getSegment(length * (1 - pathProgress), length, animatedPath, true)
+                drawPath(animatedPath, checkmarkColor)
+            }
         }
     }
 }
