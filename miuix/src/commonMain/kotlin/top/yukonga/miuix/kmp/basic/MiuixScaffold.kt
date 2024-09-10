@@ -114,7 +114,12 @@ fun MiuixScaffold(
         ScaffoldLayout(
             topBar = {
                 if (enableTopBarBlur) {
-                    MiuixBox(Modifier.hazeChild(hazeState)) {
+                    MiuixBox(
+                        Modifier.hazeChild(
+                            state = hazeState,
+                            style = hazeStyle
+                        )
+                    ) {
                         topBar()
                     }
                 } else {
@@ -123,7 +128,12 @@ fun MiuixScaffold(
             },
             bottomBar = {
                 if (enableBottomBarBlur) {
-                    MiuixBox(Modifier.hazeChild(hazeState)) {
+                    MiuixBox(
+                        Modifier.hazeChild(
+                            state = hazeState,
+                            style = hazeStyle
+                        )
+                    ) {
                         bottomBar()
                     }
                 } else {
