@@ -1,5 +1,6 @@
 package top.yukonga.miuix.kmp.basic
 
+import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -9,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import top.yukonga.miuix.kmp.MiuixScrollBehavior
+import top.yukonga.miuix.kmp.utils.enableOverscroll
 import top.yukonga.miuix.kmp.utils.overScrollVertical
 import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
 
@@ -30,8 +32,8 @@ fun MiuixLazyColumn(
     content: LazyListScope.() -> Unit
 ) {
     val scrollLazyColumnState = rememberLazyListState()
-    val firstModifier = remember(enableOverScroll) {
-        if (enableOverScroll) {
+    val firstModifier = remember(enableOverScroll, enableOverscroll()) {
+        if (enableOverScroll && enableOverscroll()) {
             modifier.overScrollVertical(onOverscroll = { topAppBarScrollBehavior?.isPinned = it })
         } else {
             modifier
@@ -42,10 +44,16 @@ fun MiuixLazyColumn(
             firstModifier.nestedScroll(it.nestedScrollConnection)
         } ?: firstModifier
     }
+    val flingBehavior =
+        if (enableOverScroll && enableOverscroll()) {
+            rememberOverscrollFlingBehavior { scrollLazyColumnState }
+        } else {
+            ScrollableDefaults.flingBehavior()
+        }
 
     LazyColumn(
         state = scrollLazyColumnState,
-        flingBehavior = rememberOverscrollFlingBehavior { scrollLazyColumnState },
+        flingBehavior = flingBehavior,
         contentPadding = contentPadding,
         modifier = finalModifier,
         content = content
