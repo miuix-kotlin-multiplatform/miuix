@@ -14,7 +14,6 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
 /**
- *
  * A card component with Miuix style.
  * Card contain contain content and actions that relate information about a subject.
  *

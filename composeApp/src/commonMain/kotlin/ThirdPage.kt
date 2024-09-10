@@ -28,13 +28,10 @@ fun ThirdPage(
     onEnableTopBarBlurChange: (Boolean) -> Unit,
     enableBottomBarBlur: Boolean,
     onEnableBottomBarBlurChange: (Boolean) -> Unit,
-    enableOverScroll: Boolean,
-    onEnableOverScrollChange: (Boolean) -> Unit,
     colorMode: MutableState<Int>
 ) {
     MiuixLazyColumn(
         modifier = Modifier.height(getWindowSize().height.dp),
-        enableOverScroll = enableOverScroll,
         contentPadding = PaddingValues(top = padding.calculateTopPadding()),
         topAppBarScrollBehavior = topAppBarScrollBehavior
     ) {
@@ -74,12 +71,6 @@ fun ThirdPage(
                 title = "Enable Bottom Bar Blur",
                 checked = enableBottomBarBlur,
                 onCheckedChange = onEnableBottomBarBlurChange
-            )
-            MiuixSuperSwitch(
-                title = "Enable Over Scroll",
-                checked = if (enableOverscroll()) enableOverScroll else false,
-                onCheckedChange = onEnableOverScrollChange,
-                enabled = enableOverscroll(),
             )
             MiuixSuperDropdown(
                 title = "Color Mode",

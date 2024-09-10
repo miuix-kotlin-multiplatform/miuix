@@ -88,7 +88,6 @@ fun UITest(
     val enablePageUserScroll = remember { mutableStateOf(false) }
     val enableTopBarBlur = remember { mutableStateOf(true) }
     val enableBottomBarBlur = remember { mutableStateOf(true) }
-    val enableOverScroll = remember { mutableStateOf(true) }
 
     val uriHandler = LocalUriHandler.current
 
@@ -166,8 +165,6 @@ fun UITest(
             onEnableTopBarBlurChange = { enableTopBarBlur.value = it },
             enableBottomBarBlur = enableBottomBarBlur.value,
             onEnableBottomBarBlurChange = { enableBottomBarBlur.value = it },
-            enableOverScroll = enableOverScroll.value,
-            onEnableOverScrollChange = { enableOverScroll.value = it },
             colorMode = colorMode,
         )
     }
@@ -205,8 +202,6 @@ fun AppHorizontalPager(
     onEnableTopBarBlurChange: (Boolean) -> Unit,
     enableBottomBarBlur: Boolean,
     onEnableBottomBarBlurChange: (Boolean) -> Unit,
-    enableOverScroll: Boolean,
-    onEnableOverScrollChange: (Boolean) -> Unit,
     colorMode: MutableState<Int>
 ) {
     MiuixHorizontalPager(
@@ -217,14 +212,12 @@ fun AppHorizontalPager(
             when (page) {
                 0 -> MainPage(
                     topAppBarScrollBehavior = topAppBarScrollBehaviorList[0],
-                    padding = padding,
-                    enableOverScroll = enableOverScroll,
+                    padding = padding
                 )
 
                 1 -> SecondPage(
                     topAppBarScrollBehavior = topAppBarScrollBehaviorList[1],
-                    padding = padding,
-                    enableOverScroll = enableOverScroll,
+                    padding = padding
                 )
 
                 else -> ThirdPage(
@@ -244,8 +237,6 @@ fun AppHorizontalPager(
                     onEnableTopBarBlurChange = onEnableTopBarBlurChange,
                     enableBottomBarBlur = enableBottomBarBlur,
                     onEnableBottomBarBlurChange = onEnableBottomBarBlurChange,
-                    enableOverScroll = enableOverScroll,
-                    onEnableOverScrollChange = onEnableOverScrollChange,
                     colorMode = colorMode
                 )
             }

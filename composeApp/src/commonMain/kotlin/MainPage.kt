@@ -8,11 +8,9 @@ import top.yukonga.miuix.kmp.basic.MiuixLazyColumn
 @Composable
 fun MainPage(
     topAppBarScrollBehavior: MiuixScrollBehavior,
-    padding: PaddingValues,
-    enableOverScroll: Boolean
+    padding: PaddingValues
 ) {
     MiuixLazyColumn(
-        enableOverScroll = enableOverScroll,
         contentPadding = PaddingValues(top = padding.calculateTopPadding()),
         topAppBarScrollBehavior = topAppBarScrollBehavior
     ) {

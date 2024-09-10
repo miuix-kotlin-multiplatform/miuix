@@ -12,14 +12,12 @@ import top.yukonga.miuix.kmp.basic.MiuixLazyColumn
 @Composable
 fun SecondPage(
     topAppBarScrollBehavior: MiuixScrollBehavior,
-    padding: PaddingValues,
-    enableOverScroll: Boolean
+    padding: PaddingValues
 ) {
     val dropdownOptions = listOf("Option 1", "Option 2", "Option 3", "Option 4")
     val dropdownSelectedOption = remember { mutableStateOf(0) }
 
     MiuixLazyColumn(
-        enableOverScroll = enableOverScroll,
         contentPadding = PaddingValues(top = padding.calculateTopPadding()),
         topAppBarScrollBehavior = topAppBarScrollBehavior
     ) {

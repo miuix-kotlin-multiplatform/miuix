@@ -78,6 +78,7 @@ internal const val OutBoundSpringDamp = 1f
 /**
  * @see overScrollOutOfBound
  */
+@Stable
 fun Modifier.overScrollVertical(
     nestedScrollToParent: Boolean = true,
     scrollEasing: ((currentOffset: Float, newOffset: Float) -> Float)? = null,
@@ -89,6 +90,7 @@ fun Modifier.overScrollVertical(
 /**
  * @see overScrollOutOfBound
  */
+@Stable
 fun Modifier.overScrollHorizontal(
     nestedScrollToParent: Boolean = true,
     scrollEasing: ((currentOffset: Float, newOffset: Float) -> Float)? = null,
@@ -111,6 +113,7 @@ fun Modifier.overScrollHorizontal(
  * @param springStiff springStiff for overscroll effect，For better user experience, the new value is not recommended to be higher than[StiffnessMediumLow]
  * @param springDamp springDamp for overscroll effect，generally do not need to set
  */
+@Stable
 @Suppress("NAME_SHADOWING")
 fun Modifier.overScrollOutOfBound(
     isVertical: Boolean = true,
