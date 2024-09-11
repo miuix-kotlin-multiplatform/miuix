@@ -20,14 +20,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.CheckboxLocation
+import top.yukonga.miuix.kmp.MiuixSearchBar
 import top.yukonga.miuix.kmp.MiuixSuperArrow
 import top.yukonga.miuix.kmp.MiuixSuperCheckbox
 import top.yukonga.miuix.kmp.MiuixSuperDialog
@@ -61,37 +59,19 @@ fun TextComponent() {
     var miuixSuperSwitch by remember { mutableStateOf("State: false") }
     var miuixSuperSwitchState by remember { mutableStateOf(false) }
     var miuixSuperSwitchAnimState by remember { mutableStateOf(false) }
+    val miuixSearchValue = remember { mutableStateOf("") }
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 15.dp),
-        verticalAlignment = Alignment.CenterVertically
+    MiuixSearchBar(
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+        searchValue = miuixSearchValue,
+        expanded = miuixSearchValue.value.isNotEmpty(),
+        onExpandedChange = {}
     ) {
-        MiuixText(
-            text = "Text",
-            fontWeight = FontWeight.Medium
-        )
-        MiuixText(
-            text = "Text",
-            modifier = Modifier.padding(start = 18.dp)
-        )
-        MiuixText(
-            text = "Text",
-            fontSize = 15.sp,
-            color = MiuixTheme.colorScheme.subTextBase,
-            modifier = Modifier.padding(start = 18.dp)
-        )
-        MiuixText(
-            text = "Text",
-            color = MiuixTheme.colorScheme.textFieldSub,
-            modifier = Modifier.padding(start = 18.dp)
-        )
-        MiuixText(
-            text = "Text",
-            style = MiuixTheme.textStyles.title,
-            color = MiuixTheme.colorScheme.subDropdown,
-            modifier = Modifier.padding(start = 18.dp)
+        MiuixBasicComponent(
+            title = miuixSearchValue.value,
+            onClick = {
+                miuixSearchValue.value = ""
+            },
         )
     }
 
@@ -131,7 +111,7 @@ fun TextComponent() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 20.dp),
+            .padding(horizontal = 24.dp, vertical = 14.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         MiuixCheckbox(
@@ -163,7 +143,7 @@ fun TextComponent() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 20.dp),
+            .padding(horizontal = 24.dp, vertical = 14.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         MiuixSwitch(

@@ -46,6 +46,8 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
  * @param label The label to be displayed when the [MiuixTextField] is empty.
  * @param labelColor The color of the label.
  * @param enabled Whether the [MiuixTextField] is enabled.
+ * @param enableBorder Whether the [MiuixTextField] has a border.
+ * @param enableOffset Whether the [MiuixTextField] has an offset.
  * @param readOnly Whether the [MiuixTextField] is read-only.
  * @param textStyle The text style to be applied to the [MiuixTextField].
  * @param keyboardOptions The keyboard options to be applied to the [MiuixTextField].
@@ -71,6 +73,8 @@ fun MiuixTextField(
     label: String = "",
     labelColor: Color = MiuixTheme.colorScheme.textFieldSub,
     enabled: Boolean = true,
+    enableBorder: Boolean = true,
+    enableOffset: Boolean = true,
     readOnly: Boolean = false,
     textStyle: TextStyle = MiuixTheme.textStyles.main,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -98,6 +102,25 @@ fun MiuixTextField(
     val labelOffsetY by animateDpAsState(if (value.text.isNotEmpty()) -(insideMargin.height / 2) else 0.dp)
     val innerTextOffsetY by animateDpAsState(if (value.text.isNotEmpty()) (insideMargin.height / 2) else 0.dp)
     val labelFontSize by animateDpAsState(if (value.text.isNotEmpty()) 10.dp else 16.dp)
+    val border = if (enableBorder) {
+        Modifier.border(
+            width = borderWidth,
+            color = borderColor,
+            shape = SquircleShape(cornerRadius)
+        )
+    } else {
+        Modifier
+    }
+    val labelOffset = if (enableOffset) {
+        Modifier.offset(y = labelOffsetY)
+    } else {
+        Modifier
+    }
+    val innerTextOffset = if (enableOffset) {
+        Modifier.offset(y = innerTextOffsetY)
+    } else {
+        Modifier
+    }
 
     BasicTextField(
         value = value,
@@ -123,11 +146,7 @@ fun MiuixTextField(
                         color = backgroundColor,
                         shape = SquircleShape(cornerRadius)
                     )
-                    .border(
-                        width = borderWidth,
-                        color = borderColor,
-                        shape = SquircleShape(cornerRadius)
-                    )
+                    .then(border)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -146,12 +165,11 @@ fun MiuixTextField(
                             textAlign = TextAlign.Start,
                             fontWeight = FontWeight.Medium,
                             fontSize = labelFontSize.value.sp,
-                            modifier = Modifier.offset(y = labelOffsetY),
+                            modifier = Modifier.then(labelOffset),
                             color = labelColor
                         )
                         MiuixBox(
-                            modifier = Modifier
-                                .offset(y = innerTextOffsetY),
+                            modifier = Modifier.then(innerTextOffset),
                             contentAlignment = Alignment.BottomStart
                         ) {
                             innerTextField()
@@ -178,6 +196,8 @@ fun MiuixTextField(
  * @param label The label to be displayed when the [MiuixTextField] is empty.
  * @param labelColor The color of the label.
  * @param enabled Whether the [MiuixTextField] is enabled.
+ * @param enableBorder Whether the [MiuixTextField] has a border.
+ * @param enableOffset Whether the [MiuixTextField] has an offset.
  * @param readOnly Whether the [MiuixTextField] is read-only.
  * @param textStyle The text style to be applied to the [MiuixTextField].
  * @param keyboardOptions The keyboard options to be applied to the [MiuixTextField].
@@ -203,6 +223,8 @@ fun MiuixTextField(
     label: String = "",
     labelColor: Color = MiuixTheme.colorScheme.textFieldSub,
     enabled: Boolean = true,
+    enableBorder: Boolean = true,
+    enableOffset: Boolean = true,
     readOnly: Boolean = false,
     textStyle: TextStyle = MiuixTheme.textStyles.main,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -230,6 +252,25 @@ fun MiuixTextField(
     val labelOffsetY by animateDpAsState(if (value.isNotEmpty()) -(insideMargin.height / 2) else 0.dp)
     val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty()) (insideMargin.height / 2) else 0.dp)
     val labelFontSize by animateDpAsState(if (value.isNotEmpty()) 10.dp else 16.dp)
+    val border = if (enableBorder) {
+        Modifier.border(
+            width = borderWidth,
+            color = borderColor,
+            shape = SquircleShape(cornerRadius)
+        )
+    } else {
+        Modifier
+    }
+    val labelOffset = if (enableOffset) {
+        Modifier.offset(y = labelOffsetY)
+    } else {
+        Modifier
+    }
+    val innerTextOffset = if (enableOffset) {
+        Modifier.offset(y = innerTextOffsetY)
+    } else {
+        Modifier
+    }
 
     BasicTextField(
         value = value,
@@ -255,11 +296,7 @@ fun MiuixTextField(
                         color = backgroundColor,
                         shape = SquircleShape(cornerRadius)
                     )
-                    .border(
-                        width = borderWidth,
-                        color = borderColor,
-                        shape = SquircleShape(cornerRadius)
-                    )
+                    .then(border)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -278,12 +315,11 @@ fun MiuixTextField(
                             textAlign = TextAlign.Start,
                             fontWeight = FontWeight.Medium,
                             fontSize = labelFontSize.value.sp,
-                            modifier = Modifier.offset(y = labelOffsetY),
+                            modifier = Modifier.then(labelOffset),
                             color = labelColor
                         )
                         MiuixBox(
-                            modifier = Modifier
-                                .offset(y = innerTextOffsetY),
+                            modifier = Modifier.then(innerTextOffset),
                             contentAlignment = Alignment.BottomStart
                         ) {
                             innerTextField()

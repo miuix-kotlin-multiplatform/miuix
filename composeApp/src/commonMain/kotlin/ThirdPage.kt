@@ -8,7 +8,6 @@ import top.yukonga.miuix.kmp.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.MiuixSuperDropdown
 import top.yukonga.miuix.kmp.MiuixSuperSwitch
 import top.yukonga.miuix.kmp.basic.MiuixLazyColumn
-import top.yukonga.miuix.kmp.utils.enableOverscroll
 
 @Composable
 fun ThirdPage(
