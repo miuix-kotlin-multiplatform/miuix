@@ -59,21 +59,6 @@ fun TextComponent() {
     var miuixSuperSwitch by remember { mutableStateOf("State: false") }
     var miuixSuperSwitchState by remember { mutableStateOf(false) }
     var miuixSuperSwitchAnimState by remember { mutableStateOf(false) }
-    val miuixSearchValue = remember { mutableStateOf("") }
-
-    MiuixSearchBar(
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-        searchValue = miuixSearchValue,
-        expanded = miuixSearchValue.value.isNotEmpty(),
-        onExpandedChange = {}
-    ) {
-        MiuixBasicComponent(
-            title = miuixSearchValue.value,
-            onClick = {
-                miuixSearchValue.value = ""
-            },
-        )
-    }
 
     MiuixBasicComponent(
         title = "Title",

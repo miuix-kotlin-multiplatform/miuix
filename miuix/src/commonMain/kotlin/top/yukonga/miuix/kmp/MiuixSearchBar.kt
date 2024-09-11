@@ -7,16 +7,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.BlendModeColorFilter
@@ -25,6 +24,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import kotlinx.coroutines.delay
 import top.yukonga.miuix.kmp.basic.MiuixSurface
 import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.basic.MiuixTextField
@@ -43,8 +43,8 @@ fun MiuixSearchBar(
     onExpandedChange: (Boolean) -> Unit,
     content: @Composable ColumnScope.() -> Unit
 ) {
+    val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
-    var isFocused by remember { mutableStateOf(false) }
 
     MiuixSurface(
         modifier = modifier.zIndex(1f),
@@ -56,9 +56,8 @@ fun MiuixSearchBar(
                 MiuixTextField(
                     modifier = Modifier
                         .weight(1f)
-                        .onFocusChanged { focusState ->
-                            isFocused = focusState.isFocused
-                        },
+                        .focusRequester(focusRequester)
+                        .onFocusChanged { if (it.isFocused) onExpandedChange(true) },
                     leadingIcon = {
                         Image(
                             modifier = Modifier
@@ -79,11 +78,10 @@ fun MiuixSearchBar(
                     enableBorder = false,
                     enableOffset = false,
                     maxLines = 1,
-                    keyboardActions = KeyboardActions(onAny = { focusManager.clearFocus() }),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
                 )
                 AnimatedVisibility(
-                    visible = isFocused || expanded
+                    visible = expanded
                 ) {
                     MiuixText(
                         modifier = Modifier
@@ -92,9 +90,9 @@ fun MiuixSearchBar(
                                 interactionSource = null,
                                 indication = null
                             ) {
-                                searchValue.value = ""
-                                focusManager.clearFocus()
                                 onExpandedChange(false)
+                                focusManager.clearFocus()
+                                searchValue.value = ""
                             },
                         text = rightText,
                         color = MiuixTheme.colorScheme.primary
@@ -114,9 +112,13 @@ fun MiuixSearchBar(
     }
 
     BackHandler(enabled = expanded) {
-        if (expanded) {
-            onExpandedChange(false)
-            searchValue.value = ""
+        onExpandedChange(false)
+        focusManager.clearFocus()
+    }
+
+    LaunchedEffect(expanded) {
+        if (!expanded) {
+            delay(100)
             focusManager.clearFocus()
         }
     }

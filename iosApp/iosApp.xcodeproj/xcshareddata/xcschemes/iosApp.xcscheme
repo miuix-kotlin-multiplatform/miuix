@@ -45,7 +45,9 @@
       enableGPUValidationMode = "1"
       allowLocationSimulation = "NO"
       viewDebuggingEnabled = "No"
-      queueDebuggingEnabled = "No">
+      queueDebuggingEnabled = "No"
+      consoleMode = "0"
+      structuredConsoleMode = "1">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
