@@ -37,9 +37,10 @@ class MiuixPopupUtil {
          */
         @Composable
         fun showDialog(
+            show: Boolean,
             content: (@Composable () -> Unit)? = null,
         ) {
-            isDialogShowing.value = true
+            isDialogShowing.value = show
             dialogContext.value = content
         }
 
@@ -57,9 +58,10 @@ class MiuixPopupUtil {
          */
         @Composable
         fun showPopup(
+            show: Boolean,
             content: (@Composable () -> Unit)? = null,
         ) {
-            isPopupShowing.value = true
+            isPopupShowing.value = show
             popupContext.value = content
         }
 

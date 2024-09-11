@@ -1,8 +1,10 @@
 package top.yukonga.miuix.kmp.icon.icons
 
-import androidx.compose.material.icons.materialPath
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 
@@ -10,7 +12,11 @@ val MiuixIcons.ArrowRight: ImageVector
     get() {
         if (_arrowRight != null) return _arrowRight!!
         _arrowRight = ImageVector.Builder("ArrowRight", 26.dp, 42.dp, 26f, 42f).apply {
-            materialPath(pathFillType = PathFillType.EvenOdd) {
+            path(
+                fill = SolidColor(Color.Black),
+                fillAlpha = 1f,
+                pathFillType = PathFillType.EvenOdd
+            ) {
                 moveTo(18.9982f, 20.3635f)
                 lineTo(6.5388f, 7.9041f)
                 lineTo(4.4899f, 5.8552f)

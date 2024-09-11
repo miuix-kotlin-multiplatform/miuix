@@ -1,8 +1,10 @@
 package top.yukonga.miuix.kmp.icon.icons
 
-import androidx.compose.material.icons.materialPath
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 
@@ -10,7 +12,8 @@ val MiuixIcons.ArrowBack: ImageVector
     get() {
         if (_arrowback != null) return _arrowback!!
         _arrowback = ImageVector.Builder("ArrowBack", 100.dp, 100.dp, 100f, 100f).apply {
-            materialPath(
+            path(
+                fill = SolidColor(Color.Black),
                 fillAlpha = 0.8f,
                 pathFillType = PathFillType.EvenOdd
             ) {

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -18,28 +19,17 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import getWindowSize
 import top.yukonga.miuix.kmp.basic.MiuixBox
 import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
+import top.yukonga.miuix.kmp.utils.getRoundedCorner
+import top.yukonga.miuix.kmp.utils.getWindowSize
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
-
-/**
- * Returns the rounded corner of the current device.
- */
-@Composable
-expect fun getRoundedCorner(): Dp
-
-@Composable
-expect fun BackHandler(
-    dismiss: () -> Unit,
-    onDismissRequest: () -> Unit
-)
 
 /**
  * A dialog with a title, a summary, and a content.
@@ -54,6 +44,7 @@ expect fun BackHandler(
 fun MiuixSuperDialog(
     title: String? = null,
     summary: String? = null,
+    show: MutableState<Boolean>,
     onDismissRequest: () -> Unit,
     insideMargin: DpSize? = null,
     content: @Composable () -> Unit
@@ -68,10 +59,9 @@ fun MiuixSuperDialog(
     val getWindowSize by rememberUpdatedState(getWindowSize())
     val contentAlignment by remember { derivedStateOf { if (getWindowSize.width > getWindowSize.height) Alignment.Center else Alignment.BottomCenter } }
 
-    BackHandler(
-        dismiss = { dismissDialog() },
-        onDismissRequest = onDismissRequest
-    )
+    BackHandler(enabled = show.value) {
+        dismissDialog()
+    }
 
     MiuixBox(
         modifier = Modifier

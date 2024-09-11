@@ -1,8 +1,10 @@
 package top.yukonga.miuix.kmp.icon.icons
 
-import androidx.compose.material.icons.materialPath
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 
@@ -10,7 +12,11 @@ val MiuixIcons.GitHub: ImageVector
     get() {
         if (_github != null) return _github!!
         _github = ImageVector.Builder("GitHub", 24.dp, 24.dp, 1024f, 1024f).apply {
-            materialPath(pathFillType = PathFillType.EvenOdd) {
+            path(
+                fill = SolidColor(Color.Black),
+                fillAlpha = 1f,
+                pathFillType = PathFillType.EvenOdd
+            ) {
                 moveTo(512f, 0f)
                 curveTo(229.12f, 0f, 0f, 229.12f, 0f, 512f)
                 curveTo(0f, 738.56f, 146.56f, 929.92f, 350.08f, 997.76f)

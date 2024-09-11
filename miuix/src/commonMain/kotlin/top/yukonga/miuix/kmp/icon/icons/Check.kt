@@ -1,8 +1,10 @@
 package top.yukonga.miuix.kmp.icon.icons
 
-import androidx.compose.material.icons.materialPath
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 
@@ -10,7 +12,11 @@ val MiuixIcons.Check: ImageVector
     get() {
         if (_check != null) return _check!!
         _check = ImageVector.Builder("Check", 26.dp, 26.dp, 56f, 56f).apply {
-            materialPath(pathFillType = PathFillType.EvenOdd) {
+            path(
+                fill = SolidColor(Color.Black),
+                fillAlpha = 1f,
+                pathFillType = PathFillType.EvenOdd
+            ) {
                 moveTo(46.8171f, 18.1514f)
                 curveTo(48.0496f, 16.6624f, 47.8417f, 14.4561f, 46.3527f, 13.2235f)
                 curveTo(44.8636f, 11.991f, 42.6573f, 12.1989f, 41.4247f, 13.6879f)

@@ -1,15 +1,29 @@
-package top.yukonga.miuix.kmp
+package top.yukonga.miuix.kmp.utils
 
 import android.annotation.SuppressLint
 import android.os.Build
 import android.view.RoundedCorner
-import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.window.layout.WindowMetrics
+import androidx.window.layout.WindowMetricsCalculator
+
+@Composable
+actual fun getWindowSize(): WindowSize {
+    val context = LocalContext.current
+    val windowMetrics: WindowMetrics = WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(context)
+
+    val widthPx = windowMetrics.bounds.width()
+    val heightPx = windowMetrics.bounds.height()
+
+    return WindowSize(widthPx, heightPx)
+}
+
+actual fun platform(): Platform = Platform.Android
 
 @Composable
 actual fun getRoundedCorner(): Dp = getSystemCornerRadius()
@@ -40,11 +54,8 @@ fun getCornerRadiusBottom(): Int {
 
 @Composable
 actual fun BackHandler(
-    dismiss: () -> Unit,
-    onDismissRequest: () -> Unit
+    enabled: Boolean,
+    onBack: () -> Unit
 ) {
-    BackHandler {
-        dismiss()
-        onDismissRequest()
-    }
+    androidx.activity.compose.BackHandler(enabled = enabled, onBack = onBack)
 }
