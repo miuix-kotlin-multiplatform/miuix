@@ -37,6 +37,7 @@ import top.yukonga.miuix.kmp.utils.BackHandler
 fun MiuixSearchBar(
     modifier: Modifier = Modifier,
     searchValue: MutableState<String>,
+    rightText: String = "Cancel",
     insideMargin: DpSize = DpSize(24.dp, 14.dp),
     expanded: Boolean = false,
     onExpandedChange: (Boolean) -> Unit,
@@ -95,7 +96,7 @@ fun MiuixSearchBar(
                                 focusManager.clearFocus()
                                 onExpandedChange(false)
                             },
-                        text = "Cancel",
+                        text = rightText,
                         color = MiuixTheme.colorScheme.primary
                     )
                 }
