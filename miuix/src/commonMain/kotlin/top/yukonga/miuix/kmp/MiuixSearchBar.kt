@@ -180,10 +180,10 @@ fun MiuixInputField(
                         modifier = Modifier
                             .weight(1f)
                             .then(paddingModifier),
+                        contentAlignment = Alignment.CenterStart
                     ) {
-
                         MiuixText(
-                            text = if (!focused) label else "",
+                            text = if (!(query.isNotEmpty() || expanded)) label else "",
                             color = MiuixTheme.colorScheme.textFieldSub
                         )
 

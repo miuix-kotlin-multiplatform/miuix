@@ -99,8 +99,8 @@ fun MiuixTextField(
     val innerTextOffsetY by animateDpAsState(if (value.text.isNotEmpty()) (insideMargin.height / 2) else 0.dp)
     val labelFontSize by animateDpAsState(if (value.text.isNotEmpty()) 10.dp else 16.dp)
     val border = Modifier.border(borderWidth, borderColor, SquircleShape(cornerRadius))
-    val labelOffset = Modifier.offset(y = labelOffsetY)
-    val innerTextOffset = Modifier.offset(y = innerTextOffsetY)
+    val labelOffset = if (label != "") Modifier.offset(y = labelOffsetY) else Modifier
+    val innerTextOffset = if (label != "") Modifier.offset(y = innerTextOffsetY) else Modifier
 
     BasicTextField(
         value = value,
@@ -195,7 +195,7 @@ fun MiuixTextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    insideMargin: DpSize = DpSize(18.dp, 18.dp),
+    insideMargin: DpSize = DpSize(16.dp, 16.dp),
     backgroundColor: Color = MiuixTheme.colorScheme.textFieldBg,
     cornerRadius: Dp = 18.dp,
     label: String = "",
@@ -229,8 +229,8 @@ fun MiuixTextField(
     val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty()) (insideMargin.height / 2) else 0.dp)
     val labelFontSize by animateDpAsState(if (value.isNotEmpty()) 10.dp else 16.dp)
     val border = Modifier.border(borderWidth, borderColor, SquircleShape(cornerRadius))
-    val labelOffset = Modifier.offset(y = labelOffsetY)
-    val innerTextOffset = Modifier.offset(y = innerTextOffsetY)
+    val labelOffset = if (label != "") Modifier.offset(y = labelOffsetY) else Modifier
+    val innerTextOffset = if (label != "") Modifier.offset(y = innerTextOffsetY) else Modifier
 
     BasicTextField(
         value = value,

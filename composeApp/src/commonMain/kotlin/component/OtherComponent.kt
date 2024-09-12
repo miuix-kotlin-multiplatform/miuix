@@ -96,7 +96,7 @@ fun OtherComponent(padding: PaddingValues) {
     MiuixTextField(
         value = text1,
         onValueChange = { text1 = it },
-        label = "Text Field",
+        insideMargin = DpSize(14.dp, 14.dp),
         modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp),
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
@@ -109,7 +109,7 @@ fun OtherComponent(padding: PaddingValues) {
         label = "Text Field",
         modifier = Modifier.padding(horizontal = 24.dp),
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
     )
 
     MiuixSlider(
