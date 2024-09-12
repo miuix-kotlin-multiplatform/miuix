@@ -20,8 +20,10 @@ import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
  * A [LazyColumn] that supports over-scroll and top app bar scroll behavior.
  *
  * @param modifier The modifier to apply to this layout.
- * @param enableOverScroll Whether to enable over-scroll.
+ * @param state The state of the [LazyColumn].
  * @param contentPadding The padding to apply to the content.
+ * @param userScrollEnabled Whether the user can scroll the [LazyColumn].
+ * @param enableOverScroll Whether to enable over-scroll.
  * @param topAppBarScrollBehavior The scroll behavior of the top app bar.
  * @param content The [Composable] content of the [LazyColumn].
  */

@@ -49,6 +49,7 @@ fun MainPage(
                         onSearch = { expanded = false },
                         expanded = expanded,
                         onExpandedChange = { expanded = it },
+                        label = "Search",
                         leadingIcon = {
                             Image(
                                 modifier = Modifier.padding(horizontal = 14.dp),

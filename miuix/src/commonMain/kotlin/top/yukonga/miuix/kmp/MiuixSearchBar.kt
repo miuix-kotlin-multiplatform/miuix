@@ -32,6 +32,7 @@ import androidx.compose.ui.zIndex
 import kotlinx.coroutines.delay
 import top.yukonga.miuix.kmp.basic.MiuixBox
 import top.yukonga.miuix.kmp.basic.MiuixSurface
+import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
@@ -95,6 +96,7 @@ fun MiuixSearchBar(
  * @param query the query text to be shown in the input field.
  * @param onQueryChange the callback to be invoked when the input service updates the query. An
  *   updated text comes as a parameter of the callback.
+ * @param label the label to be shown when the input field is not focused.
  * @param onSearch the callback to be invoked when the input service triggers the
  *   [ImeAction.Search] action. The current [query] comes as a parameter of the callback.
  * @param expanded whether the search bar is expanded and showing search results.
@@ -115,6 +117,7 @@ fun MiuixSearchBar(
 fun MiuixInputField(
     query: String,
     onQueryChange: (String) -> Unit,
+    label: String = "",
     onSearch: (String) -> Unit,
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,
@@ -175,9 +178,15 @@ fun MiuixInputField(
                     }
                     MiuixBox(
                         modifier = Modifier
+                            .weight(1f)
                             .then(paddingModifier),
-                        contentAlignment = Alignment.Center
                     ) {
+
+                        MiuixText(
+                            text = if (!focused) label else "",
+                            color = MiuixTheme.colorScheme.textFieldSub
+                        )
+
                         innerTextField()
                     }
                     if (trailingIcon != null) {
