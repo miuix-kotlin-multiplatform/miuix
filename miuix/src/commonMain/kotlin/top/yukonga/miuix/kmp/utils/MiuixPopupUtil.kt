@@ -58,10 +58,9 @@ class MiuixPopupUtil {
          */
         @Composable
         fun showPopup(
-            show: Boolean,
             content: (@Composable () -> Unit)? = null,
         ) {
-            isPopupShowing.value = show
+            isPopupShowing.value = true
             popupContext.value = content
         }
 

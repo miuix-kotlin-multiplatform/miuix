@@ -186,65 +186,66 @@ fun MiuixSuperDropdown(
         isDropdownExpanded.value = false
     }
 
-    showPopup(
-        show = isDropdownExpanded.value,
-        content = {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-            MiuixBox(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .pointerInput(Unit) {
-                        detectTapGestures(onTap = {
-                            dismissPopup()
-                            isDropdownExpanded.value = false
-                        })
-                    }
-                    .offset(y = offsetPx.dp / density.density)
-            ) {
-                LazyColumn(
+    if (isDropdownExpanded.value) {
+        showPopup(
+            content = {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                MiuixBox(
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .onGloballyPositioned { layoutCoordinates ->
-                            dropdownHeightPx = layoutCoordinates.size.height
-                            offsetPx = calculateOffsetPx(
-                                windowHeightPx,
-                                dropdownOffsetPx,
-                                dropdownHeightPx,
-                                componentHeightPx,
-                                insideHeightPx,
-                                statusBarPx,
-                                navigationBarPx,
-                                captionBarPx
-                            )
+                        .fillMaxSize()
+                        .pointerInput(Unit) {
+                            detectTapGestures(onTap = {
+                                dismissPopup()
+                                isDropdownExpanded.value = false
+                            })
                         }
-                        .align(if (alignLeft && !alwaysRight) AbsoluteAlignment.TopLeft else AbsoluteAlignment.TopRight)
-                        .graphicsLayer(
-                            shadowElevation = 18f,
-                            shape = SquircleShape(18.dp),
-                            clip = false
-                        )
-                        .clip(SquircleShape(18.dp))
-                        .background(MiuixTheme.colorScheme.dropdownBackground)
+                        .offset(y = offsetPx.dp / density.density)
                 ) {
-                    item {
-                        items.forEachIndexed { index, option ->
-                            DropdownImpl(
-                                options = items,
-                                isSelected = items[selectedIndex] == option,
-                                onSelectedIndexChange = {
-                                    onSelectedIndexChange(it)
-                                    dismissPopup()
-                                    isDropdownExpanded.value = false
-                                },
-                                textWidthDp = textWidthDp,
-                                index = index
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .onGloballyPositioned { layoutCoordinates ->
+                                dropdownHeightPx = layoutCoordinates.size.height
+                                offsetPx = calculateOffsetPx(
+                                    windowHeightPx,
+                                    dropdownOffsetPx,
+                                    dropdownHeightPx,
+                                    componentHeightPx,
+                                    insideHeightPx,
+                                    statusBarPx,
+                                    navigationBarPx,
+                                    captionBarPx
+                                )
+                            }
+                            .align(if (alignLeft && !alwaysRight) AbsoluteAlignment.TopLeft else AbsoluteAlignment.TopRight)
+                            .graphicsLayer(
+                                shadowElevation = 18f,
+                                shape = SquircleShape(18.dp),
+                                clip = false
                             )
+                            .clip(SquircleShape(18.dp))
+                            .background(MiuixTheme.colorScheme.dropdownBackground)
+                    ) {
+                        item {
+                            items.forEachIndexed { index, option ->
+                                DropdownImpl(
+                                    options = items,
+                                    isSelected = items[selectedIndex] == option,
+                                    onSelectedIndexChange = {
+                                        onSelectedIndexChange(it)
+                                        dismissPopup()
+                                        isDropdownExpanded.value = false
+                                    },
+                                    textWidthDp = textWidthDp,
+                                    index = index
+                                )
+                            }
                         }
                     }
                 }
             }
-        }
-    )
+        )
+    }
 }
 
 /**
