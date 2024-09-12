@@ -187,9 +187,9 @@ fun MiuixSuperDropdown(
     }
 
     if (isDropdownExpanded.value) {
+        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
         showPopup(
             content = {
-                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                 MiuixBox(
                     modifier = Modifier
                         .fillMaxSize()
