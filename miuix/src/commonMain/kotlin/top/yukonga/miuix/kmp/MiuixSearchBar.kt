@@ -156,6 +156,7 @@ fun MiuixInputField(
             },
         enabled = enabled,
         singleLine = true,
+        textStyle = MiuixTheme.textStyles.main,
         cursorBrush = SolidColor(MiuixTheme.colorScheme.primary),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(onSearch = { onSearch(query) }),
