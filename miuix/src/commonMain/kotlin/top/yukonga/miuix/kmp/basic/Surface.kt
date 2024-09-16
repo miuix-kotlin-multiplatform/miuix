@@ -22,16 +22,16 @@ import top.yukonga.miuix.kmp.utils.createRipple
 /**
  * A surface component with Miuix style.
  *
- * @param modifier The modifier to be applied to the [MiuixSurface].
- * @param shape The shape of the [MiuixSurface].
- * @param color The color of the [MiuixSurface].
- * @param border The border of the [MiuixSurface].
- * @param shadowElevation The shadow elevation of the [MiuixSurface].
- * @param content The [Composable] content of the [MiuixSurface].
+ * @param modifier The modifier to be applied to the [Surface].
+ * @param shape The shape of the [Surface].
+ * @param color The color of the [Surface].
+ * @param border The border of the [Surface].
+ * @param shadowElevation The shadow elevation of the [Surface].
+ * @param content The [Composable] content of the [Surface].
  */
 @Composable
 @NonRestartableComposable
-fun MiuixSurface(
+fun Surface(
     modifier: Modifier = Modifier,
     shape: Shape = RectangleShape,
     color: Color = MiuixTheme.colorScheme.background,
@@ -39,7 +39,7 @@ fun MiuixSurface(
     shadowElevation: Float = 0f,
     content: @Composable () -> Unit
 ) {
-    MiuixBox(
+    Box(
         modifier = modifier
             .surface(
                 shape = shape,
@@ -56,19 +56,19 @@ fun MiuixSurface(
 /**
  * A surface component with Miuix style.
  *
- * @param onClick The callback when the [MiuixSurface] is clicked.
- * @param modifier The modifier to be applied to the [MiuixSurface].
- * @param enabled Whether the [MiuixSurface] is enabled.
- * @param shape The shape of the [MiuixSurface].
- * @param color The color of the [MiuixSurface].
- * @param border The border of the [MiuixSurface].
- * @param shadowElevation The shadow elevation of the [MiuixSurface].
- * @param interactionSource The interaction source to be applied to the [MiuixSurface].
- * @param content The [Composable] content of the [MiuixSurface].
+ * @param onClick The callback when the [Surface] is clicked.
+ * @param modifier The modifier to be applied to the [Surface].
+ * @param enabled Whether the [Surface] is enabled.
+ * @param shape The shape of the [Surface].
+ * @param color The color of the [Surface].
+ * @param border The border of the [Surface].
+ * @param shadowElevation The shadow elevation of the [Surface].
+ * @param interactionSource The interaction source to be applied to the [Surface].
+ * @param content The [Composable] content of the [Surface].
  */
 @Composable
 @NonRestartableComposable
-fun MiuixSurface(
+fun Surface(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
@@ -82,7 +82,7 @@ fun MiuixSurface(
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
 
-    MiuixBox(
+    Box(
         modifier = modifier
             .surface(
                 shape = shape,

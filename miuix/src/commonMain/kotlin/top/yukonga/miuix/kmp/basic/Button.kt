@@ -26,16 +26,16 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 /**
  * A button component with Miuix style.
  *
- * @param text The text of the [MiuixButton].
- * @param onClick The callback when the [MiuixButton] is clicked.
- * @param modifier The modifier to be applied to the [MiuixButton].
- * @param enabled Whether the [MiuixButton] is enabled.
- * @param submit Whether the [MiuixButton] is a submit button.
- * @param cornerRadius The corner radius of the [MiuixButton].
- * @param interactionSource The interaction source to be applied to the [MiuixButton].
+ * @param text The text of the [Button].
+ * @param onClick The callback when the [Button] is clicked.
+ * @param modifier The modifier to be applied to the [Button].
+ * @param enabled Whether the [Button] is enabled.
+ * @param submit Whether the [Button] is a submit button.
+ * @param cornerRadius The corner radius of the [Button].
+ * @param interactionSource The interaction source to be applied to the [Button].
  */
 @Composable
-fun MiuixButton(
+fun Button(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -50,7 +50,7 @@ fun MiuixButton(
     val color by rememberUpdatedState(getButtonColor(enabled, submit))
     val textColor by rememberUpdatedState(getTextColor(enabled, submit))
 
-    MiuixSurface(
+    Surface(
         onClick = {
             onClick()
             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -68,7 +68,7 @@ fun MiuixButton(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            MiuixText(
+            Text(
                 text = text,
                 color = textColor,
                 fontWeight = FontWeight.Medium

@@ -17,16 +17,16 @@ import androidx.compose.ui.Modifier
 /**
  * A horizontal pager with Miuix style.
  *
- * @param modifier The modifier to be applied to the [MiuixHorizontalPager].
- * @param pagerState The state of the [MiuixHorizontalPager].
+ * @param modifier The modifier to be applied to the [HorizontalPager].
+ * @param pagerState The state of the [HorizontalPager].
  * @param beyondViewportPageCount The count of pages beyond the viewport.
- * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [MiuixHorizontalPager].
- * @param pageContent The content of the [MiuixHorizontalPager].
+ * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [HorizontalPager].
+ * @param pageContent The content of the [HorizontalPager].
  * @param userScrollEnabled Whether the scrolling via the user gestures or accessibility actions is allowed. Not recommended for use with overscroll.
- * @param flingBehavior The fling behavior of the [MiuixHorizontalPager].
+ * @param flingBehavior The fling behavior of the [HorizontalPager].
  */
 @Composable
-fun MiuixHorizontalPager(
+fun HorizontalPager(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
     beyondViewportPageCount: Int = 1,

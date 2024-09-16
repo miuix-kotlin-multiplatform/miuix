@@ -24,11 +24,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import top.yukonga.miuix.kmp.basic.MiuixButton
-import top.yukonga.miuix.kmp.basic.MiuixCard
-import top.yukonga.miuix.kmp.basic.MiuixSlider
-import top.yukonga.miuix.kmp.basic.MiuixText
-import top.yukonga.miuix.kmp.basic.MiuixTextField
+import top.yukonga.miuix.kmp.basic.Button
+import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.Slider
+import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.basic.TextField
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
@@ -50,7 +50,7 @@ fun OtherComponent(padding: PaddingValues) {
             .padding(horizontal = 24.dp, vertical = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        MiuixButton(
+        Button(
             modifier = Modifier.weight(1f),
             text = buttonText,
             onClick = {
@@ -59,7 +59,7 @@ fun OtherComponent(padding: PaddingValues) {
             }
         )
         Spacer(Modifier.width(20.dp))
-        MiuixButton(
+        Button(
             modifier = Modifier.weight(1f),
             text = submitButtonText,
             submit = true,
@@ -76,7 +76,7 @@ fun OtherComponent(padding: PaddingValues) {
             .padding(horizontal = 24.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        MiuixButton(
+        Button(
             modifier = Modifier.weight(1f),
             text = "Disabled",
             submit = true,
@@ -84,7 +84,7 @@ fun OtherComponent(padding: PaddingValues) {
             onClick = {}
         )
         Spacer(Modifier.width(20.dp))
-        MiuixButton(
+        Button(
             modifier = Modifier.weight(1f),
             text = "Disabled",
             submit = false,
@@ -93,7 +93,7 @@ fun OtherComponent(padding: PaddingValues) {
         )
     }
 
-    MiuixTextField(
+    TextField(
         value = text1,
         onValueChange = { text1 = it },
         insideMargin = DpSize(14.dp, 14.dp),
@@ -102,7 +102,7 @@ fun OtherComponent(padding: PaddingValues) {
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
     )
 
-    MiuixTextField(
+    TextField(
         value = text2,
         onValueChange = { text2 = it },
         backgroundColor = MiuixTheme.colorScheme.primaryContainer,
@@ -112,20 +112,20 @@ fun OtherComponent(padding: PaddingValues) {
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
     )
 
-    MiuixSlider(
+    Slider(
         progress = progress,
         onProgressChange = { newProgress -> progress = newProgress },
         modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp)
     )
 
-    MiuixSlider(
+    Slider(
         progress = progressDisable,
         onProgressChange = {},
         enabled = false,
         modifier = Modifier.padding(horizontal = 24.dp)
     )
 
-    MiuixCard(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp, vertical = 20.dp),
@@ -134,7 +134,7 @@ fun OtherComponent(padding: PaddingValues) {
         CardView()
     }
 
-    MiuixCard(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
@@ -149,7 +149,7 @@ fun OtherComponent(padding: PaddingValues) {
 
 @Composable
 fun CardView(color: Color = MiuixTheme.colorScheme.onBackground) {
-    MiuixText(
+    Text(
         color = color,
         text = "Card",
         style = MiuixTheme.textStyles.paragraph,
@@ -157,17 +157,17 @@ fun CardView(color: Color = MiuixTheme.colorScheme.onBackground) {
         fontSize = 16.sp
     )
     Spacer(Modifier.height(10.dp))
-    MiuixText(
+    Text(
         color = color,
         text = "123456789",
         style = MiuixTheme.textStyles.paragraph
     )
-    MiuixText(
+    Text(
         color = color,
         text = "一二三四五六七八九",
         style = MiuixTheme.textStyles.paragraph
     )
-    MiuixText(
+    Text(
         color = color,
         text = "!@#$%^&*()_+-=",
         style = MiuixTheme.textStyles.paragraph

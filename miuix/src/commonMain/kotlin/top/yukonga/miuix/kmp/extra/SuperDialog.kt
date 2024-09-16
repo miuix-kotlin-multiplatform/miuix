@@ -1,4 +1,4 @@
-package top.yukonga.miuix.kmp
+package top.yukonga.miuix.kmp.extra
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -22,8 +22,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import top.yukonga.miuix.kmp.basic.MiuixBox
-import top.yukonga.miuix.kmp.basic.MiuixText
+import top.yukonga.miuix.kmp.basic.Box
+import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
@@ -34,14 +34,14 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 /**
  * A dialog with a title, a summary, and a content.
  *
- * @param title The title of the [MiuixSuperDialog].
- * @param summary The summary of the [MiuixSuperDialog].
- * @param onDismissRequest The callback when the [MiuixSuperDialog] is dismissed.
- * @param insideMargin The margin inside the [MiuixSuperDialog].
- * @param content The [Composable] content of the [MiuixSuperDialog].
+ * @param title The title of the [SuperDialog].
+ * @param summary The summary of the [SuperDialog].
+ * @param onDismissRequest The callback when the [SuperDialog] is dismissed.
+ * @param insideMargin The margin inside the [SuperDialog].
+ * @param content The [Composable] content of the [SuperDialog].
  */
 @Composable
-fun MiuixSuperDialog(
+fun SuperDialog(
     title: String? = null,
     summary: String? = null,
     show: MutableState<Boolean>,
@@ -63,7 +63,7 @@ fun MiuixSuperDialog(
         dismissDialog()
     }
 
-    MiuixBox(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .pointerInput(Unit) {
@@ -93,7 +93,7 @@ fun MiuixSuperDialog(
                 .padding(24.dp),
         ) {
             title?.let {
-                MiuixText(
+                Text(
                     modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
                     text = it,
                     fontSize = 20.sp,
@@ -102,7 +102,7 @@ fun MiuixSuperDialog(
                 )
             }
             summary?.let {
-                MiuixText(
+                Text(
                     modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
                     text = it,
                     textAlign = TextAlign.Center

@@ -1,4 +1,4 @@
-package top.yukonga.miuix.kmp
+package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -34,22 +34,20 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import top.yukonga.miuix.kmp.basic.MiuixSurface
-import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**
  * A navigation bar that with 2 to 5 items.
  *
- * @param items The items of the [MiuixNavigationBar].
- * @param selected The selected index of the [MiuixNavigationBar].
- * @param modifier The modifier to be applied to the [MiuixNavigationBar].
- * @param color The color of the [MiuixNavigationBar].
- * @param onClick The callback when the item of the [MiuixNavigationBar] is clicked.
- * @param defaultWindowInsetsPadding whether to apply default window insets padding to the [MiuixNavigationBar].
+ * @param items The items of the [NavigationBar].
+ * @param selected The selected index of the [NavigationBar].
+ * @param modifier The modifier to be applied to the [NavigationBar].
+ * @param color The color of the [NavigationBar].
+ * @param onClick The callback when the item of the [NavigationBar] is clicked.
+ * @param defaultWindowInsetsPadding whether to apply default window insets padding to the [NavigationBar].
  */
 @Composable
-fun MiuixNavigationBar(
+fun NavigationBar(
     items: List<NavigationItem>,
     selected: Int,
     modifier: Modifier = Modifier,
@@ -65,7 +63,7 @@ fun MiuixNavigationBar(
         targetValue = if (captionBarBottomPadding > 0.dp) captionBarBottomPadding else 0.dp,
         animationSpec = tween(durationMillis = 300)
     )
-    MiuixSurface(color = color) {
+    Surface(color = color) {
         Column(
             modifier = if (defaultWindowInsetsPadding) {
                 modifier
@@ -123,7 +121,7 @@ fun MiuixNavigationBar(
                             contentDescription = item.label,
                             colorFilter = ColorFilter.tint(tint)
                         )
-                        MiuixText(
+                        Text(
                             modifier = Modifier.padding(bottom = 14.dp),
                             text = item.label,
                             color = tint,
@@ -138,7 +136,7 @@ fun MiuixNavigationBar(
 }
 
 /**
- * The data class for [MiuixNavigationBar].
+ * The data class for [NavigationBar].
  *
  * @param label The label of the item.
  * @param icon The icon of the item.

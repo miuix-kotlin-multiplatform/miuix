@@ -34,16 +34,17 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
-import top.yukonga.miuix.kmp.MiuixFloatingActionButton
-import top.yukonga.miuix.kmp.MiuixNavigationBar
-import top.yukonga.miuix.kmp.MiuixScrollBehavior
-import top.yukonga.miuix.kmp.MiuixTopAppBar
-import top.yukonga.miuix.kmp.NavigationItem
-import top.yukonga.miuix.kmp.basic.MiuixHorizontalPager
-import top.yukonga.miuix.kmp.basic.MiuixScaffold
+import top.yukonga.miuix.kmp.basic.FloatingActionButton
+import top.yukonga.miuix.kmp.basic.HorizontalPager
+import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
+import top.yukonga.miuix.kmp.basic.NavigationBar
+import top.yukonga.miuix.kmp.basic.NavigationItem
+import top.yukonga.miuix.kmp.basic.Scaffold
+import top.yukonga.miuix.kmp.basic.ScrollBehavior
+import top.yukonga.miuix.kmp.basic.TopAppBar
+import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.GitHub
-import top.yukonga.miuix.kmp.rememberMiuixTopAppBarState
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import utils.FPSMonitor
 
@@ -52,9 +53,9 @@ import utils.FPSMonitor
 fun UITest(
     colorMode: MutableState<Int>,
 ) {
-    val topAppBarScrollBehavior0 = MiuixScrollBehavior(rememberMiuixTopAppBarState())
-    val topAppBarScrollBehavior1 = MiuixScrollBehavior(rememberMiuixTopAppBarState())
-    val topAppBarScrollBehavior2 = MiuixScrollBehavior(rememberMiuixTopAppBarState())
+    val topAppBarScrollBehavior0 = MiuixScrollBehavior(rememberTopAppBarState())
+    val topAppBarScrollBehavior1 = MiuixScrollBehavior(rememberTopAppBarState())
+    val topAppBarScrollBehavior2 = MiuixScrollBehavior(rememberTopAppBarState())
 
     val topAppBarScrollBehaviorList = listOf(
         topAppBarScrollBehavior0, topAppBarScrollBehavior1, topAppBarScrollBehavior2
@@ -92,7 +93,7 @@ fun UITest(
 
     val uriHandler = LocalUriHandler.current
 
-    MiuixScaffold(
+    Scaffold(
         modifier = Modifier.fillMaxSize(),
         enableTopBarBlur = enableTopBarBlur.value,
         enableBottomBarBlur = enableBottomBarBlur.value,
@@ -102,7 +103,7 @@ fun UITest(
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
-                MiuixTopAppBar(
+                TopAppBar(
                     color = if (enableTopBarBlur.value) Color.Transparent else MiuixTheme.colorScheme.background,
                     title = "Miuix",
                     scrollBehavior = currentScrollBehavior
@@ -115,7 +116,7 @@ fun UITest(
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
-                MiuixNavigationBar(
+                NavigationBar(
                     color = if (enableBottomBarBlur.value) Color.Transparent else MiuixTheme.colorScheme.background,
                     items = items,
                     selected = targetPage,
@@ -134,7 +135,7 @@ fun UITest(
                 enter = fadeIn() + expandHorizontally(),
                 exit = fadeOut() + shrinkHorizontally()
             ) {
-                MiuixFloatingActionButton(
+                FloatingActionButton(
                     onClick = {
                         uriHandler.openUri("https://github.com/miuix-kotlin-multiplatform/miuix")
                     }
@@ -188,7 +189,7 @@ fun UITest(
 fun AppHorizontalPager(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
-    topAppBarScrollBehaviorList: List<MiuixScrollBehavior>,
+    topAppBarScrollBehaviorList: List<ScrollBehavior>,
     padding: PaddingValues,
     showFPSMonitor: Boolean,
     onShowFPSMonitorChange: (Boolean) -> Unit,
@@ -206,7 +207,7 @@ fun AppHorizontalPager(
     onEnableBottomBarBlurChange: (Boolean) -> Unit,
     colorMode: MutableState<Int>
 ) {
-    MiuixHorizontalPager(
+    HorizontalPager(
         modifier = modifier,
         pagerState = pagerState,
         userScrollEnabled = enablePageUserScroll,

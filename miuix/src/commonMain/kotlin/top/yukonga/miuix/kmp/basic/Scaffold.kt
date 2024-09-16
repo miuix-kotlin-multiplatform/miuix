@@ -34,9 +34,6 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.haze
 import dev.chrisbanes.haze.hazeChild
-import top.yukonga.miuix.kmp.MiuixFloatingActionButton
-import top.yukonga.miuix.kmp.MiuixNavigationBar
-import top.yukonga.miuix.kmp.MiuixTopAppBar
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.MiuixPopupHost
@@ -60,7 +57,7 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.MiuixPopupHost
  * @param floatingActionButtonPosition position of the floating action button.
  * @param snackbarHost component to host [Snackbar]s that are pushed to be shown via
  *   [SnackbarHostState.showSnackbar], typically a [SnackbarHost].
- * @param enableTopBarBlur whether to enable blur effect on the [MiuixTopAppBar].
+ * @param enableTopBarBlur whether to enable blur effect on the [TopAppBar].
  * @param alpha the alpha value of the blur effect. Default is 0.75f.
  * @param blurRadius the radius of the blur effect. Default is 25.dp.
  * @param noiseFactor the noise factor of the blur effect. Default is 0f.
@@ -77,7 +74,7 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.MiuixPopupHost
  *   the child of the scroll, and not on the scroll itself.
  */
 @Composable
-fun MiuixScaffold(
+fun Scaffold(
     modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
@@ -104,7 +101,7 @@ fun MiuixScaffold(
         )
     }
 
-    MiuixSurface(
+    Surface(
         modifier = modifier.onConsumedWindowInsetsChanged { consumedWindowInsets ->
             // Exclude currently consumed window insets from user provided contentWindowInsets
             safeInsets.insets = contentWindowInsets.exclude(consumedWindowInsets)
@@ -114,7 +111,7 @@ fun MiuixScaffold(
         ScaffoldLayout(
             topBar = {
                 if (enableTopBarBlur) {
-                    MiuixBox(
+                    Box(
                         Modifier.hazeChild(
                             state = hazeState,
                             style = hazeStyle
@@ -128,7 +125,7 @@ fun MiuixScaffold(
             },
             bottomBar = {
                 if (enableBottomBarBlur) {
-                    MiuixBox(
+                    Box(
                         Modifier.hazeChild(
                             state = hazeState,
                             style = hazeStyle
@@ -141,7 +138,7 @@ fun MiuixScaffold(
                 }
             },
             content = {
-                MiuixBox(
+                Box(
                     Modifier.haze(
                         state = hazeState,
                         style = hazeStyle
@@ -161,18 +158,18 @@ fun MiuixScaffold(
 
 
 /**
- * Layout for a [MiuixScaffold]'s content.
+ * Layout for a [Scaffold]'s content.
  *
- * @param topBar the content to place at the top of the [MiuixScaffold], typically a [MiuixTopAppBar]
+ * @param topBar the content to place at the top of the [Scaffold], typically a [TopAppBar]
 
  * @param snackbar the [Snackbar] displayed on top of the [content].
- * @param bottomBar the content to place at the bottom of the [MiuixScaffold], on top of the [content],
- *   typically a [MiuixNavigationBar].
- * @param fab the [MiuixFloatingActionButton] displayed on top of the [content], below the [snackbar] and
- *   above the [MiuixNavigationBar]
+ * @param bottomBar the content to place at the bottom of the [Scaffold], on top of the [content],
+ *   typically a [NavigationBar].
+ * @param fab the [FloatingActionButton] displayed on top of the [content], below the [snackbar] and
+ *   above the [NavigationBar]
  * @param fabPosition [MiuixFabPosition] for the FAB (if present).
  * @param popup the [MiuixPopupHost] displayed on top of the [content].
- * @param content the main 'body' of the [MiuixScaffold].
+ * @param content the main 'body' of the [Scaffold].
  * @param contentWindowInsets the [WindowInsets] to apply to the [content].
  */
 @Composable

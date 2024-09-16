@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import top.yukonga.miuix.kmp.basic.MiuixText
+import top.yukonga.miuix.kmp.basic.Text
 
 // This is a simple FPS monitor that displays the current frames per second.
 @Composable
@@ -21,7 +21,7 @@ fun FPSMonitor(modifier: Modifier = Modifier) {
     var frameCount by remember { mutableStateOf(0) }
     var totalFrameTime by remember { mutableStateOf(0L) }
 
-    MiuixText(
+    Text(
         text = "FPS: $fps",
         modifier = modifier,
         color = if (fps < 57) Color.Red else Color.Green

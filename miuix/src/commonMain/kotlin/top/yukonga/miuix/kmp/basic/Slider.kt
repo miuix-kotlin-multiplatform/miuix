@@ -31,19 +31,19 @@ import kotlin.math.round
 /**
  * A slider component with Miuix style.
  *
- * @param modifier The modifier to be applied to the [MiuixSlider].
- * @param progress The current progress of the [MiuixSlider].
- * @param enabled Whether the [MiuixSlider] is enabled.
- * @param minValue The minimum value of the [MiuixSlider]. It is required
+ * @param modifier The modifier to be applied to the [Slider].
+ * @param progress The current progress of the [Slider].
+ * @param enabled Whether the [Slider] is enabled.
+ * @param minValue The minimum value of the [Slider]. It is required
  *   that [minValue] < [maxValue].
- * @param maxValue The maximum value of the [MiuixSlider].
- * @param height The height of the [MiuixSlider].
- * @param effect Whether to show the effect of the [MiuixSlider].
+ * @param maxValue The maximum value of the [Slider].
+ * @param height The height of the [Slider].
+ * @param effect Whether to show the effect of the [Slider].
  * @param decimalPlaces The number of decimal places to be displayed in the drag indicator.
  * @param onProgressChange The callback to be called when the progress changes.
  */
 @Composable
-fun MiuixSlider(
+fun Slider(
     modifier: Modifier = Modifier,
     progress: Float,
     enabled: Boolean = true,
@@ -70,7 +70,7 @@ fun MiuixSlider(
     val color = rememberUpdatedState(if (enabled) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.submitDisabledBg)
     val backgroundColor = rememberUpdatedState(if (enabled) MiuixTheme.colorScheme.secondary else MiuixTheme.colorScheme.disabledBg)
 
-    MiuixBox(
+    Box(
         modifier = if (enabled) {
             modifier.pointerInput(Unit) {
                 detectHorizontalDragGestures(

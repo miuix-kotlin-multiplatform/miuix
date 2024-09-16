@@ -11,7 +11,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import top.yukonga.miuix.kmp.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.utils.enableOverscroll
 import top.yukonga.miuix.kmp.utils.overScrollVertical
 import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
@@ -28,13 +27,13 @@ import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
  * @param content The [Composable] content of the [LazyColumn].
  */
 @Composable
-fun MiuixLazyColumn(
+fun LazyColumn(
     modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState(),
     contentPadding: PaddingValues = PaddingValues(0.dp),
     userScrollEnabled: Boolean = true,
     enableOverScroll: Boolean = true,
-    topAppBarScrollBehavior: MiuixScrollBehavior? = null,
+    topAppBarScrollBehavior: ScrollBehavior? = null,
     content: LazyListScope.() -> Unit
 ) {
     val firstModifier = remember(enableOverScroll, enableOverscroll()) {

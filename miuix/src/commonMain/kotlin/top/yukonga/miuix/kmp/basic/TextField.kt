@@ -39,29 +39,29 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
  * @param value The input [TextFieldValue] to be shown in the text field.
  * @param onValueChange The callback that is triggered when the input service updates values in
  *  *   [TextFieldValue]. An updated [TextFieldValue] comes as a parameter of the callback.
- * @param modifier The modifier to be applied to the [MiuixTextField].
- * @param insideMargin The margin inside the [MiuixTextField].
- * @param backgroundColor The background color of the [MiuixTextField].
- * @param cornerRadius The corner radius of the [MiuixTextField].
- * @param label The label to be displayed when the [MiuixTextField] is empty.
+ * @param modifier The modifier to be applied to the [TextField].
+ * @param insideMargin The margin inside the [TextField].
+ * @param backgroundColor The background color of the [TextField].
+ * @param cornerRadius The corner radius of the [TextField].
+ * @param label The label to be displayed when the [TextField] is empty.
  * @param labelColor The color of the label.
- * @param enabled Whether the [MiuixTextField] is enabled.
- * @param readOnly Whether the [MiuixTextField] is read-only.
- * @param textStyle The text style to be applied to the [MiuixTextField].
- * @param keyboardOptions The keyboard options to be applied to the [MiuixTextField].
- * @param keyboardActions The keyboard actions to be applied to the [MiuixTextField].
- * @param leadingIcon The leading icon to be displayed in the [MiuixTextField].
- * @param trailingIcon The trailing icon to be displayed in the [MiuixTextField].
+ * @param enabled Whether the [TextField] is enabled.
+ * @param readOnly Whether the [TextField] is read-only.
+ * @param textStyle The text style to be applied to the [TextField].
+ * @param keyboardOptions The keyboard options to be applied to the [TextField].
+ * @param keyboardActions The keyboard actions to be applied to the [TextField].
+ * @param leadingIcon The leading icon to be displayed in the [TextField].
+ * @param trailingIcon The trailing icon to be displayed in the [TextField].
  * @param singleLine Whether the text field is single line.
- * @param maxLines The maximum number of lines allowed to be displayed in [MiuixTextField].
- * @param minLines The minimum number of lines allowed to be displayed in [MiuixTextField]. It is required
+ * @param maxLines The maximum number of lines allowed to be displayed in [TextField].
+ * @param minLines The minimum number of lines allowed to be displayed in [TextField]. It is required
  *   that 1 <= [minLines] <= [maxLines].
- * @param visualTransformation The visual transformation to be applied to the [MiuixTextField].
+ * @param visualTransformation The visual transformation to be applied to the [TextField].
  * @param onTextLayout The callback to be called when the text layout changes.
- * @param interactionSource The interaction source to be applied to the [MiuixTextField].
+ * @param interactionSource The interaction source to be applied to the [TextField].
  */
 @Composable
-fun MiuixTextField(
+fun TextField(
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
     modifier: Modifier = Modifier,
@@ -119,7 +119,7 @@ fun MiuixTextField(
         interactionSource = interactionSource,
         cursorBrush = SolidColor(MiuixTheme.colorScheme.primary),
         decorationBox = { innerTextField ->
-            MiuixBox(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
@@ -135,12 +135,12 @@ fun MiuixTextField(
                     if (leadingIcon != null) {
                         leadingIcon()
                     }
-                    MiuixBox(
+                    Box(
                         modifier = Modifier
                             .weight(1f)
                             .then(paddingModifier)
                     ) {
-                        MiuixText(
+                        Text(
                             text = label,
                             textAlign = TextAlign.Start,
                             fontWeight = FontWeight.Medium,
@@ -148,7 +148,7 @@ fun MiuixTextField(
                             modifier = Modifier.then(labelOffset),
                             color = labelColor
                         )
-                        MiuixBox(
+                        Box(
                             modifier = Modifier.then(innerTextOffset),
                             contentAlignment = Alignment.BottomStart
                         ) {
@@ -169,29 +169,29 @@ fun MiuixTextField(
  *
  * @param value The text to be displayed in the text field.
  * @param onValueChange The callback to be called when the value changes.
- * @param modifier The modifier to be applied to the [MiuixTextField].
- * @param insideMargin The margin inside the [MiuixTextField].
- * @param backgroundColor The background color of the [MiuixTextField].
- * @param cornerRadius The corner radius of the [MiuixTextField].
- * @param label The label to be displayed when the [MiuixTextField] is empty.
+ * @param modifier The modifier to be applied to the [TextField].
+ * @param insideMargin The margin inside the [TextField].
+ * @param backgroundColor The background color of the [TextField].
+ * @param cornerRadius The corner radius of the [TextField].
+ * @param label The label to be displayed when the [TextField] is empty.
  * @param labelColor The color of the label.
- * @param enabled Whether the [MiuixTextField] is enabled.
- * @param readOnly Whether the [MiuixTextField] is read-only.
- * @param textStyle The text style to be applied to the [MiuixTextField].
- * @param keyboardOptions The keyboard options to be applied to the [MiuixTextField].
- * @param keyboardActions The keyboard actions to be applied to the [MiuixTextField].
- * @param leadingIcon The leading icon to be displayed in the [MiuixTextField].
- * @param trailingIcon The trailing icon to be displayed in the [MiuixTextField].
+ * @param enabled Whether the [TextField] is enabled.
+ * @param readOnly Whether the [TextField] is read-only.
+ * @param textStyle The text style to be applied to the [TextField].
+ * @param keyboardOptions The keyboard options to be applied to the [TextField].
+ * @param keyboardActions The keyboard actions to be applied to the [TextField].
+ * @param leadingIcon The leading icon to be displayed in the [TextField].
+ * @param trailingIcon The trailing icon to be displayed in the [TextField].
  * @param singleLine Whether the text field is single line.
- * @param maxLines The maximum number of lines allowed to be displayed in [MiuixTextField].
- * @param minLines The minimum number of lines allowed to be displayed in [MiuixTextField]. It is required
+ * @param maxLines The maximum number of lines allowed to be displayed in [TextField].
+ * @param minLines The minimum number of lines allowed to be displayed in [TextField]. It is required
  *   that 1 <= [minLines] <= [maxLines].
- * @param visualTransformation The visual transformation to be applied to the [MiuixTextField].
+ * @param visualTransformation The visual transformation to be applied to the [TextField].
  * @param onTextLayout The callback to be called when the text layout changes.
- * @param interactionSource The interaction source to be applied to the [MiuixTextField].
+ * @param interactionSource The interaction source to be applied to the [TextField].
  */
 @Composable
-fun MiuixTextField(
+fun TextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -249,7 +249,7 @@ fun MiuixTextField(
         interactionSource = interactionSource,
         cursorBrush = SolidColor(MiuixTheme.colorScheme.primary),
         decorationBox = { innerTextField ->
-            MiuixBox(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
@@ -265,12 +265,12 @@ fun MiuixTextField(
                     if (leadingIcon != null) {
                         leadingIcon()
                     }
-                    MiuixBox(
+                    Box(
                         modifier = Modifier
                             .weight(1f)
                             .then(paddingModifier)
                     ) {
-                        MiuixText(
+                        Text(
                             text = label,
                             textAlign = TextAlign.Start,
                             fontWeight = FontWeight.Medium,
@@ -278,7 +278,7 @@ fun MiuixTextField(
                             modifier = Modifier.then(labelOffset),
                             color = labelColor
                         )
-                        MiuixBox(
+                        Box(
                             modifier = Modifier.then(innerTextOffset),
                             contentAlignment = Alignment.BottomStart
                         ) {

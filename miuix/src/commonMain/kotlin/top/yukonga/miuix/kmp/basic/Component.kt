@@ -22,19 +22,19 @@ import top.yukonga.miuix.kmp.utils.createRipple
 /**
  * A basic component with Miuix style. Widely used in other extension components.
  *
- * @param modifier The modifier to be applied to the [MiuixBasicComponent].
- * @param insideMargin The margin inside the [MiuixBasicComponent].
- * @param title The title of the [MiuixBasicComponent].
- * @param summary The summary of the [MiuixBasicComponent].
- * @param leftAction The [Composable] content that on the left side of the [MiuixBasicComponent].
- * @param rightActions The [Composable] content on the right side of the [MiuixBasicComponent].
- * @param onClick The callback when the [MiuixBasicComponent] is clicked.
- * @param interactionSource The interaction source to be applied to the [MiuixBasicComponent].
- * @param indication The indication to be applied to the [MiuixBasicComponent].
+ * @param modifier The modifier to be applied to the [BasicComponent].
+ * @param insideMargin The margin inside the [BasicComponent].
+ * @param title The title of the [BasicComponent].
+ * @param summary The summary of the [BasicComponent].
+ * @param leftAction The [Composable] content that on the left side of the [BasicComponent].
+ * @param rightActions The [Composable] content on the right side of the [BasicComponent].
+ * @param onClick The callback when the [BasicComponent] is clicked.
+ * @param interactionSource The interaction source to be applied to the [BasicComponent].
+ * @param indication The indication to be applied to the [BasicComponent].
  */
 @Composable
 @Suppress("NAME_SHADOWING")
-fun MiuixBasicComponent(
+fun BasicComponent(
     modifier: Modifier = Modifier,
     insideMargin: DpSize? = null,
     title: String? = null,
@@ -70,7 +70,7 @@ fun MiuixBasicComponent(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         leftAction?.let {
-            MiuixBox(
+            Box(
                 modifier = Modifier.padding(end = 16.dp)
             ) {
                 it()
@@ -80,20 +80,20 @@ fun MiuixBasicComponent(
             modifier = Modifier.weight(1f)
         ) {
             title?.let {
-                MiuixText(
+                Text(
                     text = it,
                     fontWeight = FontWeight.Medium
                 )
             }
             summary?.let {
-                MiuixText(
+                Text(
                     text = it,
                     fontSize = MiuixTheme.textStyles.title.fontSize,
                     color = MiuixTheme.colorScheme.subTextBase
                 )
             }
         }
-        MiuixBox(
+        Box(
             modifier = Modifier.padding(start = 8.dp)
         ) {
             Row(

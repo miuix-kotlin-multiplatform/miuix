@@ -1,4 +1,4 @@
-package top.yukonga.miuix.kmp
+package top.yukonga.miuix.kmp.extra
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -52,9 +52,9 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
-import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
-import top.yukonga.miuix.kmp.basic.MiuixBox
-import top.yukonga.miuix.kmp.basic.MiuixText
+import top.yukonga.miuix.kmp.basic.BasicComponent
+import top.yukonga.miuix.kmp.basic.Box
+import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.ArrowUpDown
 import top.yukonga.miuix.kmp.icon.icons.Check
@@ -73,17 +73,17 @@ expect fun modifierPlatform(modifier: Modifier, isHovered: MutableState<Boolean>
 /**
  * A dropdown with a title and a summary.
  *
- * @param title The title of the [MiuixSuperDropdown].
- * @param summary The summary of the [MiuixSuperDropdown].
- * @param modifier The modifier to be applied to the [MiuixSuperDropdown].
- * @param items The options of the [MiuixSuperDropdown].
+ * @param title The title of the [SuperDropdown].
+ * @param summary The summary of the [SuperDropdown].
+ * @param modifier The modifier to be applied to the [SuperDropdown].
+ * @param items The options of the [SuperDropdown].
  * @param alwaysRight Whether the popup is always show on the right side.
- * @param insideMargin The margin inside the [MiuixSuperDropdown].
+ * @param insideMargin The margin inside the [SuperDropdown].
  * @param selectedIndex The index of the selected option.
  * @param onSelectedIndexChange The callback when the index is selected.
  */
 @Composable
-fun MiuixSuperDropdown(
+fun SuperDropdown(
     title: String,
     summary: String? = null,
     modifier: Modifier = Modifier,
@@ -131,7 +131,7 @@ fun MiuixSuperDropdown(
         with(density) { insideMargin.height.toPx() }.roundToInt()
     )
 
-    MiuixBasicComponent(
+    BasicComponent(
         modifier = modifierPlatform(modifier = modifier, isHovered = isHovered)
             .background(if (isHovered.value) MiuixTheme.colorScheme.onBackground.copy(0.08f) else Color.Transparent)
             .indication(interactionSource, createRipple())
@@ -159,7 +159,7 @@ fun MiuixSuperDropdown(
         title = title,
         summary = summary,
         rightActions = {
-            MiuixText(
+            Text(
                 text = items[selectedIndex],
                 fontSize = 15.sp,
                 color = MiuixTheme.colorScheme.subTextBase,
@@ -190,7 +190,7 @@ fun MiuixSuperDropdown(
         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
         showPopup(
             content = {
-                MiuixBox(
+                Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .pointerInput(Unit) {
@@ -297,7 +297,7 @@ fun DropdownImpl(
             .padding(horizontal = 24.dp)
             .padding(top = additionalTopPadding, bottom = additionalBottomPadding)
     ) {
-        MiuixText(
+        Text(
             modifier = Modifier.width(textWidthDp ?: 50.dp),
             text = options[index],
             fontSize = 15.sp,

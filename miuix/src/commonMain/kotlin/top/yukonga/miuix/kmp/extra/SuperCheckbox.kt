@@ -1,4 +1,4 @@
-package top.yukonga.miuix.kmp
+package top.yukonga.miuix.kmp.extra
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
@@ -10,23 +10,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
-import top.yukonga.miuix.kmp.basic.MiuixCheckbox
+import top.yukonga.miuix.kmp.basic.BasicComponent
+import top.yukonga.miuix.kmp.basic.Checkbox
 
 /**
  * A checkbox with a title and a summary.
  *
- * @param title The title of the [MiuixSuperCheckbox].
- * @param summary The summary of the [MiuixSuperCheckbox].
- * @param rightActions The [Composable] content that on the right side of the [MiuixSuperCheckbox].
- * @param checked The checked state of the [MiuixSuperCheckbox].
- * @param onCheckedChange The callback when the checked state of the [MiuixSuperCheckbox] is changed.
- * @param modifier The modifier to be applied to the [MiuixSuperCheckbox].
- * @param insideMargin The margin inside the [MiuixSuperCheckbox].
- * @param enabled Whether the [MiuixSuperCheckbox] is clickable.
+ * @param title The title of the [SuperCheckbox].
+ * @param summary The summary of the [SuperCheckbox].
+ * @param rightActions The [Composable] content that on the right side of the [SuperCheckbox].
+ * @param checked The checked state of the [SuperCheckbox].
+ * @param onCheckedChange The callback when the checked state of the [SuperCheckbox] is changed.
+ * @param modifier The modifier to be applied to the [SuperCheckbox].
+ * @param insideMargin The margin inside the [SuperCheckbox].
+ * @param enabled Whether the [SuperCheckbox] is clickable.
  */
 @Composable
-fun MiuixSuperCheckbox(
+fun SuperCheckbox(
     title: String,
     summary: String? = null,
     rightActions: @Composable RowScope.() -> Unit = {},
@@ -44,14 +44,14 @@ fun MiuixSuperCheckbox(
         isChecked = checked
     }
 
-    MiuixBasicComponent(
+    BasicComponent(
         modifier = modifier,
         insideMargin = insideMargin,
         title = title,
         summary = summary,
         leftAction = if (checkboxLocation == CheckboxLocation.Left) {
             {
-                MiuixCheckbox(
+                Checkbox(
                     checked = isChecked,
                     onCheckedChange = updatedOnCheckedChange,
                     enabled = enabled
@@ -61,7 +61,7 @@ fun MiuixSuperCheckbox(
         rightActions = {
             rightActions()
             if (checkboxLocation == CheckboxLocation.Right) {
-                MiuixCheckbox(
+                Checkbox(
                     checked = isChecked,
                     onCheckedChange = updatedOnCheckedChange,
                     enabled = enabled

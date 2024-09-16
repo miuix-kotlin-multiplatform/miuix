@@ -60,7 +60,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  * @param style style configuration for the text such as color, font, line height etc.
  */
 @Composable
-fun MiuixText(
+fun Text(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
@@ -142,7 +142,7 @@ fun MiuixText(
  * @param style style configuration for the text such as color, font, line height etc.
  */
 @Composable
-fun MiuixText(
+fun Text(
     text: AnnotatedString,
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,

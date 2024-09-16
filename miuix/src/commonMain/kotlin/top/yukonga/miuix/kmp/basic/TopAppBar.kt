@@ -1,4 +1,4 @@
-package top.yukonga.miuix.kmp
+package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.AnimationState
@@ -55,9 +55,6 @@ import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastFirst
-import top.yukonga.miuix.kmp.basic.MiuixBox
-import top.yukonga.miuix.kmp.basic.MiuixSurface
-import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -65,27 +62,27 @@ import kotlin.math.roundToInt
 /**
  * A top app bar that can collapse and expand based on the scroll position of the content below it.
  *
- * The [MiuixTopAppBar] can be configured with a title, a navigation icon, and action icons. The large
+ * The [TopAppBar] can be configured with a title, a navigation icon, and action icons. The large
  * title will collapse when the content is scrolled up and expand when the content is scrolled down.
  *
- * @param modifier The modifier to be applied to the  [MiuixTopAppBar].
- * @param color The background color of the [MiuixTopAppBar].
- * @param title The title of the [MiuixTopAppBar].
- * @param largeTitle The large title of the [MiuixTopAppBar], If not specified, it will be the same as title.
+ * @param modifier The modifier to be applied to the  [TopAppBar].
+ * @param color The background color of the [TopAppBar].
+ * @param title The title of the [TopAppBar].
+ * @param largeTitle The large title of the [TopAppBar], If not specified, it will be the same as title.
  * @param navigationIcon The [Composable] content that represents the navigation icon.
  * @param actions The [Composable] content that represents the action icons.
- * @param scrollBehavior The [MiuixScrollBehavior] that controls the behavior of the [MiuixTopAppBar].
- * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [MiuixTopAppBar].
+ * @param scrollBehavior The [ScrollBehavior] that controls the behavior of the [TopAppBar].
+ * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [TopAppBar].
  */
 @Composable
-fun MiuixTopAppBar(
+fun TopAppBar(
     modifier: Modifier = Modifier,
     color: Color = MiuixTheme.colorScheme.background,
     title: String,
     largeTitle: String? = null,
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
-    scrollBehavior: MiuixScrollBehavior? = null,
+    scrollBehavior: ScrollBehavior? = null,
     defaultWindowInsetsPadding: Boolean = true
 ) {
     val density = LocalDensity.current
@@ -113,7 +110,7 @@ fun MiuixTopAppBar(
     // The surface's background color is animated as specified above.
     // The height of the app bar is determined by subtracting the bar's height offset from the
     // app bar's defined constant height value (i.e. the ContainerHeight token).
-    MiuixSurface(
+    Surface(
         color = color,
         modifier = if (defaultWindowInsetsPadding) {
             modifier
@@ -127,7 +124,7 @@ fun MiuixTopAppBar(
                 detectVerticalDragGestures { _, _ -> }
             }
     ) {
-        MiuixTopAppBarLayout(
+        TopAppBarLayout(
             title = title,
             largeTitle = largeTitle ?: title,
             navigationIcon = navigationIcon,
@@ -139,15 +136,15 @@ fun MiuixTopAppBar(
 }
 
 /**
- * Returns a [MiuixScrollBehavior] that adjusts its properties to affect the colors and
+ * Returns a [ScrollBehavior] that adjusts its properties to affect the colors and
  * height of the top app bar.
  *
- * A top app bar that is set up with this [MiuixScrollBehavior] will immediately collapse
+ * A top app bar that is set up with this [ScrollBehavior] will immediately collapse
  * when the nested content is pulled up, and will expand back the collapsed area when the
  * content is pulled all the way down.
  *
  * @param state the state object to be used to control or observe the top app bar's scroll
- *   state. See [rememberMiuixTopAppBarState] for a state that is remembered across compositions.
+ *   state. See [rememberTopAppBarState] for a state that is remembered across compositions.
  * @param canScroll a callback used to determine whether scroll events are to be handled by this
  *   [ExitUntilCollapsedScrollBehavior]
  * @param snapAnimationSpec an optional [AnimationSpec] that defines how the top app bar snaps
@@ -158,11 +155,11 @@ fun MiuixTopAppBar(
  */
 @Composable
 fun MiuixScrollBehavior(
-    state: TopAppBarState = rememberMiuixTopAppBarState(),
+    state: TopAppBarState = rememberTopAppBarState(),
     canScroll: () -> Boolean = { true },
     snapAnimationSpec: AnimationSpec<Float>? = spring(stiffness = Spring.StiffnessMediumLow),
     flingAnimationSpec: DecayAnimationSpec<Float>? = rememberSplineBasedDecay()
-): MiuixScrollBehavior =
+): ScrollBehavior =
     remember(state, canScroll, snapAnimationSpec, flingAnimationSpec) {
         ExitUntilCollapsedScrollBehavior(
             state = state,
@@ -172,7 +169,7 @@ fun MiuixScrollBehavior(
         )
     }
 
-/** The default expanded height of a [MiuixTopAppBar]. */
+/** The default expanded height of a [TopAppBar]. */
 val TopAppBarExpandedHeight: Dp = 48.dp
 
 /**
@@ -186,7 +183,7 @@ val TopAppBarExpandedHeight: Dp = 48.dp
  * @param initialContentOffset the initial value for [TopAppBarState.contentOffset]
  */
 @Composable
-fun rememberMiuixTopAppBarState(
+fun rememberTopAppBarState(
     initialHeightOffsetLimit: Float = -Float.MAX_VALUE,
     initialHeightOffset: Float = 0f,
     initialContentOffset: Float = 0f
@@ -198,9 +195,9 @@ fun rememberMiuixTopAppBarState(
 
 /**
  * A state object that can be hoisted to control and observe the top app bar state. The state is
- * read and updated by a [MiuixScrollBehavior] implementation.
+ * read and updated by a [ScrollBehavior] implementation.
  *
- * In most cases, this state will be created via [rememberMiuixTopAppBarState].
+ * In most cases, this state will be created via [rememberTopAppBarState].
  *
  * @param initialHeightOffsetLimit the initial value for [TopAppBarState.heightOffsetLimit]
  * @param initialHeightOffset the initial value for [TopAppBarState.heightOffset]
@@ -239,7 +236,7 @@ class TopAppBarState(
      * The content offset is used to compute the [overlappedFraction], which can later be read by an
      * implementation.
      *
-     * This value is updated by a [MiuixScrollBehavior] whenever a nested scroll connection
+     * This value is updated by a [ScrollBehavior] whenever a nested scroll connection
      * consumes scroll events. A common implementation would update the value to be the sum of all
      * [NestedScrollConnection.onPostScroll] `consumed.y` values.
      */
@@ -297,7 +294,7 @@ class TopAppBarState(
 }
 
 @Stable
-interface MiuixScrollBehavior {
+interface ScrollBehavior {
 
     /**
      * A [TopAppBarState] that is attached to this behavior and is read and updated when scrolling
@@ -333,10 +330,10 @@ interface MiuixScrollBehavior {
 }
 
 /**
- * A [MiuixScrollBehavior] that adjusts its properties to affect the colors and height of a top
+ * A [ScrollBehavior] that adjusts its properties to affect the colors and height of a top
  * app bar.
  *
- * A top app bar that is set up with this [MiuixScrollBehavior] will immediately collapse when
+ * A top app bar that is set up with this [ScrollBehavior] will immediately collapse when
  * the nested content is pulled up, and will expand back the collapsed area when the content is
  * pulled all the way down.
  *
@@ -355,7 +352,7 @@ private class ExitUntilCollapsedScrollBehavior(
     override val snapAnimationSpec: AnimationSpec<Float>?,
     override val flingAnimationSpec: DecayAnimationSpec<Float>?,
     val canScroll: () -> Boolean = { true }
-) : MiuixScrollBehavior {
+) : ScrollBehavior {
     override var nestedScrollConnection =
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
@@ -481,7 +478,7 @@ private fun interface ScrolledOffset {
  * @param expandedHeightPx the expanded height of the top app bar in pixels
  */
 @Composable
-private fun MiuixTopAppBarLayout(
+private fun TopAppBarLayout(
     title: String,
     largeTitle: String,
     navigationIcon: @Composable () -> Unit,
@@ -501,13 +498,13 @@ private fun MiuixTopAppBarLayout(
 
     Layout(
         {
-            MiuixBox(
+            Box(
                 Modifier
                     .layoutId("navigationIcon")
             ) {
                 navigationIcon()
             }
-            MiuixBox(
+            Box(
                 Modifier
                     .layoutId("title")
                     .padding(horizontal = TopAppBarHorizontalPadding)
@@ -516,27 +513,27 @@ private fun MiuixTopAppBarLayout(
                         alpha = alpha
                     )
             ) {
-                MiuixText(
+                Text(
                     text = title,
                     maxLines = 1,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Medium
                 )
             }
-            MiuixBox(
+            Box(
                 Modifier
                     .layoutId("actionIcons")
             ) {
                 actions()
             }
-            MiuixBox(
+            Box(
                 Modifier
                     .layoutId("largeTitle")
                     .fillMaxWidth()
                     .padding(horizontal = TopAppBarHorizontalPadding)
                     .graphicsLayer(alpha = 1f - (abs(scrolledOffset.offset()) / expandedHeightPx * 2).coerceIn(0f, 1f))
             ) {
-                MiuixText(
+                Text(
                     text = largeTitle,
                     maxLines = 1,
                     fontSize = 32.sp,

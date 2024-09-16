@@ -16,8 +16,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.zIndex
-import top.yukonga.miuix.kmp.basic.MiuixBox
-import top.yukonga.miuix.kmp.basic.MiuixScaffold
+import top.yukonga.miuix.kmp.basic.Box
+import top.yukonga.miuix.kmp.basic.Scaffold
 
 /**
  * A util class for show popup and dialog.
@@ -72,7 +72,7 @@ class MiuixPopupUtil {
         }
 
         /**
-         * A host for show popup and dialog. Already added to the [MiuixScaffold] by default.
+         * A host for show popup and dialog. Already added to the [Scaffold] by default.
          */
         @Composable
         fun MiuixPopupHost() {
@@ -80,7 +80,7 @@ class MiuixPopupUtil {
                 visible = isDialogShowing.value || isPopupShowing.value,
                 modifier = Modifier.zIndex(1f).fillMaxSize(),
             ) {
-                MiuixBox(
+                Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Color.Black.copy(alpha = 0.3f))
@@ -92,7 +92,7 @@ class MiuixPopupUtil {
                 enter = slideInVertically(animationSpec = tween(300)) { fullHeight -> fullHeight },
                 exit = slideOutVertically(animationSpec = tween(300)) { fullHeight -> fullHeight }
             ) {
-                MiuixBox(
+                Box(
                     modifier = Modifier.fillMaxSize().navigationBarsPadding()
                 ) {
                     dialogContext.value?.invoke()
@@ -104,7 +104,7 @@ class MiuixPopupUtil {
                 enter = fadeIn(animationSpec = tween(100)) + scaleIn(animationSpec = tween(100), initialScale = 0.9f),
                 exit = fadeOut(animationSpec = tween(100)) + scaleOut(animationSpec = tween(100), targetScale = 0.9f)
             ) {
-                MiuixBox(
+                Box(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     popupContext.value?.invoke()

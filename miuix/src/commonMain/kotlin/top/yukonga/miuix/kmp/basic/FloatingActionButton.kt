@@ -1,4 +1,4 @@
-package top.yukonga.miuix.kmp
+package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -14,11 +14,10 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import top.yukonga.miuix.kmp.basic.MiuixSurface
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
-fun MiuixFloatingActionButton(
+fun FloatingActionButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     shape: Shape = RoundedCornerShape(50.dp),
@@ -29,7 +28,7 @@ fun MiuixFloatingActionButton(
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
-    MiuixSurface(
+    Surface(
         onClick = onClick,
         modifier = modifier.semantics { role = Role.Button },
         shape = shape,

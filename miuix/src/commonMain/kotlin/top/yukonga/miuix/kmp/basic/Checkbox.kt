@@ -38,14 +38,14 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 /**
  * A checkbox component with Miuix style.
  *
- * @param checked The current state of the [MiuixCheckbox].
- * @param onCheckedChange The callback to be called when the state of the [MiuixCheckbox] changes.
- * @param modifier The modifier to be applied to the [MiuixCheckbox].
- * @param enabled Whether the [MiuixCheckbox] is enabled.
- * @param interactionSource The interaction source to be applied to the [MiuixCheckbox].
+ * @param checked The current state of the [Checkbox].
+ * @param onCheckedChange The callback to be called when the state of the [Checkbox] changes.
+ * @param modifier The modifier to be applied to the [Checkbox].
+ * @param enabled Whether the [Checkbox] is enabled.
+ * @param interactionSource The interaction source to be applied to the [Checkbox].
  */
 @Composable
-fun MiuixCheckbox(
+fun Checkbox(
     checked: Boolean,
     onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier,
@@ -79,7 +79,7 @@ fun MiuixCheckbox(
         }
     }
 
-    MiuixBox(
+    Box(
         modifier = modifier
             .then(toggleableModifier)
             .wrapContentSize(Alignment.Center)

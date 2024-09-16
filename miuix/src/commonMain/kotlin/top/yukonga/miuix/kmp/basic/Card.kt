@@ -17,16 +17,16 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
  * A card component with Miuix style.
  * Card contain contain content and actions that relate information about a subject.
  *
- * This [MiuixCard] does not handle input events
+ * This [Card] does not handle input events
  *
- * @param modifier The modifier to be applied to the [MiuixCard].
- * @param insideMargin The margin inside the [MiuixCard].
- * @param cornerRadius The corner radius of the [MiuixCard].
- * @param color The color of the [MiuixCard].
- * @param content The [Composable] content of the [MiuixCard].
+ * @param modifier The modifier to be applied to the [Card].
+ * @param insideMargin The margin inside the [Card].
+ * @param cornerRadius The corner radius of the [Card].
+ * @param color The color of the [Card].
+ * @param content The [Composable] content of the [Card].
  */
 @Composable
-fun MiuixCard(
+fun Card(
     modifier: Modifier = Modifier,
     insideMargin: DpSize = DpSize(0.dp, 0.dp),
     cornerRadius: Dp = 18.dp,
@@ -38,7 +38,7 @@ fun MiuixCard(
         Modifier.padding(vertical = insideMargin.height, horizontal = insideMargin.width)
     }
 
-    MiuixSurface(
+    Surface(
         modifier = modifier,
         shape = shape,
         color = color,

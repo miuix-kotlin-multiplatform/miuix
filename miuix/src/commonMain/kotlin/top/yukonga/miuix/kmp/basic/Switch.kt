@@ -37,14 +37,14 @@ import kotlin.math.absoluteValue
 /**
  * A switch with Miuix style.
  *
- * @param checked The checked state of the [MiuixSwitch].
- * @param onCheckedChange The callback to be called when the state of the [MiuixSwitch] changes.
- * @param modifier The modifier to be applied to the [MiuixSwitch].
- * @param enabled Whether the [MiuixSwitch] is enabled.
- * @param interactionSource The interaction source to be applied to the [MiuixSwitch].
+ * @param checked The checked state of the [Switch].
+ * @param onCheckedChange The callback to be called when the state of the [Switch] changes.
+ * @param modifier The modifier to be applied to the [Switch].
+ * @param enabled Whether the [Switch] is enabled.
+ * @param interactionSource The interaction source to be applied to the [Switch].
  */
 @Composable
-fun MiuixSwitch(
+fun Switch(
     checked: Boolean,
     onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier,
@@ -103,7 +103,7 @@ fun MiuixSwitch(
         }
     }
 
-    MiuixBox(
+    Box(
         modifier = modifier
             .then(toggleableModifier)
             .wrapContentSize(Alignment.Center)
@@ -167,7 +167,7 @@ fun MiuixSwitch(
                 )
             }
     ) {
-        MiuixBox(
+        Box(
             modifier = Modifier
                 .padding(start = thumbOffset)
                 .align(Alignment.CenterStart)

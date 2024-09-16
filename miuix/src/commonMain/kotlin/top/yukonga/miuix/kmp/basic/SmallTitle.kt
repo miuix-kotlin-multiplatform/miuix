@@ -14,11 +14,11 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  * A title component with Miuix style.
  *
  * @param text The text to be displayed in the title.
- * @param modifier The modifier to be applied to the [MiuixSmallTitle].
- * @param insideMargin The margin inside the [MiuixSmallTitle].
+ * @param modifier The modifier to be applied to the [SmallTitle].
+ * @param insideMargin The margin inside the [SmallTitle].
  */
 @Composable
-fun MiuixSmallTitle(
+fun SmallTitle(
     text: String,
     modifier: Modifier = Modifier,
     insideMargin: DpSize = DpSize(28.dp, 8.dp),
@@ -26,7 +26,7 @@ fun MiuixSmallTitle(
     val paddingModifier = remember(insideMargin) {
         Modifier.padding(horizontal = insideMargin.width, vertical = insideMargin.height)
     }
-    MiuixText(
+    Text(
         modifier = modifier.then(paddingModifier),
         text = text,
         fontSize = 14.sp,

@@ -1,4 +1,4 @@
-package top.yukonga.miuix.kmp
+package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -30,9 +30,6 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import kotlinx.coroutines.delay
-import top.yukonga.miuix.kmp.basic.MiuixBox
-import top.yukonga.miuix.kmp.basic.MiuixSurface
-import top.yukonga.miuix.kmp.basic.MiuixText
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
@@ -50,7 +47,7 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
  * @param content the content to be shown when the search bar is expanded.
  */
 @Composable
-fun MiuixSearchBar(
+fun SearchBar(
     inputField: @Composable () -> Unit,
     expanded: Boolean = false,
     onExpandedChange: (Boolean) -> Unit,
@@ -58,7 +55,7 @@ fun MiuixSearchBar(
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    MiuixSurface(
+    Surface(
         modifier = modifier.zIndex(1f),
     ) {
         Column {
@@ -66,7 +63,7 @@ fun MiuixSearchBar(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                MiuixBox(modifier = Modifier.weight(1f)) {
+                Box(modifier = Modifier.weight(1f)) {
                     inputField()
                 }
 
@@ -114,7 +111,7 @@ fun MiuixSearchBar(
  *   interactions will still happen internally.
  */
 @Composable
-fun MiuixInputField(
+fun InputField(
     query: String,
     onQueryChange: (String) -> Unit,
     label: String = "",
@@ -163,7 +160,7 @@ fun MiuixInputField(
         interactionSource = interactionSource,
         decorationBox =
         @Composable { innerTextField ->
-            MiuixBox(
+            Box(
                 modifier = Modifier
                     .background(
                         color = MiuixTheme.colorScheme.textFieldBg,
@@ -177,13 +174,13 @@ fun MiuixInputField(
                     if (leadingIcon != null) {
                         leadingIcon()
                     }
-                    MiuixBox(
+                    Box(
                         modifier = Modifier
                             .weight(1f)
                             .then(paddingModifier),
                         contentAlignment = Alignment.CenterStart
                     ) {
-                        MiuixText(
+                        Text(
                             text = if (!(query.isNotEmpty() || expanded)) label else "",
                             color = MiuixTheme.colorScheme.textFieldSub
                         )

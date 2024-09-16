@@ -24,20 +24,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import top.yukonga.miuix.kmp.CheckboxLocation
-import top.yukonga.miuix.kmp.MiuixSearchBar
-import top.yukonga.miuix.kmp.MiuixSuperArrow
-import top.yukonga.miuix.kmp.MiuixSuperCheckbox
-import top.yukonga.miuix.kmp.MiuixSuperDialog
-import top.yukonga.miuix.kmp.MiuixSuperDropdown
-import top.yukonga.miuix.kmp.MiuixSuperSwitch
-import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
-import top.yukonga.miuix.kmp.basic.MiuixButton
-import top.yukonga.miuix.kmp.basic.MiuixCard
-import top.yukonga.miuix.kmp.basic.MiuixCheckbox
-import top.yukonga.miuix.kmp.basic.MiuixSmallTitle
-import top.yukonga.miuix.kmp.basic.MiuixSwitch
-import top.yukonga.miuix.kmp.basic.MiuixText
+import top.yukonga.miuix.kmp.extra.CheckboxLocation
+import top.yukonga.miuix.kmp.extra.SuperArrow
+import top.yukonga.miuix.kmp.extra.SuperCheckbox
+import top.yukonga.miuix.kmp.extra.SuperDialog
+import top.yukonga.miuix.kmp.extra.SuperDropdown
+import top.yukonga.miuix.kmp.extra.SuperSwitch
+import top.yukonga.miuix.kmp.basic.BasicComponent
+import top.yukonga.miuix.kmp.basic.Button
+import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.Checkbox
+import top.yukonga.miuix.kmp.basic.SmallTitle
+import top.yukonga.miuix.kmp.basic.Switch
+import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showDialog
@@ -60,27 +59,27 @@ fun TextComponent() {
     var miuixSuperSwitchState by remember { mutableStateOf(false) }
     var miuixSuperSwitchAnimState by remember { mutableStateOf(false) }
 
-    MiuixBasicComponent(
+    BasicComponent(
         title = "Title",
         summary = "Summary",
         leftAction = {
-            MiuixText(text = "Left")
+            Text(text = "Left")
         },
         rightActions = {
-            MiuixText(text = "Right1")
+            Text(text = "Right1")
             Spacer(Modifier.width(8.dp))
-            MiuixText(text = "Right2")
+            Text(text = "Right2")
         },
         onClick = {}
     )
 
-    MiuixSuperArrow(
+    SuperArrow(
         title = "Arrow",
         summary = "With an arrow on right",
         onClick = {}
     )
 
-    MiuixSuperArrow(
+    SuperArrow(
         leftAction = {
             Image(
                 colorFilter = ColorFilter.tint(MiuixTheme.colorScheme.onBackground),
@@ -99,25 +98,25 @@ fun TextComponent() {
             .padding(horizontal = 24.dp, vertical = 14.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        MiuixCheckbox(
+        Checkbox(
             modifier = Modifier,
             checked = checkbox,
             onCheckedChange = { checkbox = it }
 
         )
-        MiuixCheckbox(
+        Checkbox(
             modifier = Modifier.padding(start = 8.dp),
             checked = checkboxTrue,
             onCheckedChange = { checkboxTrue = it }
         )
-        MiuixCheckbox(
+        Checkbox(
             modifier = Modifier.padding(start = 8.dp),
             enabled = false,
             checked = false,
             onCheckedChange = { }
 
         )
-        MiuixCheckbox(
+        Checkbox(
             modifier = Modifier.padding(start = 8.dp),
             enabled = false,
             checked = true,
@@ -131,22 +130,22 @@ fun TextComponent() {
             .padding(horizontal = 24.dp, vertical = 14.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        MiuixSwitch(
+        Switch(
             checked = switch,
             onCheckedChange = { switch = it }
         )
-        MiuixSwitch(
+        Switch(
             modifier = Modifier.padding(start = 8.dp),
             checked = switchTrue,
             onCheckedChange = { switchTrue = it }
         )
-        MiuixSwitch(
+        Switch(
             modifier = Modifier.padding(start = 8.dp),
             enabled = false,
             checked = false,
             onCheckedChange = { }
         )
-        MiuixSwitch(
+        Switch(
             modifier = Modifier.padding(start = 8.dp),
             enabled = false,
             checked = true,
@@ -154,14 +153,14 @@ fun TextComponent() {
         )
     }
 
-    MiuixSmallTitle("Title")
+    SmallTitle("Title")
 
-    MiuixCard(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
-        MiuixSuperCheckbox(
+        SuperCheckbox(
             insideMargin = DpSize(18.dp, 18.dp),
             title = "Checkbox",
             summary = miuixSuperCheckbox,
@@ -172,13 +171,13 @@ fun TextComponent() {
             },
         )
 
-        MiuixSuperCheckbox(
+        SuperCheckbox(
             insideMargin = DpSize(18.dp, 18.dp),
             checkboxLocation = CheckboxLocation.Right,
             title = "Checkbox",
             checked = miuixSuperRightCheckboxState,
             rightActions = {
-                MiuixText(
+                Text(
                     modifier = Modifier.padding(end = 8.dp),
                     text = miuixSuperRightCheckbox,
                     color = MiuixTheme.colorScheme.subTextBase
@@ -190,7 +189,7 @@ fun TextComponent() {
             },
         )
 
-        MiuixSuperSwitch(
+        SuperSwitch(
             insideMargin = DpSize(18.dp, 18.dp),
             title = "Switch",
             summary = "Click to expand a Switch",
@@ -205,7 +204,7 @@ fun TextComponent() {
             enter = fadeIn() + expandVertically(),
             exit = fadeOut() + shrinkVertically()
         ) {
-            MiuixSuperSwitch(
+            SuperSwitch(
                 insideMargin = DpSize(18.dp, 18.dp),
                 title = "Switch",
                 summary = miuixSuperSwitch,
@@ -217,7 +216,7 @@ fun TextComponent() {
             )
         }
 
-        MiuixSuperArrow(
+        SuperArrow(
             insideMargin = DpSize(18.dp, 18.dp),
             title = "Dialog",
             summary = "Click to show a Dialog",
@@ -226,7 +225,7 @@ fun TextComponent() {
             }
         )
 
-        MiuixSuperDropdown(
+        SuperDropdown(
             insideMargin = DpSize(18.dp, 18.dp),
             title = "Dropdown",
             summary = "Popup near click",
@@ -235,7 +234,7 @@ fun TextComponent() {
             onSelectedIndexChange = { newOption -> dropdownSelectedOption.value = newOption },
         )
 
-        MiuixSuperDropdown(
+        SuperDropdown(
             insideMargin = DpSize(18.dp, 18.dp),
             title = "Dropdown",
             summary = "Popup always on right",
@@ -255,7 +254,7 @@ fun dialog(showDialog: MutableState<Boolean>) {
     showDialog(
         show = showDialog.value,
         content = {
-            MiuixSuperDialog(
+            SuperDialog(
                 title = "Title",
                 summary = "Summary",
                 show = showDialog,
@@ -266,7 +265,7 @@ fun dialog(showDialog: MutableState<Boolean>) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    MiuixButton(
+                    Button(
                         modifier = Modifier.weight(1f),
                         text = "Cancel",
                         onClick = {
@@ -275,7 +274,7 @@ fun dialog(showDialog: MutableState<Boolean>) {
                         }
                     )
                     Spacer(Modifier.width(20.dp))
-                    MiuixButton(
+                    Button(
                         modifier = Modifier.weight(1f),
                         text = "Confirm",
                         submit = true,

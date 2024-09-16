@@ -17,33 +17,33 @@ import androidx.compose.ui.graphics.BlendModeColorFilter
 import androidx.compose.ui.unit.dp
 import component.OtherComponent
 import component.TextComponent
-import top.yukonga.miuix.kmp.MiuixInputField
-import top.yukonga.miuix.kmp.MiuixScrollBehavior
-import top.yukonga.miuix.kmp.MiuixSearchBar
-import top.yukonga.miuix.kmp.basic.MiuixBasicComponent
-import top.yukonga.miuix.kmp.basic.MiuixLazyColumn
-import top.yukonga.miuix.kmp.basic.MiuixText
+import top.yukonga.miuix.kmp.basic.ScrollBehavior
+import top.yukonga.miuix.kmp.basic.BasicComponent
+import top.yukonga.miuix.kmp.basic.InputField
+import top.yukonga.miuix.kmp.basic.LazyColumn
+import top.yukonga.miuix.kmp.basic.SearchBar
+import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.Search
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 fun MainPage(
-    topAppBarScrollBehavior: MiuixScrollBehavior,
+    topAppBarScrollBehavior: ScrollBehavior,
     padding: PaddingValues
 ) {
     var miuixSearchValue by remember { mutableStateOf("") }
     var expanded by rememberSaveable { mutableStateOf(false) }
 
-    MiuixLazyColumn(
+    LazyColumn(
         contentPadding = PaddingValues(top = padding.calculateTopPadding()),
         topAppBarScrollBehavior = topAppBarScrollBehavior,
     ) {
         item {
-            MiuixSearchBar(
+            SearchBar(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
                 inputField = {
-                    MiuixInputField(
+                    InputField(
                         query = miuixSearchValue,
                         onQueryChange = { miuixSearchValue = it },
                         onSearch = { expanded = false },
@@ -64,7 +64,7 @@ fun MainPage(
                     )
                 },
                 outsideRightAction = {
-                    MiuixText(
+                    Text(
                         modifier = Modifier
                             .padding(start = 24.dp)
                             .clickable(
@@ -86,7 +86,7 @@ fun MainPage(
                 ) {
                     repeat(4) { idx ->
                         val resultText = "Suggestion $idx"
-                        MiuixBasicComponent(
+                        BasicComponent(
                             title = resultText,
                             modifier = Modifier
                                 .fillMaxWidth(),
