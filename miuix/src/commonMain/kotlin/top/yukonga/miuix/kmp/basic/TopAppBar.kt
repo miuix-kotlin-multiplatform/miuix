@@ -73,6 +73,7 @@ import kotlin.math.roundToInt
  * @param actions The [Composable] content that represents the action icons.
  * @param scrollBehavior The [ScrollBehavior] that controls the behavior of the [TopAppBar].
  * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [TopAppBar].
+ * @param horizontalPadding The horizontal padding of the [TopAppBar].
  */
 @Composable
 fun TopAppBar(
@@ -83,7 +84,8 @@ fun TopAppBar(
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     scrollBehavior: ScrollBehavior? = null,
-    defaultWindowInsetsPadding: Boolean = true
+    defaultWindowInsetsPadding: Boolean = true,
+    horizontalPadding: Dp = 28.dp
 ) {
     val density = LocalDensity.current
     val expandedHeightPx by rememberUpdatedState(
@@ -130,7 +132,8 @@ fun TopAppBar(
             navigationIcon = navigationIcon,
             actions = actionsRow,
             scrolledOffset = { scrollBehavior?.state?.heightOffset ?: 0f },
-            expandedHeightPx = expandedHeightPx
+            expandedHeightPx = expandedHeightPx,
+            horizontalPadding = horizontalPadding
         )
     }
 }
@@ -459,8 +462,6 @@ private suspend fun settleAppBar(
     return Velocity.Zero
 }
 
-private val TopAppBarHorizontalPadding = 24.dp
-
 /** A functional interface for providing an app-bar scroll offset. */
 private fun interface ScrolledOffset {
     fun offset(): Float
@@ -476,6 +477,7 @@ private fun interface ScrolledOffset {
  * @param actions actions [Composable]
  * @param scrolledOffset a function that provides the scroll offset of the top app bar
  * @param expandedHeightPx the expanded height of the top app bar in pixels
+ * @param horizontalPadding the horizontal padding of the [TopAppBar]
  */
 @Composable
 private fun TopAppBarLayout(
@@ -484,7 +486,8 @@ private fun TopAppBarLayout(
     navigationIcon: @Composable () -> Unit,
     actions: @Composable () -> Unit,
     scrolledOffset: ScrolledOffset,
-    expandedHeightPx: Float
+    expandedHeightPx: Float,
+    horizontalPadding: Dp,
 ) {
     val extOffset = abs(scrolledOffset.offset()) / expandedHeightPx * 2
     val alpha by animateFloatAsState(
@@ -507,7 +510,7 @@ private fun TopAppBarLayout(
             Box(
                 Modifier
                     .layoutId("title")
-                    .padding(horizontal = TopAppBarHorizontalPadding)
+                    .padding(horizontal = horizontalPadding)
                     .graphicsLayer(
                         translationY = translationY,
                         alpha = alpha
@@ -530,7 +533,7 @@ private fun TopAppBarLayout(
                 Modifier
                     .layoutId("largeTitle")
                     .fillMaxWidth()
-                    .padding(horizontal = TopAppBarHorizontalPadding)
+                    .padding(horizontal = horizontalPadding)
                     .graphicsLayer(alpha = 1f - (abs(scrolledOffset.offset()) / expandedHeightPx * 2).coerceIn(0f, 1f))
             ) {
                 Text(

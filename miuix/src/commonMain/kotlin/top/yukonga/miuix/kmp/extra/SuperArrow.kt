@@ -9,6 +9,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.BlendModeColorFilter
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -24,6 +25,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  *
  * @param modifier The modifier to be applied to the [SuperArrow].
  * @param title The title of the [SuperArrow].
+ * @param titleColor The color of the title.
  * @param summary The summary of the [SuperArrow].
  * @param leftAction The [Composable] content that on the left side of the [SuperArrow].
  * @param rightText The text on the right side of the [SuperArrow].
@@ -34,17 +36,19 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 fun SuperArrow(
     modifier: Modifier = Modifier,
     title: String,
+    titleColor: Color = MiuixTheme.colorScheme.onBackground,
     summary: String? = null,
     leftAction: @Composable (() -> Unit)? = null,
     rightText: String? = null,
     onClick: (() -> Unit)? = null,
-    insideMargin: DpSize = DpSize(24.dp, 14.dp)
+    insideMargin: DpSize = DpSize(16.dp, 16.dp)
 ) {
     val updatedOnClick by rememberUpdatedState(onClick)
     BasicComponent(
         modifier = modifier,
         insideMargin = insideMargin,
         title = title,
+        titleColor = titleColor,
         summary = summary,
         leftAction = leftAction,
         rightActions = { createRightActions(rightText) },
@@ -73,6 +77,6 @@ private fun createRightActions(rightText: String?) {
             .padding(start = 6.dp),
         imageVector = MiuixIcons.ArrowRight,
         contentDescription = null,
-        colorFilter = BlendModeColorFilter(MiuixTheme.colorScheme.subDropdown, BlendMode.SrcIn),
+        colorFilter = BlendModeColorFilter(MiuixTheme.colorScheme.subTextBase, BlendMode.SrcIn),
     )
 }

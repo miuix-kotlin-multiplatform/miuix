@@ -63,7 +63,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 fun Text(
     text: String,
     modifier: Modifier = Modifier,
-    color: Color = Color.Unspecified,
+    color: Color = MiuixTheme.colorScheme.onBackground,
     fontSize: TextUnit = TextUnit.Unspecified,
     fontStyle: FontStyle? = null,
     fontWeight: FontWeight? = null,

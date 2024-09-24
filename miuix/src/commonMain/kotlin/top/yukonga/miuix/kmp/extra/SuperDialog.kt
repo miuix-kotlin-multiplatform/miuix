@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
@@ -35,6 +36,7 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
  * A dialog with a title, a summary, and a content.
  *
  * @param title The title of the [SuperDialog].
+ * @param titleColor The color of the title.
  * @param summary The summary of the [SuperDialog].
  * @param onDismissRequest The callback when the [SuperDialog] is dismissed.
  * @param insideMargin The margin inside the [SuperDialog].
@@ -43,6 +45,7 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 @Composable
 fun SuperDialog(
     title: String? = null,
+    titleColor: Color = MiuixTheme.colorScheme.onBackground,
     summary: String? = null,
     show: MutableState<Boolean>,
     onDismissRequest: () -> Unit,
@@ -82,7 +85,7 @@ fun SuperDialog(
                 }
                 .align(contentAlignment)
                 .graphicsLayer(
-                    shadowElevation = 18f,
+                    shadowElevation = 12f,
                     shape = SquircleShape(bottomCornerRadius),
                     clip = false
                 )
@@ -98,7 +101,8 @@ fun SuperDialog(
                     text = it,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Medium,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = titleColor
                 )
             }
             summary?.let {

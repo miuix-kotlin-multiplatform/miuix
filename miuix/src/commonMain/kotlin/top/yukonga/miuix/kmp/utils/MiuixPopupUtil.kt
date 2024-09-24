@@ -1,6 +1,7 @@
 package top.yukonga.miuix.kmp.utils
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -89,8 +90,20 @@ class MiuixPopupUtil {
             AnimatedVisibility(
                 visible = isDialogShowing.value,
                 modifier = Modifier.zIndex(2f).fillMaxSize(),
-                enter = slideInVertically(animationSpec = tween(300)) { fullHeight -> fullHeight },
-                exit = slideOutVertically(animationSpec = tween(300)) { fullHeight -> fullHeight }
+                enter = slideInVertically(
+                    initialOffsetY = { fullHeight -> fullHeight },
+                    animationSpec = tween(
+                        durationMillis = 500,
+                        easing = CubicBezierEasing(0f, 1f, 0.36f, 1f)
+                    )
+                ),
+                exit = slideOutVertically(
+                    targetOffsetY = { fullHeight -> fullHeight },
+                    animationSpec = tween(
+                        durationMillis = 300,
+                        easing = CubicBezierEasing(1f, 0f, 0.64f, 0f)
+                    )
+                )
             ) {
                 Box(
                     modifier = Modifier.fillMaxSize().navigationBarsPadding()
@@ -101,8 +114,16 @@ class MiuixPopupUtil {
             AnimatedVisibility(
                 visible = isPopupShowing.value,
                 modifier = Modifier.zIndex(2f).fillMaxSize(),
-                enter = fadeIn(animationSpec = tween(100)) + scaleIn(animationSpec = tween(100), initialScale = 0.9f),
-                exit = fadeOut(animationSpec = tween(100)) + scaleOut(animationSpec = tween(100), targetScale = 0.9f)
+                enter = fadeIn(
+                    animationSpec = tween(100)
+                ) + scaleIn(
+                    animationSpec = tween(100), initialScale = 0.9f
+                ),
+                exit = fadeOut(
+                    animationSpec = tween(100)
+                ) + scaleOut(
+                    animationSpec = tween(100), targetScale = 0.9f
+                )
             ) {
                 Box(
                     modifier = Modifier.fillMaxSize()

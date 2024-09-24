@@ -6,11 +6,13 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
@@ -20,26 +22,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import top.yukonga.miuix.kmp.extra.CheckboxLocation
-import top.yukonga.miuix.kmp.extra.SuperArrow
-import top.yukonga.miuix.kmp.extra.SuperCheckbox
-import top.yukonga.miuix.kmp.extra.SuperDialog
-import top.yukonga.miuix.kmp.extra.SuperDropdown
-import top.yukonga.miuix.kmp.extra.SuperSwitch
 import top.yukonga.miuix.kmp.basic.BasicComponent
+import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Button
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Checkbox
 import top.yukonga.miuix.kmp.basic.SmallTitle
 import top.yukonga.miuix.kmp.basic.Switch
 import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.extra.CheckboxLocation
+import top.yukonga.miuix.kmp.extra.SuperArrow
+import top.yukonga.miuix.kmp.extra.SuperCheckbox
+import top.yukonga.miuix.kmp.extra.SuperDialog
+import top.yukonga.miuix.kmp.extra.SuperDropdown
+import top.yukonga.miuix.kmp.extra.SuperSwitch
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showDialog
+import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
 @Composable
 fun TextComponent() {
@@ -55,7 +60,7 @@ fun TextComponent() {
     var miuixSuperCheckboxState by remember { mutableStateOf(false) }
     var miuixSuperRightCheckbox by remember { mutableStateOf("false") }
     var miuixSuperRightCheckboxState by remember { mutableStateOf(false) }
-    var miuixSuperSwitch by remember { mutableStateOf("State: false") }
+    var miuixSuperSwitch by remember { mutableStateOf("false") }
     var miuixSuperSwitchState by remember { mutableStateOf(false) }
     var miuixSuperSwitchAnimState by remember { mutableStateOf(false) }
 
@@ -67,7 +72,7 @@ fun TextComponent() {
         },
         rightActions = {
             Text(text = "Right1")
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(6.dp))
             Text(text = "Right2")
         },
         onClick = {}
@@ -81,11 +86,19 @@ fun TextComponent() {
 
     SuperArrow(
         leftAction = {
-            Image(
-                colorFilter = ColorFilter.tint(MiuixTheme.colorScheme.onBackground),
-                imageVector = Icons.Default.Person,
-                contentDescription = "Person",
-            )
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(42.dp)
+                    .clip(SquircleShape(14.dp))
+                    .background(MiuixTheme.colorScheme.primary.copy(alpha = 0.2f))
+            ) {
+                Image(
+                    colorFilter = ColorFilter.tint(MiuixTheme.colorScheme.onBackground),
+                    imageVector = Icons.Default.Person,
+                    contentDescription = "Person",
+                )
+            }
         },
         title = "Person",
         summary = "An introduction",
@@ -95,7 +108,7 @@ fun TextComponent() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 14.dp),
+            .padding(horizontal = 12.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Checkbox(
@@ -127,7 +140,7 @@ fun TextComponent() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 14.dp),
+            .padding(horizontal = 12.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Switch(
@@ -135,18 +148,18 @@ fun TextComponent() {
             onCheckedChange = { switch = it }
         )
         Switch(
-            modifier = Modifier.padding(start = 8.dp),
+            modifier = Modifier.padding(start = 6.dp),
             checked = switchTrue,
             onCheckedChange = { switchTrue = it }
         )
         Switch(
-            modifier = Modifier.padding(start = 8.dp),
+            modifier = Modifier.padding(start = 6.dp),
             enabled = false,
             checked = false,
             onCheckedChange = { }
         )
         Switch(
-            modifier = Modifier.padding(start = 8.dp),
+            modifier = Modifier.padding(start = 6.dp),
             enabled = false,
             checked = true,
             onCheckedChange = { }
@@ -158,27 +171,15 @@ fun TextComponent() {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 12.dp)
     ) {
         SuperCheckbox(
-            insideMargin = DpSize(18.dp, 18.dp),
-            title = "Checkbox",
-            summary = miuixSuperCheckbox,
-            checked = miuixSuperCheckboxState,
-            onCheckedChange = {
-                miuixSuperCheckboxState = it
-                miuixSuperCheckbox = "State: $it"
-            },
-        )
-
-        SuperCheckbox(
-            insideMargin = DpSize(18.dp, 18.dp),
             checkboxLocation = CheckboxLocation.Right,
             title = "Checkbox",
             checked = miuixSuperRightCheckboxState,
             rightActions = {
                 Text(
-                    modifier = Modifier.padding(end = 8.dp),
+                    modifier = Modifier.padding(end = 6.dp),
                     text = miuixSuperRightCheckbox,
                     color = MiuixTheme.colorScheme.subTextBase
                 )
@@ -189,8 +190,17 @@ fun TextComponent() {
             },
         )
 
+        SuperCheckbox(
+            title = "Checkbox",
+            summary = miuixSuperCheckbox,
+            checked = miuixSuperCheckboxState,
+            onCheckedChange = {
+                miuixSuperCheckboxState = it
+                miuixSuperCheckbox = "State: $it"
+            },
+        )
+
         SuperSwitch(
-            insideMargin = DpSize(18.dp, 18.dp),
             title = "Switch",
             summary = "Click to expand a Switch",
             checked = miuixSuperSwitchAnimState,
@@ -205,19 +215,23 @@ fun TextComponent() {
             exit = fadeOut() + shrinkVertically()
         ) {
             SuperSwitch(
-                insideMargin = DpSize(18.dp, 18.dp),
                 title = "Switch",
-                summary = miuixSuperSwitch,
                 checked = miuixSuperSwitchState,
+                rightActions = {
+                    Text(
+                        modifier = Modifier.padding(end = 6.dp),
+                        text = miuixSuperSwitch,
+                        color = MiuixTheme.colorScheme.subTextBase
+                    )
+                },
                 onCheckedChange = {
                     miuixSuperSwitchState = it
-                    miuixSuperSwitch = "State: $it"
+                    miuixSuperSwitch = "$it"
                 },
             )
         }
 
         SuperArrow(
-            insideMargin = DpSize(18.dp, 18.dp),
             title = "Dialog",
             summary = "Click to show a Dialog",
             onClick = {
@@ -226,7 +240,6 @@ fun TextComponent() {
         )
 
         SuperDropdown(
-            insideMargin = DpSize(18.dp, 18.dp),
             title = "Dropdown",
             summary = "Popup near click",
             items = dropdownOptions,
@@ -235,7 +248,6 @@ fun TextComponent() {
         )
 
         SuperDropdown(
-            insideMargin = DpSize(18.dp, 18.dp),
             title = "Dropdown",
             summary = "Popup always on right",
             alwaysRight = true,

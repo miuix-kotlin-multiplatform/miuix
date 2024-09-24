@@ -74,6 +74,7 @@ expect fun modifierPlatform(modifier: Modifier, isHovered: MutableState<Boolean>
  * A dropdown with a title and a summary.
  *
  * @param title The title of the [SuperDropdown].
+ * @param titleColor The color of the title.
  * @param summary The summary of the [SuperDropdown].
  * @param modifier The modifier to be applied to the [SuperDropdown].
  * @param items The options of the [SuperDropdown].
@@ -85,11 +86,12 @@ expect fun modifierPlatform(modifier: Modifier, isHovered: MutableState<Boolean>
 @Composable
 fun SuperDropdown(
     title: String,
+    titleColor: Color = MiuixTheme.colorScheme.onBackground,
     summary: String? = null,
     modifier: Modifier = Modifier,
     items: List<String>,
     alwaysRight: Boolean = false,
-    insideMargin: DpSize = DpSize(24.dp, 14.dp),
+    insideMargin: DpSize = DpSize(16.dp, 16.dp),
     selectedIndex: Int,
     onSelectedIndexChange: (Int) -> Unit
 ) {
@@ -100,7 +102,7 @@ fun SuperDropdown(
     val isDropdownExpanded = remember { mutableStateOf(false) }
     var alignLeft by rememberSaveable { mutableStateOf(true) }
     val textMeasurer = rememberTextMeasurer()
-    val textStyle = remember { TextStyle(fontWeight = FontWeight.Medium, fontSize = 16.sp) }
+    val textStyle = remember { TextStyle(fontWeight = FontWeight.Medium, fontSize = 17.sp) }
     val textWidthDp = remember(items) {
         items.maxOfOrNull { text ->
             with(density) { textMeasurer.measure(text = text, style = textStyle).size.width.toDp() }
@@ -157,9 +159,11 @@ fun SuperDropdown(
             },
         insideMargin = insideMargin,
         title = title,
+        titleColor = titleColor,
         summary = summary,
         rightActions = {
             Text(
+                modifier = Modifier.padding(end = 6.dp),
                 text = items[selectedIndex],
                 fontSize = 15.sp,
                 color = MiuixTheme.colorScheme.subTextBase,
@@ -168,11 +172,10 @@ fun SuperDropdown(
             Image(
                 modifier = Modifier
                     .size(15.dp)
-                    .padding(start = 6.dp)
                     .align(Alignment.CenterVertically),
                 imageVector = MiuixIcons.ArrowUpDown,
                 colorFilter = BlendModeColorFilter(
-                    MiuixTheme.colorScheme.subDropdown,
+                    MiuixTheme.colorScheme.subTextBase,
                     BlendMode.SrcIn
                 ),
                 contentDescription = null

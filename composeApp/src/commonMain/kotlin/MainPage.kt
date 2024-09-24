@@ -17,10 +17,10 @@ import androidx.compose.ui.graphics.BlendModeColorFilter
 import androidx.compose.ui.unit.dp
 import component.OtherComponent
 import component.TextComponent
-import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.InputField
 import top.yukonga.miuix.kmp.basic.LazyColumn
+import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.SearchBar
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.icon.MiuixIcons
@@ -41,7 +41,7 @@ fun MainPage(
     ) {
         item {
             SearchBar(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
                 inputField = {
                     InputField(
                         query = miuixSearchValue,
@@ -52,7 +52,7 @@ fun MainPage(
                         label = "Search",
                         leadingIcon = {
                             Image(
-                                modifier = Modifier.padding(horizontal = 14.dp),
+                                modifier = Modifier.padding(horizontal = 12.dp),
                                 imageVector = MiuixIcons.Search,
                                 colorFilter = BlendModeColorFilter(
                                     MiuixTheme.colorScheme.onPrimary,
@@ -66,7 +66,7 @@ fun MainPage(
                 outsideRightAction = {
                     Text(
                         modifier = Modifier
-                            .padding(start = 24.dp)
+                            .padding(start = 12.dp)
                             .clickable(
                                 interactionSource = null,
                                 indication = null

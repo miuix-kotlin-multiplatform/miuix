@@ -77,7 +77,7 @@ fun NavigationBar(
         ) {
             HorizontalDivider(
                 thickness = 0.25.dp,
-                color = MiuixTheme.colorScheme.subDropdown
+                color = MiuixTheme.colorScheme.subTextBase
             )
             Row(
                 modifier = Modifier
@@ -93,11 +93,11 @@ fun NavigationBar(
                             isPressed -> if (isSelected) {
                                 MiuixTheme.colorScheme.onBackground.copy(alpha = 0.7f)
                             } else {
-                                MiuixTheme.colorScheme.subDropdown.copy(alpha = 0.7f)
+                                MiuixTheme.colorScheme.subTextBase.copy(alpha = 0.7f)
                             }
 
                             isSelected -> MiuixTheme.colorScheme.onBackground
-                            else -> MiuixTheme.colorScheme.subDropdown
+                            else -> MiuixTheme.colorScheme.subTextBase
                         }
                     )
                     Column(

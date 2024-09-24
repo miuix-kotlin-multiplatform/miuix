@@ -47,7 +47,7 @@ fun OtherComponent(padding: PaddingValues) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 20.dp),
+            .padding(horizontal = 12.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Button(
@@ -58,7 +58,7 @@ fun OtherComponent(padding: PaddingValues) {
                 buttonText = "Click: $clickCount"
             }
         )
-        Spacer(Modifier.width(20.dp))
+        Spacer(Modifier.width(12.dp))
         Button(
             modifier = Modifier.weight(1f),
             text = submitButtonText,
@@ -73,7 +73,7 @@ fun OtherComponent(padding: PaddingValues) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp),
+            .padding(horizontal = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Button(
@@ -83,7 +83,7 @@ fun OtherComponent(padding: PaddingValues) {
             enabled = false,
             onClick = {}
         )
-        Spacer(Modifier.width(20.dp))
+        Spacer(Modifier.width(12.dp))
         Button(
             modifier = Modifier.weight(1f),
             text = "Disabled",
@@ -96,8 +96,7 @@ fun OtherComponent(padding: PaddingValues) {
     TextField(
         value = text1,
         onValueChange = { text1 = it },
-        insideMargin = DpSize(14.dp, 14.dp),
-        modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp),
+        modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
     )
@@ -107,7 +106,7 @@ fun OtherComponent(padding: PaddingValues) {
         onValueChange = { text2 = it },
         backgroundColor = MiuixTheme.colorScheme.primaryContainer,
         label = "Text Field",
-        modifier = Modifier.padding(horizontal = 24.dp),
+        modifier = Modifier.padding(horizontal = 12.dp),
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
     )
@@ -115,21 +114,21 @@ fun OtherComponent(padding: PaddingValues) {
     Slider(
         progress = progress,
         onProgressChange = { newProgress -> progress = newProgress },
-        modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp)
+        modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp)
     )
 
     Slider(
         progress = progressDisable,
         onProgressChange = {},
         enabled = false,
-        modifier = Modifier.padding(horizontal = 24.dp)
+        modifier = Modifier.padding(horizontal = 12.dp)
     )
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 20.dp),
-        insideMargin = DpSize(18.dp, 18.dp)
+            .padding(horizontal = 12.dp, vertical = 12.dp),
+        insideMargin = DpSize(16.dp, 16.dp)
     ) {
         CardView()
     }
@@ -137,10 +136,10 @@ fun OtherComponent(padding: PaddingValues) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp)
-            .padding(bottom = 20.dp + padding.calculateBottomPadding()),
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 12.dp + padding.calculateBottomPadding()),
         color = MiuixTheme.colorScheme.primary,
-        insideMargin = DpSize(18.dp, 18.dp)
+        insideMargin = DpSize(16.dp, 16.dp)
     ) {
         CardView(color = Color.White)
     }
@@ -156,7 +155,7 @@ fun CardView(color: Color = MiuixTheme.colorScheme.onBackground) {
         fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp
     )
-    Spacer(Modifier.height(10.dp))
+    Spacer(Modifier.height(6.dp))
     Text(
         color = color,
         text = "123456789",

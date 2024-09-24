@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.Color
  * @param background The background color.
  * @param onBackground The color of the text on background.
  * @param subTextBase The base color of the sub text.
- * @param subDropdown The color of the sub dropdown.
  * @param secondary The secondary color.
  * @param dropdownBackground The background color of the dropdown.
  * @param dropdownSelect The color of the selected item in the dropdown.
@@ -35,7 +34,6 @@ class MiuixColor(
     background: Color,
     onBackground: Color,
     subTextBase: Color,
-    subDropdown: Color,
     secondary: Color,
     dropdownBackground: Color,
     dropdownSelect: Color,
@@ -53,7 +51,6 @@ class MiuixColor(
     val background by mutableStateOf(background, structuralEqualityPolicy())
     val onBackground by mutableStateOf(onBackground, structuralEqualityPolicy())
     val subTextBase by mutableStateOf(subTextBase, structuralEqualityPolicy())
-    val subDropdown by mutableStateOf(subDropdown, structuralEqualityPolicy())
     val secondary by mutableStateOf(secondary, structuralEqualityPolicy())
     val dropdownBackground by mutableStateOf(dropdownBackground, structuralEqualityPolicy())
     val dropdownSelect by mutableStateOf(dropdownSelect, structuralEqualityPolicy())
@@ -72,8 +69,7 @@ fun lightColorScheme() = MiuixColor(
     primaryContainer = Color.White,
     background = Color(0xFFF5F5F5),
     onBackground = Color.Black,
-    subTextBase = Color(0xFF666666),
-    subDropdown = Color(0xFF999999),
+    subTextBase = Color(0xFF999999),
     secondary = Color(0xFFE6E6E6),
     dropdownBackground = Color(0xFFFFFFFF),
     dropdownSelect = Color(0xFFEAF2FF),
@@ -83,7 +79,7 @@ fun lightColorScheme() = MiuixColor(
     submitDisabledBg = Color(0xFFEEEEEC),
     buttonDisableText = Color.LightGray,
     submitButtonDisabledText = Color(0xFFFFFFFF),
-    smallTitle = Color(0xCC000000)
+    smallTitle = Color(0xFF8F96B2)
 )
 
 fun darkColorScheme() = MiuixColor(
@@ -92,8 +88,7 @@ fun darkColorScheme() = MiuixColor(
     primaryContainer = Color(0xFF1F1F1F),
     background = Color.Black,
     onBackground = Color.White,
-    subTextBase = Color(0xFF808080),
-    subDropdown = Color(0xFF666666),
+    subTextBase = Color(0xFF666666),
     secondary = Color(0xFF333333),
     dropdownBackground = Color(0xFF242424),
     dropdownSelect = Color(0xFF23334E),
@@ -103,5 +98,5 @@ fun darkColorScheme() = MiuixColor(
     submitDisabledBg = Color(0xFF222223),
     buttonDisableText = Color(0xFF666666),
     submitButtonDisabledText = Color(0xFF677893),
-    smallTitle = Color(0xCCFFFFFF)
+    smallTitle = Color(0xFF787E96)
 )

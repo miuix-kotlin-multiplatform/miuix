@@ -8,15 +8,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.Checkbox
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**
  * A checkbox with a title and a summary.
  *
  * @param title The title of the [SuperCheckbox].
+ * @param titleColor The color of the title.
  * @param summary The summary of the [SuperCheckbox].
  * @param rightActions The [Composable] content that on the right side of the [SuperCheckbox].
  * @param checked The checked state of the [SuperCheckbox].
@@ -28,13 +31,14 @@ import top.yukonga.miuix.kmp.basic.Checkbox
 @Composable
 fun SuperCheckbox(
     title: String,
+    titleColor: Color = MiuixTheme.colorScheme.onBackground,
     summary: String? = null,
     rightActions: @Composable RowScope.() -> Unit = {},
     checked: Boolean,
     checkboxLocation: CheckboxLocation = CheckboxLocation.Left,
     onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier,
-    insideMargin: DpSize = DpSize(24.dp, 14.dp),
+    insideMargin: DpSize = DpSize(16.dp, 16.dp),
     enabled: Boolean = true
 ) {
     var isChecked by remember { mutableStateOf(checked) }
@@ -48,6 +52,7 @@ fun SuperCheckbox(
         modifier = modifier,
         insideMargin = insideMargin,
         title = title,
+        titleColor = titleColor,
         summary = summary,
         leftAction = if (checkboxLocation == CheckboxLocation.Left) {
             {
