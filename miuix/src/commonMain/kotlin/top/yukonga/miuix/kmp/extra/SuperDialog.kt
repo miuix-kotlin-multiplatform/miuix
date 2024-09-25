@@ -64,6 +64,7 @@ fun SuperDialog(
 
     BackHandler(enabled = show.value) {
         dismissDialog()
+        show.value = false
     }
 
     Box(
