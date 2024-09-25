@@ -35,6 +35,7 @@ import top.yukonga.miuix.kmp.basic.Checkbox
 import top.yukonga.miuix.kmp.basic.SmallTitle
 import top.yukonga.miuix.kmp.basic.Switch
 import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.basic.TextField
 import top.yukonga.miuix.kmp.extra.CheckboxLocation
 import top.yukonga.miuix.kmp.extra.SuperArrow
 import top.yukonga.miuix.kmp.extra.SuperCheckbox
@@ -263,6 +264,7 @@ fun TextComponent() {
 
 @Composable
 fun dialog(showDialog: MutableState<Boolean>) {
+    val value = remember { mutableStateOf("") }
     showDialog(
         show = showDialog.value,
         content = {
@@ -274,6 +276,13 @@ fun dialog(showDialog: MutableState<Boolean>) {
                     showDialog.value = false
                 },
             ) {
+                TextField(
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    value = value.value,
+                    backgroundColor = MiuixTheme.colorScheme.secondary,
+                    maxLines = 1,
+                    onValueChange = { value.value = it }
+                )
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
