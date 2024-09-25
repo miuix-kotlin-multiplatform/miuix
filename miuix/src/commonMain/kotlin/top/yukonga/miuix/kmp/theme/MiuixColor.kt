@@ -20,10 +20,10 @@ import androidx.compose.ui.graphics.Color
  * @param dropdownSelect The color of the selected item in the dropdown.
  * @param textFieldBg The background color of the text field.
  * @param textFieldSub The color of the sub text field.
- * @param disabledBg The background color of the disabled button.
- * @param submitDisabledBg The background color of the disabled submit button.
- * @param buttonDisableText The text color of the disabled button.
- * @param submitButtonDisabledText The text color of the disabled submit button.
+ * @param disabledSecondary The background color of the disabled button.
+ * @param disabledPrimary The background color of the disabled submit button.
+ * @param onDisabledSecondary The text color of the disabled button.
+ * @param onDisabledPrimary The text color of the disabled submit button.
  * @param smallTitle The color of the small title.
  */
 @Stable
@@ -37,12 +37,14 @@ class MiuixColor(
     secondary: Color,
     dropdownBackground: Color,
     dropdownSelect: Color,
+    searchBarBg: Color,
+    searchBarSub: Color,
     textFieldBg: Color,
     textFieldSub: Color,
-    disabledBg: Color,
-    submitDisabledBg: Color,
-    buttonDisableText: Color,
-    submitButtonDisabledText: Color,
+    disabledPrimary: Color,
+    disabledSecondary: Color,
+    onDisabledPrimary: Color,
+    onDisabledSecondary: Color,
     smallTitle: Color
 ) {
     val primary by mutableStateOf(primary, structuralEqualityPolicy())
@@ -54,12 +56,14 @@ class MiuixColor(
     val secondary by mutableStateOf(secondary, structuralEqualityPolicy())
     val dropdownBackground by mutableStateOf(dropdownBackground, structuralEqualityPolicy())
     val dropdownSelect by mutableStateOf(dropdownSelect, structuralEqualityPolicy())
+    val searchBarBg by mutableStateOf(searchBarBg, structuralEqualityPolicy())
+    val searchBarSub by mutableStateOf(searchBarSub, structuralEqualityPolicy())
     val textFieldBg by mutableStateOf(textFieldBg, structuralEqualityPolicy())
     val textFieldSub by mutableStateOf(textFieldSub, structuralEqualityPolicy())
-    val disabledBg by mutableStateOf(submitDisabledBg, structuralEqualityPolicy())
-    val submitDisabledBg by mutableStateOf(disabledBg, structuralEqualityPolicy())
-    val buttonDisableText by mutableStateOf(buttonDisableText, structuralEqualityPolicy())
-    val submitButtonDisabledText by mutableStateOf(submitButtonDisabledText, structuralEqualityPolicy())
+    val disabledPrimary by mutableStateOf(disabledPrimary, structuralEqualityPolicy())
+    val disabledSecondary by mutableStateOf(disabledSecondary, structuralEqualityPolicy())
+    val onDisabledPrimary by mutableStateOf(onDisabledPrimary, structuralEqualityPolicy())
+    val onDisabledSecondary by mutableStateOf(onDisabledSecondary, structuralEqualityPolicy())
     val smallTitle by mutableStateOf(smallTitle, structuralEqualityPolicy())
 }
 
@@ -67,36 +71,40 @@ fun lightColorScheme() = MiuixColor(
     primary = Color(0xFF3482FF),
     onPrimary = Color.Black,
     primaryContainer = Color.White,
-    background = Color(0xFFF5F5F5),
+    background = Color(0xFFF7F7F7),
     onBackground = Color.Black,
-    subTextBase = Color(0xFF999999),
+    subTextBase = Color(0xFF666666),
     secondary = Color(0xFFE6E6E6),
     dropdownBackground = Color(0xFFFFFFFF),
     dropdownSelect = Color(0xFFEAF2FF),
+    searchBarBg = Color(0xFFEDEDED),
+    searchBarSub = Color(0xFFA5A5A5),
     textFieldBg = Color(0xFFF0F0F0),
     textFieldSub = Color(0xFFA8A8A8),
-    disabledBg = Color(0xFFC2D9FF),
-    submitDisabledBg = Color(0xFFEEEEEC),
-    buttonDisableText = Color.LightGray,
-    submitButtonDisabledText = Color(0xFFFFFFFF),
-    smallTitle = Color(0xFF8F96B2)
+    disabledPrimary = Color(0xFFC2D9FF),
+    disabledSecondary = Color(0xFFF2F2F2),
+    onDisabledPrimary = Color(0xFFEDF4FF),
+    onDisabledSecondary = Color(0xFFFCFCFC),
+    smallTitle = Color(0xFF8C93B0)
 )
 
 fun darkColorScheme() = MiuixColor(
     primary = Color(0xFF277AF7),
     onPrimary = Color.White,
-    primaryContainer = Color(0xFF1F1F1F),
-    background = Color.Black,
-    onBackground = Color.White,
-    subTextBase = Color(0xFF666666),
-    secondary = Color(0xFF333333),
-    dropdownBackground = Color(0xFF242424),
-    dropdownSelect = Color(0xFF23334E),
-    textFieldBg = Color(0xFF363636),
-    textFieldSub = Color(0xFF727272),
-    disabledBg = Color(0xFF253E64),
-    submitDisabledBg = Color(0xFF222223),
-    buttonDisableText = Color(0xFF666666),
-    submitButtonDisabledText = Color(0xFF677893),
+    primaryContainer = Color(0xFF242424),
+    background = Color(0xFF101010),
+    onBackground = Color(0xFFE9E9E9),
+    subTextBase = Color(0xFF929292),
+    secondary = Color(0xFF505050),
+    dropdownBackground = Color(0xFF2C2C2C),
+    dropdownSelect = Color(0xFF2B3B54),
+    searchBarBg = Color(0xFF2D2D2D),
+    searchBarSub = Color(0xFF6C6C6C),
+    textFieldBg = Color(0xFF2C2C2C),
+    textFieldSub = Color(0xFF6C6C6C),
+    disabledPrimary = Color(0xFF253E64),
+    disabledSecondary = Color(0xFF404040),
+    onDisabledPrimary = Color(0xFF677993),
+    onDisabledSecondary = Color(0xFF707070),
     smallTitle = Color(0xFF787E96)
 )

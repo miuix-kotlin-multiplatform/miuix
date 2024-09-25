@@ -83,7 +83,11 @@ fun Switch(
         animationSpec = tween(durationMillis = 200)
     )
     val disabledBackgroundColor by rememberUpdatedState(
-        if (isChecked) MiuixTheme.colorScheme.submitDisabledBg else MiuixTheme.colorScheme.disabledBg
+        if (isChecked) MiuixTheme.colorScheme.disabledPrimary else MiuixTheme.colorScheme.disabledSecondary
+    )
+    val thumbColor = Color.White
+    val disabledThumbColor by rememberUpdatedState(
+        if (isChecked) MiuixTheme.colorScheme.onDisabledPrimary else MiuixTheme.colorScheme.onDisabledSecondary
     )
     val toggleableModifier = remember(onCheckedChange, isChecked, enabled) {
         if (onCheckedChange != null) {
@@ -172,7 +176,7 @@ fun Switch(
                 .padding(start = thumbOffset)
                 .align(Alignment.CenterStart)
                 .size(thumbSize)
-                .background(Color.White, shape = SquircleShape(100.dp))
+                .background(if (enabled) thumbColor else disabledThumbColor, shape = SquircleShape(100.dp))
         )
     }
 }
