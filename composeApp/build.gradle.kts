@@ -16,7 +16,7 @@ plugins {
 
 val appName = "Miuix"
 val pkgName = "top.yukonga.miuix.uitest"
-val verName = "1.0.1"
+val verName = "1.0.2"
 val xcf = XCFramework(appName + "Framework")
 
 kotlin {
@@ -86,7 +86,7 @@ android {
         applicationId = pkgName
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 12
+        versionCode = 21
         versionName = verName
     }
     val properties = Properties()
