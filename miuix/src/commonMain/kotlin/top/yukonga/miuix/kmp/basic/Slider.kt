@@ -67,8 +67,8 @@ fun Slider(
             (round(newValue * factor) / factor).coerceIn(minValue, maxValue)
         }
     }
-    val color = rememberUpdatedState(if (enabled) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.submitDisabledBg)
-    val backgroundColor = rememberUpdatedState(if (enabled) MiuixTheme.colorScheme.secondary else MiuixTheme.colorScheme.disabledBg)
+    val color = rememberUpdatedState(if (enabled) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.disabledPrimary)
+    val backgroundColor = rememberUpdatedState(if (enabled) MiuixTheme.colorScheme.secondary else MiuixTheme.colorScheme.disabledSecondary)
 
     Box(
         modifier = if (enabled) {
