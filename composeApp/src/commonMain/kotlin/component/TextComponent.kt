@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -50,6 +50,7 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 @Composable
 fun TextComponent() {
     val showDialog = remember { mutableStateOf(false) }
+    val showDialog2 = remember { mutableStateOf(false) }
     var checkbox by remember { mutableStateOf(false) }
     var checkboxTrue by remember { mutableStateOf(true) }
     var switch by remember { mutableStateOf(false) }
@@ -96,14 +97,16 @@ fun TextComponent() {
             ) {
                 Image(
                     colorFilter = ColorFilter.tint(MiuixTheme.colorScheme.onBackground),
-                    imageVector = Icons.Default.Person,
+                    imageVector = Icons.Default.Star,
                     contentDescription = "Person",
                 )
             }
         },
-        title = "Person",
-        summary = "An introduction",
-        onClick = {}
+        title = "Title",
+        summary = "Click to show Dialog 1",
+        onClick = {
+            showDialog.value = true
+        }
     )
 
     Row(
@@ -234,9 +237,9 @@ fun TextComponent() {
 
         SuperArrow(
             title = "Dialog",
-            summary = "Click to show a Dialog",
+            summary = "Click to show Dialog 2",
             onClick = {
-                showDialog.value = true
+                showDialog2.value = true
             }
         )
 
@@ -260,16 +263,58 @@ fun TextComponent() {
     }
 
     dialog(showDialog)
+    dialog2(showDialog2)
 }
+
 
 @Composable
 fun dialog(showDialog: MutableState<Boolean>) {
-    val value = remember { mutableStateOf("") }
+    if (!showDialog.value) return
     showDialog(
-        show = showDialog.value,
         content = {
             SuperDialog(
-                title = "Title",
+                title = "Dialog 1",
+                summary = "Summary",
+                show = showDialog,
+                onDismissRequest = {
+                    showDialog.value = false
+                },
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Button(
+                        modifier = Modifier.weight(1f),
+                        text = "Cancel",
+                        onClick = {
+                            dismissDialog()
+                            showDialog.value = false
+                        }
+                    )
+                    Spacer(Modifier.width(20.dp))
+                    Button(
+                        modifier = Modifier.weight(1f),
+                        text = "Confirm",
+                        submit = true,
+                        onClick = {
+                            dismissDialog()
+                            showDialog.value = false
+                        }
+                    )
+                }
+            }
+        }
+    )
+}
+
+@Composable
+fun dialog2(showDialog: MutableState<Boolean>) {
+    if (!showDialog.value) return
+    val value = remember { mutableStateOf("") }
+    showDialog(
+        content = {
+            SuperDialog(
+                title = "Dialog 2",
                 summary = "Summary",
                 show = showDialog,
                 onDismissRequest = {
