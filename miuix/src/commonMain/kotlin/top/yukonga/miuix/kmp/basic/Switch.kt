@@ -23,7 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -85,9 +84,9 @@ fun Switch(
     val disabledBackgroundColor by rememberUpdatedState(
         if (isChecked) MiuixTheme.colorScheme.disabledPrimary else MiuixTheme.colorScheme.disabledSecondary
     )
-    val thumbColor = Color.White
+    val thumbColor by rememberUpdatedState(if (isChecked) MiuixTheme.colorScheme.onPrimary else MiuixTheme.colorScheme.onSecondary)
     val disabledThumbColor by rememberUpdatedState(
-        if (isChecked) MiuixTheme.colorScheme.onDisabledPrimary else MiuixTheme.colorScheme.onDisabledSecondary
+        if (isChecked) MiuixTheme.colorScheme.disabledOnPrimary else MiuixTheme.colorScheme.disabledOnSecondary
     )
     val toggleableModifier = remember(onCheckedChange, isChecked, enabled) {
         if (onCheckedChange != null) {
@@ -150,7 +149,11 @@ fun Switch(
                     onDrag = { change, dragAmount ->
                         if (!enabled) return@detectDragGestures
                         val newOffset = dragOffset + dragAmount.x / 2
-                        dragOffset = if (isChecked) newOffset.coerceIn(-24f, 0f) else newOffset.coerceIn(0f, 24f)
+                        dragOffset =
+                            if (isChecked) newOffset.coerceIn(-24f, 0f) else newOffset.coerceIn(
+                                0f,
+                                24f
+                            )
                         if (isChecked) {
                             if (dragOffset in -23f..-1f) {
                                 hasVibrated = false
@@ -176,7 +179,10 @@ fun Switch(
                 .padding(start = thumbOffset)
                 .align(Alignment.CenterStart)
                 .size(thumbSize)
-                .background(if (enabled) thumbColor else disabledThumbColor, shape = SquircleShape(100.dp))
+                .background(
+                    if (enabled) thumbColor else disabledThumbColor,
+                    shape = SquircleShape(100.dp)
+                )
         )
     }
 }

@@ -31,7 +31,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 @Composable
 fun SuperCheckbox(
     title: String,
-    titleColor: Color = MiuixTheme.colorScheme.onBackground,
+    titleColor: Color = MiuixTheme.colorScheme.onSurface,
     summary: String? = null,
     rightActions: @Composable RowScope.() -> Unit = {},
     checked: Boolean,

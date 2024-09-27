@@ -55,7 +55,7 @@ fun MainPage(
                                 modifier = Modifier.padding(horizontal = 12.dp),
                                 imageVector = MiuixIcons.Search,
                                 colorFilter = BlendModeColorFilter(
-                                    MiuixTheme.colorScheme.onPrimary,
+                                    MiuixTheme.colorScheme.onSurfaceContainer,
                                     BlendMode.SrcIn
                                 ),
                                 contentDescription = "Search"

@@ -185,7 +185,7 @@ fun TextComponent() {
                 Text(
                     modifier = Modifier.padding(end = 6.dp),
                     text = miuixSuperRightCheckbox,
-                    color = MiuixTheme.colorScheme.subTextBase
+                    color = MiuixTheme.colorScheme.onSurfaceVariantActions
                 )
             },
             onCheckedChange = {
@@ -225,7 +225,7 @@ fun TextComponent() {
                     Text(
                         modifier = Modifier.padding(end = 6.dp),
                         text = miuixSuperSwitch,
-                        color = MiuixTheme.colorScheme.subTextBase
+                        color = MiuixTheme.colorScheme.onSurfaceVariantActions
                     )
                 },
                 onCheckedChange = {
@@ -324,7 +324,6 @@ fun dialog2(showDialog: MutableState<Boolean>) {
                 TextField(
                     modifier = Modifier.padding(bottom = 16.dp),
                     value = value.value,
-                    backgroundColor = MiuixTheme.colorScheme.secondary,
                     maxLines = 1,
                     onValueChange = { value.value = it }
                 )

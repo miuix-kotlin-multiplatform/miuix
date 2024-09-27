@@ -163,7 +163,7 @@ fun InputField(
             Box(
                 modifier = Modifier
                     .background(
-                        color = MiuixTheme.colorScheme.searchBarBg,
+                        color = MiuixTheme.colorScheme.surfaceContainerHigh,
                         shape = SquircleShape(50.dp)
                     )
             ) {
@@ -182,7 +182,7 @@ fun InputField(
                     ) {
                         Text(
                             text = if (!(query.isNotEmpty() || expanded)) label else "",
-                            color = MiuixTheme.colorScheme.searchBarSub
+                            color = MiuixTheme.colorScheme.onSurfaceContainerHigh
                         )
 
                         innerTextField()

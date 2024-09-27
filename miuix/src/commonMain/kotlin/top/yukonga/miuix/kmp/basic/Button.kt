@@ -82,7 +82,7 @@ private fun getButtonColor(enabled: Boolean, submit: Boolean): Color {
     return if (enabled) {
         if (submit) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.secondary
     } else {
-        if (submit) MiuixTheme.colorScheme.disabledPrimary else MiuixTheme.colorScheme.disabledSecondary
+        if (submit) MiuixTheme.colorScheme.disabledPrimaryButton else MiuixTheme.colorScheme.disabledSecondaryVariant
     }
 }
 
@@ -91,6 +91,6 @@ private fun getTextColor(enabled: Boolean, submit: Boolean): Color {
     return if (enabled) {
         if (submit) Color.White else MiuixTheme.colorScheme.onBackground
     } else {
-        if (submit) MiuixTheme.colorScheme.onDisabledPrimary else MiuixTheme.colorScheme.onDisabledSecondary
+        if (submit) MiuixTheme.colorScheme.disabledOnPrimaryButton else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     }
 }

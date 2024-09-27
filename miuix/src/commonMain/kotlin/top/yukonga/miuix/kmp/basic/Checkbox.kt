@@ -23,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathMeasure
@@ -59,9 +58,16 @@ fun Checkbox(
     val backgroundColor by animateColorAsState(if (isChecked) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.secondary)
     val disabledBackgroundColor by rememberUpdatedState(if (isChecked) MiuixTheme.colorScheme.disabledPrimary else MiuixTheme.colorScheme.disabledSecondary)
     val checkboxSize by animateDpAsState(if (isPressed) 20.dp else 22.dp)
-    val checkmarkColor by animateColorAsState(if (checked) Color.White else backgroundColor)
-    val rotationAngle by animateFloatAsState(if (checked) 0f else 25f, animationSpec = tween(durationMillis = 200))
-    val pathProgress by animateFloatAsState(if (checked) 1f else 0f, animationSpec = tween(durationMillis = 400))
+    val checkmarkColor by animateColorAsState(if (checked) MiuixTheme.colorScheme.onPrimary else backgroundColor)
+    val disabledCheckmarkColor by animateColorAsState(if (checked) MiuixTheme.colorScheme.disabledOnPrimary else disabledBackgroundColor)
+    val rotationAngle by animateFloatAsState(
+        if (checked) 0f else 25f,
+        animationSpec = tween(durationMillis = 200)
+    )
+    val pathProgress by animateFloatAsState(
+        if (checked) 1f else 0f,
+        animationSpec = tween(durationMillis = 400)
+    )
     val toggleableModifier = remember(onCheckedChange, isChecked, enabled) {
         if (onCheckedChange != null) {
             Modifier.toggleable(
@@ -131,7 +137,7 @@ fun Checkbox(
                 val length = pathMeasure.length
                 val animatedPath = Path()
                 pathMeasure.getSegment(length * (1 - pathProgress), length, animatedPath, true)
-                drawPath(animatedPath, checkmarkColor)
+                drawPath(animatedPath, if (enabled) checkmarkColor else disabledCheckmarkColor)
             }
         }
     }
