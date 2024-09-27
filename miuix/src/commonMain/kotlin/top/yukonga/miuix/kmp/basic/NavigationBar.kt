@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.captionBar
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
@@ -31,7 +32,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -76,7 +79,7 @@ fun NavigationBar(
                 .background(Color.Transparent)
         ) {
             HorizontalDivider(
-                thickness = 0.25.dp,
+                thickness = 0.75.dp,
                 color = MiuixTheme.colorScheme.dividerLine
             )
             Row(
@@ -100,10 +103,12 @@ fun NavigationBar(
                             else -> MiuixTheme.colorScheme.onSurfaceContainerVariant
                         }
                     )
+                    val fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .weight(1f / items.size)
+                            .height(NavigationBarHeight)
                             .pointerInput(Unit) {
                                 detectTapGestures(
                                     onPress = {
@@ -122,11 +127,12 @@ fun NavigationBar(
                             colorFilter = ColorFilter.tint(tint)
                         )
                         Text(
-                            modifier = Modifier.padding(bottom = 14.dp),
+                            modifier = Modifier.padding(bottom = 12.dp),
                             text = item.label,
                             color = tint,
                             textAlign = TextAlign.Center,
-                            fontSize = 13.sp,
+                            fontSize = 12.sp,
+                            fontWeight = fontWeight
                         )
                     }
                 }
@@ -134,6 +140,10 @@ fun NavigationBar(
         }
     }
 }
+
+/** The default expanded height of a [NavigationBar]. */
+val NavigationBarHeight: Dp = 64.dp
+
 
 /**
  * The data class for [NavigationBar].
