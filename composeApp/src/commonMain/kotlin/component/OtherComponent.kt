@@ -16,7 +16,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -34,7 +33,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 @Composable
 fun OtherComponent(padding: PaddingValues) {
 
-    var buttonText by remember { mutableStateOf("Button") }
+    var buttonText by remember { mutableStateOf("Cancel") }
     var submitButtonText by remember { mutableStateOf("Submit") }
     var clickCount by remember { mutableStateOf(0) }
     var submitClickCount by remember { mutableStateOf(0) }
@@ -79,7 +78,7 @@ fun OtherComponent(padding: PaddingValues) {
         Button(
             modifier = Modifier.weight(1f),
             text = "Disabled",
-            submit = true,
+            submit = false,
             enabled = false,
             onClick = {}
         )
@@ -87,7 +86,7 @@ fun OtherComponent(padding: PaddingValues) {
         Button(
             modifier = Modifier.weight(1f),
             text = "Disabled",
-            submit = false,
+            submit = true,
             enabled = false,
             onClick = {}
         )
@@ -104,7 +103,7 @@ fun OtherComponent(padding: PaddingValues) {
     TextField(
         value = text2,
         onValueChange = { text2 = it },
-        backgroundColor = MiuixTheme.colorScheme.primaryContainer,
+        backgroundColor = MiuixTheme.colorScheme.secondaryContainer,
         label = "Text Field",
         modifier = Modifier.padding(horizontal = 12.dp),
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
@@ -128,9 +127,21 @@ fun OtherComponent(padding: PaddingValues) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp, vertical = 12.dp),
+        color = MiuixTheme.colorScheme.primaryVariant,
         insideMargin = DpSize(16.dp, 16.dp)
     ) {
-        CardView()
+        Text(
+            color = MiuixTheme.colorScheme.onPrimary,
+            text = "Card 123456789",
+            fontSize = 19.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            color = MiuixTheme.colorScheme.onPrimaryVariant,
+            text = "一二三四五六七八九",
+            fontSize = 15.sp,
+            fontWeight = FontWeight.Normal
+        )
     }
 
     Card(
@@ -138,37 +149,31 @@ fun OtherComponent(padding: PaddingValues) {
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
             .padding(bottom = 12.dp + padding.calculateBottomPadding()),
-        color = MiuixTheme.colorScheme.primary,
         insideMargin = DpSize(16.dp, 16.dp)
     ) {
-        CardView(color = Color.White)
+        val color = MiuixTheme.colorScheme.onSurface
+        Text(
+            color = color,
+            text = "Card",
+            style = MiuixTheme.textStyles.paragraph,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 16.sp
+        )
+        Spacer(Modifier.height(6.dp))
+        Text(
+            color = color,
+            text = "123456789",
+            style = MiuixTheme.textStyles.paragraph
+        )
+        Text(
+            color = color,
+            text = "一二三四五六七八九",
+            style = MiuixTheme.textStyles.paragraph
+        )
+        Text(
+            color = color,
+            text = "!@#$%^&*()_+-=",
+            style = MiuixTheme.textStyles.paragraph
+        )
     }
-
-}
-
-@Composable
-fun CardView(color: Color = MiuixTheme.colorScheme.onBackground) {
-    Text(
-        color = color,
-        text = "Card",
-        style = MiuixTheme.textStyles.paragraph,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 16.sp
-    )
-    Spacer(Modifier.height(6.dp))
-    Text(
-        color = color,
-        text = "123456789",
-        style = MiuixTheme.textStyles.paragraph
-    )
-    Text(
-        color = color,
-        text = "一二三四五六七八九",
-        style = MiuixTheme.textStyles.paragraph
-    )
-    Text(
-        color = color,
-        text = "!@#$%^&*()_+-=",
-        style = MiuixTheme.textStyles.paragraph
-    )
 }

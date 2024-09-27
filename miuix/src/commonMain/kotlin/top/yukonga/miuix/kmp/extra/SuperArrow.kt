@@ -36,7 +36,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 fun SuperArrow(
     modifier: Modifier = Modifier,
     title: String,
-    titleColor: Color = MiuixTheme.colorScheme.onBackground,
+    titleColor: Color = MiuixTheme.colorScheme.onSurface,
     summary: String? = null,
     leftAction: @Composable (() -> Unit)? = null,
     rightText: String? = null,
@@ -67,7 +67,7 @@ private fun createRightActions(rightText: String?) {
         Text(
             text = rightText,
             fontSize = 15.sp,
-            color = MiuixTheme.colorScheme.subTextBase,
+            color = MiuixTheme.colorScheme.onSurfaceVariantActions,
             textAlign = TextAlign.End,
         )
     }
@@ -77,6 +77,6 @@ private fun createRightActions(rightText: String?) {
             .padding(start = 6.dp),
         imageVector = MiuixIcons.ArrowRight,
         contentDescription = null,
-        colorFilter = BlendModeColorFilter(MiuixTheme.colorScheme.subTextBase, BlendMode.SrcIn),
+        colorFilter = BlendModeColorFilter(MiuixTheme.colorScheme.onSurfaceVariantActions, BlendMode.SrcIn),
     )
 }

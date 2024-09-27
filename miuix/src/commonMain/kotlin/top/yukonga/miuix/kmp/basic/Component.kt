@@ -40,8 +40,9 @@ fun BasicComponent(
     modifier: Modifier = Modifier,
     insideMargin: DpSize? = null,
     title: String? = null,
-    titleColor: Color = MiuixTheme.colorScheme.onBackground,
+    titleColor: Color = MiuixTheme.colorScheme.onSurface,
     summary: String? = null,
+    summaryColor: Color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
     leftAction: @Composable (() -> Unit?)? = null,
     rightActions: @Composable RowScope.() -> Unit = {},
     onClick: (() -> Unit)? = null,
@@ -93,7 +94,7 @@ fun BasicComponent(
                 Text(
                     text = it,
                     fontSize = MiuixTheme.textStyles.title.fontSize,
-                    color = MiuixTheme.colorScheme.subTextBase
+                    color = summaryColor
                 )
             }
         }

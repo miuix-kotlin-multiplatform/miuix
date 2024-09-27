@@ -86,7 +86,7 @@ expect fun modifierPlatform(modifier: Modifier, isHovered: MutableState<Boolean>
 @Composable
 fun SuperDropdown(
     title: String,
-    titleColor: Color = MiuixTheme.colorScheme.onBackground,
+    titleColor: Color = MiuixTheme.colorScheme.onSurface,
     summary: String? = null,
     modifier: Modifier = Modifier,
     items: List<String>,
@@ -166,7 +166,7 @@ fun SuperDropdown(
                 modifier = Modifier.padding(end = 6.dp),
                 text = items[selectedIndex],
                 fontSize = 15.sp,
-                color = MiuixTheme.colorScheme.subTextBase,
+                color = MiuixTheme.colorScheme.onSurfaceVariantActions,
                 textAlign = TextAlign.End,
             )
             Image(
@@ -175,7 +175,7 @@ fun SuperDropdown(
                     .align(Alignment.CenterVertically),
                 imageVector = MiuixIcons.ArrowUpDown,
                 colorFilter = BlendModeColorFilter(
-                    MiuixTheme.colorScheme.subTextBase,
+                    MiuixTheme.colorScheme.onSurfaceVariantActions,
                     BlendMode.SrcIn
                 ),
                 contentDescription = null
@@ -227,7 +227,7 @@ fun SuperDropdown(
                                 clip = false
                             )
                             .clip(SquircleShape(18.dp))
-                            .background(MiuixTheme.colorScheme.dropdownBackground)
+                            .background(MiuixTheme.colorScheme.surface)
                     ) {
                         item {
                             items.forEachIndexed { index, option ->
@@ -272,19 +272,19 @@ fun DropdownImpl(
     val additionalTopPadding = if (index == 0) 24.dp else 14.dp
     val additionalBottomPadding = if (index == options.size - 1) 24.dp else 14.dp
     val textColor = if (isSelected) {
-        MiuixTheme.colorScheme.primary
+        MiuixTheme.colorScheme.onTertiaryContainer
     } else {
-        MiuixTheme.colorScheme.onBackground
+        MiuixTheme.colorScheme.onSurface
     }
     val selectColor = if (isSelected) {
-        MiuixTheme.colorScheme.primary
+        MiuixTheme.colorScheme.onTertiaryContainer
     } else {
         Color.Transparent
     }
     val backgroundColor = if (isSelected) {
-        MiuixTheme.colorScheme.dropdownSelect
+        MiuixTheme.colorScheme.tertiaryContainer
     } else {
-        MiuixTheme.colorScheme.dropdownBackground
+        MiuixTheme.colorScheme.surface
     }
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -308,7 +308,7 @@ fun DropdownImpl(
             color = textColor,
         )
         Image(
-            modifier = Modifier.padding(start = 50.dp).size(16.dp),
+            modifier = Modifier.padding(start = 50.dp).size(20.dp),
             imageVector = MiuixIcons.Check,
             colorFilter = BlendModeColorFilter(selectColor, BlendMode.SrcIn),
             contentDescription = null,

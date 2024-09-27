@@ -47,8 +47,9 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 @Composable
 fun SuperDialog(
     title: String? = null,
-    titleColor: Color = MiuixTheme.colorScheme.onBackground,
+    titleColor: Color = MiuixTheme.colorScheme.onSurface,
     summary: String? = null,
+    summaryColor: Color = MiuixTheme.colorScheme.onSurfaceVariantDialog,
     show: MutableState<Boolean>,
     onDismissRequest: () -> Unit,
     insideMargin: DpSize? = null,
@@ -94,7 +95,7 @@ fun SuperDialog(
                     clip = false
                 )
                 .background(
-                    color = MiuixTheme.colorScheme.dropdownBackground,
+                    color = MiuixTheme.colorScheme.surfaceVariant,
                     shape = SquircleShape(bottomCornerRadius)
                 )
                 .padding(24.dp),
@@ -113,7 +114,8 @@ fun SuperDialog(
                 Text(
                     modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
                     text = it,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = summaryColor
                 )
             }
             content()

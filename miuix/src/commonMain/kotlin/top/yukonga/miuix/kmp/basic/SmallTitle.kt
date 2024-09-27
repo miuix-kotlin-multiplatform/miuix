@@ -31,6 +31,6 @@ fun SmallTitle(
         text = text,
         fontSize = 14.sp,
         fontWeight = FontWeight.Medium,
-        color = MiuixTheme.colorScheme.smallTitle
+        color = MiuixTheme.colorScheme.onBackgroundVariant
     )
 }

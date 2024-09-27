@@ -30,7 +30,7 @@ fun Card(
     modifier: Modifier = Modifier,
     insideMargin: DpSize = DpSize(0.dp, 0.dp),
     cornerRadius: Dp = 18.dp,
-    color: Color = MiuixTheme.colorScheme.primaryContainer,
+    color: Color = MiuixTheme.colorScheme.surface,
     content: @Composable ColumnScope.() -> Unit
 ) {
     val shape = remember { SquircleShape(cornerRadius) }

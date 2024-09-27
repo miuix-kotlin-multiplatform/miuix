@@ -51,7 +51,7 @@ fun NavigationBar(
     items: List<NavigationItem>,
     selected: Int,
     modifier: Modifier = Modifier,
-    color: Color = MiuixTheme.colorScheme.background,
+    color: Color = MiuixTheme.colorScheme.surfaceContainer,
     onClick: (Int) -> Unit,
     defaultWindowInsetsPadding: Boolean = true
 ) {
@@ -77,7 +77,7 @@ fun NavigationBar(
         ) {
             HorizontalDivider(
                 thickness = 0.25.dp,
-                color = MiuixTheme.colorScheme.subTextBase
+                color = MiuixTheme.colorScheme.dividerLine
             )
             Row(
                 modifier = Modifier
@@ -91,13 +91,13 @@ fun NavigationBar(
                     val tint by animateColorAsState(
                         targetValue = when {
                             isPressed -> if (isSelected) {
-                                MiuixTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                                MiuixTheme.colorScheme.onSurfaceContainer.copy(alpha = 0.6f)
                             } else {
-                                MiuixTheme.colorScheme.subTextBase.copy(alpha = 0.7f)
+                                MiuixTheme.colorScheme.onSurfaceContainerVariant.copy(alpha = 0.6f)
                             }
 
-                            isSelected -> MiuixTheme.colorScheme.onBackground
-                            else -> MiuixTheme.colorScheme.subTextBase
+                            isSelected -> MiuixTheme.colorScheme.onSurfaceContainer
+                            else -> MiuixTheme.colorScheme.onSurfaceContainerVariant
                         }
                     )
                     Column(
