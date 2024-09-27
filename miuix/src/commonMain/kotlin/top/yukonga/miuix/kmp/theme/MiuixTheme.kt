@@ -22,11 +22,11 @@ fun MiuixTheme(
     textStyles: MiuixTextStyles = MiuixTheme.textStyles,
     content: @Composable () -> Unit
 ) {
-    val miuixTextStyles = remember(colorScheme.onPrimary) {
+    val miuixTextStyles = remember(colorScheme.onBackground) {
         miuixTextStyles(
-            main = textStyles.main.copy(color = colorScheme.onPrimary),
-            title = textStyles.title.copy(color = colorScheme.onPrimary),
-            paragraph = textStyles.paragraph.copy(color = colorScheme.onPrimary)
+            main = textStyles.main.copy(color = colorScheme.onBackground),
+            title = textStyles.title.copy(color = colorScheme.onBackground),
+            paragraph = textStyles.paragraph.copy(color = colorScheme.onBackground)
         )
     }
     CompositionLocalProvider(

@@ -79,7 +79,7 @@ fun Text(
     onTextLayout: ((TextLayoutResult) -> Unit)? = null,
     style: TextStyle = MiuixTheme.textStyles.main
 ) {
-    val textColor by rememberUpdatedState(if (color.isSpecified) color else if (style.color.isSpecified) style.color else MiuixTheme.colorScheme.primary)
+    val textColor by rememberUpdatedState(if (color.isSpecified) color else if (style.color.isSpecified) style.color else MiuixTheme.colorScheme.onBackground)
 
     BasicText(
         text,
@@ -162,7 +162,7 @@ fun Text(
     onTextLayout: (TextLayoutResult) -> Unit = {},
     style: TextStyle = MiuixTheme.textStyles.main
 ) {
-    val textColor by rememberUpdatedState(if (color.isSpecified) color else if (style.color.isSpecified) style.color else MiuixTheme.colorScheme.primary)
+    val textColor by rememberUpdatedState(if (color.isSpecified) color else if (style.color.isSpecified) style.color else MiuixTheme.colorScheme.onBackground)
 
     BasicText(
         text = text,
