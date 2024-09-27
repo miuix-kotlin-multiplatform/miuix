@@ -1,46 +1,11 @@
-name: Java CI with Gradle
+name: Build example app
 
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-  workflow_call:
-
-permissions:
-  contents: read
 
 jobs:
   build:
-    strategy:
-      matrix:
-        include:
-          - target: iosSimulatorArm64Test
-            os: macos-latest
-          - target: desktopTest
-            os: ubuntu-latest
-          - target: assembleAndroidTest
-            os: ubuntu-latest
-          - target: testDebugUnitTest
-            os: ubuntu-latest
-          - target: testReleaseUnitTest
-            os: ubuntu-latest
-    runs-on: ${{ matrix.os }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-      - name: Build with Gradle
-        uses: gradle/actions/setup-gradle@v4
-      - name: Run the Test
-        run: ./gradlew ${{ matrix.target }}
-
-  simple:
     runs-on: ubuntu-latest
 
     steps:
