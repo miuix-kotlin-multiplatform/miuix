@@ -540,7 +540,7 @@ private fun TopAppBarLayout(
                     text = largeTitle,
                     maxLines = 1,
                     fontSize = 32.sp,
-                    fontWeight = FontWeight.Normal
+                    fontWeight = FontWeight.Light
                 )
             }
         },
