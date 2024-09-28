@@ -67,7 +67,9 @@ import top.yukonga.miuix.kmp.utils.getWindowSize
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import kotlin.math.roundToInt
 
-/**Returns modifier to be used for the current platform */
+/**
+ * Returns modifier to be used for the current platform.
+ */
 expect fun modifierPlatform(modifier: Modifier, isHovered: MutableState<Boolean>): Modifier
 
 /**

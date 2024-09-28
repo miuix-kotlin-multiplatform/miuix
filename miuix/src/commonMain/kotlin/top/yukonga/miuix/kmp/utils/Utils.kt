@@ -13,7 +13,9 @@ enum class Platform {
     WasmJs
 }
 
-/** Returns the current platform name */
+/**
+ * Returns the current platform name.
+ */
 expect fun platform(): Platform
 
 /**
@@ -21,7 +23,9 @@ expect fun platform(): Platform
  */
 data class WindowSize(val width: Int, val height: Int)
 
-/** Returns the current window size */
+/**
+ * Returns the current window size.
+ */
 @Composable
 expect fun getWindowSize(): WindowSize
 

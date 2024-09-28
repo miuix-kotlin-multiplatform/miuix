@@ -13,7 +13,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import top.yukonga.miuix.kmp.basic.Text
 
-// This is a simple FPS monitor that displays the current frames per second.
+/**
+ * A simple FPS monitor that displays the current frames per second.
+ */
 @Composable
 fun FPSMonitor(modifier: Modifier = Modifier) {
     var fps by remember { mutableStateOf(0) }

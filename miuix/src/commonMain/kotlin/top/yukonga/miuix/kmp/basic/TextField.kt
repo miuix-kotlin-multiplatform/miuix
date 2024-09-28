@@ -38,7 +38,7 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
  *
  * @param value The input [TextFieldValue] to be shown in the text field.
  * @param onValueChange The callback that is triggered when the input service updates values in
- *  *   [TextFieldValue]. An updated [TextFieldValue] comes as a parameter of the callback.
+ *   [TextFieldValue]. An updated [TextFieldValue] comes as a parameter of the callback.
  * @param modifier The modifier to be applied to the [TextField].
  * @param insideMargin The margin inside the [TextField].
  * @param backgroundColor The background color of the [TextField].
