@@ -235,6 +235,7 @@ fun SuperDropdown(
                                     options = items,
                                     isSelected = items[selectedIndex] == option,
                                     onSelectedIndexChange = {
+                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                         onSelectedIndexChange(it)
                                         dismissPopup()
                                         isDropdownExpanded.value = false

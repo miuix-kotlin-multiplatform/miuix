@@ -57,7 +57,7 @@ fun Checkbox(
     var isPressed by remember { mutableStateOf(false) }
     val backgroundColor by animateColorAsState(if (isChecked) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.secondary)
     val disabledBackgroundColor by rememberUpdatedState(if (isChecked) MiuixTheme.colorScheme.disabledPrimary else MiuixTheme.colorScheme.disabledSecondary)
-    val checkboxSize by animateDpAsState(if (isPressed) 20.dp else 22.dp)
+    val checkboxSize by animateDpAsState(if (!enabled) 22.dp else if (isPressed) 20.dp else 22.dp)
     val checkmarkColor by animateColorAsState(if (checked) MiuixTheme.colorScheme.onPrimary else backgroundColor)
     val disabledCheckmarkColor by animateColorAsState(if (checked) MiuixTheme.colorScheme.disabledOnPrimary else disabledBackgroundColor)
     val rotationAngle by animateFloatAsState(

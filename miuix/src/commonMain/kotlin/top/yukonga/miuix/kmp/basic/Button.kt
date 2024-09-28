@@ -80,7 +80,7 @@ fun Button(
 @Composable
 private fun getButtonColor(enabled: Boolean, submit: Boolean): Color {
     return if (enabled) {
-        if (submit) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.secondary
+        if (submit) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.secondaryVariant
     } else {
         if (submit) MiuixTheme.colorScheme.disabledPrimaryButton else MiuixTheme.colorScheme.disabledSecondaryVariant
     }
@@ -89,7 +89,7 @@ private fun getButtonColor(enabled: Boolean, submit: Boolean): Color {
 @Composable
 private fun getTextColor(enabled: Boolean, submit: Boolean): Color {
     return if (enabled) {
-        if (submit) Color.White else MiuixTheme.colorScheme.onBackground
+        if (submit) MiuixTheme.colorScheme.onPrimary else MiuixTheme.colorScheme.onSecondaryVariant
     } else {
         if (submit) MiuixTheme.colorScheme.disabledOnPrimaryButton else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     }

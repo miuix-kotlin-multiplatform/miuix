@@ -540,13 +540,13 @@ private fun TopAppBarLayout(
                     text = largeTitle,
                     maxLines = 1,
                     fontSize = 32.sp,
-                    fontWeight = FontWeight.Light
+                    fontWeight = FontWeight.Normal
                 )
             }
         },
         modifier = Modifier
             .windowInsetsPadding(WindowInsets.statusBars)
-            .heightIn(max = 60.dp + TopAppBarExpandedHeight)
+            .heightIn(max = 56.dp + TopAppBarExpandedHeight)
             .clipToBounds()
     ) { measurables, constraints ->
         val navigationIconPlaceable =

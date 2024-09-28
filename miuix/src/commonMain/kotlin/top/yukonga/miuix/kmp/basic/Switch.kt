@@ -65,15 +65,15 @@ fun Switch(
     var dragOffset by remember { mutableStateOf(0f) }
     val thumbOffset by animateDpAsState(
         targetValue = if (isChecked) {
-            if (isPressed) 26.5.dp else 28.dp
+            if (!enabled) 28.dp else if (isPressed) 26.5.dp else 28.dp
         } else {
-            if (isPressed) 2.5.dp else 4.dp
+            if (!enabled) 4.dp else if (isPressed) 2.5.dp else 4.dp
         } + dragOffset.dp,
         animationSpec = springSpec
     )
 
     val thumbSize by animateDpAsState(
-        targetValue = if (isPressed) 23.dp else 20.dp,
+        targetValue = if (!enabled) 20.dp else if (isPressed) 23.dp else 20.dp,
         animationSpec = springSpec
     )
 
