@@ -26,10 +26,6 @@ fun ThirdPage(
     onShowFloatingActionButtonChange: (Boolean) -> Unit,
     enablePageUserScroll: Boolean,
     onEnablePageUserScrollChange: (Boolean) -> Unit,
-    enableTopBarBlur: Boolean,
-    onEnableTopBarBlurChange: (Boolean) -> Unit,
-    enableBottomBarBlur: Boolean,
-    onEnableBottomBarBlurChange: (Boolean) -> Unit,
     colorMode: MutableState<Int>
 ) {
     LazyColumn(
@@ -63,16 +59,6 @@ fun ThirdPage(
                 checked = enablePageUserScroll,
                 onCheckedChange = onEnablePageUserScrollChange,
                 enabled = platform() != Platform.WasmJs,
-            )
-            SuperSwitch(
-                title = "Enable Top Bar Blur",
-                checked = enableTopBarBlur,
-                onCheckedChange = onEnableTopBarBlurChange
-            )
-            SuperSwitch(
-                title = "Enable Bottom Bar Blur",
-                checked = enableBottomBarBlur,
-                onCheckedChange = onEnableBottomBarBlurChange
             )
             SuperDropdown(
                 title = "Color Mode",

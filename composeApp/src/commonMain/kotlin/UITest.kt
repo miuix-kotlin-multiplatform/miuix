@@ -45,7 +45,6 @@ import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.GitHub
-import top.yukonga.miuix.kmp.theme.MiuixTheme
 import utils.FPSMonitor
 
 @OptIn(FlowPreview::class)
@@ -88,15 +87,11 @@ fun UITest(
     val showBottomBar = remember { mutableStateOf(true) }
     val showFloatingActionButton = remember { mutableStateOf(true) }
     val enablePageUserScroll = remember { mutableStateOf(false) }
-    val enableTopBarBlur = remember { mutableStateOf(true) }
-    val enableBottomBarBlur = remember { mutableStateOf(true) }
 
     val uriHandler = LocalUriHandler.current
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        enableTopBarBlur = enableTopBarBlur.value,
-        enableBottomBarBlur = enableBottomBarBlur.value,
         topBar = {
             AnimatedVisibility(
                 visible = showTopAppBar.value,
@@ -104,7 +99,6 @@ fun UITest(
                 exit = fadeOut() + shrinkVertically()
             ) {
                 TopAppBar(
-                    color = if (enableTopBarBlur.value) Color.Transparent else MiuixTheme.colorScheme.background,
                     title = "Miuix",
                     scrollBehavior = currentScrollBehavior
                 )
@@ -117,7 +111,6 @@ fun UITest(
                 exit = fadeOut() + shrinkVertically()
             ) {
                 NavigationBar(
-                    color = if (enableBottomBarBlur.value) Color.Transparent else MiuixTheme.colorScheme.background,
                     items = items,
                     selected = targetPage,
                     onClick = { index ->
@@ -164,10 +157,6 @@ fun UITest(
             onShowFloatingActionButtonChange = { showFloatingActionButton.value = it },
             enablePageUserScroll = enablePageUserScroll.value,
             onEnablePageUserScrollChange = { enablePageUserScroll.value = it },
-            enableTopBarBlur = enableTopBarBlur.value,
-            onEnableTopBarBlurChange = { enableTopBarBlur.value = it },
-            enableBottomBarBlur = enableBottomBarBlur.value,
-            onEnableBottomBarBlurChange = { enableBottomBarBlur.value = it },
             colorMode = colorMode,
         )
     }
@@ -201,10 +190,6 @@ fun AppHorizontalPager(
     onShowFloatingActionButtonChange: (Boolean) -> Unit,
     enablePageUserScroll: Boolean,
     onEnablePageUserScrollChange: (Boolean) -> Unit,
-    enableTopBarBlur: Boolean,
-    onEnableTopBarBlurChange: (Boolean) -> Unit,
-    enableBottomBarBlur: Boolean,
-    onEnableBottomBarBlurChange: (Boolean) -> Unit,
     colorMode: MutableState<Int>
 ) {
     HorizontalPager(
@@ -236,10 +221,6 @@ fun AppHorizontalPager(
                     onShowFloatingActionButtonChange = onShowFloatingActionButtonChange,
                     enablePageUserScroll = enablePageUserScroll,
                     onEnablePageUserScrollChange = onEnablePageUserScrollChange,
-                    enableTopBarBlur = enableTopBarBlur,
-                    onEnableTopBarBlurChange = onEnableTopBarBlurChange,
-                    enableBottomBarBlur = enableBottomBarBlur,
-                    onEnableBottomBarBlurChange = onEnableBottomBarBlurChange,
                     colorMode = colorMode
                 )
             }

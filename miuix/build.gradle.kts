@@ -22,6 +22,8 @@ kotlin {
     iosX64()
     iosArm64()
     iosSimulatorArm64()
+    macosArm64()
+    macosX64()
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
@@ -42,7 +44,6 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation(libs.haze)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

@@ -37,6 +37,19 @@ kotlin {
         }
     }
 
+    listOf(
+        macosX64(),
+        macosArm64()
+    ).forEach { macosTarget ->
+        macosTarget.binaries.executable {
+            baseName = appName
+            entryPoint = "main"
+            freeCompilerArgs += listOf(
+                "-linker-option", "-framework", "-linker-option", "Metal"
+            )
+        }
+    }
+
     jvm("desktop")
 
     @OptIn(ExperimentalWasmDsl::class)

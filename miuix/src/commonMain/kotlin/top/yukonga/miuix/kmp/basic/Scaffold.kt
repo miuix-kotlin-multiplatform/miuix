@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
@@ -29,11 +28,6 @@ import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMapNotNull
 import androidx.compose.ui.util.fastMaxBy
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.haze
-import dev.chrisbanes.haze.hazeChild
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.MiuixPopupHost
@@ -58,9 +52,6 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.MiuixPopupHost
  * @param snackbarHost component to host [Snackbar]s that are pushed to be shown via
  *   [SnackbarHostState.showSnackbar], typically a [SnackbarHost].
  * @param enableTopBarBlur whether to enable blur effect on the [TopAppBar].
- * @param alpha the alpha value of the blur effect. Default is 0.75f.
- * @param blurRadius the radius of the blur effect. Default is 25.dp.
- * @param noiseFactor the noise factor of the blur effect. Default is 0f.
  * @param containerColor the color used for the background of this scaffold. Use [Color.Transparent]
  *   to have no color.
  * @param contentWindowInsets window insets to be passed to [content] slot via [PaddingValues]
@@ -83,23 +74,11 @@ fun Scaffold(
     snackbarHost: @Composable () -> Unit = {},
     enableTopBarBlur: Boolean = true,
     enableBottomBarBlur: Boolean = true,
-    alpha: Float = 0.75f,
-    blurRadius: Dp = 25.dp,
-    noiseFactor: Float = 0f,
     containerColor: Color = MiuixTheme.colorScheme.background,
     contentWindowInsets: WindowInsets = WindowInsets.statusBars,
     content: @Composable (PaddingValues) -> Unit
 ) {
     val safeInsets = remember(contentWindowInsets) { MutableWindowInsets(contentWindowInsets) }
-    val hazeState = remember { HazeState() }
-    val hazeStyle = remember(containerColor, alpha, blurRadius, noiseFactor) {
-        HazeStyle(
-            backgroundColor = containerColor,
-            tint = HazeTint.Color(containerColor.copy(alpha)),
-            blurRadius = blurRadius,
-            noiseFactor = noiseFactor
-        )
-    }
 
     Surface(
         modifier = modifier.onConsumedWindowInsetsChanged { consumedWindowInsets ->
@@ -111,41 +90,16 @@ fun Scaffold(
         ScaffoldLayout(
             topBar = {
                 if (enableTopBarBlur) {
-                    Box(
-                        Modifier.hazeChild(
-                            state = hazeState,
-                            style = hazeStyle
-                        )
-                    ) {
-                        topBar()
-                    }
-                } else {
                     topBar()
                 }
             },
             bottomBar = {
                 if (enableBottomBarBlur) {
-                    Box(
-                        Modifier.hazeChild(
-                            state = hazeState,
-                            style = hazeStyle
-                        )
-                    ) {
-                        bottomBar()
-                    }
-                } else {
                     bottomBar()
                 }
             },
             content = {
-                Box(
-                    Modifier.haze(
-                        state = hazeState,
-                        style = hazeStyle
-                    )
-                ) {
-                    content(it)
-                }
+                content(it)
             },
             snackbar = snackbarHost,
             fab = floatingActionButton,
