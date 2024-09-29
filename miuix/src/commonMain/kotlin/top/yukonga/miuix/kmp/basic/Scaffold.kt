@@ -51,7 +51,6 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.MiuixPopupHost
  * @param floatingActionButtonPosition position of the floating action button.
  * @param snackbarHost component to host [Snackbar]s that are pushed to be shown via
  *   [SnackbarHostState.showSnackbar], typically a [SnackbarHost].
- * @param enableTopBarBlur whether to enable blur effect on the [TopAppBar].
  * @param containerColor the color used for the background of this scaffold. Use [Color.Transparent]
  *   to have no color.
  * @param contentWindowInsets window insets to be passed to [content] slot via [PaddingValues]
@@ -72,8 +71,6 @@ fun Scaffold(
     floatingActionButton: @Composable () -> Unit = {},
     floatingActionButtonPosition: MiuixFabPosition = MiuixFabPosition.End,
     snackbarHost: @Composable () -> Unit = {},
-    enableTopBarBlur: Boolean = true,
-    enableBottomBarBlur: Boolean = true,
     containerColor: Color = MiuixTheme.colorScheme.background,
     contentWindowInsets: WindowInsets = WindowInsets.statusBars,
     content: @Composable (PaddingValues) -> Unit
@@ -89,14 +86,10 @@ fun Scaffold(
     ) {
         ScaffoldLayout(
             topBar = {
-                if (enableTopBarBlur) {
-                    topBar()
-                }
+                topBar()
             },
             bottomBar = {
-                if (enableBottomBarBlur) {
-                    bottomBar()
-                }
+                bottomBar()
             },
             content = {
                 content(it)
