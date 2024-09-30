@@ -39,6 +39,7 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
  * @param title The title of the [SuperDialog].
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperDialog].
+ * @param summaryColor The color of the summary.
  * @param show The state of the [SuperDialog].
  * @param onDismissRequest The callback when the [SuperDialog] is dismissed.
  * @param insideMargin The margin inside the [SuperDialog].

@@ -28,6 +28,7 @@ import top.yukonga.miuix.kmp.utils.createRipple
  * @param title The title of the [BasicComponent].
  * @param titleColor The color of the title.
  * @param summary The summary of the [BasicComponent].
+ * @param summaryColor The color of the summary.
  * @param leftAction The [Composable] content that on the left side of the [BasicComponent].
  * @param rightActions The [Composable] content on the right side of the [BasicComponent].
  * @param onClick The callback when the [BasicComponent] is clicked.

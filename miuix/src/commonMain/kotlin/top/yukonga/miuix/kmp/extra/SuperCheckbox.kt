@@ -21,6 +21,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  * @param title The title of the [SuperCheckbox].
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperCheckbox].
+ * @param summaryColor The color of the summary.
  * @param rightActions The [Composable] content that on the right side of the [SuperCheckbox].
  * @param checked The checked state of the [SuperCheckbox].
  * @param onCheckedChange The callback when the checked state of the [SuperCheckbox] is changed.
@@ -33,6 +34,7 @@ fun SuperCheckbox(
     title: String,
     titleColor: Color = MiuixTheme.colorScheme.onSurface,
     summary: String? = null,
+    summaryColor: Color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
     rightActions: @Composable RowScope.() -> Unit = {},
     checked: Boolean,
     checkboxLocation: CheckboxLocation = CheckboxLocation.Left,
@@ -54,6 +56,7 @@ fun SuperCheckbox(
         title = title,
         titleColor = titleColor,
         summary = summary,
+        summaryColor = summaryColor,
         leftAction = if (checkboxLocation == CheckboxLocation.Left) {
             {
                 Checkbox(

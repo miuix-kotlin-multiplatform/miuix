@@ -21,6 +21,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  * @param title The title of the [SuperSwitch].
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperSwitch].
+ * @param summaryColor The color of the summary.
  * @param leftAction The [Composable] content that on the left side of the [SuperSwitch].
  * @param rightActions The [Composable] content on the right side of the [SuperSwitch].
  * @param checked The checked state of the [SuperSwitch].
@@ -34,6 +35,7 @@ fun SuperSwitch(
     title: String,
     titleColor: Color = MiuixTheme.colorScheme.onSurface,
     summary: String? = null,
+    summaryColor: Color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
     leftAction: @Composable (() -> Unit)? = null,
     rightActions: @Composable RowScope.() -> Unit = {},
     checked: Boolean,
@@ -55,6 +57,7 @@ fun SuperSwitch(
         title = title,
         titleColor = titleColor,
         summary = summary,
+        summaryColor = summaryColor,
         leftAction = leftAction,
         rightActions = {
             rightActions()

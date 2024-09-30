@@ -27,6 +27,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  * @param title The title of the [SuperArrow].
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperArrow].
+ * @param summaryColor The color of the summary.
  * @param leftAction The [Composable] content that on the left side of the [SuperArrow].
  * @param rightText The text on the right side of the [SuperArrow].
  * @param onClick The callback when the [SuperArrow] is clicked.
@@ -38,6 +39,7 @@ fun SuperArrow(
     title: String,
     titleColor: Color = MiuixTheme.colorScheme.onSurface,
     summary: String? = null,
+    summaryColor: Color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
     leftAction: @Composable (() -> Unit)? = null,
     rightText: String? = null,
     onClick: (() -> Unit)? = null,
@@ -50,6 +52,7 @@ fun SuperArrow(
         title = title,
         titleColor = titleColor,
         summary = summary,
+        summaryColor = summaryColor,
         leftAction = leftAction,
         rightActions = { createRightActions(rightText) },
         onClick = updatedOnClick

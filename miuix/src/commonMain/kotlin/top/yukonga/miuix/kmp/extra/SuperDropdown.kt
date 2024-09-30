@@ -78,6 +78,7 @@ expect fun modifierPlatform(modifier: Modifier, isHovered: MutableState<Boolean>
  * @param title The title of the [SuperDropdown].
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperDropdown].
+ * @param summaryColor The color of the summary.
  * @param modifier The modifier to be applied to the [SuperDropdown].
  * @param items The options of the [SuperDropdown].
  * @param alwaysRight Whether the popup is always show on the right side.
@@ -90,6 +91,7 @@ fun SuperDropdown(
     title: String,
     titleColor: Color = MiuixTheme.colorScheme.onSurface,
     summary: String? = null,
+    summaryColor: Color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
     modifier: Modifier = Modifier,
     items: List<String>,
     alwaysRight: Boolean = false,
@@ -163,6 +165,7 @@ fun SuperDropdown(
         title = title,
         titleColor = titleColor,
         summary = summary,
+        summaryColor = summaryColor,
         rightActions = {
             Text(
                 modifier = Modifier.padding(end = 6.dp),
