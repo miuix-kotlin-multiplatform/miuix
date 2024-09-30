@@ -39,7 +39,7 @@ private fun getSystemCornerRadius(): Dp {
         getCornerRadiusBottom()
     }
     val cornerDp = (roundedCornerRadius / density).dp
-    if (cornerDp < 15.dp) return 0.dp
+    if (cornerDp <= 32.dp) return 0.dp
     return cornerDp
 }
 
