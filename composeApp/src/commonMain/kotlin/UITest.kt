@@ -123,11 +123,7 @@ fun UITest(
             }
         },
         floatingActionButton = {
-            AnimatedVisibility(
-                visible = showFloatingActionButton.value,
-                enter = fadeIn() + expandHorizontally(),
-                exit = fadeOut() + shrinkHorizontally()
-            ) {
+            if (showFloatingActionButton.value) {
                 FloatingActionButton(
                     onClick = {
                         uriHandler.openUri("https://github.com/miuix-kotlin-multiplatform/miuix")
