@@ -10,15 +10,19 @@ import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.captionBar
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -83,6 +87,7 @@ expect fun modifierPlatform(modifier: Modifier, isHovered: MutableState<Boolean>
  * @param items The options of the [SuperDropdown].
  * @param alwaysRight Whether the popup is always show on the right side.
  * @param insideMargin The margin inside the [SuperDropdown].
+ * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [SuperDropdown].
  * @param selectedIndex The index of the selected option.
  * @param onSelectedIndexChange The callback when the index is selected.
  */
@@ -96,6 +101,7 @@ fun SuperDropdown(
     items: List<String>,
     alwaysRight: Boolean = false,
     insideMargin: DpSize = DpSize(16.dp, 16.dp),
+    defaultWindowInsetsPadding: Boolean = true,
     selectedIndex: Int,
     onSelectedIndexChange: (Int) -> Unit
 ) {
@@ -138,7 +144,7 @@ fun SuperDropdown(
     )
 
     BasicComponent(
-        modifier = modifierPlatform(modifier = modifier, isHovered = isHovered)
+        modifier = modifierPlatform(modifier = Modifier, isHovered = isHovered)
             .background(if (isHovered.value) MiuixTheme.colorScheme.onBackground.copy(0.08f) else Color.Transparent)
             .indication(interactionSource, createRipple())
             .pointerInput(Unit) {
@@ -199,7 +205,13 @@ fun SuperDropdown(
         showPopup(
             content = {
                 Box(
-                    modifier = Modifier
+                    modifier = if (defaultWindowInsetsPadding) {
+                        modifier
+                            .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
+                            .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
+                    } else {
+                        modifier
+                    }
                         .fillMaxSize()
                         .pointerInput(Unit) {
                             detectTapGestures(onTap = {

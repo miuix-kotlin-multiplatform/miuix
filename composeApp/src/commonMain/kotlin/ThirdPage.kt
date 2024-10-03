@@ -1,4 +1,5 @@
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -66,6 +67,9 @@ fun ThirdPage(
                 selectedIndex = colorMode.value,
                 onSelectedIndexChange = { colorMode.value = it }
             )
+        }
+        item {
+            Spacer(modifier = Modifier.height(padding.calculateBottomPadding()))
         }
     }
 }

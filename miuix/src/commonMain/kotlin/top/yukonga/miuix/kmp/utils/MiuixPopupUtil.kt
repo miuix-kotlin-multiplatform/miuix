@@ -11,7 +11,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
@@ -105,7 +104,7 @@ class MiuixPopupUtil {
                 )
             ) {
                 Box(
-                    modifier = Modifier.fillMaxSize().navigationBarsPadding()
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     dialogContext.value?.invoke()
                 }
