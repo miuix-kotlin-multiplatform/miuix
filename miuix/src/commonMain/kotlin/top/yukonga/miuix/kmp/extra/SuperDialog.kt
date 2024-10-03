@@ -36,6 +36,7 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 /**
  * A dialog with a title, a summary, and a content.
  *
+ * @param modifier The modifier to be applied to the [SuperDialog].
  * @param title The title of the [SuperDialog].
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperDialog].
@@ -43,10 +44,12 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
  * @param show The state of the [SuperDialog].
  * @param onDismissRequest The callback when the [SuperDialog] is dismissed.
  * @param insideMargin The margin inside the [SuperDialog].
+ * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [SuperDialog].
  * @param content The [Composable] content of the [SuperDialog].
  */
 @Composable
 fun SuperDialog(
+    modifier: Modifier = Modifier,
     title: String? = null,
     titleColor: Color = MiuixTheme.colorScheme.onSurface,
     summary: String? = null,
@@ -54,6 +57,7 @@ fun SuperDialog(
     show: MutableState<Boolean>,
     onDismissRequest: () -> Unit,
     insideMargin: DpSize? = null,
+    defaultWindowInsetsPadding: Boolean = true,
     content: @Composable () -> Unit
 ) {
     @Suppress("NAME_SHADOWING")
@@ -72,8 +76,11 @@ fun SuperDialog(
     }
 
     Box(
-        modifier = Modifier
-            .imePadding()
+        modifier = if (defaultWindowInsetsPadding) {
+            modifier.imePadding()
+        } else {
+            modifier
+        }
             .fillMaxSize()
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
@@ -81,6 +88,7 @@ fun SuperDialog(
                     onDismissRequest()
                 })
             }
+
             .then(paddingModifier)
     ) {
         Column(
