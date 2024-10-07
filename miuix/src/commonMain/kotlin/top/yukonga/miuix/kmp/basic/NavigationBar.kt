@@ -38,6 +38,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.Platform
+import top.yukonga.miuix.kmp.utils.platform
 
 /**
  * A navigation bar that with 2 to 5 items.
@@ -127,7 +129,7 @@ fun NavigationBar(
                             colorFilter = ColorFilter.tint(tint)
                         )
                         Text(
-                            modifier = Modifier.padding(bottom = 12.dp),
+                            modifier = Modifier.padding(bottom = if (platform() != Platform.IOS) 12.dp else 0.dp),
                             text = item.label,
                             color = tint,
                             textAlign = TextAlign.Center,
@@ -142,7 +144,7 @@ fun NavigationBar(
 }
 
 /** The default expanded height of a [NavigationBar]. */
-val NavigationBarHeight: Dp = 64.dp
+val NavigationBarHeight: Dp = if (platform() != Platform.IOS) 64.dp else 48.dp
 
 
 /**
