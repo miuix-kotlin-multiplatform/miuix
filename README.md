@@ -1,6 +1,7 @@
 ## MiuiX
 
 MiuiX is a shared UI component based on [Compose Multiplatform](https://www.jetbrains.com/compose-multiplatform/). 
+
 Currently supports Android / iOS / Desktop / WebAssembly / macOS.
 
 ### Start
@@ -23,3 +24,7 @@ fun App() {
     }
 }
 ```
+
+### Screenshot
+
+[![demo](https://github.com/miuix-kotlin-multiplatform/miuix/blob/main/screenshot/demo.png?raw=true)](#)
