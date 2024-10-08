@@ -118,7 +118,6 @@ fun TopAppBar(
             modifier
                 .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
                 .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal))
-                .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
         } else {
             modifier
         }
@@ -487,7 +486,7 @@ private fun TopAppBarLayout(
     actions: @Composable () -> Unit,
     scrolledOffset: ScrolledOffset,
     expandedHeightPx: Float,
-    horizontalPadding: Dp,
+    horizontalPadding: Dp
 ) {
     val extOffset = abs(scrolledOffset.offset()) / expandedHeightPx * 2
     val alpha by animateFloatAsState(
@@ -546,6 +545,7 @@ private fun TopAppBarLayout(
         },
         modifier = Modifier
             .windowInsetsPadding(WindowInsets.statusBars)
+            .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
             .heightIn(max = 56.dp + TopAppBarExpandedHeight)
             .clipToBounds()
     ) { measurables, constraints ->
