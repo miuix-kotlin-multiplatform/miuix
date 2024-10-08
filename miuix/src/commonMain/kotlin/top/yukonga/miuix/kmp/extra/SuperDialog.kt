@@ -16,9 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
@@ -40,6 +42,11 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.getRoundedCorner
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
+
+/**
+ * Only one dialog is allowed to be displayed at a time.
+ */
+val dialogStates = mutableStateListOf<MutableState<Boolean>>()
 
 /**
  * A dialog with a title, a summary, and a content.
@@ -79,6 +86,18 @@ fun SuperDialog(
     val bottomCornerRadius by remember { derivedStateOf { if (roundedCorner != 0.dp) roundedCorner - outsideMargin.width else 32.dp } }
     val getWindowSize by rememberUpdatedState(getWindowSize())
     val contentAlignment by remember { derivedStateOf { if (getWindowSize.width > getWindowSize.height) Alignment.Center else Alignment.BottomCenter } }
+
+    if (!dialogStates.contains(show)) dialogStates.add(show)
+
+    LaunchedEffect(show.value) {
+        if (show.value) {
+            dialogStates.forEach { state ->
+                if (state != show) {
+                    state.value = false
+                }
+            }
+        }
+    }
 
     BackHandler(enabled = show.value) {
         dismissDialog()

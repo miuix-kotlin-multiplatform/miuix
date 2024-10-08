@@ -27,8 +27,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -76,6 +78,11 @@ import kotlin.math.roundToInt
  * Returns modifier to be used for the current platform.
  */
 expect fun modifierPlatform(modifier: Modifier, isHovered: MutableState<Boolean>, isEnable: Boolean): Modifier
+
+/**
+ * Only one dropdown is allowed to be displayed at a time.
+ */
+val dropdownStates = mutableStateListOf<MutableState<Boolean>>()
 
 /**
  * A dropdown with a title and a summary.
@@ -149,6 +156,18 @@ fun SuperDropdown(
     val insideHeightPx by rememberUpdatedState(
         with(density) { insideMargin.height.toPx() }.roundToInt()
     )
+
+    if (!dropdownStates.contains(isDropdownExpanded)) dropdownStates.add(isDropdownExpanded)
+
+    LaunchedEffect(isDropdownExpanded.value) {
+        if (isDropdownExpanded.value) {
+            dropdownStates.forEach { state ->
+                if (state != isDropdownExpanded) {
+                    state.value = false
+                }
+            }
+        }
+    }
 
     BasicComponent(
         modifier = modifierPlatform(modifier = Modifier, isHovered = isHovered, isEnable = enabled)
