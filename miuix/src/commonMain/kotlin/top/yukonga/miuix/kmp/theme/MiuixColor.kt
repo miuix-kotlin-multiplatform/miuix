@@ -9,8 +9,8 @@ import androidx.compose.ui.graphics.Color
 /**
  * The default color scheme for the Miuix components.
  *
- * @param primary The primary color.Cases:Switch, Button, Slider
- * @param onPrimary The color of the text on primary color.Cases:Switch, Button, Slider
+ * @param primary The primary color. Cases: Switch, Button, Slider.
+ * @param onPrimary The color of the text on primary color. Cases: Switch, Button, Slider.
  * @param primaryVariant The variant color of the primary color.Cases:Card
  * @param onPrimaryVariant The color of the text on primary variant color.
  * @param disabledPrimary The disabled primary color of the switch.
@@ -54,6 +54,7 @@ import androidx.compose.ui.graphics.Color
  * @param onSurfaceContainerHigh The color of the text on surface container high color.
  * @param surfaceContainerHighest The container color of the surface color.
  * @param onSurfaceContainerHighest The color of the text on surface container highest color.
+ * @param windowDimming The color of the window dimming. Cases: Dialog, Dropdown.
  */
 @Stable
 class MiuixColor(
@@ -102,6 +103,7 @@ class MiuixColor(
     onSurfaceContainerHigh: Color,
     surfaceContainerHighest: Color,
     onSurfaceContainerHighest: Color,
+    windowDimming: Color
 ) {
     val primary by mutableStateOf(primary, structuralEqualityPolicy())
     val onPrimary by mutableStateOf(onPrimary, structuralEqualityPolicy())
@@ -148,6 +150,7 @@ class MiuixColor(
     val onSurfaceContainerHigh by mutableStateOf(onSurfaceContainerHigh, structuralEqualityPolicy())
     val surfaceContainerHighest by mutableStateOf(surfaceContainerHighest, structuralEqualityPolicy())
     val onSurfaceContainerHighest by mutableStateOf(onSurfaceContainerHighest, structuralEqualityPolicy())
+    val windowDimming by mutableStateOf(windowDimming, structuralEqualityPolicy())
 }
 
 fun lightColorScheme() = MiuixColor(
@@ -195,7 +198,8 @@ fun lightColorScheme() = MiuixColor(
     surfaceContainerHigh = Color(0xFFEDEDED),
     onSurfaceContainerHigh = Color(0xFFA5A5A5),
     surfaceContainerHighest = Color(0xFFE8E8E8),
-    onSurfaceContainerHighest = Color.Black
+    onSurfaceContainerHighest = Color.Black,
+    windowDimming = Color.Black.copy(alpha = 0.3f)
 )
 
 fun darkColorScheme() = MiuixColor(
@@ -243,5 +247,6 @@ fun darkColorScheme() = MiuixColor(
     surfaceContainerHigh = Color(0xFF2D2D2D),
     onSurfaceContainerHigh = Color(0xFF6C6C6C),
     surfaceContainerHighest = Color(0xFF2D2D2D),
-    onSurfaceContainerHighest = Color(0xFFE9E9E9)
+    onSurfaceContainerHighest = Color(0xFFE9E9E9),
+    windowDimming = Color.Black.copy(alpha = 0.6f)
 )

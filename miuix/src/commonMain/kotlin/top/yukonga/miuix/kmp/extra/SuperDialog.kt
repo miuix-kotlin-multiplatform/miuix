@@ -112,7 +112,6 @@ fun SuperDialog(
                 }
                 .align(contentAlignment)
                 .graphicsLayer(
-                    shadowElevation = 12f,
                     shape = SquircleShape(bottomCornerRadius),
                     clip = false
                 )
