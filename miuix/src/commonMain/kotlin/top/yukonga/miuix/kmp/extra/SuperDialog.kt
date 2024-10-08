@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,6 +52,7 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
  * @param backgroundColor The background color of the [SuperDialog].
  * @param show The state of the [SuperDialog].
  * @param onDismissRequest The callback when the [SuperDialog] is dismissed.
+ * @param outsideMargin The margin outside the [SuperDialog].
  * @param insideMargin The margin inside the [SuperDialog].
  * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [SuperDialog].
  * @param content The [Composable] content of the [SuperDialog].
@@ -65,17 +67,16 @@ fun SuperDialog(
     backgroundColor: Color = MiuixTheme.colorScheme.surfaceVariant,
     show: MutableState<Boolean>,
     onDismissRequest: () -> Unit,
-    insideMargin: DpSize? = null,
+    outsideMargin: DpSize = DpSize(12.dp, 12.dp),
+    insideMargin: Dp = 24.dp,
     defaultWindowInsetsPadding: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    @Suppress("NAME_SHADOWING")
-    val insideMargin = remember { insideMargin } ?: remember { DpSize(12.dp, 12.dp) }
-    val paddingModifier = remember(insideMargin) {
-        Modifier.padding(horizontal = insideMargin.width).padding(bottom = insideMargin.height)
+    val paddingModifier = remember(outsideMargin) {
+        Modifier.padding(horizontal = outsideMargin.width).padding(bottom = outsideMargin.height)
     }
     val roundedCorner by rememberUpdatedState(getRoundedCorner())
-    val bottomCornerRadius by remember { derivedStateOf { if (roundedCorner != 0.dp) roundedCorner - insideMargin.width else 32.dp } }
+    val bottomCornerRadius by remember { derivedStateOf { if (roundedCorner != 0.dp) roundedCorner - outsideMargin.width else 32.dp } }
     val getWindowSize by rememberUpdatedState(getWindowSize())
     val contentAlignment by remember { derivedStateOf { if (getWindowSize.width > getWindowSize.height) Alignment.Center else Alignment.BottomCenter } }
 
@@ -119,7 +120,7 @@ fun SuperDialog(
                     color = backgroundColor,
                     shape = SquircleShape(bottomCornerRadius)
                 )
-                .padding(24.dp),
+                .padding(insideMargin),
         ) {
             title?.let {
                 Text(
