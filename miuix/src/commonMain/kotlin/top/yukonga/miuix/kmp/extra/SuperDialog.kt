@@ -48,6 +48,7 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperDialog].
  * @param summaryColor The color of the summary.
+ * @param backgroundColor The background color of the [SuperDialog].
  * @param show The state of the [SuperDialog].
  * @param onDismissRequest The callback when the [SuperDialog] is dismissed.
  * @param insideMargin The margin inside the [SuperDialog].
@@ -61,6 +62,7 @@ fun SuperDialog(
     titleColor: Color = MiuixTheme.colorScheme.onSurface,
     summary: String? = null,
     summaryColor: Color = MiuixTheme.colorScheme.onSurfaceVariantDialog,
+    backgroundColor: Color = MiuixTheme.colorScheme.surfaceVariant,
     show: MutableState<Boolean>,
     onDismissRequest: () -> Unit,
     insideMargin: DpSize? = null,
@@ -84,13 +86,13 @@ fun SuperDialog(
 
     Box(
         modifier = if (defaultWindowInsetsPadding) {
-            modifier
+            Modifier
                 .imePadding()
                 .navigationBarsPadding()
                 .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
                 .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
         } else {
-            modifier
+            Modifier
         }
             .fillMaxSize()
             .pointerInput(Unit) {
@@ -99,11 +101,10 @@ fun SuperDialog(
                     onDismissRequest()
                 })
             }
-
             .then(paddingModifier)
     ) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .then(if (contentAlignment != Alignment.Center) Modifier.fillMaxWidth() else Modifier.widthIn(max = 400.dp))
                 .pointerInput(Unit) {
                     detectTapGestures { /* Do nothing to consume the click */ }
@@ -115,7 +116,7 @@ fun SuperDialog(
                     clip = false
                 )
                 .background(
-                    color = MiuixTheme.colorScheme.surfaceVariant,
+                    color = backgroundColor,
                     shape = SquircleShape(bottomCornerRadius)
                 )
                 .padding(24.dp),

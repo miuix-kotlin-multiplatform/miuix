@@ -108,6 +108,16 @@ class MiuixPopupUtil {
                 ) {
                     dialogContext.value?.invoke()
                 }
+                AnimatedVisibility(
+                    visible = isPopupShowing.value && isDialogShowing.value,
+                    modifier = Modifier.zIndex(1f).fillMaxSize(),
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = 0.3f))
+                    )
+                }
             }
             AnimatedVisibility(
                 visible = isPopupShowing.value,

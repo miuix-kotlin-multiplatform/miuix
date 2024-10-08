@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -266,10 +267,10 @@ fun TextComponent() {
     dialog2(showDialog2)
 }
 
-
 @Composable
 fun dialog(showDialog: MutableState<Boolean>) {
     if (!showDialog.value) return
+    val value = remember { mutableStateOf("") }
     showDialog(
         content = {
             SuperDialog(
@@ -280,6 +281,12 @@ fun dialog(showDialog: MutableState<Boolean>) {
                     showDialog.value = false
                 },
             ) {
+                TextField(
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    value = value.value,
+                    maxLines = 1,
+                    onValueChange = { value.value = it }
+                )
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -310,23 +317,27 @@ fun dialog(showDialog: MutableState<Boolean>) {
 @Composable
 fun dialog2(showDialog: MutableState<Boolean>) {
     if (!showDialog.value) return
-    val value = remember { mutableStateOf("") }
+    val dropdownOptions = listOf("Option 1", "Option 2")
+    val dropdownSelectedOption = remember { mutableStateOf(0) }
     showDialog(
         content = {
             SuperDialog(
                 title = "Dialog 2",
-                summary = "Summary",
+                backgroundColor = MiuixTheme.colorScheme.background,
                 show = showDialog,
                 onDismissRequest = {
                     showDialog.value = false
                 },
             ) {
-                TextField(
-                    modifier = Modifier.padding(bottom = 16.dp),
-                    value = value.value,
-                    maxLines = 1,
-                    onValueChange = { value.value = it }
-                )
+                Card {
+                    SuperDropdown(
+                        title = "Dropdown",
+                        items = dropdownOptions,
+                        selectedIndex = dropdownSelectedOption.value,
+                        onSelectedIndexChange = { newOption -> dropdownSelectedOption.value = newOption },
+                    )
+                }
+                Spacer(Modifier.height(12.dp))
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
