@@ -102,6 +102,7 @@ fun SuperDropdown(
     items: List<String>,
     alwaysRight: Boolean = false,
     insideMargin: DpSize = DpSize(16.dp, 16.dp),
+    popupHorizontalPadding: Dp = 12.dp,
     defaultWindowInsetsPadding: Boolean = true,
     selectedIndex: Int,
     onSelectedIndexChange: (Int) -> Unit,
@@ -226,7 +227,7 @@ fun SuperDropdown(
                 ) {
                     LazyColumn(
                         modifier = Modifier
-                            .padding(horizontal = 14.dp)
+                            .padding(horizontal = popupHorizontalPadding)
                             .onGloballyPositioned { layoutCoordinates ->
                                 dropdownHeightPx = layoutCoordinates.size.height
                                 offsetPx = calculateOffsetPx(

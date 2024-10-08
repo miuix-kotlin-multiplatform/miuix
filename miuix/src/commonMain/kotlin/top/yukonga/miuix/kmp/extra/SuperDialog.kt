@@ -70,7 +70,7 @@ fun SuperDialog(
     content: @Composable () -> Unit
 ) {
     @Suppress("NAME_SHADOWING")
-    val insideMargin = remember { insideMargin } ?: remember { DpSize(14.dp, 14.dp) }
+    val insideMargin = remember { insideMargin } ?: remember { DpSize(12.dp, 12.dp) }
     val paddingModifier = remember(insideMargin) {
         Modifier.padding(horizontal = insideMargin.width).padding(bottom = insideMargin.height)
     }
