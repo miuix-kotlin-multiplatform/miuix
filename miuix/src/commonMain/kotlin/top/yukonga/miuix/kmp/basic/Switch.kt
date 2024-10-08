@@ -5,12 +5,8 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.detectVerticalDragGestures
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
@@ -38,22 +34,18 @@ import kotlin.math.absoluteValue
 /**
  * A switch with Miuix style.
  *
+ * @param modifier The modifier to be applied to the [Switch].
  * @param checked The checked state of the [Switch].
  * @param onCheckedChange The callback to be called when the state of the [Switch] changes.
- * @param modifier The modifier to be applied to the [Switch].
  * @param enabled Whether the [Switch] is enabled.
- * @param interactionSource The interaction source to be applied to the [Switch].
  */
 @Composable
 fun Switch(
+    modifier: Modifier = Modifier,
     checked: Boolean,
     onCheckedChange: ((Boolean) -> Unit)?,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    interactionSource: MutableInteractionSource? = null,
+    enabled: Boolean = true
 ) {
-    @Suppress("NAME_SHADOWING")
-    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val isChecked by rememberUpdatedState(checked)
     val hapticFeedback = LocalHapticFeedback.current
     var hasVibrated by remember { mutableStateOf(false) }
@@ -100,8 +92,8 @@ fun Switch(
                 },
                 enabled = enabled,
                 role = Role.Switch,
-                interactionSource = interactionSource,
-                indication = null
+                indication = null,
+                interactionSource = null
             )
         } else {
             Modifier
@@ -110,7 +102,6 @@ fun Switch(
 
     Box(
         modifier = modifier
-            .then(toggleableModifier)
             .wrapContentSize(Alignment.Center)
             .size(52.dp, 28.5.dp)
             .requiredSize(52.dp, 28.5.dp)
@@ -158,6 +149,7 @@ fun Switch(
                     }
                 )
             }
+            .then(toggleableModifier)
     ) {
         Box(
             modifier = Modifier

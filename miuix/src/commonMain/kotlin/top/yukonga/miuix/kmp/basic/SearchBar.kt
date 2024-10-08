@@ -37,22 +37,22 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 /**
  * A search bar with Miuix style.
  *
- * @param inputField the input field to input a query in the search bar.
- * @param expanded whether the search bar is expanded and showing search results.
- * @param onExpandedChange the callback to be invoked when the search bar's expanded state is
+ * @param modifier the [Modifier] to be applied to the [SearchBar].
+ * @param inputField the input field to input a query in the [SearchBar].
+ * @param expanded whether the [SearchBar] is expanded and showing search results.
+ * @param onExpandedChange the callback to be invoked when the [SearchBar]'s expanded state is
  *   changed.
- * @param outsideRightAction the action to be shown at the right side of the search bar when it is
+ * @param outsideRightAction the action to be shown at the right side of the [SearchBar] when it is
  *   expanded.
- * @param modifier the [Modifier] to be applied to this search bar.
- * @param content the content to be shown when the search bar is expanded.
+ * @param content the content to be shown when the [SearchBar] is expanded.
  */
 @Composable
 fun SearchBar(
+    modifier: Modifier = Modifier,
     inputField: @Composable () -> Unit,
     expanded: Boolean = false,
     onExpandedChange: (Boolean) -> Unit,
     outsideRightAction: @Composable (() -> Unit)? = null,
-    modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Surface(

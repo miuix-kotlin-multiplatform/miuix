@@ -7,7 +7,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -36,22 +35,18 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 /**
  * A checkbox component with Miuix style.
  *
+ * @param modifier The modifier to be applied to the [Checkbox].
  * @param checked The current state of the [Checkbox].
  * @param onCheckedChange The callback to be called when the state of the [Checkbox] changes.
- * @param modifier The modifier to be applied to the [Checkbox].
  * @param enabled Whether the [Checkbox] is enabled.
- * @param interactionSource The interaction source to be applied to the [Checkbox].
  */
 @Composable
 fun Checkbox(
+    modifier: Modifier = Modifier,
     checked: Boolean,
     onCheckedChange: ((Boolean) -> Unit)?,
-    modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    interactionSource: MutableInteractionSource? = null,
 ) {
-    @Suppress("NAME_SHADOWING")
-    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val isChecked by rememberUpdatedState(checked)
     var isPressed by remember { mutableStateOf(false) }
     val backgroundColor by animateColorAsState(if (isChecked) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.secondary)
@@ -74,8 +69,8 @@ fun Checkbox(
                 onValueChange = { onCheckedChange(it) },
                 enabled = enabled,
                 role = Role.Checkbox,
-                interactionSource = interactionSource,
-                indication = null
+                indication = null,
+                interactionSource = null
             )
         } else {
             Modifier

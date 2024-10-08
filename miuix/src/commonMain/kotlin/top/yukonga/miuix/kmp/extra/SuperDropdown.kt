@@ -1,14 +1,11 @@
 package top.yukonga.miuix.kmp.extra
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.Indication
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -33,7 +30,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -59,7 +55,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Text
@@ -75,23 +70,13 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import kotlin.math.roundToInt
 
 /**
- * Returns modifier to be used for the current platform.
- */
-expect fun modifierPlatform(modifier: Modifier, isHovered: MutableState<Boolean>, isEnable: Boolean): Modifier
-
-/**
- * Only one dropdown is allowed to be displayed at a time.
- */
-val dropdownStates = mutableStateListOf<MutableState<Boolean>>()
-
-/**
  * A dropdown with a title and a summary.
  *
+ * @param modifier The modifier to be applied to the [SuperDropdown].
  * @param title The title of the [SuperDropdown].
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperDropdown].
  * @param summaryColor The color of the summary.
- * @param modifier The modifier to be applied to the [SuperDropdown].
  * @param items The options of the [SuperDropdown].
  * @param alwaysRight Whether the popup is always show on the right side.
  * @param insideMargin The margin inside the [SuperDropdown].
@@ -102,11 +87,11 @@ val dropdownStates = mutableStateListOf<MutableState<Boolean>>()
  */
 @Composable
 fun SuperDropdown(
+    modifier: Modifier = Modifier,
     title: String,
     titleColor: Color = MiuixTheme.colorScheme.onSurface,
     summary: String? = null,
     summaryColor: Color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
-    modifier: Modifier = Modifier,
     items: List<String>,
     alwaysRight: Boolean = false,
     insideMargin: DpSize = DpSize(16.dp, 16.dp),
@@ -114,79 +99,48 @@ fun SuperDropdown(
     defaultWindowInsetsPadding: Boolean = true,
     selectedIndex: Int,
     onSelectedIndexChange: (Int) -> Unit,
-    interactionSource: MutableInteractionSource? = null,
-    indication: Indication? = null,
     enabled: Boolean = true
 ) {
-    @Suppress("NAME_SHADOWING")
-    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
+    val isDropdownExpanded = remember { mutableStateOf(false) }
+    if (!dropdownStates.contains(isDropdownExpanded)) dropdownStates.add(isDropdownExpanded)
+    LaunchedEffect(isDropdownExpanded.value) {
+        if (isDropdownExpanded.value) {
+            dropdownStates.forEach { state -> if (state == isDropdownExpanded) state.value = false }
+        }
+    }
     val hapticFeedback = LocalHapticFeedback.current
     val density = LocalDensity.current
-    val coroutineScope = rememberCoroutineScope()
-    val isDropdownExpanded = remember { mutableStateOf(false) }
     var alignLeft by rememberSaveable { mutableStateOf(true) }
     val textMeasurer = rememberTextMeasurer()
     val textStyle = remember { TextStyle(fontWeight = FontWeight.Medium, fontSize = 17.sp) }
-    val textWidthDp = remember(items) {
-        items.maxOfOrNull { text ->
-            with(density) { textMeasurer.measure(text = text, style = textStyle).size.width.toDp() }
-        }
-    }
-    val isHovered = remember { mutableStateOf(false) }
+    val textWidthDp = remember(items) { items.maxOfOrNull { with(density) { textMeasurer.measure(text = it, style = textStyle).size.width.toDp() } } }
     var dropdownHeightPx by remember { mutableStateOf(0) }
     var dropdownOffsetPx by remember { mutableStateOf(0) }
     var componentHeightPx by remember { mutableStateOf(0) }
     var offsetPx by remember { mutableStateOf(0) }
     val windowHeightPx by rememberUpdatedState(getWindowSize().height)
     val statusBarPx by rememberUpdatedState(
-        with(density) {
-            WindowInsets.statusBars.asPaddingValues().calculateTopPadding().toPx()
-        }.roundToInt()
+        with(density) { WindowInsets.statusBars.asPaddingValues().calculateTopPadding().toPx() }.roundToInt()
     )
     val navigationBarPx by rememberUpdatedState(
-        with(density) {
-            WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().toPx()
-        }.roundToInt()
+        with(density) { WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
     )
     val captionBarPx by rememberUpdatedState(
-        with(density) {
-            WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().toPx()
-        }.roundToInt()
+        with(density) { WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
     )
-    val insideHeightPx by rememberUpdatedState(
-        with(density) { insideMargin.height.toPx() }.roundToInt()
-    )
-
-    if (!dropdownStates.contains(isDropdownExpanded)) dropdownStates.add(isDropdownExpanded)
-
-    LaunchedEffect(isDropdownExpanded.value) {
-        if (isDropdownExpanded.value) {
-            dropdownStates.forEach { state ->
-                if (state != isDropdownExpanded) {
-                    state.value = false
-                }
-            }
-        }
-    }
+    val insideHeightPx by rememberUpdatedState(with(density) { insideMargin.height.toPx() }.roundToInt())
 
     BasicComponent(
-        modifier = modifierPlatform(modifier = Modifier, isHovered = isHovered, isEnable = enabled)
-            .background(if (isHovered.value) MiuixTheme.colorScheme.onBackground.copy(0.08f) else Color.Transparent)
-            .indication(interactionSource, if (enabled) indication ?: LocalIndication.current else null)
+        onClick = { isDropdownExpanded.value = enabled },
+        modifier = modifier
             .pointerInput(Unit) {
-                detectTapGestures(
-                    onPress = { offset ->
-                        coroutineScope.launch {
-                            val press = PressInteraction.Press(offset)
-                            interactionSource.emit(press)
-                            interactionSource.emit(PressInteraction.Release(press))
-                        }
-                    },
-                    onTap = { offset ->
-                        isDropdownExpanded.value = enabled
-                        alignLeft = offset.x < (size.width / 2)
+                awaitPointerEventScope {
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        val position = event.changes.first().position
+                        alignLeft = position.x < (size.width / 2)
                     }
-                )
+                }
             }
             .onGloballyPositioned { coordinates ->
                 val positionInWindow = coordinates.positionInWindow()
@@ -391,3 +345,9 @@ fun calculateOffsetPx(
         if (offset > insideHeightPx + statusBarPx) offset else insideHeightPx + statusBarPx
     }
 }
+
+
+/**
+ * Only one dropdown is allowed to be displayed at a time.
+ */
+val dropdownStates = mutableStateListOf<MutableState<Boolean>>()

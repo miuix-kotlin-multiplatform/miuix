@@ -44,11 +44,6 @@ import top.yukonga.miuix.kmp.utils.getWindowSize
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
 /**
- * Only one dialog is allowed to be displayed at a time.
- */
-val dialogStates = mutableStateListOf<MutableState<Boolean>>()
-
-/**
  * A dialog with a title, a summary, and a content.
  *
  * @param modifier The modifier to be applied to the [SuperDialog].
@@ -79,23 +74,16 @@ fun SuperDialog(
     defaultWindowInsetsPadding: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val paddingModifier = remember(outsideMargin) {
-        Modifier.padding(horizontal = outsideMargin.width).padding(bottom = outsideMargin.height)
-    }
+    val paddingModifier = remember(outsideMargin) { Modifier.padding(horizontal = outsideMargin.width).padding(bottom = outsideMargin.height) }
     val roundedCorner by rememberUpdatedState(getRoundedCorner())
     val bottomCornerRadius by remember { derivedStateOf { if (roundedCorner != 0.dp) roundedCorner - outsideMargin.width else 32.dp } }
     val getWindowSize by rememberUpdatedState(getWindowSize())
     val contentAlignment by remember { derivedStateOf { if (getWindowSize.width > getWindowSize.height) Alignment.Center else Alignment.BottomCenter } }
 
     if (!dialogStates.contains(show)) dialogStates.add(show)
-
     LaunchedEffect(show.value) {
         if (show.value) {
-            dialogStates.forEach { state ->
-                if (state != show) {
-                    state.value = false
-                }
-            }
+            dialogStates.forEach { state -> if (state != show) state.value = false }
         }
     }
 
@@ -162,3 +150,8 @@ fun SuperDialog(
         }
     }
 }
+
+/**
+ * Only one dialog is allowed to be displayed at a time.
+ */
+val dialogStates = mutableStateListOf<MutableState<Boolean>>()

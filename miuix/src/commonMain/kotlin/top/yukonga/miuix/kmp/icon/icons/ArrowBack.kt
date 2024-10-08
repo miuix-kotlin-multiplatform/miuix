@@ -8,6 +8,9 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 
+/**
+ * ArrowBack icon with Miuix style.
+ */
 val MiuixIcons.ArrowBack: ImageVector
     get() {
         if (_arrowback != null) return _arrowback!!

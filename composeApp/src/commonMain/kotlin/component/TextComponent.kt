@@ -170,7 +170,7 @@ fun TextComponent() {
         )
     }
 
-    SmallTitle("Title")
+    SmallTitle(text = "Title")
 
     Card(
         modifier = Modifier

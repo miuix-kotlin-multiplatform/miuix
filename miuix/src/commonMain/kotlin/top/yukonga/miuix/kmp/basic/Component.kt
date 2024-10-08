@@ -1,9 +1,6 @@
 package top.yukonga.miuix.kmp.basic
 
-import androidx.compose.foundation.Indication
-import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,8 +29,6 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  * @param leftAction The [Composable] content that on the left side of the [BasicComponent].
  * @param rightActions The [Composable] content on the right side of the [BasicComponent].
  * @param onClick The callback when the [BasicComponent] is clicked.
- * @param interactionSource The interaction source to be applied to the [BasicComponent].
- * @param indication The indication to be applied to the [BasicComponent].
  * @param enabled Whether the [BasicComponent] is enabled.
  */
 @Composable
@@ -48,11 +43,8 @@ fun BasicComponent(
     leftAction: @Composable (() -> Unit?)? = null,
     rightActions: @Composable RowScope.() -> Unit = {},
     onClick: (() -> Unit)? = null,
-    interactionSource: MutableInteractionSource? = null,
-    indication: Indication? = LocalIndication.current,
     enabled: Boolean = true
 ) {
-    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val insideMargin = remember { insideMargin } ?: remember { DpSize(16.dp, 16.dp) }
     val paddingModifier = remember(insideMargin) {
         Modifier.padding(horizontal = insideMargin.width, vertical = insideMargin.height)
@@ -62,12 +54,7 @@ fun BasicComponent(
     Row(
         modifier = if (onClick != null && enabled) {
             modifier
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = indication,
-                ) {
-                    onClick.invoke()
-                }
+                .clickable { onClick.invoke() }
         } else {
             modifier
         }

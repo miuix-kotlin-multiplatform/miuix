@@ -1,13 +1,22 @@
-## MiuiX
+## Miuix
 
-MiuiX is a shared UI component based on [Compose Multiplatform](https://www.jetbrains.com/compose-multiplatform/). 
+Miuix is a shared UI component based on [Compose Multiplatform](https://www.jetbrains.com/compose-multiplatform/).
 
 Currently supports Android / iOS / Desktop / WebAssembly / macOS.
 
 ### Start
 
 ```
-implementation("top.yukonga.miuix.kmp:miuix:<version>")
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation("top.yukonga.miuix.kmp:miuix:<version>")
+            // Other dependencies...
+        }
+        // Other sourceSets...
+    }
+    // Other configurations...
+}
 ```
 
 [![Maven Central](https://img.shields.io/maven-central/v/top.yukonga.miuix.kmp/miuix)](https://search.maven.org/search?q=g:top.yukonga.miuix.kmp)

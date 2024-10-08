@@ -44,18 +44,18 @@ import top.yukonga.miuix.kmp.utils.platform
 /**
  * A navigation bar that with 2 to 5 items.
  *
+ * @param modifier The modifier to be applied to the [NavigationBar].
  * @param items The items of the [NavigationBar].
  * @param selected The selected index of the [NavigationBar].
- * @param modifier The modifier to be applied to the [NavigationBar].
  * @param color The color of the [NavigationBar].
  * @param onClick The callback when the item of the [NavigationBar] is clicked.
  * @param defaultWindowInsetsPadding whether to apply default window insets padding to the [NavigationBar].
  */
 @Composable
 fun NavigationBar(
+    modifier: Modifier = Modifier,
     items: List<NavigationItem>,
     selected: Int,
-    modifier: Modifier = Modifier,
     color: Color = MiuixTheme.colorScheme.surfaceContainer,
     onClick: (Int) -> Unit,
     defaultWindowInsetsPadding: Boolean = true

@@ -18,6 +18,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 /**
  * A switch with a title and a summary.
  *
+ * @param modifier The modifier to be applied to the [SuperSwitch].
  * @param title The title of the [SuperSwitch].
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperSwitch].
@@ -26,12 +27,12 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  * @param rightActions The [Composable] content on the right side of the [SuperSwitch].
  * @param checked The checked state of the [SuperSwitch].
  * @param onCheckedChange The callback when the checked state of the [SuperSwitch] is changed.
- * @param modifier The modifier to be applied to the [SuperSwitch].
  * @param insideMargin The margin inside the [SuperSwitch].
  * @param enabled Whether the [SuperSwitch] is clickable.
  */
 @Composable
 fun SuperSwitch(
+    modifier: Modifier = Modifier,
     title: String,
     titleColor: Color = MiuixTheme.colorScheme.onSurface,
     summary: String? = null,
@@ -40,7 +41,6 @@ fun SuperSwitch(
     rightActions: @Composable RowScope.() -> Unit = {},
     checked: Boolean,
     onCheckedChange: ((Boolean) -> Unit)?,
-    modifier: Modifier = Modifier,
     insideMargin: DpSize = DpSize(16.dp, 16.dp),
     enabled: Boolean = true
 ) {

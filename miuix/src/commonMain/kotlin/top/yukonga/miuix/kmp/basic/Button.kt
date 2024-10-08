@@ -1,15 +1,11 @@
 package top.yukonga.miuix.kmp.basic
 
-import androidx.compose.foundation.Indication
-import androidx.compose.foundation.LocalIndication
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,28 +24,22 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 /**
  * A button component with Miuix style.
  *
+ * @param modifier The modifier to be applied to the [Button].
  * @param text The text of the [Button].
  * @param onClick The callback when the [Button] is clicked.
- * @param modifier The modifier to be applied to the [Button].
  * @param enabled Whether the [Button] is enabled.
  * @param submit Whether the [Button] is a submit button.
  * @param cornerRadius The corner radius of the [Button].
- * @param interactionSource The interaction source to be applied to the [Button].
- * @param indication The indication to be applied to the [Button].
  */
 @Composable
 fun Button(
+    modifier: Modifier = Modifier,
     text: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     submit: Boolean = false,
-    cornerRadius: Dp = 18.dp,
-    interactionSource: MutableInteractionSource? = null,
-    indication: Indication? = LocalIndication.current,
+    cornerRadius: Dp = 18.dp
 ) {
-    @Suppress("NAME_SHADOWING")
-    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val hapticFeedback = LocalHapticFeedback.current
     val color by rememberUpdatedState(getButtonColor(enabled, submit))
     val textColor by rememberUpdatedState(getTextColor(enabled, submit))
@@ -62,9 +52,7 @@ fun Button(
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
         shape = SquircleShape(cornerRadius),
-        color = color,
-        interactionSource = interactionSource,
-        indication = indication
+        color = color
     ) {
         Row(
             Modifier

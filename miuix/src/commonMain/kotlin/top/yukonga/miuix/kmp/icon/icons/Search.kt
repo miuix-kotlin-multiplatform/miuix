@@ -8,6 +8,9 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 
+/**
+ * Search icon with Miuix style.
+ */
 val MiuixIcons.Search: ImageVector
     get() {
         if (_search != null) return _search!!
