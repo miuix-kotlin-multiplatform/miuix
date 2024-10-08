@@ -226,7 +226,7 @@ fun SuperDropdown(
                 ) {
                     LazyColumn(
                         modifier = Modifier
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = 14.dp)
                             .onGloballyPositioned { layoutCoordinates ->
                                 dropdownHeightPx = layoutCoordinates.size.height
                                 offsetPx = calculateOffsetPx(
