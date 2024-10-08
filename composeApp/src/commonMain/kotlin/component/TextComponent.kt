@@ -77,8 +77,7 @@ fun TextComponent() {
             Text(text = "Right1")
             Spacer(Modifier.width(6.dp))
             Text(text = "Right2")
-        },
-        onClick = {}
+        }
     )
 
     SuperArrow(

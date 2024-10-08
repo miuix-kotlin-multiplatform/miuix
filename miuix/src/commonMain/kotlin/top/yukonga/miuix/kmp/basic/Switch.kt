@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -41,6 +42,7 @@ import kotlin.math.absoluteValue
  * @param modifier The modifier to be applied to the [Switch].
  * @param enabled Whether the [Switch] is enabled.
  * @param interactionSource The interaction source to be applied to the [Switch].
+ * @param indication The indication to be applied to the [Switch].
  */
 @Composable
 fun Switch(
@@ -48,7 +50,8 @@ fun Switch(
     onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    interactionSource: MutableInteractionSource? = null
+    interactionSource: MutableInteractionSource? = null,
+    indication: Indication? = null
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
@@ -99,7 +102,7 @@ fun Switch(
                 enabled = enabled,
                 role = Role.Switch,
                 interactionSource = interactionSource,
-                indication = null
+                indication = indication
             )
         } else {
             Modifier

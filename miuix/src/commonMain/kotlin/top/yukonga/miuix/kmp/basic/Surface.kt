@@ -1,6 +1,8 @@
 package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Indication
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,7 +19,6 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.createRipple
 
 /**
  * A surface component with Miuix style.
@@ -64,6 +65,7 @@ fun Surface(
  * @param border The border of the [Surface].
  * @param shadowElevation The shadow elevation of the [Surface].
  * @param interactionSource The interaction source to be applied to the [Surface].
+ * @param indication The indication to be applied to the [Surface].
  * @param content The [Composable] content of the [Surface].
  */
 @Composable
@@ -77,6 +79,7 @@ fun Surface(
     border: BorderStroke? = null,
     shadowElevation: Float = 0f,
     interactionSource: MutableInteractionSource? = null,
+    indication: Indication? = LocalIndication.current,
     content: @Composable () -> Unit
 ) {
     @Suppress("NAME_SHADOWING")
@@ -93,7 +96,7 @@ fun Surface(
             .minimumInteractiveComponentSize()
             .clickable(
                 interactionSource = interactionSource,
-                indication = createRipple(),
+                indication = indication,
                 enabled = enabled,
                 onClick = onClick
             ),

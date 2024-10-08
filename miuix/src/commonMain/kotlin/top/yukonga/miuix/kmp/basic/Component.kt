@@ -1,6 +1,7 @@
 package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.foundation.Indication
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +19,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.createRipple
 
 /**
  * A basic component with Miuix style. Widely used in other extension components.
@@ -34,6 +34,7 @@ import top.yukonga.miuix.kmp.utils.createRipple
  * @param onClick The callback when the [BasicComponent] is clicked.
  * @param interactionSource The interaction source to be applied to the [BasicComponent].
  * @param indication The indication to be applied to the [BasicComponent].
+ * @param enabled Whether the [BasicComponent] is enabled.
  */
 @Composable
 @Suppress("NAME_SHADOWING")
@@ -48,11 +49,10 @@ fun BasicComponent(
     rightActions: @Composable RowScope.() -> Unit = {},
     onClick: (() -> Unit)? = null,
     interactionSource: MutableInteractionSource? = null,
-    indication: Indication? = null,
+    indication: Indication? = LocalIndication.current,
     enabled: Boolean = true
 ) {
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
-    val indication = indication ?: createRipple()
     val insideMargin = remember { insideMargin } ?: remember { DpSize(16.dp, 16.dp) }
     val paddingModifier = remember(insideMargin) {
         Modifier.padding(horizontal = insideMargin.width, vertical = insideMargin.height)
@@ -60,11 +60,11 @@ fun BasicComponent(
     val titleColor = if (enabled) titleColor else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     val summaryColor = if (enabled) summaryColor else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     Row(
-        modifier = if (onClick != null) {
+        modifier = if (onClick != null && enabled) {
             modifier
                 .clickable(
                     interactionSource = interactionSource,
-                    indication = indication
+                    indication = indication,
                 ) {
                     onClick.invoke()
                 }

@@ -10,9 +10,9 @@ import androidx.compose.ui.input.pointer.onPointerEvent
  * Returns modifier to be used for the current platform.
  */
 @OptIn(ExperimentalComposeUiApi::class)
-actual fun modifierPlatform(modifier: Modifier, isHovered: MutableState<Boolean>): Modifier = modifier
+actual fun modifierPlatform(modifier: Modifier, isHovered: MutableState<Boolean>, isEnable: Boolean): Modifier = modifier
     .onPointerEvent(PointerEventType.Move) {
-        isHovered.value = true
+        if (isEnable) isHovered.value = true
     }
     .onPointerEvent(PointerEventType.Enter) {
         isHovered.value = false

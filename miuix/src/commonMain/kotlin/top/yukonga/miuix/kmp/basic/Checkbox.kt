@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -42,6 +43,7 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
  * @param modifier The modifier to be applied to the [Checkbox].
  * @param enabled Whether the [Checkbox] is enabled.
  * @param interactionSource The interaction source to be applied to the [Checkbox].
+ * @param indication The indication to be applied to the [Checkbox].
  */
 @Composable
 fun Checkbox(
@@ -49,7 +51,8 @@ fun Checkbox(
     onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    interactionSource: MutableInteractionSource? = null
+    interactionSource: MutableInteractionSource? = null,
+    indication: Indication? = null,
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
@@ -72,27 +75,24 @@ fun Checkbox(
         if (onCheckedChange != null) {
             Modifier.toggleable(
                 value = isChecked,
-                onValueChange = {
-                    onCheckedChange(it)
-                },
+                onValueChange = { onCheckedChange(it) },
                 enabled = enabled,
                 role = Role.Checkbox,
                 interactionSource = interactionSource,
-                indication = null
+                indication = indication
             )
         } else {
             Modifier
         }
     }
 
-    Box(
+    Surface(
+        shape = SquircleShape(100f),
         modifier = modifier
-            .then(toggleableModifier)
             .wrapContentSize(Alignment.Center)
             .size(22.dp)
+            .clip(SquircleShape(100f))
             .requiredSize(checkboxSize)
-            .clip(SquircleShape(100.dp))
-            .background(if (enabled) backgroundColor else disabledBackgroundColor)
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = {
@@ -119,9 +119,12 @@ fun Checkbox(
                     }
                 )
             }
+            .then(toggleableModifier)
     ) {
         Canvas(
-            modifier = Modifier.requiredSize(checkboxSize)
+            modifier = Modifier
+                .requiredSize(checkboxSize)
+                .background(if (enabled) backgroundColor else disabledBackgroundColor)
         ) {
             val svgPath =
                 "m400-416 236-236q11-11 28-11t28 11q11 11 11 28t-11 28L428-332q-12 12-28 12t-28-12L268-436q-11-11-11-28t11-28q11-11 28-11t28 11l76 76Z"

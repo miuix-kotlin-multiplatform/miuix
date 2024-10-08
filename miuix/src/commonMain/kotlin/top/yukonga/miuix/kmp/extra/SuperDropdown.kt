@@ -1,6 +1,8 @@
 package top.yukonga.miuix.kmp.extra
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.Indication
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -66,7 +68,6 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showPopup
-import top.yukonga.miuix.kmp.utils.createRipple
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import kotlin.math.roundToInt
@@ -74,7 +75,7 @@ import kotlin.math.roundToInt
 /**
  * Returns modifier to be used for the current platform.
  */
-expect fun modifierPlatform(modifier: Modifier, isHovered: MutableState<Boolean>): Modifier
+expect fun modifierPlatform(modifier: Modifier, isHovered: MutableState<Boolean>, isEnable: Boolean): Modifier
 
 /**
  * A dropdown with a title and a summary.
@@ -106,12 +107,15 @@ fun SuperDropdown(
     defaultWindowInsetsPadding: Boolean = true,
     selectedIndex: Int,
     onSelectedIndexChange: (Int) -> Unit,
+    interactionSource: MutableInteractionSource? = null,
+    indication: Indication? = null,
     enabled: Boolean = true
 ) {
+    @Suppress("NAME_SHADOWING")
+    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val hapticFeedback = LocalHapticFeedback.current
     val density = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
-    val interactionSource = remember { MutableInteractionSource() }
     val isDropdownExpanded = remember { mutableStateOf(false) }
     var alignLeft by rememberSaveable { mutableStateOf(true) }
     val textMeasurer = rememberTextMeasurer()
@@ -147,9 +151,9 @@ fun SuperDropdown(
     )
 
     BasicComponent(
-        modifier = modifierPlatform(modifier = Modifier, isHovered = isHovered)
+        modifier = modifierPlatform(modifier = Modifier, isHovered = isHovered, isEnable = enabled)
             .background(if (isHovered.value) MiuixTheme.colorScheme.onBackground.copy(0.08f) else Color.Transparent)
-            .indication(interactionSource, createRipple())
+            .indication(interactionSource, if (enabled) indication ?: LocalIndication.current else null)
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = { offset ->
@@ -314,7 +318,7 @@ fun DropdownImpl(
         modifier = Modifier
             .clickable(
                 interactionSource = dropdownInteractionSource,
-                indication = createRipple(),
+                indication = LocalIndication.current,
             ) {
                 onSelectedIndexChange(index)
             }

@@ -8,4 +8,4 @@ import androidx.compose.ui.Modifier
  * Returns modifier to be used for the current platform.
  */
 @SuppressLint("ModifierFactoryExtensionFunction")
-actual fun modifierPlatform(modifier: Modifier, isHovered: MutableState<Boolean>): Modifier = modifier
+actual fun modifierPlatform(modifier: Modifier, isHovered: MutableState<Boolean>, isEnable: Boolean): Modifier = modifier

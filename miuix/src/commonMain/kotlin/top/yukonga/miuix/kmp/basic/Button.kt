@@ -1,5 +1,7 @@
 package top.yukonga.miuix.kmp.basic
 
+import androidx.compose.foundation.Indication
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -33,6 +35,7 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
  * @param submit Whether the [Button] is a submit button.
  * @param cornerRadius The corner radius of the [Button].
  * @param interactionSource The interaction source to be applied to the [Button].
+ * @param indication The indication to be applied to the [Button].
  */
 @Composable
 fun Button(
@@ -42,7 +45,8 @@ fun Button(
     enabled: Boolean = true,
     submit: Boolean = false,
     cornerRadius: Dp = 18.dp,
-    interactionSource: MutableInteractionSource? = null
+    interactionSource: MutableInteractionSource? = null,
+    indication: Indication? = LocalIndication.current,
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
@@ -59,7 +63,8 @@ fun Button(
         modifier = modifier.semantics { role = Role.Button },
         shape = SquircleShape(cornerRadius),
         color = color,
-        interactionSource = interactionSource
+        interactionSource = interactionSource,
+        indication = indication
     ) {
         Row(
             Modifier
