@@ -26,7 +26,9 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathMeasure
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.vector.PathParser
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -49,6 +51,7 @@ fun Checkbox(
 ) {
     val isChecked by rememberUpdatedState(checked)
     var isPressed by remember { mutableStateOf(false) }
+    val hapticFeedback = LocalHapticFeedback.current
     val backgroundColor by animateColorAsState(if (isChecked) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.secondary)
     val disabledBackgroundColor by rememberUpdatedState(if (isChecked) MiuixTheme.colorScheme.disabledPrimary else MiuixTheme.colorScheme.disabledSecondary)
     val checkboxSize by animateDpAsState(if (!enabled) 22.dp else if (isPressed) 20.dp else 22.dp)
@@ -66,7 +69,10 @@ fun Checkbox(
         if (onCheckedChange != null) {
             Modifier.toggleable(
                 value = isChecked,
-                onValueChange = { onCheckedChange(it) },
+                onValueChange = {
+                    onCheckedChange(it)
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                },
                 enabled = enabled,
                 role = Role.Checkbox,
                 indication = null,
