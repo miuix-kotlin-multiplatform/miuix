@@ -7,8 +7,9 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
@@ -42,7 +43,6 @@ import kotlin.math.absoluteValue
  * @param modifier The modifier to be applied to the [Switch].
  * @param enabled Whether the [Switch] is enabled.
  * @param interactionSource The interaction source to be applied to the [Switch].
- * @param indication The indication to be applied to the [Switch].
  */
 @Composable
 fun Switch(
@@ -51,7 +51,6 @@ fun Switch(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource? = null,
-    indication: Indication? = null
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
@@ -102,7 +101,7 @@ fun Switch(
                 enabled = enabled,
                 role = Role.Switch,
                 interactionSource = interactionSource,
-                indication = indication
+                indication = null
             )
         } else {
             Modifier
@@ -118,21 +117,7 @@ fun Switch(
             .clip(SquircleShape(100.dp))
             .background(if (enabled) backgroundColor else disabledBackgroundColor)
             .pointerInput(Unit) {
-                detectTapGestures(
-                    onPress = {
-                        isPressed = true
-                    },
-                    onTap = {
-                        isPressed = false
-                        if (enabled) {
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                            onCheckedChange?.invoke(!isChecked)
-                        }
-                    }
-                )
-            }
-            .pointerInput(Unit) {
-                detectDragGestures(
+                detectHorizontalDragGestures(
                     onDragStart = {
                         isPressed = true
                         hasVibrated = false
@@ -149,14 +134,11 @@ fun Switch(
                         isPressed = false
                         dragOffset = 0f
                     },
-                    onDrag = { change, dragAmount ->
-                        if (!enabled) return@detectDragGestures
-                        val newOffset = dragOffset + dragAmount.x / 2
+                    onHorizontalDrag = { change, dragAmount ->
+                        if (!enabled) return@detectHorizontalDragGestures
+                        val newOffset = dragOffset + dragAmount / 2
                         dragOffset =
-                            if (isChecked) newOffset.coerceIn(-24f, 0f) else newOffset.coerceIn(
-                                0f,
-                                24f
-                            )
+                            if (isChecked) newOffset.coerceIn(-24f, 0f) else newOffset.coerceIn(0f, 24f)
                         if (isChecked) {
                             if (dragOffset in -23f..-1f) {
                                 hasVibrated = false

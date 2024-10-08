@@ -5,9 +5,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.requiredSize
@@ -43,7 +41,6 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
  * @param modifier The modifier to be applied to the [Checkbox].
  * @param enabled Whether the [Checkbox] is enabled.
  * @param interactionSource The interaction source to be applied to the [Checkbox].
- * @param indication The indication to be applied to the [Checkbox].
  */
 @Composable
 fun Checkbox(
@@ -52,7 +49,6 @@ fun Checkbox(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource? = null,
-    indication: Indication? = null,
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
@@ -79,15 +75,14 @@ fun Checkbox(
                 enabled = enabled,
                 role = Role.Checkbox,
                 interactionSource = interactionSource,
-                indication = indication
+                indication = null
             )
         } else {
             Modifier
         }
     }
 
-    Surface(
-        shape = SquircleShape(100f),
+    Box(
         modifier = modifier
             .wrapContentSize(Alignment.Center)
             .size(22.dp)
@@ -103,19 +98,6 @@ fun Checkbox(
                         if (enabled) {
                             onCheckedChange?.invoke(!isChecked)
                         }
-                    }
-                )
-            }
-            .pointerInput(Unit) {
-                detectDragGestures(
-                    onDragEnd = {
-                        isPressed = false
-                    },
-                    onDragCancel = {
-                        isPressed = false
-                    },
-                    onDrag = { change, _ ->
-                        change.consume()
                     }
                 )
             }
