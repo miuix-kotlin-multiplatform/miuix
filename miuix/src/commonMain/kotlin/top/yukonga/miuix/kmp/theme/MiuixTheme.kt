@@ -31,10 +31,13 @@ fun MiuixTheme(
             paragraph = textStyles.paragraph.copy(color = colorScheme.onBackground)
         )
     }
+    val miuixRipple = remember(colorScheme.onBackground) {
+        ripple(color = colorScheme.onBackground.copy(alpha = 0.5f))
+    }
     CompositionLocalProvider(
         LocalMiuixColor provides colorScheme,
         LocalMiuixTextStyles provides miuixTextStyles,
-        LocalIndication provides ripple(),
+        LocalIndication provides miuixRipple,
     ) {
         content()
     }
