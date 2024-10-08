@@ -1,7 +1,3 @@
-import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.api.tasks.bundling.Jar
-import org.gradle.kotlin.dsl.`maven-publish`
-
 plugins {
     `maven-publish`
     signing
@@ -18,7 +14,7 @@ publishing {
         // Provide artifacts information required by Maven Central
         pom {
             name.set("miuix")
-            description.set("A MiuiX-like UI for Kotlin Multiplatform")
+            description.set("A UI Library for Kotlin MultiPlatform")
             url.set("https://github.com/miuix-kotlin-multiplatform/miuix")
 
             licenses {
