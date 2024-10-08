@@ -81,7 +81,8 @@ fun SuperCheckbox(
                 isChecked = !isChecked
                 updatedOnCheckedChange?.invoke(isChecked)
             }
-        }
+        },
+        enabled = enabled
     )
 }
 

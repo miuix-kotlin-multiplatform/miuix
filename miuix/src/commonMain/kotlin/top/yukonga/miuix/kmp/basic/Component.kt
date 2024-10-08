@@ -48,7 +48,8 @@ fun BasicComponent(
     rightActions: @Composable RowScope.() -> Unit = {},
     onClick: (() -> Unit)? = null,
     interactionSource: MutableInteractionSource? = null,
-    indication: Indication? = null
+    indication: Indication? = null,
+    enabled: Boolean = true
 ) {
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val indication = indication ?: createRipple()
@@ -56,7 +57,8 @@ fun BasicComponent(
     val paddingModifier = remember(insideMargin) {
         Modifier.padding(horizontal = insideMargin.width, vertical = insideMargin.height)
     }
-
+    val titleColor = if (enabled) titleColor else MiuixTheme.colorScheme.disabledOnSecondaryVariant
+    val summaryColor = if (enabled) summaryColor else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     Row(
         modifier = if (onClick != null) {
             modifier

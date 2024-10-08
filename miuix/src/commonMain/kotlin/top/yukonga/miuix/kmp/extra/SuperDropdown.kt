@@ -90,6 +90,7 @@ expect fun modifierPlatform(modifier: Modifier, isHovered: MutableState<Boolean>
  * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [SuperDropdown].
  * @param selectedIndex The index of the selected option.
  * @param onSelectedIndexChange The callback when the index is selected.
+ * @param enabled Whether the [SuperDropdown] is enabled.
  */
 @Composable
 fun SuperDropdown(
@@ -103,7 +104,8 @@ fun SuperDropdown(
     insideMargin: DpSize = DpSize(16.dp, 16.dp),
     defaultWindowInsetsPadding: Boolean = true,
     selectedIndex: Int,
-    onSelectedIndexChange: (Int) -> Unit
+    onSelectedIndexChange: (Int) -> Unit,
+    enabled: Boolean = true
 ) {
     val hapticFeedback = LocalHapticFeedback.current
     val density = LocalDensity.current
@@ -157,7 +159,7 @@ fun SuperDropdown(
                         }
                     },
                     onTap = { offset ->
-                        isDropdownExpanded.value = true
+                        isDropdownExpanded.value = enabled
                         alignLeft = offset.x < (size.width / 2)
                     }
                 )
@@ -177,7 +179,7 @@ fun SuperDropdown(
                 modifier = Modifier.padding(end = 6.dp),
                 text = items[selectedIndex],
                 fontSize = 15.sp,
-                color = MiuixTheme.colorScheme.onSurfaceVariantActions,
+                color = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant,
                 textAlign = TextAlign.End,
             )
             Image(
@@ -186,12 +188,13 @@ fun SuperDropdown(
                     .align(Alignment.CenterVertically),
                 imageVector = MiuixIcons.ArrowUpDown,
                 colorFilter = BlendModeColorFilter(
-                    MiuixTheme.colorScheme.onSurfaceVariantActions,
+                    if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant,
                     BlendMode.SrcIn
                 ),
                 contentDescription = null
             )
-        }
+        },
+        enabled = enabled
     )
     BackHandler(
         enabled = isDropdownExpanded.value

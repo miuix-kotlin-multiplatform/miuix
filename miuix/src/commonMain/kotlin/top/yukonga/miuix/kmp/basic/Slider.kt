@@ -67,7 +67,7 @@ fun Slider(
             (round(newValue * factor) / factor).coerceIn(minValue, maxValue)
         }
     }
-    val color = rememberUpdatedState(if (enabled) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.disabledPrimarySlider)
+    val foregroundColor = rememberUpdatedState(if (enabled) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.disabledPrimarySlider)
     val backgroundColor = rememberUpdatedState(MiuixTheme.colorScheme.tertiaryContainerVariant)
 
     Box(
@@ -105,11 +105,11 @@ fun Slider(
         SliderBackground(
             modifier = Modifier.fillMaxWidth().height(height),
             backgroundColor = backgroundColor.value,
+            foregroundColor = foregroundColor.value,
             effect = effect,
             progress = progress,
             minValue = minValue,
             maxValue = maxValue,
-            color = color.value
         )
     }
 }
@@ -118,11 +118,11 @@ fun Slider(
 fun SliderBackground(
     modifier: Modifier,
     backgroundColor: Color,
+    foregroundColor: Color,
     effect: Boolean,
     progress: Float,
     minValue: Float,
     maxValue: Float,
-    color: Color
 ) {
     Canvas(modifier = modifier.clip(SquircleShape(100.dp)).background(backgroundColor)) {
         val barHeight = size.height
@@ -131,7 +131,7 @@ fun SliderBackground(
         val cornerRadius = if (effect) CornerRadius(barHeight / 2) else CornerRadius.Zero
 
         drawRoundRect(
-            color = color,
+            color = foregroundColor,
             size = Size(progressWidth, barHeight),
             topLeft = Offset(0f, center.y - barHeight / 2),
             cornerRadius = cornerRadius

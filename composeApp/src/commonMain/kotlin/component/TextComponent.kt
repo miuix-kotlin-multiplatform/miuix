@@ -205,6 +205,13 @@ fun TextComponent() {
             },
         )
 
+        SuperCheckbox(
+            title = "Disabled Checkbox",
+            checked = true,
+            enabled = false,
+            onCheckedChange = {},
+        )
+
         SuperSwitch(
             title = "Switch",
             summary = "Click to expand a Switch",
@@ -236,12 +243,25 @@ fun TextComponent() {
             )
         }
 
+        SuperSwitch(
+            title = "Disabled Switch",
+            checked = true,
+            enabled = false,
+            onCheckedChange = {},
+        )
+
         SuperArrow(
-            title = "Dialog",
+            title = "Arrow",
             summary = "Click to show Dialog 2",
             onClick = {
                 showDialog2.value = true
             }
+        )
+
+        SuperArrow(
+            title = "Disabled Arrow",
+            onClick = {},
+            enabled = false
         )
 
         SuperDropdown(
@@ -261,6 +281,13 @@ fun TextComponent() {
             onSelectedIndexChange = { newOption -> dropdownSelectedOptionRight.value = newOption },
         )
 
+        SuperDropdown(
+            title = "Disabled Dropdown",
+            items = listOf("Option 1"),
+            selectedIndex = 0,
+            onSelectedIndexChange = {},
+            enabled = false
+        )
     }
 
     dialog(showDialog)

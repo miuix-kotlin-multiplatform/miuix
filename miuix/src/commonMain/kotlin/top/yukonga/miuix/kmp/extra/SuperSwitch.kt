@@ -72,6 +72,7 @@ fun SuperSwitch(
                 isChecked = !isChecked
                 updatedOnCheckedChange?.invoke(isChecked)
             }
-        }
+        },
+        enabled = enabled
     )
 }
