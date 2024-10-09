@@ -29,6 +29,9 @@ kotlin {
     wasmJs {
         browser()
     }
+    js(IR) {
+        browser()
+    }
 
     sourceSets {
         val desktopMain by getting

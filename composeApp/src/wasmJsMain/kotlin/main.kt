@@ -5,7 +5,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalFontFamilyResolver
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.platform.Font
-import androidx.compose.ui.window.CanvasBasedWindow
+import androidx.compose.ui.window.ComposeViewport
 import kotlinx.browser.window
 import kotlinx.coroutines.await
 import org.khronos.webgl.ArrayBuffer
@@ -18,7 +18,9 @@ private const val MiSanVF = "./MiSans VF.woff2"
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
-    CanvasBasedWindow("miuix", canvasElementId = "uitestCanvas") {
+    ComposeViewport(
+        viewportContainerId = "composeApplication"
+    ) {
         val fontFamilyResolver = LocalFontFamilyResolver.current
         val fontsLoaded = remember { mutableStateOf(false) }
 
@@ -50,7 +52,7 @@ fun ArrayBuffer.toByteArray(): ByteArray {
     """
         function hideLoading() {
             document.getElementById('loading').style.display = 'none';
-            document.getElementById('uitestCanvas').style.display = 'block';
+            document.getElementById('composeApplication').style.display = 'block';
         }
     """
 )

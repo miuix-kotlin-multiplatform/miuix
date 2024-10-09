@@ -11,7 +11,8 @@ enum class Platform {
     IOS,
     Desktop,
     WasmJs,
-    MacOS
+    MacOS,
+    Js
 }
 
 /**
