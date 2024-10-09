@@ -2,7 +2,7 @@
 
 Miuix is a shared UI component based on [Compose Multiplatform](https://www.jetbrains.com/compose-multiplatform/).
 
-Currently supports Android / iOS / Desktop / WebAssembly / macOS.
+Now Supported: **Android** / **Desktop(JVM)** / **iOS** / **WasmJs** / **Js** / **macOS**.
 
 ### Start
 
