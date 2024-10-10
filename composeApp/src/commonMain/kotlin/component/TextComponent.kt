@@ -360,7 +360,8 @@ fun dialog2(showDialog: MutableState<Boolean>) {
                         title = "Dropdown",
                         items = dropdownOptions,
                         selectedIndex = dropdownSelectedOption.value,
-                        onSelectedIndexChange = { newOption -> dropdownSelectedOption.value = newOption }
+                        onSelectedIndexChange = { newOption -> dropdownSelectedOption.value = newOption },
+                        defaultWindowInsetsPadding = false
                     )
                 }
                 Spacer(Modifier.height(12.dp))

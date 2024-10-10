@@ -53,6 +53,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.BasicComponent
@@ -191,7 +192,6 @@ fun SuperDropdown(
                     modifier = if (defaultWindowInsetsPadding) {
                         modifier
                             .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
-                            .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
                     } else {
                         modifier
                     }
@@ -206,7 +206,11 @@ fun SuperDropdown(
                 ) {
                     LazyColumn(
                         modifier = Modifier
-                            .padding(horizontal = (windowWeightPx.dp - componentWidthPx.dp) / 2 / density.density)
+                            .padding(
+                                horizontal = (windowWeightPx.dp - componentWidthPx.dp) / 2 / density.density - if (defaultWindowInsetsPadding)
+                                    (WindowInsets.displayCutout.asPaddingValues(density).calculateLeftPadding(LayoutDirection.Ltr) +
+                                            WindowInsets.displayCutout.asPaddingValues(density).calculateRightPadding(LayoutDirection.Ltr)) / 2 else 0.dp
+                            )
                             .onGloballyPositioned { layoutCoordinates ->
                                 dropdownHeightPx = layoutCoordinates.size.height
                                 offsetPx = calculateOffsetPx(

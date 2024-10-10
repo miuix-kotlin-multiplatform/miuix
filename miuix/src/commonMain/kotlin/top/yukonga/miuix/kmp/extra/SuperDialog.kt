@@ -3,18 +3,12 @@ package top.yukonga.miuix.kmp.extra
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.captionBar
-import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -76,11 +70,12 @@ fun SuperDialog(
     content: @Composable () -> Unit
 ) {
     val density = LocalDensity.current
+    val getWindowSize by rememberUpdatedState(getWindowSize())
+    println(getWindowSize.width.dp / density.density)
     val paddingModifier = remember(outsideMargin) { Modifier.padding(horizontal = outsideMargin.width).padding(bottom = outsideMargin.height) }
     val roundedCorner by rememberUpdatedState(getRoundedCorner())
     val bottomCornerRadius by remember { derivedStateOf { if (roundedCorner != 0.dp) roundedCorner - outsideMargin.width else 32.dp } }
-    val getWindowSize by rememberUpdatedState(getWindowSize())
-    val contentAlignment by remember { derivedStateOf { if (getWindowSize.width > getWindowSize.height || getWindowSize.width.dp / density.density > 440.dp) Alignment.Center else Alignment.BottomCenter } }
+    val contentAlignment by remember { derivedStateOf { if (getWindowSize.width > getWindowSize.height && getWindowSize.width.dp / density.density > 1200.dp) Alignment.Center else Alignment.BottomCenter } }
 
     if (!dialogStates.contains(show)) dialogStates.add(show)
     LaunchedEffect(show.value) {
@@ -99,8 +94,6 @@ fun SuperDialog(
             Modifier
                 .imePadding()
                 .navigationBarsPadding()
-                .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
-                .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
         } else {
             Modifier
         }
@@ -117,7 +110,7 @@ fun SuperDialog(
     ) {
         Column(
             modifier = modifier
-                .then(if (contentAlignment != Alignment.Center) Modifier.fillMaxWidth() else Modifier.widthIn(max = 400.dp))
+                .widthIn(max = 420.dp)
                 .pointerInput(Unit) {
                     detectTapGestures { /* Do nothing to consume the click */ }
                 }
