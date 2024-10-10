@@ -33,23 +33,21 @@ jobs:
         with:
           name: AndroidExampleApp
           path: composeApp/build/outputs/apk/release
-      - name: Find apk
-        run: |
-          echo "RELEASE=$(find 'composeApp/build/outputs/apk/release' -name '*.apk')" >> $GITHUB_ENV
-          echo "DEBUG=$(find 'composeApp/build/outputs/apk/debug' -name '*.apk')" >> $GITHUB_ENV
       - name: Post to Telegram ci channel
         if: ${{ success() && github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && github.ref_type != 'tag' }}
         env:
           CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-          RELEASE: ${{ env.RELEASE }}
-          DEBUG: ${{ env.DEBUG }}
+          COMMIT_MESSAGE: |+
+            New CI from miuix\-kotlin\-multiplatform
+
+            ```
+            ${{ github.event.head_commit.message }}
+            ```
         run: |
           if [ ! -z "${{ secrets.BOT_TOKEN }}" ]; then
-            event_path=$GITHUB_EVENT_PATH
-            commit_count=$(jq -r '.commits | length' $event_path)
-            { echo -e 'New CI from miuix-kotlin-multiplatform\n'; git log -$commit_count --pretty=format:"%h %s"; } > ${{ github.workspace }}/git_log
-            ESCAPED="$(cat ${{ github.workspace }}/git_log | gawk '{gsub(/[_*[\]()~`>#+=\|{}.!-]/,"\\\\\\\\&")}1' | sed -e 's|"|\\"|g' -e 's|^[0-9a-z]\+|__&__|' | hexdump -v -e '/1 "%02X"' | sed 's/\(..\)/%\1/g')"
-            cd ${{ github.workspace }}
-            curl -v "https://api.telegram.org/bot${BOT_TOKEN}/sendMediaGroup?chat_id=${CHANNEL_ID}&media=%5B%7B%22type%22%3A%22document%22%2C%22media%22%3A%22attach%3A%2F%2Frelease%22%7D%2C%7B%22type%22%3A%22document%22%2C%22media%22%3A%22attach%3A%2F%2Fdebug%22%2C%22caption%22%3A%22${ESCAPED}%22%2C%22parse_mode%22%3A%22MarkdownV2%22%7D%5D" -F release="@$RELEASE" -F debug="@$DEBUG"
+            export RELEASE=$(find ./composeApp/build/outputs/apk/release -name "*.apk")
+            export DEBUG=$(find ./composeApp/build/outputs/apk/debug -name "*.apk")
+            ESCAPED=`python3 -c 'import json,os,urllib.parse; print(urllib.parse.quote(json.dumps(os.environ["COMMIT_MESSAGE"])))'`
+            curl -v "https://api.telegram.org/bot${BOT_TOKEN}/sendMediaGroup?chat_id=${CHANNEL_ID}&media=%5B%7B%22type%22%3A%22document%22%2C%20%22media%22%3A%22attach%3A%2F%2Frelease%22%7D%2C%7B%22type%22%3A%22document%22%2C%20%22media%22%3A%22attach%3A%2F%2Fdebug%22%2C%22parse_mode%22%3A%22MarkdownV2%22%2C%22caption%22%3A${ESCAPED}%7D%5D" -F release="@$RELEASE" -F debug="@$DEBUG"
           fi

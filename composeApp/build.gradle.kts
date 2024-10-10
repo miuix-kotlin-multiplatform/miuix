@@ -61,6 +61,7 @@ kotlin {
         }
         binaries.executable()
     }
+
     js(IR) {
         moduleName = "uitest"
         browser {
@@ -70,7 +71,6 @@ kotlin {
         }
         binaries.executable()
     }
-
 
     sourceSets {
         val desktopMain by getting
