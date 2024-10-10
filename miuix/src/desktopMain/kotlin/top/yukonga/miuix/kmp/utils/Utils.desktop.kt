@@ -19,7 +19,7 @@ object WindowProvider {
     fun getWindowSize(): WindowSize {
         return composeWindow?.let { window ->
             WindowSize(
-                width = window.bounds.width,
+                width = window.bounds.width - window.insets.left - window.insets.right,
                 height = window.bounds.height - window.insets.top
             )
         } ?: WindowSize(0, 0)
