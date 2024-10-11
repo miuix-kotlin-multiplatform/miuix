@@ -34,6 +34,7 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.isDialogShowing
 import top.yukonga.miuix.kmp.utils.getRoundedCorner
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
@@ -47,7 +48,7 @@ import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
  * @param summary The summary of the [SuperDialog].
  * @param summaryColor The color of the summary.
  * @param backgroundColor The background color of the [SuperDialog].
- * @param show The state of the [SuperDialog].
+ * @param show The show state of the [SuperDialog].
  * @param onDismissRequest The callback when the [SuperDialog] is dismissed.
  * @param outsideMargin The margin outside the [SuperDialog].
  * @param insideMargin The margin inside the [SuperDialog].
@@ -63,7 +64,7 @@ fun SuperDialog(
     summaryColor: Color = MiuixTheme.colorScheme.onSurfaceVariantDialog,
     backgroundColor: Color = MiuixTheme.colorScheme.surfaceVariant,
     show: MutableState<Boolean>,
-    onDismissRequest: () -> Unit,
+    onDismissRequest: (() -> Unit)? = null,
     outsideMargin: DpSize = DpSize(12.dp, 12.dp),
     insideMargin: Dp = 24.dp,
     defaultWindowInsetsPadding: Boolean = true,
@@ -85,9 +86,9 @@ fun SuperDialog(
         }
     }
 
-    BackHandler(enabled = show.value) {
-        dismissDialog()
-        onDismissRequest()
+    BackHandler(enabled = isDialogShowing()) {
+        dismissDialog(show)
+        onDismissRequest?.invoke()
     }
 
     Box(
@@ -102,8 +103,8 @@ fun SuperDialog(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = {
-                        dismissDialog()
-                        onDismissRequest()
+                        dismissDialog(show)
+                        onDismissRequest?.invoke()
                     }
                 )
             }

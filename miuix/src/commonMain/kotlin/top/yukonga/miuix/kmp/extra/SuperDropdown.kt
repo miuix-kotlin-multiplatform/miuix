@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -64,6 +63,7 @@ import top.yukonga.miuix.kmp.icon.icons.Check
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.isPopupShowing
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showPopup
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
@@ -103,12 +103,14 @@ fun SuperDropdown(
     enabled: Boolean = true
 ) {
     val isDropdownExpanded = remember { mutableStateOf(false) }
+
     if (!dropdownStates.contains(isDropdownExpanded)) dropdownStates.add(isDropdownExpanded)
     LaunchedEffect(isDropdownExpanded.value) {
         if (isDropdownExpanded.value) {
-            dropdownStates.forEach { state -> if (state == isDropdownExpanded) state.value = false }
+            dropdownStates.forEach { state -> if (state != isDropdownExpanded) state.value = false }
         }
     }
+
     val hapticFeedback = LocalHapticFeedback.current
     val density = LocalDensity.current
     var alignLeft by rememberSaveable { mutableStateOf(true) }
@@ -133,8 +135,15 @@ fun SuperDropdown(
     )
     val insideHeightPx by rememberUpdatedState(with(density) { insideMargin.height.toPx() }.roundToInt())
 
+    BackHandler(enabled = isPopupShowing()) {
+        dismissPopup(isDropdownExpanded)
+    }
+
     BasicComponent(
-        onClick = { isDropdownExpanded.value = enabled },
+        onClick = {
+            isDropdownExpanded.value = enabled
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+        },
         modifier = modifier
             .pointerInput(Unit) {
                 awaitPointerEventScope {
@@ -178,15 +187,7 @@ fun SuperDropdown(
         },
         enabled = enabled
     )
-    BackHandler(
-        enabled = isDropdownExpanded.value
-    ) {
-        dismissPopup()
-        isDropdownExpanded.value = false
-    }
-
     if (isDropdownExpanded.value) {
-        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
         showPopup(
             content = {
                 Box(
@@ -198,10 +199,11 @@ fun SuperDropdown(
                     }
                         .fillMaxSize()
                         .pointerInput(Unit) {
-                            detectTapGestures(onTap = {
-                                dismissPopup()
-                                isDropdownExpanded.value = false
-                            })
+                            detectTapGestures(
+                                onTap = {
+                                    dismissPopup(isDropdownExpanded)
+                                }
+                            )
                         }
                         .offset(y = offsetPx.dp / density.density)
                 ) {
@@ -228,8 +230,7 @@ fun SuperDropdown(
                             .align(if (alignLeft && !alwaysRight) AbsoluteAlignment.TopLeft else AbsoluteAlignment.TopRight)
                             .graphicsLayer(
                                 shadowElevation = 18f,
-                                shape = SquircleShape(18.dp),
-                                clip = false
+                                shape = SquircleShape(18.dp)
                             )
                             .clip(SquircleShape(18.dp))
                             .background(MiuixTheme.colorScheme.surface)
@@ -237,13 +238,13 @@ fun SuperDropdown(
                         item {
                             items.forEachIndexed { index, option ->
                                 DropdownImpl(
-                                    options = items,
+                                    text = option,
+                                    optionSize = items.size,
                                     isSelected = items[selectedIndex] == option,
                                     onSelectedIndexChange = {
                                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                         onSelectedIndexChange(it)
-                                        dismissPopup()
-                                        isDropdownExpanded.value = false
+                                        dismissPopup(isDropdownExpanded)
                                     },
                                     textWidthDp = textWidthDp,
                                     index = index
@@ -260,7 +261,8 @@ fun SuperDropdown(
 /**
  * The implementation of the dropdown.
  *
- * @param options The options of the dropdown.
+ * @param text The text of the current option.
+ * @param optionSize The size of the options.
  * @param isSelected Whether the option is selected.
  * @param index The index of the current option in the options.
  * @param onSelectedIndexChange The callback when the index is selected.
@@ -268,15 +270,15 @@ fun SuperDropdown(
  */
 @Composable
 fun DropdownImpl(
-    options: List<String>,
+    text: String,
+    optionSize: Int,
     isSelected: Boolean,
     index: Int,
     onSelectedIndexChange: (Int) -> Unit,
     textWidthDp: Dp?
 ) {
-    val dropdownInteractionSource = remember { MutableInteractionSource() }
     val additionalTopPadding = if (index == 0) 24.dp else 14.dp
-    val additionalBottomPadding = if (index == options.size - 1) 24.dp else 14.dp
+    val additionalBottomPadding = if (index == optionSize - 1) 24.dp else 14.dp
     val textColor = if (isSelected) {
         MiuixTheme.colorScheme.onTertiaryContainer
     } else {
@@ -305,7 +307,7 @@ fun DropdownImpl(
     ) {
         Text(
             modifier = Modifier.width(textWidthDp ?: 50.dp),
-            text = options[index],
+            text = text,
             fontSize = 15.sp,
             fontWeight = FontWeight.Medium,
             color = textColor,
@@ -349,7 +351,6 @@ fun calculateOffsetPx(
         if (offset > insideHeightPx + statusBarPx) offset else insideHeightPx + statusBarPx
     }
 }
-
 
 /**
  * Only one dropdown is allowed to be displayed at a time.

@@ -302,10 +302,7 @@ fun dialog(showDialog: MutableState<Boolean>) {
             SuperDialog(
                 title = "Dialog 1",
                 summary = "Summary",
-                show = showDialog,
-                onDismissRequest = {
-                    showDialog.value = false
-                },
+                show = showDialog
             ) {
                 TextField(
                     modifier = Modifier.padding(bottom = 16.dp),
@@ -320,8 +317,7 @@ fun dialog(showDialog: MutableState<Boolean>) {
                         modifier = Modifier.weight(1f),
                         text = "Cancel",
                         onClick = {
-                            dismissDialog()
-                            showDialog.value = false
+                            dismissDialog(showDialog)
                         }
                     )
                     Spacer(Modifier.width(20.dp))
@@ -330,8 +326,7 @@ fun dialog(showDialog: MutableState<Boolean>) {
                         text = "Confirm",
                         submit = true,
                         onClick = {
-                            dismissDialog()
-                            showDialog.value = false
+                            dismissDialog(showDialog)
                         }
                     )
                 }
@@ -350,10 +345,7 @@ fun dialog2(showDialog: MutableState<Boolean>) {
             SuperDialog(
                 title = "Dialog 2",
                 backgroundColor = MiuixTheme.colorScheme.background,
-                show = showDialog,
-                onDismissRequest = {
-                    showDialog.value = false
-                },
+                show = showDialog
             ) {
                 Card {
                     SuperDropdown(
@@ -372,8 +364,7 @@ fun dialog2(showDialog: MutableState<Boolean>) {
                         modifier = Modifier.weight(1f),
                         text = "Cancel",
                         onClick = {
-                            dismissDialog()
-                            showDialog.value = false
+                            dismissDialog(showDialog)
                         }
                     )
                     Spacer(Modifier.width(20.dp))
@@ -382,8 +373,7 @@ fun dialog2(showDialog: MutableState<Boolean>) {
                         text = "Confirm",
                         submit = true,
                         onClick = {
-                            dismissDialog()
-                            showDialog.value = false
+                            dismissDialog(showDialog)
                         }
                     )
                 }

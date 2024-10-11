@@ -12,6 +12,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.zIndex
@@ -39,16 +40,28 @@ class MiuixPopupUtil {
         fun showDialog(
             content: (@Composable () -> Unit)? = null,
         ) {
-            isPopupShowing.value = false
+            if (isDialogShowing.value) return
             isDialogShowing.value = true
             dialogContext.value = content
         }
 
         /**
-         * Dismiss the dialog.
+         * Check if the dialog is showing.
          */
-        fun dismissDialog() {
+        fun isDialogShowing(): Boolean {
+            return isDialogShowing.value
+        }
+
+        /**
+         * Dismiss the dialog.
+         *
+         * @param show The show state of the dialog.
+         */
+        fun dismissDialog(
+            show: MutableState<Boolean>,
+        ) {
             isDialogShowing.value = false
+            show.value = false
         }
 
         /**
@@ -60,15 +73,28 @@ class MiuixPopupUtil {
         fun showPopup(
             content: (@Composable () -> Unit)? = null,
         ) {
+            if (isPopupShowing.value) return
             isPopupShowing.value = true
             popupContext.value = content
         }
 
         /**
-         * Dismiss the popup.
+         * Check if the popup is showing.
          */
-        fun dismissPopup() {
+        fun isPopupShowing(): Boolean {
+            return isPopupShowing.value
+        }
+
+        /**
+         * Dismiss the popup.
+         *
+         * @param show The show state of the popup.
+         */
+        fun dismissPopup(
+            show: MutableState<Boolean>,
+        ) {
             isPopupShowing.value = false
+            show.value = false
         }
 
         /**
