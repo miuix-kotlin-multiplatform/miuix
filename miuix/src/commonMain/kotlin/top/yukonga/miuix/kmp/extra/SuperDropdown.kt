@@ -24,6 +24,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -53,6 +54,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.Box
@@ -73,6 +75,7 @@ import kotlin.math.roundToInt
  * A dropdown with a title and a summary.
  *
  * @param modifier The modifier to be applied to the [SuperDropdown].
+ * @param popupModifier The modifier to be applied to the popup of the [SuperDropdown].
  * @param title The title of the [SuperDropdown].
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperDropdown].
@@ -89,6 +92,7 @@ import kotlin.math.roundToInt
 @Composable
 fun SuperDropdown(
     modifier: Modifier = Modifier,
+    popupModifier: Modifier = Modifier,
     title: String,
     titleColor: Color = MiuixTheme.colorScheme.onSurface,
     summary: String? = null,
@@ -135,6 +139,17 @@ fun SuperDropdown(
         with(density) { WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
     )
     val insideHeightPx by rememberUpdatedState(with(density) { insideMargin.height.toPx() }.roundToInt())
+    val displayCutoutSize =
+        WindowInsets.displayCutout.asPaddingValues(density).calculateLeftPadding(LayoutDirection.Ltr) +
+                WindowInsets.displayCutout.asPaddingValues(density).calculateRightPadding(LayoutDirection.Ltr)
+    val popupPadding by rememberUpdatedState {
+        derivedStateOf {
+            max(
+                horizontalPadding + (windowWeightPx.dp - componentWidthPx.dp) / 2 / density.density -
+                        if (defaultWindowInsetsPadding) displayCutoutSize / 2 else 0.dp, 0.dp
+            )
+        }
+    }
 
     BackHandler(enabled = isPopupShowing()) {
         dismissPopup(isDropdownExpanded)
@@ -193,10 +208,10 @@ fun SuperDropdown(
             content = {
                 Box(
                     modifier = if (defaultWindowInsetsPadding) {
-                        modifier
+                        popupModifier
                             .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
                     } else {
-                        modifier
+                        popupModifier
                     }
                         .fillMaxSize()
                         .pointerInput(Unit) {
@@ -211,9 +226,7 @@ fun SuperDropdown(
                     LazyColumn(
                         modifier = Modifier
                             .padding(
-                                horizontal = horizontalPadding + (windowWeightPx.dp - componentWidthPx.dp) / 2 / density.density - if (defaultWindowInsetsPadding)
-                                    (WindowInsets.displayCutout.asPaddingValues(density).calculateLeftPadding(LayoutDirection.Ltr) +
-                                            WindowInsets.displayCutout.asPaddingValues(density).calculateRightPadding(LayoutDirection.Ltr)) / 2 else 0.dp
+                                horizontal = popupPadding.invoke().value
                             )
                             .onGloballyPositioned { layoutCoordinates ->
                                 dropdownHeightPx = layoutCoordinates.size.height
