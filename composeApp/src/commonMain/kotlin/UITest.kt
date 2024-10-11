@@ -82,7 +82,7 @@ fun UITest(
         }
     }
 
-    val showFPSMonitor = remember { mutableStateOf(false) }
+    val showFPSMonitor = remember { mutableStateOf(true) }
     val showTopAppBar = remember { mutableStateOf(true) }
     val showBottomBar = remember { mutableStateOf(true) }
     val showFloatingActionButton = remember { mutableStateOf(true) }
@@ -165,7 +165,7 @@ fun UITest(
         FPSMonitor(
             modifier = Modifier
                 .statusBarsPadding()
-                .padding(horizontal = 28.dp)
+                .padding(start = 28.dp, top = 18.dp)
         )
     }
 }

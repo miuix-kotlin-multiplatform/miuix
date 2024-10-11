@@ -19,14 +19,26 @@ import top.yukonga.miuix.kmp.basic.Text
 @Composable
 fun FPSMonitor(modifier: Modifier = Modifier) {
     var fps by remember { mutableStateOf(0) }
+    var maxFps by remember { mutableStateOf(0) }
     var lastFrameTime by remember { mutableStateOf(0L) }
     var frameCount by remember { mutableStateOf(0) }
     var totalFrameTime by remember { mutableStateOf(0L) }
 
+    if (fps > maxFps) {
+        maxFps = fps
+    }
+
+    val color = when {
+        fps >= maxFps - 2 -> Color.Green
+        fps >= maxFps - 6 -> Color.Blue
+        fps >= maxFps - 15 -> Color(0xFFFFD700)
+        else -> Color.Red
+    }
+
     Text(
         text = "FPS: $fps",
         modifier = modifier,
-        color = if (fps < 57) Color.Red else Color.Green
+        color = color
     )
 
     LaunchedEffect(Unit) {

@@ -72,8 +72,8 @@ fun SuperDialog(
 ) {
     val density = LocalDensity.current
     val getWindowSize by rememberUpdatedState(getWindowSize())
-    val windowWidth = getWindowSize.width.dp / density.density
-    val windowHeight = getWindowSize.height.dp / density.density
+    val windowWidth by rememberUpdatedState(getWindowSize.width.dp / density.density)
+    val windowHeight by rememberUpdatedState(getWindowSize.height.dp / density.density)
     val paddingModifier = remember(outsideMargin) { Modifier.padding(horizontal = outsideMargin.width).padding(bottom = outsideMargin.height) }
     val roundedCorner by rememberUpdatedState(getRoundedCorner())
     val bottomCornerRadius by remember { derivedStateOf { if (roundedCorner != 0.dp) roundedCorner - outsideMargin.width else 32.dp } }

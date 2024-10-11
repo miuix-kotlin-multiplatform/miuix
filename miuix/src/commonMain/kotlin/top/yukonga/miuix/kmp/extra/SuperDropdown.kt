@@ -117,8 +117,9 @@ fun SuperDropdown(
     val textMeasurer = rememberTextMeasurer()
     val textStyle = remember { TextStyle(fontWeight = FontWeight.Medium, fontSize = 17.sp) }
     val textWidthDp = remember(items) { items.maxOfOrNull { with(density) { textMeasurer.measure(text = it, style = textStyle).size.width.toDp() } } }
-    val windowWeightPx by rememberUpdatedState(getWindowSize().width)
-    val windowHeightPx by rememberUpdatedState(getWindowSize().height)
+    val getWindowSize = rememberUpdatedState(getWindowSize())
+    val windowWeightPx by rememberUpdatedState(getWindowSize.value.width)
+    val windowHeightPx by rememberUpdatedState(getWindowSize.value.height)
     var dropdownOffsetPx by remember { mutableStateOf(0) }
     var dropdownHeightPx by remember { mutableStateOf(0) }
     var componentHeightPx by remember { mutableStateOf(0) }
