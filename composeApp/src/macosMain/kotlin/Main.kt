@@ -15,7 +15,7 @@ fun main() {
         }
     }
     Window(
-        title = "miuix",
+        title = "Miuix",
         size = DpSize(420.dp, 820.dp)
     ) {
         App()
