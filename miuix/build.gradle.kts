@@ -46,10 +46,8 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
         }
         desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
             implementation(libs.jetbrains.compose.window.size)
         }
         jsMain.dependencies {
