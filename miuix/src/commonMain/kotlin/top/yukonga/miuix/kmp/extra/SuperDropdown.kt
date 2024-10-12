@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.BlendModeColorFilter
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
@@ -106,36 +107,23 @@ fun SuperDropdown(
     enabled: Boolean = true
 ) {
     val isDropdownExpanded = remember { mutableStateOf(false) }
-
-    if (!dropdownStates.contains(isDropdownExpanded)) dropdownStates.add(isDropdownExpanded)
-    LaunchedEffect(isDropdownExpanded.value) {
-        if (isDropdownExpanded.value) {
-            dropdownStates.forEach { state -> if (state != isDropdownExpanded) state.value = false }
-        }
-    }
-
     val hapticFeedback = LocalHapticFeedback.current
+    val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     var alignLeft by rememberSaveable { mutableStateOf(true) }
     var dropdownOffsetPx by remember { mutableStateOf(0) }
     var componentHeightPx by remember { mutableStateOf(0) }
     var componentWidthPx by remember { mutableStateOf(0) }
 
-    BackHandler(enabled = isDropdownExpanded.value) {
-        dismissPopup(isDropdownExpanded)
-    }
-
     BasicComponent(
-        onClick = {
-            isDropdownExpanded.value = enabled
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-        },
         modifier = modifier
             .pointerInput(Unit) {
                 awaitPointerEventScope {
-                    while (true) {
+                    while (enabled) {
                         val event = awaitPointerEvent()
-                        val position = event.changes.first().position
-                        alignLeft = position.x < (size.width / 2)
+                        if (event.type != PointerEventType.Move) {
+                            val eventChange = event.changes.first()
+                            alignLeft = eventChange.position.x < (size.width / 2)
+                        }
                     }
                 }
             }
@@ -157,7 +145,7 @@ fun SuperDropdown(
                 modifier = Modifier.padding(end = 6.dp),
                 text = items[selectedIndex],
                 fontSize = 15.sp,
-                color = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant,
+                color = actionColor,
                 textAlign = TextAlign.End,
             )
             Image(
@@ -165,16 +153,25 @@ fun SuperDropdown(
                     .size(15.dp)
                     .align(Alignment.CenterVertically),
                 imageVector = MiuixIcons.ArrowUpDown,
-                colorFilter = BlendModeColorFilter(
-                    if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant,
-                    BlendMode.SrcIn
-                ),
+                colorFilter = BlendModeColorFilter(actionColor, BlendMode.SrcIn),
                 contentDescription = null
             )
+        },
+        onClick = {
+            if (enabled) {
+                isDropdownExpanded.value = enabled
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+            }
         },
         enabled = enabled
     )
     if (isDropdownExpanded.value) {
+        if (!dropdownStates.contains(isDropdownExpanded)) dropdownStates.add(isDropdownExpanded)
+        LaunchedEffect(isDropdownExpanded.value) {
+            if (isDropdownExpanded.value) {
+                dropdownStates.forEach { state -> if (state != isDropdownExpanded) state.value = false }
+            }
+        }
         val density = LocalDensity.current
         var offsetPx by remember { mutableStateOf(0) }
         val textMeasurer = rememberTextMeasurer()
@@ -194,16 +191,17 @@ fun SuperDropdown(
         )
         val insideHeightPx by rememberUpdatedState(with(density) { insideMargin.height.toPx() }.roundToInt())
         val displayCutoutSize =
-            WindowInsets.displayCutout.asPaddingValues(density).calculateLeftPadding(LayoutDirection.Ltr) +
-                    WindowInsets.displayCutout.asPaddingValues(density).calculateRightPadding(LayoutDirection.Ltr)
+            WindowInsets.displayCutout.asPaddingValues(density).calculateLeftPadding(LayoutDirection.Ltr) + WindowInsets.displayCutout.asPaddingValues(density)
+                .calculateRightPadding(LayoutDirection.Ltr)
         val popupPadding by rememberUpdatedState {
             derivedStateOf {
                 max(
-                    horizontalPadding + (windowWeightPx.dp - componentWidthPx.dp) / 2 / density.density -
-                            if (defaultWindowInsetsPadding) displayCutoutSize / 2 else 0.dp, 0.dp
+                    horizontalPadding + (windowWeightPx.dp - componentWidthPx.dp) / 2 / density.density
+                            - if (defaultWindowInsetsPadding) displayCutoutSize / 2 else 0.dp, 0.dp
                 )
             }
         }
+        BackHandler(enabled = isDropdownExpanded.value) { dismissPopup(isDropdownExpanded) }
         showPopup(
             content = {
                 Box(

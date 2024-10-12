@@ -56,33 +56,29 @@ fun SuperArrow(
         summary = summary,
         summaryColor = summaryColor,
         leftAction = leftAction,
-        rightActions = { createRightActions(rightText) },
-        onClick = updatedOnClick,
+        rightActions = {
+            if (rightText != null) {
+                Text(
+                    text = rightText,
+                    fontSize = 15.sp,
+                    color = MiuixTheme.colorScheme.onSurfaceVariantActions,
+                    textAlign = TextAlign.End,
+                )
+            }
+            Image(
+                modifier = Modifier
+                    .size(15.dp)
+                    .padding(start = 6.dp),
+                imageVector = MiuixIcons.ArrowRight,
+                contentDescription = null,
+                colorFilter = BlendModeColorFilter(MiuixTheme.colorScheme.onSurfaceVariantActions, BlendMode.SrcIn),
+            )
+        },
+        onClick = {
+            if (enabled) {
+                updatedOnClick?.invoke()
+            }
+        },
         enabled = enabled
-    )
-}
-
-/**
- * Create the right actions of the [SuperArrow].
- *
- * @param rightText The text on the right side of the [SuperArrow].
- */
-@Composable
-private fun createRightActions(rightText: String?) {
-    if (rightText != null) {
-        Text(
-            text = rightText,
-            fontSize = 15.sp,
-            color = MiuixTheme.colorScheme.onSurfaceVariantActions,
-            textAlign = TextAlign.End,
-        )
-    }
-    Image(
-        modifier = Modifier
-            .size(15.dp)
-            .padding(start = 6.dp),
-        imageVector = MiuixIcons.ArrowRight,
-        contentDescription = null,
-        colorFilter = BlendModeColorFilter(MiuixTheme.colorScheme.onSurfaceVariantActions, BlendMode.SrcIn),
     )
 }

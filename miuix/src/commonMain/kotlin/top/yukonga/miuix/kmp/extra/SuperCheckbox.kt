@@ -46,9 +46,7 @@ fun SuperCheckbox(
     var isChecked by remember { mutableStateOf(checked) }
     val updatedOnCheckedChange by rememberUpdatedState(onCheckedChange)
 
-    if (isChecked != checked) {
-        isChecked = checked
-    }
+    if (isChecked != checked) isChecked = checked
 
     BasicComponent(
         modifier = modifier,

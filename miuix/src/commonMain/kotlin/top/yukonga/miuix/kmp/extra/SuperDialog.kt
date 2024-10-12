@@ -86,9 +86,11 @@ fun SuperDialog(
         }
     }
 
-    BackHandler(enabled = isDialogShowing()) {
-        dismissDialog(show)
-        onDismissRequest?.invoke()
+    if (show.value) {
+        BackHandler(enabled = isDialogShowing()) {
+            dismissDialog(show)
+            onDismissRequest?.invoke()
+        }
     }
 
     Box(
