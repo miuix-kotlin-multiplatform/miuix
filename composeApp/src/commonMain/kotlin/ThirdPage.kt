@@ -58,8 +58,7 @@ fun ThirdPage(
             SuperSwitch(
                 title = "Enable Page User Scroll",
                 checked = enablePageUserScroll,
-                onCheckedChange = onEnablePageUserScrollChange,
-                enabled = platform() != Platform.WasmJs,
+                onCheckedChange = onEnablePageUserScrollChange
             )
             SuperDropdown(
                 title = "Color Mode",
