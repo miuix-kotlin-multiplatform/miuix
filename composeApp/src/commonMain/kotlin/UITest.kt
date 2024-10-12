@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.captionBarPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -165,7 +166,8 @@ fun UITest(
         FPSMonitor(
             modifier = Modifier
                 .statusBarsPadding()
-                .padding(start = 28.dp, top = 18.dp)
+                .captionBarPadding()
+                .padding(horizontal = 4.dp)
         )
     }
 }

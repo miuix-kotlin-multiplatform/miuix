@@ -32,7 +32,6 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 fun OtherComponent(padding: PaddingValues) {
-
     var buttonText by remember { mutableStateOf("Cancel") }
     var submitButtonText by remember { mutableStateOf("Submit") }
     var clickCount by remember { mutableStateOf(0) }

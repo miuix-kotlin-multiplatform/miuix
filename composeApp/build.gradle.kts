@@ -84,7 +84,6 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
 
             implementation(project(":miuix"))
         }
@@ -151,15 +150,15 @@ android {
             if (keystorePath != null) signingConfig = signingConfigs.getByName("github")
         }
     }
-
-    dependencies {
-        debugImplementation(compose.uiTooling)
-    }
 }
 
 compose.desktop {
     application {
         mainClass = "MainKt"
+
+        buildTypes.release.proguard {
+            configurationFiles.from("proguard-rules-jvm.pro")
+        }
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
