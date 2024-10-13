@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -68,7 +69,6 @@ import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showPopup
 import top.yukonga.miuix.kmp.utils.getWindowSize
-import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import kotlin.math.roundToInt
 
 /**
@@ -172,6 +172,7 @@ fun SuperDropdown(
                 dropdownStates.forEach { state -> if (state != isDropdownExpanded) state.value = false }
             }
         }
+
         val density = LocalDensity.current
         var offsetPx by remember { mutableStateOf(0) }
         val textMeasurer = rememberTextMeasurer()
@@ -201,7 +202,9 @@ fun SuperDropdown(
                 )
             }
         }
+
         BackHandler(enabled = isDropdownExpanded.value) { dismissPopup(isDropdownExpanded) }
+
         showPopup(
             content = {
                 Box(
@@ -241,9 +244,9 @@ fun SuperDropdown(
                             .align(if (alignLeft && !alwaysRight) AbsoluteAlignment.TopLeft else AbsoluteAlignment.TopRight)
                             .graphicsLayer(
                                 shadowElevation = 18f,
-                                shape = SquircleShape(18.dp)
+                                shape = RoundedCornerShape(18.dp)
                             )
-                            .clip(SquircleShape(18.dp))
+                            .clip(RoundedCornerShape(18.dp))
                             .background(MiuixTheme.colorScheme.surface)
                     ) {
                         item {

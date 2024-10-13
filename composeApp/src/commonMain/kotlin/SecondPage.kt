@@ -22,7 +22,7 @@ fun SecondPage(
         contentPadding = PaddingValues(top = padding.calculateTopPadding()),
         topAppBarScrollBehavior = topAppBarScrollBehavior
     ) {
-        items(25) {
+        items(20) {
             SuperDropdown(
                 title = "Dropdown",
                 summary = "Popup near click",

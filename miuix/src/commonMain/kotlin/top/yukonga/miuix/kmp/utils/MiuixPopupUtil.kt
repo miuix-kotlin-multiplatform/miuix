@@ -3,10 +3,12 @@ package top.yukonga.miuix.kmp.utils
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
@@ -105,6 +107,8 @@ class MiuixPopupUtil {
             AnimatedVisibility(
                 visible = isDialogShowing.value || isPopupShowing.value,
                 modifier = Modifier.zIndex(1f).fillMaxSize(),
+                enter = fadeIn(animationSpec = tween(500)),
+                exit = fadeOut(animationSpec = tween(500))
             ) {
                 Box(
                     modifier = Modifier
@@ -150,14 +154,14 @@ class MiuixPopupUtil {
                 visible = isPopupShowing.value,
                 modifier = Modifier.zIndex(2f).fillMaxSize(),
                 enter = fadeIn(
-                    animationSpec = tween(100)
+                    animationSpec = tween(150)
                 ) + scaleIn(
-                    animationSpec = tween(100), initialScale = 0.9f
+                    animationSpec = tween(150), initialScale = 0.9f
                 ),
                 exit = fadeOut(
-                    animationSpec = tween(100)
+                    animationSpec = tween(150)
                 ) + scaleOut(
-                    animationSpec = tween(100), targetScale = 0.9f
+                    animationSpec = tween(150), targetScale = 0.9f
                 )
             ) {
                 Box(

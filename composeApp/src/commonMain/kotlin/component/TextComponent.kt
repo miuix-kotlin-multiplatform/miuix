@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
@@ -45,8 +46,6 @@ import top.yukonga.miuix.kmp.extra.SuperDropdown
 import top.yukonga.miuix.kmp.extra.SuperSwitch
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showDialog
-import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
 @Composable
 fun TextComponent() {
@@ -67,116 +66,128 @@ fun TextComponent() {
     var miuixSuperSwitchState by remember { mutableStateOf(false) }
     var miuixSuperSwitchAnimState by remember { mutableStateOf(false) }
 
-    BasicComponent(
-        title = "Title",
-        summary = "Summary",
-        leftAction = {
-            Text(text = "Left")
-        },
-        rightActions = {
-            Text(text = "Right1")
-            Spacer(Modifier.width(6.dp))
-            Text(text = "Right2")
-        }
-    )
-
-    SuperArrow(
-        title = "Arrow",
-        summary = "With an arrow on right",
-        onClick = {}
-    )
-
-    SuperArrow(
-        leftAction = {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(42.dp)
-                    .clip(SquircleShape(14.dp))
-                    .background(MiuixTheme.colorScheme.primary.copy(alpha = 0.2f))
-            ) {
-                Image(
-                    colorFilter = ColorFilter.tint(MiuixTheme.colorScheme.onBackground),
-                    imageVector = Icons.Default.Star,
-                    contentDescription = "Person",
-                )
-            }
-        },
-        title = "Title",
-        summary = "Click to show Dialog 1",
-        onClick = {
-            showDialog.value = true
-        }
-    )
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Checkbox(
-            modifier = Modifier,
-            checked = checkbox,
-            onCheckedChange = { checkbox = it }
-
-        )
-        Checkbox(
-            modifier = Modifier.padding(start = 8.dp),
-            checked = checkboxTrue,
-            onCheckedChange = { checkboxTrue = it }
-        )
-        Checkbox(
-            modifier = Modifier.padding(start = 8.dp),
-            enabled = false,
-            checked = false,
-            onCheckedChange = { }
-
-        )
-        Checkbox(
-            modifier = Modifier.padding(start = 8.dp),
-            enabled = false,
-            checked = true,
-            onCheckedChange = { }
-        )
-    }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Switch(
-            checked = switch,
-            onCheckedChange = { switch = it }
-        )
-        Switch(
-            modifier = Modifier.padding(start = 6.dp),
-            checked = switchTrue,
-            onCheckedChange = { switchTrue = it }
-        )
-        Switch(
-            modifier = Modifier.padding(start = 6.dp),
-            enabled = false,
-            checked = false,
-            onCheckedChange = { }
-        )
-        Switch(
-            modifier = Modifier.padding(start = 6.dp),
-            enabled = false,
-            checked = true,
-            onCheckedChange = { }
-        )
-    }
-
-    SmallTitle(text = "Title")
-
+    SmallTitle(text = "Basic")
     Card(
         modifier = Modifier
-            .fillMaxWidth()
             .padding(horizontal = 12.dp)
+            .padding(bottom = 6.dp)
     ) {
+        BasicComponent(
+            title = "Title",
+            summary = "Summary",
+            leftAction = {
+                Text(text = "Left")
+            },
+            rightActions = {
+                Text(text = "Right1")
+                Spacer(Modifier.width(6.dp))
+                Text(text = "Right2")
+            },
+            onClick = {},
+            enabled = true
+        )
+        BasicComponent(
+            title = "Title",
+            summary = "Summary",
+            leftAction = {
+                Text(
+                    text = "Left",
+                    color = MiuixTheme.colorScheme.disabledOnSecondaryVariant
+                )
+            },
+            rightActions = {
+                Text(
+                    text = "Right1",
+                    color = MiuixTheme.colorScheme.disabledOnSecondaryVariant
+                )
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    text = "Right2",
+                    color = MiuixTheme.colorScheme.disabledOnSecondaryVariant
+                )
+            },
+            enabled = false
+        )
+    }
+
+    SmallTitle(text = "Arrow & Dialog")
+    Card(
+        modifier = Modifier
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 6.dp)
+    ) {
+        SuperArrow(
+            leftAction = {
+                Box(
+                    contentAlignment = Alignment.TopStart,
+                ) {
+                    Image(
+                        colorFilter = ColorFilter.tint(MiuixTheme.colorScheme.onBackground),
+                        imageVector = Icons.Default.Star,
+                        contentDescription = "Person",
+                    )
+                }
+            },
+            title = "Arrow",
+            summary = "Click to show Dialog 1",
+            onClick = {
+                showDialog.value = true
+            }
+        )
+
+        SuperArrow(
+            title = "Arrow",
+            summary = "Click to show Dialog 2",
+            onClick = {
+                showDialog2.value = true
+            }
+        )
+
+        SuperArrow(
+            title = "Disabled Arrow",
+            onClick = {},
+            enabled = false
+        )
+    }
+
+    SmallTitle(text = "Checkbox")
+    Card(
+        modifier = Modifier
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 6.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Checkbox(
+                modifier = Modifier,
+                checked = checkbox,
+                onCheckedChange = { checkbox = it }
+
+            )
+            Checkbox(
+                modifier = Modifier.padding(start = 8.dp),
+                checked = checkboxTrue,
+                onCheckedChange = { checkboxTrue = it }
+            )
+            Checkbox(
+                modifier = Modifier.padding(start = 8.dp),
+                enabled = false,
+                checked = false,
+                onCheckedChange = { }
+
+            )
+            Checkbox(
+                modifier = Modifier.padding(start = 8.dp),
+                enabled = false,
+                checked = true,
+                onCheckedChange = { }
+            )
+        }
+
         SuperCheckbox(
             checkboxLocation = CheckboxLocation.Right,
             title = "Checkbox",
@@ -210,6 +221,42 @@ fun TextComponent() {
             enabled = false,
             onCheckedChange = {},
         )
+    }
+
+    SmallTitle(text = "Switch")
+    Card(
+        modifier = Modifier
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 6.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Switch(
+                checked = switch,
+                onCheckedChange = { switch = it }
+            )
+            Switch(
+                modifier = Modifier.padding(start = 6.dp),
+                checked = switchTrue,
+                onCheckedChange = { switchTrue = it }
+            )
+            Switch(
+                modifier = Modifier.padding(start = 6.dp),
+                enabled = false,
+                checked = false,
+                onCheckedChange = { }
+            )
+            Switch(
+                modifier = Modifier.padding(start = 6.dp),
+                enabled = false,
+                checked = true,
+                onCheckedChange = { }
+            )
+        }
 
         SuperSwitch(
             title = "Switch",
@@ -248,21 +295,15 @@ fun TextComponent() {
             enabled = false,
             onCheckedChange = {},
         )
+    }
 
-        SuperArrow(
-            title = "Arrow",
-            summary = "Click to show Dialog 2",
-            onClick = {
-                showDialog2.value = true
-            }
-        )
+    SmallTitle(text = "Dropdown")
 
-        SuperArrow(
-            title = "Disabled Arrow",
-            onClick = {},
-            enabled = false
-        )
-
+    Card(
+        modifier = Modifier
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 6.dp)
+    ) {
         SuperDropdown(
             title = "Dropdown",
             summary = "Popup near click",
@@ -282,7 +323,7 @@ fun TextComponent() {
 
         SuperDropdown(
             title = "Disabled Dropdown",
-            items = listOf("Option 1"),
+            items = listOf("Option 3"),
             selectedIndex = 0,
             onSelectedIndexChange = {},
             enabled = false
@@ -293,91 +334,96 @@ fun TextComponent() {
     dialog2(showDialog2)
 }
 
+
 @Composable
 fun dialog(showDialog: MutableState<Boolean>) {
-    if (!showDialog.value) return
     val value = remember { mutableStateOf("") }
-    showDialog(
-        content = {
-            SuperDialog(
-                title = "Dialog 1",
-                summary = "Summary",
-                show = showDialog
-            ) {
-                TextField(
-                    modifier = Modifier.padding(bottom = 16.dp),
-                    value = value.value,
-                    maxLines = 1,
-                    onValueChange = { value.value = it }
-                )
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Button(
-                        modifier = Modifier.weight(1f),
-                        text = "Cancel",
-                        onClick = {
-                            dismissDialog(showDialog)
-                        }
-                    )
-                    Spacer(Modifier.width(20.dp))
-                    Button(
-                        modifier = Modifier.weight(1f),
-                        text = "Confirm",
-                        submit = true,
-                        onClick = {
-                            dismissDialog(showDialog)
-                        }
-                    )
-                }
-            }
+    SuperDialog(
+        title = "Dialog 1",
+        summary = "Summary",
+        show = showDialog,
+        onDismissRequest = {
+            dismissDialog(showDialog)
         }
-    )
+    ) {
+        TextField(
+            modifier = Modifier.padding(bottom = 16.dp),
+            value = value.value,
+            maxLines = 1,
+            onValueChange = { value.value = it }
+        )
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Button(
+                modifier = Modifier.weight(1f),
+                text = "Cancel",
+                onClick = {
+                    dismissDialog(showDialog)
+                }
+            )
+            Spacer(Modifier.width(20.dp))
+            Button(
+                modifier = Modifier.weight(1f),
+                text = "Confirm",
+                submit = true,
+                onClick = {
+                    dismissDialog(showDialog)
+                }
+            )
+        }
+    }
 }
 
 @Composable
 fun dialog2(showDialog: MutableState<Boolean>) {
-    if (!showDialog.value) return
     val dropdownOptions = listOf("Option 1", "Option 2")
     val dropdownSelectedOption = remember { mutableStateOf(0) }
-    showDialog(
-        content = {
-            SuperDialog(
-                title = "Dialog 2",
-                backgroundColor = MiuixTheme.colorScheme.background,
-                show = showDialog
-            ) {
-                Card {
-                    SuperDropdown(
-                        title = "Dropdown",
-                        items = dropdownOptions,
-                        selectedIndex = dropdownSelectedOption.value,
-                        onSelectedIndexChange = { newOption -> dropdownSelectedOption.value = newOption },
-                        defaultWindowInsetsPadding = false
-                    )
-                }
-                Spacer(Modifier.height(12.dp))
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Button(
-                        modifier = Modifier.weight(1f),
-                        text = "Cancel",
-                        onClick = {
-                            dismissDialog(showDialog)
-                        }
-                    )
-                    Spacer(Modifier.width(20.dp))
-                    Button(
-                        modifier = Modifier.weight(1f),
-                        text = "Confirm",
-                        submit = true,
-                        onClick = {
-                            dismissDialog(showDialog)
-                        }
-                    )
-                }
-            }
+    var miuixSuperSwitchState by remember { mutableStateOf(false) }
+    SuperDialog(
+        title = "Dialog 2",
+        backgroundColor = MiuixTheme.colorScheme.background,
+        show = showDialog,
+        onDismissRequest = {
+            dismissDialog(showDialog)
         }
-    )
+    ) {
+        Card {
+            SuperDropdown(
+                title = "Dropdown",
+                items = dropdownOptions,
+                selectedIndex = dropdownSelectedOption.value,
+                onSelectedIndexChange = { newOption -> dropdownSelectedOption.value = newOption },
+                defaultWindowInsetsPadding = false
+            )
+            SuperSwitch(
+                title = "Switch",
+                checked = miuixSuperSwitchState,
+                onCheckedChange = {
+                    miuixSuperSwitchState = it
+                }
+            )
+        }
+        Spacer(Modifier.height(12.dp))
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Button(
+                modifier = Modifier.weight(1f),
+                text = "Cancel",
+                onClick = {
+                    dismissDialog(showDialog)
+                }
+            )
+            Spacer(Modifier.width(20.dp))
+            Button(
+                modifier = Modifier.weight(1f),
+                text = "Confirm",
+                submit = true,
+                onClick = {
+                    dismissDialog(showDialog)
+                }
+            )
+        }
+    }
 }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,7 +33,6 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
 /**
  * A checkbox component with Miuix style.
@@ -87,7 +87,7 @@ fun Checkbox(
         modifier = modifier
             .wrapContentSize(Alignment.Center)
             .size(22.dp)
-            .clip(SquircleShape(100f))
+            .clip(RoundedCornerShape(100f))
             .requiredSize(checkboxSize)
             .pointerInput(Unit) {
                 detectTapGestures(

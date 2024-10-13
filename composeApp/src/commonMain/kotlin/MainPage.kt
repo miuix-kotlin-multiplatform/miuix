@@ -41,7 +41,7 @@ fun MainPage(
     ) {
         item {
             SearchBar(
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
                 inputField = {
                     InputField(
                         query = miuixSearchValue,
@@ -52,7 +52,7 @@ fun MainPage(
                         label = "Search",
                         leadingIcon = {
                             Image(
-                                modifier = Modifier.padding(horizontal = 12.dp),
+                                modifier = Modifier.padding(horizontal = 16.dp),
                                 imageVector = MiuixIcons.Search,
                                 colorFilter = BlendModeColorFilter(
                                     MiuixTheme.colorScheme.onSurfaceContainer,
@@ -100,10 +100,14 @@ fun MainPage(
             }
         }
         if (!expanded) {
-            item {
+            item(
+                key = "text"
+            ) {
                 TextComponent()
             }
-            item {
+            item(
+                key = "other"
+            ) {
                 OtherComponent(padding)
             }
         }

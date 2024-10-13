@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -31,7 +32,6 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
 /**
  * A text field component with Miuix style.
@@ -98,7 +98,7 @@ fun TextField(
     val labelOffsetY by animateDpAsState(if (value.text.isNotEmpty()) -(insideMargin.height / 2) else 0.dp)
     val innerTextOffsetY by animateDpAsState(if (value.text.isNotEmpty()) (insideMargin.height / 2) else 0.dp)
     val labelFontSize by animateDpAsState(if (value.text.isNotEmpty()) 10.dp else 16.dp)
-    val border = Modifier.border(borderWidth, borderColor, SquircleShape(cornerRadius))
+    val border = Modifier.border(borderWidth, borderColor, RoundedCornerShape(cornerRadius))
     val labelOffset = if (label != "") Modifier.offset(y = labelOffsetY) else Modifier
     val innerTextOffset = if (label != "") Modifier.offset(y = innerTextOffsetY) else Modifier
 
@@ -124,7 +124,7 @@ fun TextField(
                     .fillMaxWidth()
                     .background(
                         color = backgroundColor,
-                        shape = SquircleShape(cornerRadius)
+                        shape = RoundedCornerShape(cornerRadius)
                     )
                     .then(border)
             ) {
@@ -228,7 +228,7 @@ fun TextField(
     val labelOffsetY by animateDpAsState(if (value.isNotEmpty()) -(insideMargin.height / 2) else 0.dp)
     val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty()) (insideMargin.height / 2) else 0.dp)
     val labelFontSize by animateDpAsState(if (value.isNotEmpty()) 10.dp else 16.dp)
-    val border = Modifier.border(borderWidth, borderColor, SquircleShape(cornerRadius))
+    val border = Modifier.border(borderWidth, borderColor, RoundedCornerShape(cornerRadius))
     val labelOffset = if (label != "") Modifier.offset(y = labelOffsetY) else Modifier
     val innerTextOffset = if (label != "") Modifier.offset(y = innerTextOffsetY) else Modifier
 
@@ -254,7 +254,7 @@ fun TextField(
                     .fillMaxWidth()
                     .background(
                         color = backgroundColor,
-                        shape = SquircleShape(cornerRadius)
+                        shape = RoundedCornerShape(cornerRadius)
                     )
                     .then(border)
             ) {

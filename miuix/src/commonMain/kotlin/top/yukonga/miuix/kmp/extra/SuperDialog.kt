@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -33,11 +34,10 @@ import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.isDialogShowing
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showDialog
 import top.yukonga.miuix.kmp.utils.getRoundedCorner
 import top.yukonga.miuix.kmp.utils.getWindowSize
-import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 
 /**
  * A dialog with a title, a summary, and a content.
@@ -70,85 +70,87 @@ fun SuperDialog(
     defaultWindowInsetsPadding: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val density = LocalDensity.current
-    val getWindowSize by rememberUpdatedState(getWindowSize())
-    val windowWidth by rememberUpdatedState(getWindowSize.width.dp / density.density)
-    val windowHeight by rememberUpdatedState(getWindowSize.height.dp / density.density)
-    val paddingModifier = remember(outsideMargin) { Modifier.padding(horizontal = outsideMargin.width).padding(bottom = outsideMargin.height) }
-    val roundedCorner by rememberUpdatedState(getRoundedCorner())
-    val bottomCornerRadius by remember { derivedStateOf { if (roundedCorner != 0.dp) roundedCorner - outsideMargin.width else 32.dp } }
-    val contentAlignment by rememberUpdatedState { derivedStateOf { if (windowHeight >= 480.dp && windowWidth >= 840.dp) Alignment.Center else Alignment.BottomCenter } }
-
-    if (!dialogStates.contains(show)) dialogStates.add(show)
-    LaunchedEffect(show.value) {
-        if (show.value) {
-            dialogStates.forEach { state -> if (state != show) state.value = false }
-        }
-    }
-
     if (show.value) {
+        if (!dialogStates.contains(show)) dialogStates.add(show)
+        LaunchedEffect(show.value) {
+            if (show.value) {
+                dialogStates.forEach { state -> if (state != show) state.value = false }
+            }
+        }
+
+        val density = LocalDensity.current
+        val getWindowSize by rememberUpdatedState(getWindowSize())
+        val windowWidth by rememberUpdatedState(getWindowSize.width.dp / density.density)
+        val windowHeight by rememberUpdatedState(getWindowSize.height.dp / density.density)
+        val paddingModifier = remember(outsideMargin) { Modifier.padding(horizontal = outsideMargin.width).padding(bottom = outsideMargin.height) }
+        val roundedCorner by rememberUpdatedState(getRoundedCorner())
+        val bottomCornerRadius by remember { derivedStateOf { if (roundedCorner != 0.dp) roundedCorner - outsideMargin.width else 32.dp } }
+        val contentAlignment by rememberUpdatedState { derivedStateOf { if (windowHeight >= 480.dp && windowWidth >= 840.dp) Alignment.Center else Alignment.BottomCenter } }
+
         BackHandler(enabled = isDialogShowing()) {
-            dismissDialog(show)
             onDismissRequest?.invoke()
         }
-    }
 
-    Box(
-        modifier = if (defaultWindowInsetsPadding) {
-            Modifier
-                .imePadding()
-                .navigationBarsPadding()
-        } else {
-            Modifier
-        }
-            .fillMaxSize()
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onTap = {
-                        dismissDialog(show)
-                        onDismissRequest?.invoke()
+        showDialog(
+            content = {
+                Box(
+                    modifier = if (defaultWindowInsetsPadding) {
+                        Modifier
+                            .imePadding()
+                            .navigationBarsPadding()
+                    } else {
+                        Modifier
                     }
-                )
-            }
-            .then(paddingModifier)
-    ) {
-        Column(
-            modifier = modifier
-                .widthIn(max = 420.dp)
-                .pointerInput(Unit) {
-                    detectTapGestures { /* Do nothing to consume the click */ }
+                        .fillMaxSize()
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onTap = {
+                                    onDismissRequest?.invoke()
+                                }
+                            )
+                        }
+                        .then(paddingModifier)
+                ) {
+                    Column(
+                        modifier = modifier
+                            .widthIn(max = 420.dp)
+                            .pointerInput(Unit) {
+                                detectTapGestures { /* Do nothing to consume the click */ }
+                            }
+                            .align(contentAlignment.invoke().value)
+                            .graphicsLayer(
+                                shape = RoundedCornerShape(bottomCornerRadius),
+                                clip = false
+                            )
+                            .background(
+                                color = backgroundColor,
+                                shape = RoundedCornerShape(bottomCornerRadius)
+                            )
+                            .padding(insideMargin),
+                    ) {
+                        title?.let {
+                            Text(
+                                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
+                                text = it,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Medium,
+                                textAlign = TextAlign.Center,
+                                color = titleColor
+                            )
+                        }
+                        summary?.let {
+                            Text(
+                                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
+                                text = it,
+                                textAlign = TextAlign.Center,
+                                color = summaryColor
+                            )
+                        }
+                        content()
+                    }
                 }
-                .align(contentAlignment.invoke().value)
-                .graphicsLayer(
-                    shape = SquircleShape(bottomCornerRadius),
-                    clip = false
-                )
-                .background(
-                    color = backgroundColor,
-                    shape = SquircleShape(bottomCornerRadius)
-                )
-                .padding(insideMargin),
-        ) {
-            title?.let {
-                Text(
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
-                    text = it,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium,
-                    textAlign = TextAlign.Center,
-                    color = titleColor
-                )
             }
-            summary?.let {
-                Text(
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
-                    text = it,
-                    textAlign = TextAlign.Center,
-                    color = summaryColor
-                )
-            }
-            content()
-        }
+        )
     }
 }
 

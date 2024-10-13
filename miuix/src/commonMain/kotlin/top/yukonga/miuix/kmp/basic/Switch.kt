@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,7 +29,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.squircleshape.SquircleShape
 import kotlin.math.absoluteValue
 
 /**
@@ -105,7 +105,7 @@ fun Switch(
             .wrapContentSize(Alignment.Center)
             .size(52.dp, 28.5.dp)
             .requiredSize(52.dp, 28.5.dp)
-            .clip(SquircleShape(100.dp))
+            .clip(RoundedCornerShape(100.dp))
             .background(if (enabled) backgroundColor else disabledBackgroundColor)
             .pointerInput(Unit) {
                 detectHorizontalDragGestures(
@@ -158,7 +158,7 @@ fun Switch(
                 .size(thumbSize)
                 .background(
                     if (enabled) thumbColor else disabledThumbColor,
-                    shape = SquircleShape(100.dp)
+                    shape = RoundedCornerShape(100.dp)
                 )
         )
     }

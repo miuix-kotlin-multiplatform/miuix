@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
@@ -26,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.Button
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Slider
+import top.yukonga.miuix.kmp.basic.SmallTitle
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TextField
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -42,10 +42,11 @@ fun OtherComponent(padding: PaddingValues) {
     var progress by remember { mutableStateOf(0.5f) }
     val progressDisable by remember { mutableStateOf(0.5f) }
 
+    SmallTitle(text = "Button")
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 12.dp),
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Button(
@@ -71,7 +72,8 @@ fun OtherComponent(padding: PaddingValues) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp),
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Button(
@@ -91,10 +93,13 @@ fun OtherComponent(padding: PaddingValues) {
         )
     }
 
+    SmallTitle(text = "TextField")
     TextField(
         value = text1,
         onValueChange = { text1 = it },
-        modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
+        modifier = Modifier
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 12.dp),
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
     )
@@ -104,42 +109,45 @@ fun OtherComponent(padding: PaddingValues) {
         onValueChange = { text2 = it },
         backgroundColor = MiuixTheme.colorScheme.secondaryContainer,
         label = "Text Field",
-        modifier = Modifier.padding(horizontal = 12.dp),
+        modifier = Modifier
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 12.dp),
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
     )
 
+    SmallTitle(text = "Slider")
     Slider(
         progress = progress,
         onProgressChange = { newProgress -> progress = newProgress },
-        modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp)
+        modifier = Modifier
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 12.dp),
     )
 
     Slider(
         progress = progressDisable,
         onProgressChange = {},
         enabled = false,
-        modifier = Modifier.padding(horizontal = 12.dp)
+        modifier = Modifier
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 12.dp),
     )
 
+    SmallTitle(text = "Card")
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 12.dp),
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 12.dp),
         color = MiuixTheme.colorScheme.primaryVariant,
         insideMargin = DpSize(16.dp, 16.dp)
     ) {
         Text(
             color = MiuixTheme.colorScheme.onPrimary,
-            text = "Card 123456789",
+            text = "Card",
             fontSize = 19.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            color = MiuixTheme.colorScheme.onPrimaryVariant,
-            text = "一二三四五六七八九",
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Normal
+            fontWeight = FontWeight.SemiBold
         )
     }
 
@@ -150,28 +158,9 @@ fun OtherComponent(padding: PaddingValues) {
             .padding(bottom = 12.dp + padding.calculateBottomPadding()),
         insideMargin = DpSize(16.dp, 16.dp)
     ) {
-        val color = MiuixTheme.colorScheme.onSurface
         Text(
-            color = color,
-            text = "Card",
-            style = MiuixTheme.textStyles.paragraph,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 16.sp
-        )
-        Spacer(Modifier.height(6.dp))
-        Text(
-            color = color,
-            text = "123456789",
-            style = MiuixTheme.textStyles.paragraph
-        )
-        Text(
-            color = color,
-            text = "一二三四五六七八九",
-            style = MiuixTheme.textStyles.paragraph
-        )
-        Text(
-            color = color,
-            text = "!@#$%^&*()_+-=",
+            color = MiuixTheme.colorScheme.onSurface,
+            text = "Card\nCardCard\nCardCardCard",
             style = MiuixTheme.textStyles.paragraph
         )
     }

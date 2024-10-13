@@ -9,9 +9,7 @@ import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.extra.SuperDropdown
 import top.yukonga.miuix.kmp.extra.SuperSwitch
-import top.yukonga.miuix.kmp.utils.Platform
 import top.yukonga.miuix.kmp.utils.getWindowSize
-import top.yukonga.miuix.kmp.utils.platform
 
 @Composable
 fun ThirdPage(
@@ -67,8 +65,6 @@ fun ThirdPage(
                 onSelectedIndexChange = { colorMode.value = it },
                 horizontalPadding = 12.dp
             )
-        }
-        item {
             Spacer(modifier = Modifier.height(padding.calculateBottomPadding()))
         }
     }
