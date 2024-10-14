@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.kotlin.multiplatform)
     id("module.publication")
+    id("org.jetbrains.dokka")
 }
 
 kotlin {
