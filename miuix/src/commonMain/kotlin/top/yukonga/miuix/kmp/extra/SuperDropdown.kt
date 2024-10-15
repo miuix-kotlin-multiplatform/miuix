@@ -53,6 +53,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.BasicComponent
@@ -190,6 +191,9 @@ fun SuperDropdown(
             with(density) { WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
         )
         val insideHeightPx by rememberUpdatedState(with(density) { insideMargin.height.toPx() }.roundToInt())
+        val displayCutoutLeftSize = rememberUpdatedState(with(density) {
+            WindowInsets.displayCutout.asPaddingValues(density).calculateLeftPadding(LayoutDirection.Ltr).toPx()
+        }.roundToInt())
         val paddingPx by rememberUpdatedState(with(density) { horizontalPadding.toPx() }.roundToInt())
 
         BackHandler(enabled = isDropdownExpanded.value) { dismissPopup(isDropdownExpanded) }
@@ -217,9 +221,9 @@ fun SuperDropdown(
                         modifier = Modifier
                             .onGloballyPositioned { layoutCoordinates ->
                                 offsetXPx = if (alwaysRight || !alignLeft) {
-                                    dropdownOffsetXPx + componentWidthPx - layoutCoordinates.size.width - paddingPx
+                                    dropdownOffsetXPx + componentWidthPx - layoutCoordinates.size.width - paddingPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize.value else 0
                                 } else {
-                                    dropdownOffsetXPx + paddingPx
+                                    dropdownOffsetXPx + paddingPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize.value else 0
                                 }
                                 offsetYPx = calculateOffsetYPx(
                                     windowHeightPx,
