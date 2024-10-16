@@ -167,3 +167,28 @@ compose.desktop {
         }
     }
 }
+
+tasks.register<Exec>("assembleMiuixMacosArm64ReleaseBinary") {
+    dependsOn(":composeApp:desktopTest", ":composeApp:linkReleaseExecutableMacosArm64")
+    commandLine("lipo", "-create", "-output", "Miuix_macOSArm64", "bin/macosArm64/releaseExecutable/Miuix.kexe")
+    workingDir = layout.buildDirectory.get().asFile
+    group = "macos native"
+    description = "Build macOS Arm64 binary"
+}
+
+tasks.register<Exec>("assembleMiuixMacosX64ReleaseBinary") {
+    dependsOn(":composeApp:desktopTest", ":composeApp:linkReleaseExecutableMacosX64")
+    commandLine("lipo", "-create", "-output", "Miuix_macOSX64", "bin/macosX64/releaseExecutable/Miuix.kexe")
+    workingDir = layout.buildDirectory.get().asFile
+    group = "macos native"
+    description = "Build macOS X64 binary"
+}
+
+tasks.register<Exec>("assembleMiuixMacosUniversalReleaseBinary") {
+    dependsOn(":composeApp:desktopTest", ":composeApp:linkReleaseExecutableMacosX64", ":composeApp:linkReleaseExecutableMacosArm64")
+    commandLine("lipo", "-create", "-output", "Miuix_macOS", "bin/macosX64/releaseExecutable/Miuix.kexe", "bin/macosArm64/releaseExecutable/Miuix.kexe")
+    workingDir = layout.buildDirectory.get().asFile
+    group = "macos native"
+    description = "Build macOS universal binary"
+}
+
