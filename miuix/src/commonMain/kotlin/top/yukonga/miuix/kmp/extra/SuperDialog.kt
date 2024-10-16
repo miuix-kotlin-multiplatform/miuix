@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -36,6 +35,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.isDialogShowing
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showDialog
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getRoundedCorner
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
@@ -119,12 +119,12 @@ fun SuperDialog(
                             }
                             .align(contentAlignment.invoke().value)
                             .graphicsLayer(
-                                shape = RoundedCornerShape(bottomCornerRadius),
+                                shape = SmoothRoundedCornerShape(bottomCornerRadius),
                                 clip = false
                             )
                             .background(
                                 color = backgroundColor,
-                                shape = RoundedCornerShape(bottomCornerRadius)
+                                shape = SmoothRoundedCornerShape(bottomCornerRadius)
                             )
                             .padding(insideMargin),
                     ) {

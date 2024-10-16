@@ -1,15 +1,12 @@
 package top.yukonga.miuix.kmp.basic
 
-import androidx.compose.foundation.Indication
-import androidx.compose.foundation.LocalIndication
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.Role
@@ -17,6 +14,7 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 /**
  * A floating action button component with Miuix style.
@@ -32,7 +30,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 fun FloatingActionButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    shape: Shape = RoundedCornerShape(50.dp),
+    shape: Shape = RoundedCornerShape(60.dp),
     containerColor: Color = MiuixTheme.colorScheme.primary,
     shadowElevation: Float = 18f,
     content: @Composable () -> Unit,

@@ -29,6 +29,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import kotlin.math.absoluteValue
 
 /**
@@ -105,7 +106,7 @@ fun Switch(
             .wrapContentSize(Alignment.Center)
             .size(52.dp, 28.5.dp)
             .requiredSize(52.dp, 28.5.dp)
-            .clip(RoundedCornerShape(100.dp))
+            .clip(SmoothRoundedCornerShape(52.dp))
             .background(if (enabled) backgroundColor else disabledBackgroundColor)
             .pointerInput(Unit) {
                 detectHorizontalDragGestures(

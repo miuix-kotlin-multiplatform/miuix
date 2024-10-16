@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,6 +24,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import kotlin.math.pow
 import kotlin.math.round
 
@@ -104,6 +104,7 @@ fun Slider(
     ) {
         SliderBackground(
             modifier = Modifier.fillMaxWidth().height(height),
+            height = height,
             backgroundColor = backgroundColor.value,
             foregroundColor = foregroundColor.value,
             effect = effect,
@@ -117,6 +118,7 @@ fun Slider(
 @Composable
 fun SliderBackground(
     modifier: Modifier,
+    height: Dp = 30.dp,
     backgroundColor: Color,
     foregroundColor: Color,
     effect: Boolean,
@@ -124,7 +126,7 @@ fun SliderBackground(
     minValue: Float,
     maxValue: Float,
 ) {
-    Canvas(modifier = modifier.clip(RoundedCornerShape(100.dp)).background(backgroundColor)) {
+    Canvas(modifier = modifier.clip(SmoothRoundedCornerShape(height)).background(backgroundColor)) {
         val barHeight = size.height
         val barWidth = size.width
         val progressWidth = barWidth * ((progress - minValue) / (maxValue - minValue))

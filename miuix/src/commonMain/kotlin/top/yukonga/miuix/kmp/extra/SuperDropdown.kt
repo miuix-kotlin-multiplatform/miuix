@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -66,6 +65,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showPopup
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import kotlin.math.roundToInt
 
@@ -239,9 +239,9 @@ fun SuperDropdown(
                             .align(AbsoluteAlignment.TopLeft)
                             .graphicsLayer(
                                 shadowElevation = 18f,
-                                shape = RoundedCornerShape(18.dp)
+                                shape = SmoothRoundedCornerShape(18.dp)
                             )
-                            .clip(RoundedCornerShape(18.dp))
+                            .clip(SmoothRoundedCornerShape(18.dp))
                             .background(MiuixTheme.colorScheme.surface)
                     ) {
                         item {

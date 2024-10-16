@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
@@ -20,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 /**
  * A button component with Miuix style.
@@ -51,7 +51,7 @@ fun Button(
         },
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
-        shape = RoundedCornerShape(cornerRadius),
+        shape = SmoothRoundedCornerShape(cornerRadius),
         color = color
     ) {
         Row(

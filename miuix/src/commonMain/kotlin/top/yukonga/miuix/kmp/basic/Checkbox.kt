@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 /**
  * A checkbox component with Miuix style.
@@ -87,7 +88,7 @@ fun Checkbox(
         modifier = modifier
             .wrapContentSize(Alignment.Center)
             .size(22.dp)
-            .clip(RoundedCornerShape(100f))
+            .clip(RoundedCornerShape(100.dp))
             .requiredSize(checkboxSize)
             .pointerInput(Unit) {
                 detectTapGestures(
