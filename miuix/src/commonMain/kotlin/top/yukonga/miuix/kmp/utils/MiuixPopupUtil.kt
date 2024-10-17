@@ -48,13 +48,6 @@ class MiuixPopupUtil {
         }
 
         /**
-         * Check if the dialog is showing.
-         */
-        fun isDialogShowing(): Boolean {
-            return isDialogShowing.value
-        }
-
-        /**
          * Dismiss the dialog.
          *
          * @param show The show state of the dialog.
@@ -78,13 +71,6 @@ class MiuixPopupUtil {
             if (isPopupShowing.value) return
             isPopupShowing.value = true
             popupContext.value = content
-        }
-
-        /**
-         * Check if the popup is showing.
-         */
-        fun isPopupShowing(): Boolean {
-            return isPopupShowing.value
         }
 
         /**

@@ -1,7 +1,7 @@
 package top.yukonga.miuix.kmp.theme
 
 import androidx.compose.foundation.LocalIndication
-import androidx.compose.material3.ripple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
@@ -32,7 +32,7 @@ fun MiuixTheme(
         )
     }
     val miuixRipple = remember(colorScheme.onBackground) {
-        ripple(color = colorScheme.onBackground.copy(alpha = 0.5f))
+        ripple(color = colorScheme.onBackground)
     }
     CompositionLocalProvider(
         LocalMiuixColor provides colorScheme,

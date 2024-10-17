@@ -13,12 +13,12 @@ import kotlin.math.sqrt
 
 fun SmoothRoundedCornerShape(
     size: Dp,
-    rndPrc: Float = 0.08f
+    rndPrc: Float = 0.1f
 ) = SmoothRoundedCornerShape(CornerSize(size), rndPrc)
 
 fun SmoothRoundedCornerShape(
     corner: CornerSize,
-    rndPrc: Float = 0.08f
+    rndPrc: Float = 0.1f
 ) = SmoothRoundedCornerShape(corner, corner, corner, corner, rndPrc)
 
 fun SmoothRoundedCornerShape(
@@ -26,7 +26,7 @@ fun SmoothRoundedCornerShape(
     topEnd: Dp = 0.dp,
     bottomEnd: Dp = 0.dp,
     bottomStart: Dp = 0.dp,
-    rndPrc: Float = 0.08f
+    rndPrc: Float = 0.1f
 ) = SmoothRoundedCornerShape(
     topStart = CornerSize(topStart),
     topEnd = CornerSize(topEnd),
@@ -35,12 +35,13 @@ fun SmoothRoundedCornerShape(
     rndPrc = rndPrc
 )
 
+// from https://github.com/OpenAHU/AHUTong/blob/master/app/src/main/java/com/ahu/ahutong/ui/shape/SmoothRoundedCornerShape.kt
 class SmoothRoundedCornerShape(
     topStart: CornerSize,
     topEnd: CornerSize,
     bottomEnd: CornerSize,
     bottomStart: CornerSize,
-    private val rndPrc: Float = 0.08f
+    private val rndPrc: Float = 0.1f
 ) : CornerBasedShape(
     topStart = topStart,
     topEnd = topEnd,
@@ -71,7 +72,9 @@ class SmoothRoundedCornerShape(
                 moveTo(aa1, 0f)
                 if (topStart != 0f) {
                     cubicTo(bb1, 0f, cc1, 0f, dd1, ee1)
-                    cubicTo(gg1, ff1, ff1, gg1, ee1, dd1) // circle part
+                    if (rndPrc != 1f) {
+                        cubicTo(gg1, ff1, ff1, gg1, ee1, dd1) // circle part
+                    }
                     cubicTo(0f, cc1, 0f, bb1, 0f, aa1)
                 }
 
@@ -81,7 +84,9 @@ class SmoothRoundedCornerShape(
                 // bottom left corner
                 if (bottomStart != 0f) {
                     cubicTo(0f, hh - bb2, 0f, hh - cc2, ee2, hh - dd2)
-                    cubicTo(ff2, hh - gg2, gg2, hh - ff2, dd2, hh - ee2) // circle part
+                    if (rndPrc != 1f) {
+                        cubicTo(ff2, hh - gg2, gg2, hh - ff2, dd2, hh - ee2) // circle part
+                    }
                     cubicTo(cc2, hh, bb2, hh, aa2, hh)
                 }
 
@@ -91,7 +96,9 @@ class SmoothRoundedCornerShape(
                 // bottom right corner
                 if (bottomEnd != 0f) {
                     cubicTo(ww - bb3, hh, ww - cc3, hh, ww - dd3, hh - ee3)
-                    cubicTo(ww - gg3, hh - ff3, ww - ff3, hh - gg3, ww - ee3, hh - dd3) // circle part
+                    if (rndPrc != 1f) {
+                        cubicTo(ww - gg3, hh - ff3, ww - ff3, hh - gg3, ww - ee3, hh - dd3) // circle part
+                    }
                     cubicTo(ww, hh - cc3, ww, hh - bb3, ww, hh - aa3)
                 }
 
@@ -101,7 +108,9 @@ class SmoothRoundedCornerShape(
                 // top right corner
                 if (topEnd != 0f) {
                     cubicTo(ww, bb4, ww, cc4, ww - ee4, dd4)
-                    cubicTo(ww - ff4, gg4, ww - gg4, ff4, ww - dd4, ee4) // circle part
+                    if (rndPrc != 1f) {
+                        cubicTo(ww - ff4, gg4, ww - gg4, ff4, ww - dd4, ee4) // circle part
+                    }
                     cubicTo(ww - cc4, 0f, ww - bb4, 0f, ww - aa4, 0f)
                 }
 
@@ -130,6 +139,7 @@ class SmoothRoundedCornerShape(
         val dd = dj + a
 
         // // circular portion
+
         val dx = rad / sqRnd * (1f - rndPrc)
 
         val d = sqrt(rad * rad - dx * dx / 2f)

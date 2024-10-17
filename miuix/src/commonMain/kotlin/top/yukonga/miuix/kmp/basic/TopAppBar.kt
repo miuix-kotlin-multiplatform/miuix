@@ -411,6 +411,10 @@ private class ExitUntilCollapsedScrollBehavior(
         }
 }
 
+/**
+ * Settles the app bar by flinging, in case the given velocity is greater than zero, and snapping
+ * after the fling settles.
+ */
 private suspend fun settleAppBar(
     state: TopAppBarState,
     velocity: Float,
@@ -424,6 +428,7 @@ private suspend fun settleAppBar(
     if (state.collapsedFraction < 0.01f || state.collapsedFraction == 1f) {
         return Velocity.Zero
     }
+    var remainingVelocity = velocity
     // In case there is an initial velocity that was left after a previous user fling, animate to
     // continue the motion to expand or collapse the app bar.
     if (flingAnimationSpec != null && abs(velocity) > 1f) {
@@ -438,6 +443,7 @@ private suspend fun settleAppBar(
                 state.heightOffset = initialHeightOffset + delta
                 val consumed = abs(initialHeightOffset - state.heightOffset)
                 lastValue = value
+                remainingVelocity = this.velocity
                 // avoid rounding errors and stop if anything is unconsumed
                 if (abs(delta - consumed) > 0.5f) this.cancelAnimation()
             }
@@ -458,7 +464,7 @@ private suspend fun settleAppBar(
         }
     }
 
-    return Velocity.Zero
+    return Velocity(0f, velocity - remainingVelocity)
 }
 
 /** A functional interface for providing an app-bar scroll offset. */

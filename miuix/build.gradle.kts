@@ -44,20 +44,9 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material3)
+            implementation(compose.material)
             implementation(compose.ui)
             implementation(compose.components.resources)
-        }
-        desktopMain.dependencies {
-            implementation(libs.jetbrains.compose.window.size)
-        }
-        jsMain.dependencies {
-            implementation(libs.jetbrains.compose.window.size)
-        }
-        macosMain.dependencies {
-            implementation(libs.jetbrains.compose.window.size)
-        }
-        wasmJsMain.dependencies {
             implementation(libs.jetbrains.compose.window.size)
         }
     }

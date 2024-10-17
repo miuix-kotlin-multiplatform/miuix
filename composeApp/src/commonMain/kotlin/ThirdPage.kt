@@ -1,10 +1,11 @@
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.extra.SuperDropdown
@@ -33,39 +34,44 @@ fun ThirdPage(
         topAppBarScrollBehavior = topAppBarScrollBehavior
     ) {
         item {
-            SuperSwitch(
-                title = "Show FPS Monitor",
-                checked = showFPSMonitor,
-                onCheckedChange = onShowFPSMonitorChange
-            )
-            SuperSwitch(
-                title = "Show Top App Bar",
-                checked = showTopAppBar,
-                onCheckedChange = onShowTopAppBarChange
-            )
-            SuperSwitch(
-                title = "Show Bottom Bar",
-                checked = showBottomBar,
-                onCheckedChange = onShowBottomBarChange
-            )
-            SuperSwitch(
-                title = "Show Floating Action Button",
-                checked = showFloatingActionButton,
-                onCheckedChange = onShowFloatingActionButtonChange
-            )
-            SuperSwitch(
-                title = "Enable Page User Scroll",
-                checked = enablePageUserScroll,
-                onCheckedChange = onEnablePageUserScrollChange
-            )
-            SuperDropdown(
-                title = "Color Mode",
-                items = listOf("System", "Light", "Dark"),
-                selectedIndex = colorMode.value,
-                onSelectedIndexChange = { colorMode.value = it },
-                horizontalPadding = 12.dp
-            )
-            Spacer(modifier = Modifier.height(padding.calculateBottomPadding()))
+            Card(
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+                    .padding(top = 12.dp, bottom = 12.dp + padding.calculateBottomPadding())
+            ) {
+                SuperSwitch(
+                    title = "Show FPS Monitor",
+                    checked = showFPSMonitor,
+                    onCheckedChange = onShowFPSMonitorChange
+                )
+                SuperSwitch(
+                    title = "Show Top App Bar",
+                    checked = showTopAppBar,
+                    onCheckedChange = onShowTopAppBarChange
+                )
+                SuperSwitch(
+                    title = "Show Bottom Bar",
+                    checked = showBottomBar,
+                    onCheckedChange = onShowBottomBarChange
+                )
+                SuperSwitch(
+                    title = "Show Floating Action Button",
+                    checked = showFloatingActionButton,
+                    onCheckedChange = onShowFloatingActionButtonChange
+                )
+                SuperSwitch(
+                    title = "Enable Page User Scroll",
+                    checked = enablePageUserScroll,
+                    onCheckedChange = onEnablePageUserScrollChange
+                )
+                SuperDropdown(
+                    title = "Color Mode",
+                    items = listOf("System", "Light", "Dark"),
+                    selectedIndex = colorMode.value,
+                    onSelectedIndexChange = { colorMode.value = it },
+                    horizontalPadding = 12.dp
+                )
+            }
         }
     }
 }
