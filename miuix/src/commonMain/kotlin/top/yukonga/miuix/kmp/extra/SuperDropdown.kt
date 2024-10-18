@@ -4,6 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.FocusInteraction
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -21,6 +23,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -112,6 +115,18 @@ fun SuperDropdown(
     var dropdownOffsetYPx by remember { mutableStateOf(0) }
     var componentHeightPx by remember { mutableStateOf(0) }
     var componentWidthPx by remember { mutableStateOf(0) }
+    val interactionSource = remember { MutableInteractionSource() }
+    val focus = remember { mutableStateOf<FocusInteraction.Focus?>(null) }
+
+    LaunchedEffect(isDropdownExpanded.value) {
+        if (isDropdownExpanded.value) {
+            focus.value = FocusInteraction.Focus().also {
+                interactionSource.emit(it)
+            }
+        } else {
+            focus.value?.let { interactionSource.emit(FocusInteraction.Unfocus(it)) }
+        }
+    }
 
     BasicComponent(
         modifier = modifier
@@ -133,6 +148,15 @@ fun SuperDropdown(
                     dropdownOffsetYPx = positionInWindow.y.toInt()
                     componentHeightPx = coordinates.size.height
                     componentWidthPx = coordinates.size.width
+                }
+            }
+            .clickable(
+                interactionSource = interactionSource,
+                indication = ripple()
+            ) {
+                if (enabled) {
+                    isDropdownExpanded.value = enabled
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                 }
             },
         insideMargin = insideMargin,
@@ -156,12 +180,6 @@ fun SuperDropdown(
                 colorFilter = BlendModeColorFilter(actionColor, BlendMode.SrcIn),
                 contentDescription = null
             )
-        },
-        onClick = {
-            if (enabled) {
-                isDropdownExpanded.value = enabled
-                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-            }
         },
         enabled = enabled
     )
