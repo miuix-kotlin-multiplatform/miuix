@@ -190,6 +190,7 @@ fun SuperDropdown(
         val captionBarPx by rememberUpdatedState(
             with(density) { WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
         )
+        val insideWidthPx by rememberUpdatedState(with(density){ insideMargin.width.toPx() }.roundToInt())
         val insideHeightPx by rememberUpdatedState(with(density) { insideMargin.height.toPx() }.roundToInt())
         val displayCutoutLeftSize = rememberUpdatedState(with(density) {
             WindowInsets.displayCutout.asPaddingValues(density).calculateLeftPadding(LayoutDirection.Ltr).toPx()
@@ -221,9 +222,9 @@ fun SuperDropdown(
                         modifier = Modifier
                             .onGloballyPositioned { layoutCoordinates ->
                                 offsetXPx = if (alwaysRight || !alignLeft) {
-                                    dropdownOffsetXPx + componentWidthPx - layoutCoordinates.size.width - paddingPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize.value else 0
+                                    dropdownOffsetXPx + componentWidthPx - insideWidthPx - layoutCoordinates.size.width - paddingPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize.value else 0
                                 } else {
-                                    dropdownOffsetXPx + paddingPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize.value else 0
+                                    dropdownOffsetXPx + paddingPx + insideWidthPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize.value else 0
                                 }
                                 offsetYPx = calculateOffsetYPx(
                                     windowHeightPx,
@@ -353,7 +354,16 @@ fun calculateOffsetYPx(
     navigationBarPx: Int,
     captionBarPx: Int
 ): Int {
-    return if (windowHeightPx - dropdownOffsetPx < dropdownHeightPx / 2 + captionBarPx + navigationBarPx + insideHeightPx + componentHeightPx / 2) {
+    return if (windowHeightPx - captionBarPx - navigationBarPx - dropdownOffsetPx - componentHeightPx > dropdownHeightPx) {
+        // Show below
+        dropdownOffsetPx + componentHeightPx - insideHeightPx / 2
+    } else if (dropdownOffsetPx - statusBarPx > dropdownHeightPx) {
+        // Show above
+        dropdownOffsetPx - dropdownHeightPx  + insideHeightPx / 2
+    } else if (windowHeightPx - statusBarPx - captionBarPx - navigationBarPx <= dropdownHeightPx)  {
+        // Special handling when the height of the popup is maxsize (== windowHeightPx)
+        0
+    } else if (windowHeightPx - dropdownOffsetPx < dropdownHeightPx / 2 + captionBarPx + navigationBarPx + insideHeightPx + componentHeightPx / 2) {
         windowHeightPx - dropdownHeightPx - insideHeightPx - captionBarPx - navigationBarPx
     } else {
         val offset = dropdownOffsetPx - dropdownHeightPx / 2 + componentHeightPx / 2
