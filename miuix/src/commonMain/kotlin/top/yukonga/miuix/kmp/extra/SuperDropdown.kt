@@ -191,7 +191,7 @@ fun SuperDropdown(
         var offsetXPx by remember { mutableStateOf(0) }
         var offsetYPx by remember { mutableStateOf(0) }
         val textMeasurer = rememberTextMeasurer()
-        val textStyle = remember { TextStyle(fontWeight = FontWeight.Medium, fontSize = 17.sp) }
+        val textStyle = remember { TextStyle(fontWeight = FontWeight.Medium, fontSize = 16.sp) }
         val textWidthDp = remember(items) { items.maxOfOrNull { with(density) { textMeasurer.measure(text = it, style = textStyle).size.width.toDp() } } }
         val getWindowSize = rememberUpdatedState(getWindowSize())
         val windowHeightPx by rememberUpdatedState(getWindowSize.value.height)
@@ -206,6 +206,9 @@ fun SuperDropdown(
         )
         val dropdownMaxHeight by rememberUpdatedState(with(density) {
             (windowHeightPx - statusBarPx - navigationBarPx - captionBarPx ).toDp()
+        })
+        val dropdownElevation by rememberUpdatedState(with(density) {
+            11.dp.toPx()
         })
         val insideWidthPx by rememberUpdatedState(with(density) { insideMargin.width.toPx() }.roundToInt())
         val insideHeightPx by rememberUpdatedState(with(density) { insideMargin.height.toPx() }.roundToInt())
@@ -257,10 +260,10 @@ fun SuperDropdown(
                             .heightIn(50.dp, dropdownMaxHeight)
                             .align(AbsoluteAlignment.TopLeft)
                             .graphicsLayer(
-                                shadowElevation = 40f,
+                                shadowElevation = dropdownElevation,
                                 shape = SmoothRoundedCornerShape(16.dp),
-                                ambientShadowColor = Color.Black.copy(alpha = 0.2f),
-                                spotShadowColor = Color.Black.copy(alpha = 0.6f)
+                                ambientShadowColor = Color.Black.copy(alpha = 0.3f),
+                                spotShadowColor = Color.Black.copy(alpha = 0.3f)
                             )
                             .clip(SmoothRoundedCornerShape(16.dp))
                             .background(MiuixTheme.colorScheme.surface)
@@ -307,15 +310,8 @@ fun DropdownImpl(
     onSelectedIndexChange: (Int) -> Unit,
     textWidthDp: Dp?
 ) {
-    val additionalTopPadding: Dp
-    val additionalBottomPadding: Dp
-    if (optionSize == 1) {
-        additionalTopPadding = 16.dp
-        additionalBottomPadding = 16.dp
-    } else {
-        additionalTopPadding = if (index == 0) 22.5f.dp else 14.5f.dp
-        additionalBottomPadding = if (index == optionSize - 1) 22.5f.dp else 14.5f.dp
-    }
+    val additionalTopPadding = if (index == 0) 20f.dp else 12f.dp
+    val additionalBottomPadding = if (index == optionSize - 1) 20f.dp else 12f.dp
     val textColor = if (isSelected) {
         MiuixTheme.colorScheme.onTertiaryContainer
     } else {
