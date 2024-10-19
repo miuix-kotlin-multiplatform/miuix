@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.captionBar
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
@@ -21,12 +22,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -110,13 +112,19 @@ fun SuperDropdown(
     val isDropdownExpanded = remember { mutableStateOf(false) }
     val hapticFeedback = LocalHapticFeedback.current
     val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
-    val targetColor = if (isDropdownExpanded.value) MiuixTheme.colorScheme.onBackground.copy(alpha = 0.15f) else Color.Transparent
-    val touchTint by animateColorAsState(targetValue = targetColor, animationSpec = spring(stiffness = 2000f))
+    val targetColor = if (isDropdownExpanded.value) MiuixTheme.colorScheme.selectedTint else Color.Transparent
+    val selectedTint by animateColorAsState(targetValue = targetColor, animationSpec = spring(stiffness = 2000f))
     var alignLeft by rememberSaveable { mutableStateOf(true) }
     var dropdownOffsetXPx by remember { mutableStateOf(0) }
     var dropdownOffsetYPx by remember { mutableStateOf(0) }
     var componentHeightPx by remember { mutableStateOf(0) }
     var componentWidthPx by remember { mutableStateOf(0) }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            dismissPopup(isDropdownExpanded)
+        }
+    }
 
     BasicComponent(
         modifier = modifier
@@ -140,7 +148,7 @@ fun SuperDropdown(
                     componentWidthPx = coordinates.size.width
                 }
             }
-            .background(touchTint),
+            .background(selectedTint),
         insideMargin = insideMargin,
         title = title,
         titleColor = titleColor,
@@ -196,6 +204,9 @@ fun SuperDropdown(
         val captionBarPx by rememberUpdatedState(
             with(density) { WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
         )
+        val dropdownMaxHeight by rememberUpdatedState(with(density) {
+            (windowHeightPx - statusBarPx - navigationBarPx - captionBarPx ).toDp()
+        })
         val insideWidthPx by rememberUpdatedState(with(density) { insideMargin.width.toPx() }.roundToInt())
         val insideHeightPx by rememberUpdatedState(with(density) { insideMargin.height.toPx() }.roundToInt())
         val displayCutoutLeftSize = rememberUpdatedState(with(density) {
@@ -243,14 +254,15 @@ fun SuperDropdown(
                                     captionBarPx
                                 )
                             }
+                            .heightIn(50.dp, dropdownMaxHeight)
                             .align(AbsoluteAlignment.TopLeft)
                             .graphicsLayer(
                                 shadowElevation = 40f,
-                                shape = SmoothRoundedCornerShape(18.dp),
-                                ambientShadowColor = MiuixTheme.colorScheme.onBackground.copy(alpha = 0.2f),
-                                spotShadowColor =  MiuixTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                                shape = SmoothRoundedCornerShape(16.dp),
+                                ambientShadowColor = Color.Black.copy(alpha = 0.2f),
+                                spotShadowColor = Color.Black.copy(alpha = 0.6f)
                             )
-                            .clip(SmoothRoundedCornerShape(18.dp))
+                            .clip(SmoothRoundedCornerShape(16.dp))
                             .background(MiuixTheme.colorScheme.surface)
                     ) {
                         item {
@@ -295,8 +307,15 @@ fun DropdownImpl(
     onSelectedIndexChange: (Int) -> Unit,
     textWidthDp: Dp?
 ) {
-    val additionalTopPadding = if (index == 0) 24.dp else 14.dp
-    val additionalBottomPadding = if (index == optionSize - 1) 24.dp else 14.dp
+    val additionalTopPadding: Dp
+    val additionalBottomPadding: Dp
+    if (optionSize == 1) {
+        additionalTopPadding = 16.dp
+        additionalBottomPadding = 16.dp
+    } else {
+        additionalTopPadding = if (index == 0) 22.5f.dp else 14.5f.dp
+        additionalBottomPadding = if (index == optionSize - 1) 22.5f.dp else 14.5f.dp
+    }
     val textColor = if (isSelected) {
         MiuixTheme.colorScheme.onTertiaryContainer
     } else {
@@ -320,18 +339,19 @@ fun DropdownImpl(
                 onSelectedIndexChange(index)
             }
             .background(backgroundColor)
-            .padding(horizontal = 24.dp)
+            .widthIn(200.dp, 288.dp)
+            .padding(horizontal = 20.dp)
             .padding(top = additionalTopPadding, bottom = additionalBottomPadding)
     ) {
         Text(
             modifier = Modifier.width(textWidthDp ?: 50.dp),
             text = text,
-            fontSize = 15.sp,
+            fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
             color = textColor,
         )
         Image(
-            modifier = Modifier.padding(start = 50.dp).size(20.dp),
+            modifier = Modifier.padding(start = 12.dp).size(20.dp),
             imageVector = MiuixIcons.Check,
             colorFilter = BlendModeColorFilter(selectColor, BlendMode.SrcIn),
             contentDescription = null,
@@ -370,7 +390,7 @@ fun calculateOffsetYPx(
         dropdownOffsetPx - dropdownHeightPx + insideHeightPx / 2
     } else if (windowHeightPx - statusBarPx - captionBarPx - navigationBarPx <= dropdownHeightPx) {
         // Special handling when the height of the popup is maxsize (== windowHeightPx)
-        0
+        statusBarPx
     } else if (windowHeightPx - dropdownOffsetPx < dropdownHeightPx / 2 + captionBarPx + navigationBarPx + insideHeightPx + componentHeightPx / 2) {
         windowHeightPx - dropdownHeightPx - insideHeightPx - captionBarPx - navigationBarPx
     } else {

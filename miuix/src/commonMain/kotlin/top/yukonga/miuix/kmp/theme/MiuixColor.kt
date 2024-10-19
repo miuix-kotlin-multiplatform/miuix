@@ -103,7 +103,8 @@ class MiuixColor(
     onSurfaceContainerHigh: Color,
     surfaceContainerHighest: Color,
     onSurfaceContainerHighest: Color,
-    windowDimming: Color
+    windowDimming: Color,
+    selectedTint: Color,
 ) {
     val primary by mutableStateOf(primary, structuralEqualityPolicy())
     val onPrimary by mutableStateOf(onPrimary, structuralEqualityPolicy())
@@ -151,6 +152,7 @@ class MiuixColor(
     val surfaceContainerHighest by mutableStateOf(surfaceContainerHighest, structuralEqualityPolicy())
     val onSurfaceContainerHighest by mutableStateOf(onSurfaceContainerHighest, structuralEqualityPolicy())
     val windowDimming by mutableStateOf(windowDimming, structuralEqualityPolicy())
+    val selectedTint by mutableStateOf(selectedTint, structuralEqualityPolicy())
 }
 
 fun lightColorScheme() = MiuixColor(
@@ -199,7 +201,8 @@ fun lightColorScheme() = MiuixColor(
     onSurfaceContainerHigh = Color(0xFFA5A5A5),
     surfaceContainerHighest = Color(0xFFE8E8E8),
     onSurfaceContainerHighest = Color.Black,
-    windowDimming = Color.Black.copy(alpha = 0.3f)
+    windowDimming = Color.Black.copy(alpha = 0.3f),
+    selectedTint = Color(0x14000000)
 )
 
 fun darkColorScheme() = MiuixColor(
@@ -248,5 +251,6 @@ fun darkColorScheme() = MiuixColor(
     onSurfaceContainerHigh = Color(0xFF6C6C6C),
     surfaceContainerHighest = Color(0xFF2D2D2D),
     onSurfaceContainerHighest = Color(0xFFE9E9E9),
-    windowDimming = Color.Black.copy(alpha = 0.6f)
+    windowDimming = Color.Black.copy(alpha = 0.3f),
+    selectedTint = Color(0xCC393939)
 )
