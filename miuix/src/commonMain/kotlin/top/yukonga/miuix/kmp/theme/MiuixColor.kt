@@ -251,6 +251,6 @@ fun darkColorScheme() = MiuixColor(
     onSurfaceContainerHigh = Color(0xFF6C6C6C),
     surfaceContainerHighest = Color(0xFF2D2D2D),
     onSurfaceContainerHighest = Color(0xFFE9E9E9),
-    windowDimming = Color.Black.copy(alpha = 0.3f),
+    windowDimming = Color.Black.copy(alpha = 0.6f),
     selectedTint = Color(0xCC393939)
 )
