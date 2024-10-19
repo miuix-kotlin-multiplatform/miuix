@@ -117,10 +117,10 @@ class MiuixPopupUtil {
                 modifier = Modifier.zIndex(2f).fillMaxSize(),
                 enter = if (largeScreen.invoke().value) {
                     fadeIn(
-                        animationSpec = spring(0.9f, 900f),
+                        animationSpec = spring(0.9f, 900f)
                     ) + scaleIn(
                         initialScale = 0.8f,
-                        animationSpec = spring(0.73f, 900f),
+                        animationSpec = spring(0.73f, 900f)
                     )
                 } else {
                     slideInVertically(
@@ -130,18 +130,15 @@ class MiuixPopupUtil {
                 },
                 exit = if (largeScreen.invoke().value) {
                     fadeOut(
-                        animationSpec = tween(200, easing = DecelerateEasing(1.5f)
-                        )
+                        animationSpec = tween(200, easing = DecelerateEasing(1.5f))
                     ) + scaleOut(
                         targetScale = 0.8f,
-                        animationSpec = tween(200, easing = DecelerateEasing(1.5f)
-                        )
+                        animationSpec = tween(200, easing = DecelerateEasing(1.5f))
                     )
                 } else {
                     slideOutVertically(
                         targetOffsetY = { fullHeight -> fullHeight },
-                        animationSpec = tween(200, easing = DecelerateEasing(1.5f)
-                        )
+                        animationSpec = tween(200, easing = DecelerateEasing(1.5f))
                     )
                 }
             ) {
