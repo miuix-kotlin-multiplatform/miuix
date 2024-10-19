@@ -28,8 +28,7 @@ fun SecondPage(
                 summary = "Popup near click",
                 items = dropdownOptions,
                 selectedIndex = dropdownSelectedOption.value,
-                onSelectedIndexChange = { newOption -> dropdownSelectedOption.value = newOption },
-                horizontalPadding = 12.dp
+                onSelectedIndexChange = { newOption -> dropdownSelectedOption.value = newOption }
             )
         }
         item {
