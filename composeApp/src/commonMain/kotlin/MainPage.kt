@@ -55,7 +55,8 @@ fun MainPage(
             ) {
                 item {
                     SearchBar(
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+                        modifier = Modifier
+                            .padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 6.dp),
                         inputField = {
                             InputField(
                                 query = miuixSearchValue,
