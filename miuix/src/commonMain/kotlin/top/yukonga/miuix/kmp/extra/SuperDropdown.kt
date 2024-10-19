@@ -207,7 +207,7 @@ fun SuperDropdown(
         val dropdownMaxHeight by rememberUpdatedState(with(density) {
             (windowHeightPx - statusBarPx - navigationBarPx - captionBarPx ).toDp()
         })
-        val insideWidthPx by rememberUpdatedState(with(density){ insideMargin.width.toPx() }.roundToInt())
+        val insideWidthPx by rememberUpdatedState(with(density) { insideMargin.width.toPx() }.roundToInt())
         val insideHeightPx by rememberUpdatedState(with(density) { insideMargin.height.toPx() }.roundToInt())
         val displayCutoutLeftSize = rememberUpdatedState(with(density) {
             WindowInsets.displayCutout.asPaddingValues(density).calculateLeftPadding(LayoutDirection.Ltr).toPx()
@@ -388,7 +388,7 @@ fun calculateOffsetYPx(
     } else if (dropdownOffsetPx - statusBarPx > dropdownHeightPx) {
         // Show above
         dropdownOffsetPx - dropdownHeightPx  + insideHeightPx / 2
-    } else if (windowHeightPx - statusBarPx - captionBarPx - navigationBarPx <= dropdownHeightPx)  {
+    } else if (windowHeightPx - statusBarPx - captionBarPx - navigationBarPx <= dropdownHeightPx) {
         // Special handling when the height of the popup is maxsize (== windowHeightPx)
         statusBarPx
     } else if (windowHeightPx - dropdownOffsetPx < dropdownHeightPx / 2 + captionBarPx + navigationBarPx + insideHeightPx + componentHeightPx / 2) {
