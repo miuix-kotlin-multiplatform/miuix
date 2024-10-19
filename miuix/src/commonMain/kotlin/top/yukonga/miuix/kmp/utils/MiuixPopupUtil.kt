@@ -1,7 +1,6 @@
 package top.yukonga.miuix.kmp.utils
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -118,15 +117,15 @@ class MiuixPopupUtil {
                 modifier = Modifier.zIndex(2f).fillMaxSize(),
                 enter = if (largeScreen.invoke().value) {
                     fadeIn(
-                        animationSpec = spring(0.8f, Spring.StiffnessMediumLow),
+                        animationSpec = spring(0.9f, 900f),
                     ) + scaleIn(
                         initialScale = 0.8f,
-                        animationSpec = spring(0.8f, Spring.StiffnessMediumLow),
+                        animationSpec = spring(0.73f, 900f),
                     )
                 } else {
                     slideInVertically(
                         initialOffsetY = { fullHeight -> fullHeight },
-                        animationSpec = spring(0.88f, Spring.StiffnessMediumLow)
+                        animationSpec = spring(0.92f, 500f)
                     )
                 },
                 exit = if (largeScreen.invoke().value) {
