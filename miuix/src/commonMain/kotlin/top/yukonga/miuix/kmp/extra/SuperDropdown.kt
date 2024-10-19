@@ -259,8 +259,8 @@ fun SuperDropdown(
                             .graphicsLayer(
                                 shadowElevation = 40f,
                                 shape = SmoothRoundedCornerShape(16.dp),
-                                ambientShadowColor = MiuixTheme.colorScheme.onBackground.copy(alpha = 0.2f),
-                                spotShadowColor =  MiuixTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                                ambientShadowColor = Color.Black.copy(alpha = 0.2f),
+                                spotShadowColor = Color.Black.copy(alpha = 0.6f)
                             )
                             .clip(SmoothRoundedCornerShape(16.dp))
                             .background(MiuixTheme.colorScheme.surface)
