@@ -387,7 +387,7 @@ fun calculateOffsetYPx(
         dropdownOffsetPx + componentHeightPx - insideHeightPx / 2
     } else if (dropdownOffsetPx - statusBarPx > dropdownHeightPx) {
         // Show above
-        dropdownOffsetPx - dropdownHeightPx  + insideHeightPx / 2
+        dropdownOffsetPx - dropdownHeightPx + insideHeightPx / 2
     } else if (windowHeightPx - statusBarPx - captionBarPx - navigationBarPx <= dropdownHeightPx) {
         // Special handling when the height of the popup is maxsize (== windowHeightPx)
         statusBarPx
