@@ -4,6 +4,7 @@ import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
+import java.io.ByteArrayOutputStream
 import java.util.Properties
 
 plugins {
@@ -16,6 +17,7 @@ plugins {
 val appName = "Miuix"
 val pkgName = "top.yukonga.miuix.uitest"
 val verName = "1.0.2"
+val verCode = getVersionCode()
 val xcf = XCFramework(appName + "Framework")
 
 kotlin {
@@ -101,7 +103,7 @@ android {
         applicationId = pkgName
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 21
+        versionCode = verCode
         versionName = verName
     }
     val properties = Properties()
@@ -166,6 +168,40 @@ compose.desktop {
             packageVersion = verName
         }
     }
+}
+
+
+fun getGitCommitCount(): Int {
+    val out = ByteArrayOutputStream()
+    exec {
+        commandLine("git", "rev-list", "--count", "HEAD")
+        standardOutput = out
+    }
+    return out.toString().trim().toInt()
+}
+
+fun getVersionCode(): Int {
+    return getGitCommitCount()
+}
+
+val generateVersionInfo by tasks.registering {
+    doLast {
+        val file = file("src/commonMain/kotlin/utils/VersionInfo.kt")
+        file.writeText(
+            """
+            package misc
+            
+            object VersionInfo {
+                const val VERSION_NAME = "$verName"
+                const val VERSION_CODE = $verCode
+            }
+            """.trimIndent()
+        )
+    }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    dependsOn(generateVersionInfo)
 }
 
 tasks.register<Exec>("assembleMiuixMacosArm64ReleaseBinary") {

@@ -5,9 +5,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import misc.VersionInfo
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
+import top.yukonga.miuix.kmp.basic.SmallTitle
 import top.yukonga.miuix.kmp.extra.SuperDropdown
 import top.yukonga.miuix.kmp.extra.SuperSwitch
 import top.yukonga.miuix.kmp.utils.getWindowSize
@@ -37,7 +39,7 @@ fun ThirdPage(
             Card(
                 modifier = Modifier
                     .padding(horizontal = 12.dp)
-                    .padding(top = 12.dp, bottom = 12.dp + padding.calculateBottomPadding())
+                    .padding(top = 12.dp, bottom = 6.dp)
             ) {
                 SuperSwitch(
                     title = "Show FPS Monitor",
@@ -68,10 +70,13 @@ fun ThirdPage(
                     title = "Color Mode",
                     items = listOf("System", "Light", "Dark"),
                     selectedIndex = colorMode.value,
-                    onSelectedIndexChange = { colorMode.value = it },
-                    horizontalPadding = 12.dp
+                    onSelectedIndexChange = { colorMode.value = it }
                 )
             }
+            SmallTitle(
+                modifier = Modifier.padding(bottom = 6.dp + padding.calculateBottomPadding()),
+                text = "Current Version: " + VersionInfo.VERSION_NAME + " (" + VersionInfo.VERSION_CODE + ")"
+            )
         }
     }
 }
