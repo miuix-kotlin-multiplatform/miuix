@@ -14,15 +14,15 @@ jobs:
     strategy:
       matrix:
         include:
-          - target: iosSimulatorArm64Test
+          - target: ':miuix:iosSimulatorArm64Test'
             os: macos-latest
-          - target: desktopTest
+          - target: ':miuix:desktopTest'
             os: ubuntu-latest
-          - target: assembleAndroidTest
+          - target: ':miuix:assembleAndroidTest'
             os: ubuntu-latest
-          - target: testDebugUnitTest
+          - target: ':miuix:testDebugUnitTest'
             os: ubuntu-latest
-          - target: testReleaseUnitTest
+          - target: ':miuix:testReleaseUnitTest'
             os: ubuntu-latest
     runs-on: ${{ matrix.os }}
 
