@@ -57,7 +57,6 @@ import androidx.compose.ui.graphics.Color
  * @param surfaceContainerHighest The container color of the surface color.
  * @param onSurfaceContainerHighest The color of the text on surface container highest color.
  * @param windowDimming The color of the window dimming. Cases: Dialog, Dropdown.
- * @param selectedTint The color of the selected tint. Cases: List, Grid.
  */
 @Stable
 class Colors(
@@ -107,7 +106,6 @@ class Colors(
     surfaceContainerHighest: Color,
     onSurfaceContainerHighest: Color,
     windowDimming: Color,
-    selectedTint: Color,
 ) {
     var primary by mutableStateOf(primary, structuralEqualityPolicy())
         internal set
@@ -201,8 +199,6 @@ class Colors(
         internal set
     var windowDimming by mutableStateOf(windowDimming, structuralEqualityPolicy())
         internal set
-    var selectedTint by mutableStateOf(selectedTint, structuralEqualityPolicy())
-        internal set
 
     fun copy(
         primary: Color = this.primary,
@@ -251,7 +247,6 @@ class Colors(
         surfaceContainerHighest: Color = this.surfaceContainerHighest,
         onSurfaceContainerHighest: Color = this.onSurfaceContainerHighest,
         windowDimming: Color = this.windowDimming,
-        selectedTint: Color = this.selectedTint
     ): Colors = Colors(
         primary,
         onPrimary,
@@ -299,7 +294,6 @@ class Colors(
         surfaceContainerHighest,
         onSurfaceContainerHighest,
         windowDimming,
-        selectedTint
     )
 }
 
@@ -350,7 +344,6 @@ fun lightColorScheme(
     surfaceContainerHighest: Color = Color(0xFFE8E8E8),
     onSurfaceContainerHighest: Color = Color.Black,
     windowDimming: Color = Color.Black.copy(alpha = 0.3f),
-    selectedTint: Color = Color(0x14000000)
 ): Colors = Colors(
     primary,
     onPrimary,
@@ -398,7 +391,6 @@ fun lightColorScheme(
     surfaceContainerHighest,
     onSurfaceContainerHighest,
     windowDimming,
-    selectedTint
 )
 
 fun darkColorScheme(
@@ -448,7 +440,6 @@ fun darkColorScheme(
     surfaceContainerHighest: Color = Color(0xFF2D2D2D),
     onSurfaceContainerHighest: Color = Color(0xFFE9E9E9),
     windowDimming: Color = Color.Black.copy(alpha = 0.6f),
-    selectedTint: Color = Color(0xCC393939)
 ): Colors = Colors(
     primary,
     onPrimary,
@@ -496,7 +487,6 @@ fun darkColorScheme(
     surfaceContainerHighest,
     onSurfaceContainerHighest,
     windowDimming,
-    selectedTint
 )
 
 internal fun Colors.updateColorsFrom(other: Colors) {
@@ -546,7 +536,6 @@ internal fun Colors.updateColorsFrom(other: Colors) {
     surfaceContainerHighest = other.surfaceContainerHighest
     onSurfaceContainerHighest = other.onSurfaceContainerHighest
     windowDimming = other.windowDimming
-    selectedTint = other.selectedTint
 }
 
 val LocalColors = staticCompositionLocalOf { lightColorScheme() }

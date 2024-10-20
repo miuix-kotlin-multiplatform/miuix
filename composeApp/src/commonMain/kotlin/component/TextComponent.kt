@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.rounded.Computer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -119,7 +119,7 @@ fun TextComponent() {
                 ) {
                     Image(
                         colorFilter = ColorFilter.tint(MiuixTheme.colorScheme.onBackground),
-                        imageVector = Icons.Default.Star,
+                        imageVector = Icons.Rounded.Computer,
                         contentDescription = "Person",
                     )
                 }

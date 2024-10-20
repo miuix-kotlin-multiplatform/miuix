@@ -1,11 +1,11 @@
 package top.yukonga.miuix.kmp.theme
 
 import androidx.compose.foundation.LocalIndication
-import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
+import top.yukonga.miuix.kmp.utils.MiuixIndication
 
 /**
  * The default theme that provides color and text styles for the Miuix components.
@@ -29,12 +29,12 @@ fun MiuixTheme(
         )
     }
     val miuixRipple = remember(colorScheme.onBackground) {
-        ripple(color = colorScheme.onBackground)
+        MiuixIndication(backgroundColor = colorScheme.onBackground)
     }
     CompositionLocalProvider(
         LocalColors provides miuixColors,
         LocalTextStyles provides miuixTextStyles,
-        LocalIndication provides miuixRipple,
+        LocalIndication provides miuixRipple
     ) {
         content()
     }

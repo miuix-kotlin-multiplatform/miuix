@@ -1,10 +1,8 @@
 package top.yukonga.miuix.kmp.basic
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.spring
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
@@ -40,6 +37,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  * @param rightActions The [Composable] content on the right side of the [BasicComponent].
  * @param onClick The callback when the [BasicComponent] is clicked.
  * @param enabled Whether the [BasicComponent] is enabled.
+ * @param interactionSource The [MutableInteractionSource] for the [BasicComponent].
  */
 @Composable
 @Suppress("NAME_SHADOWING")
@@ -54,26 +52,20 @@ fun BasicComponent(
     rightActions: @Composable RowScope.() -> Unit = {},
     onClick: (() -> Unit)? = null,
     enabled: Boolean = true,
-    extPressed: Boolean = false
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed = interactionSource.collectIsPressedAsState().value
     var pointerPressed by remember { mutableStateOf(false) }
     val insideMargin = remember { insideMargin } ?: remember { DpSize(16.dp, 16.dp) }
     val paddingModifier = remember(insideMargin) {
         Modifier.padding(horizontal = insideMargin.width, vertical = insideMargin.height)
     }
-    val backgroundColor = animateColorAsState(
-        targetValue = if (isPressed || extPressed || pointerPressed) MiuixTheme.colorScheme.selectedTint else Color.Unspecified,
-        animationSpec = spring(1f, 2000f)
-    ).value
     val titleColor = if (enabled) titleColor else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     val summaryColor = if (enabled) summaryColor else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     Row(
         modifier = if (onClick != null && enabled) {
             modifier
                 .clickable(
-                    indication = null,
+                    indication = LocalIndication.current,
                     interactionSource = interactionSource
                 ) {
                     onClick.invoke()
@@ -90,7 +82,6 @@ fun BasicComponent(
                 }
             }
             .fillMaxWidth()
-            .drawBehind { drawRect(backgroundColor) }
             .then(paddingModifier),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
