@@ -4,6 +4,7 @@ import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.ByteArrayOutputStream
 import java.util.Properties
 
@@ -189,7 +190,7 @@ val generateVersionInfo by tasks.registering {
         val file = file("src/commonMain/kotlin/utils/VersionInfo.kt")
         file.writeText(
             """
-            package misc
+            package utils
             
             object VersionInfo {
                 const val VERSION_NAME = "$verName"
@@ -200,7 +201,7 @@ val generateVersionInfo by tasks.registering {
     }
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+tasks.withType<KotlinCompile>().configureEach {
     dependsOn(generateVersionInfo)
 }
 
