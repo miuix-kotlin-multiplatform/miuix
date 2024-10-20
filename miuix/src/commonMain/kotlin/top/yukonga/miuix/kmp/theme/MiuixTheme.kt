@@ -6,10 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.staticCompositionLocalOf
-
-private val LocalMiuixColor = staticCompositionLocalOf { lightColorScheme() }
-private val LocalMiuixTextStyles = staticCompositionLocalOf { miuixTextStyles() }
 
 /**
  * The default theme that provides color and text styles for the Miuix components.
@@ -20,12 +16,13 @@ private val LocalMiuixTextStyles = staticCompositionLocalOf { miuixTextStyles() 
  */
 @Composable
 fun MiuixTheme(
-    colorScheme: MiuixColor = MiuixTheme.colorScheme,
-    textStyles: MiuixTextStyles = MiuixTheme.textStyles,
+    colorScheme: Colors = MiuixTheme.colorScheme,
+    textStyles: TextStyles = MiuixTheme.textStyles,
     content: @Composable () -> Unit
 ) {
+    val miuixColors = remember(colorScheme) { colorScheme }
     val miuixTextStyles = remember(colorScheme.onBackground) {
-        miuixTextStyles(
+        defaultTextStyles(
             main = textStyles.main.copy(color = colorScheme.onBackground),
             title = textStyles.title.copy(color = colorScheme.onBackground),
             paragraph = textStyles.paragraph.copy(color = colorScheme.onBackground)
@@ -35,8 +32,8 @@ fun MiuixTheme(
         ripple(color = colorScheme.onBackground)
     }
     CompositionLocalProvider(
-        LocalMiuixColor provides colorScheme,
-        LocalMiuixTextStyles provides miuixTextStyles,
+        LocalColors provides miuixColors,
+        LocalTextStyles provides miuixTextStyles,
         LocalIndication provides miuixRipple,
     ) {
         content()
@@ -44,13 +41,13 @@ fun MiuixTheme(
 }
 
 object MiuixTheme {
-    val colorScheme: MiuixColor
+    val colorScheme: Colors
         @Composable
         @ReadOnlyComposable
-        get() = LocalMiuixColor.current
+        get() = LocalColors.current
 
-    val textStyles: MiuixTextStyles
+    val textStyles: TextStyles
         @Composable
         @ReadOnlyComposable
-        get() = LocalMiuixTextStyles.current
+        get() = LocalTextStyles.current
 }

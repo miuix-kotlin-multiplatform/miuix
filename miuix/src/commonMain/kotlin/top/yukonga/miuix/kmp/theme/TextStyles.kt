@@ -1,6 +1,7 @@
 package top.yukonga.miuix.kmp.theme
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
@@ -14,17 +15,17 @@ import androidx.compose.ui.unit.sp
  * @param paragraph The paragraph text style.
  */
 @Immutable
-class MiuixTextStyles(
+class TextStyles(
     val main: TextStyle,
     val title: TextStyle,
     val paragraph: TextStyle
 )
 
-fun miuixTextStyles(
+fun defaultTextStyles(
     main: TextStyle = DefaultTextStyle,
     title: TextStyle = TitleTextStyle,
     paragraph: TextStyle = ParagraphTextStyle
-): MiuixTextStyles = MiuixTextStyles(
+): TextStyles = TextStyles(
     main = main,
     title = title,
     paragraph = paragraph
@@ -45,3 +46,5 @@ private val ParagraphTextStyle: TextStyle
         fontSize = 17.sp,
         lineHeight = 1.2f.em
     )
+
+val LocalTextStyles = staticCompositionLocalOf { defaultTextStyles() }

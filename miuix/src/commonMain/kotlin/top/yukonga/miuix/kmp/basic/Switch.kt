@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -107,7 +108,7 @@ fun Switch(
             .size(52.dp, 28.5.dp)
             .requiredSize(52.dp, 28.5.dp)
             .clip(SmoothRoundedCornerShape(52.dp))
-            .background(if (enabled) backgroundColor else disabledBackgroundColor)
+            .drawBehind { drawRect(if (enabled) backgroundColor else disabledBackgroundColor) }
             .pointerInput(Unit) {
                 detectHorizontalDragGestures(
                     onDragStart = {

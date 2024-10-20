@@ -1,7 +1,5 @@
 package top.yukonga.miuix.kmp.extra
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -112,8 +110,6 @@ fun SuperDropdown(
     val isDropdownExpanded = remember { mutableStateOf(false) }
     val hapticFeedback = LocalHapticFeedback.current
     val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
-    val targetColor = if (isDropdownExpanded.value) MiuixTheme.colorScheme.selectedTint else Color.Transparent
-    val selectedTint by animateColorAsState(targetValue = targetColor, animationSpec = spring(stiffness = 2000f))
     var alignLeft by rememberSaveable { mutableStateOf(true) }
     var dropdownOffsetXPx by remember { mutableStateOf(0) }
     var dropdownOffsetYPx by remember { mutableStateOf(0) }
@@ -147,8 +143,8 @@ fun SuperDropdown(
                     componentHeightPx = coordinates.size.height
                     componentWidthPx = coordinates.size.width
                 }
-            }
-            .background(selectedTint),
+            },
+        extPressed = isDropdownExpanded.value,
         insideMargin = insideMargin,
         title = title,
         titleColor = titleColor,
@@ -205,7 +201,7 @@ fun SuperDropdown(
             with(density) { WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
         )
         val dropdownMaxHeight by rememberUpdatedState(with(density) {
-            (windowHeightPx - statusBarPx - navigationBarPx - captionBarPx ).toDp()
+            (windowHeightPx - statusBarPx - navigationBarPx - captionBarPx).toDp()
         })
         val dropdownElevation by rememberUpdatedState(with(density) {
             11.dp.toPx()

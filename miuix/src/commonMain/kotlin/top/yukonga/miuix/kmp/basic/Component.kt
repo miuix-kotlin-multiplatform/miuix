@@ -1,6 +1,10 @@
 package top.yukonga.miuix.kmp.basic
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,10 +12,16 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -43,22 +53,44 @@ fun BasicComponent(
     leftAction: @Composable (() -> Unit?)? = null,
     rightActions: @Composable RowScope.() -> Unit = {},
     onClick: (() -> Unit)? = null,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    extPressed: Boolean = false
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed = interactionSource.collectIsPressedAsState().value
+    var pointerPressed by remember { mutableStateOf(false) }
     val insideMargin = remember { insideMargin } ?: remember { DpSize(16.dp, 16.dp) }
     val paddingModifier = remember(insideMargin) {
         Modifier.padding(horizontal = insideMargin.width, vertical = insideMargin.height)
     }
+    val backgroundColor = animateColorAsState(
+        targetValue = if (isPressed || extPressed || pointerPressed) MiuixTheme.colorScheme.selectedTint else Color.Unspecified,
+        animationSpec = spring(1f, 2000f)
+    ).value
     val titleColor = if (enabled) titleColor else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     val summaryColor = if (enabled) summaryColor else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     Row(
         modifier = if (onClick != null && enabled) {
             modifier
-                .clickable { onClick.invoke() }
+                .clickable(
+                    indication = null,
+                    interactionSource = interactionSource
+                ) {
+                    onClick.invoke()
+                }
         } else {
             modifier
         }
+            .pointerInput(Unit) {
+                awaitPointerEventScope {
+                    while (enabled) {
+                        val event = awaitPointerEvent()
+                        pointerPressed = event.type == PointerEventType.Press
+                    }
+                }
+            }
             .fillMaxWidth()
+            .drawBehind { drawRect(backgroundColor) }
             .then(paddingModifier),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween

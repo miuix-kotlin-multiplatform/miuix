@@ -3,6 +3,7 @@ package top.yukonga.miuix.kmp.theme
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.graphics.Color
 
@@ -57,7 +58,7 @@ import androidx.compose.ui.graphics.Color
  * @param windowDimming The color of the window dimming. Cases: Dialog, Dropdown.
  */
 @Stable
-class MiuixColor(
+class Colors(
     primary: Color,
     onPrimary: Color,
     primaryVariant: Color,
@@ -155,7 +156,7 @@ class MiuixColor(
     val selectedTint by mutableStateOf(selectedTint, structuralEqualityPolicy())
 }
 
-fun lightColorScheme() = MiuixColor(
+fun lightColorScheme() = Colors(
     primary = Color(0xFF3482FF),
     onPrimary = Color.White,
     primaryVariant = Color(0xFF3482FF),
@@ -205,7 +206,7 @@ fun lightColorScheme() = MiuixColor(
     selectedTint = Color(0x14000000)
 )
 
-fun darkColorScheme() = MiuixColor(
+fun darkColorScheme() = Colors(
     primary = Color(0xFF277Af7),
     onPrimary = Color.White,
     primaryVariant = Color(0xFF0073DD),
@@ -254,3 +255,5 @@ fun darkColorScheme() = MiuixColor(
     windowDimming = Color.Black.copy(alpha = 0.6f),
     selectedTint = Color(0xCC393939)
 )
+
+val LocalColors = staticCompositionLocalOf { lightColorScheme() }
