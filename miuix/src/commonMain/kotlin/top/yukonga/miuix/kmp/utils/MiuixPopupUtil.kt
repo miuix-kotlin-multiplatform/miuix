@@ -125,7 +125,7 @@ class MiuixPopupUtil {
                 } else {
                     slideInVertically(
                         initialOffsetY = { fullHeight -> fullHeight },
-                        animationSpec = spring(0.92f, 500f)
+                        animationSpec = spring(0.92f, 400f)
                     )
                 },
                 exit = if (largeScreen.invoke().value) {
