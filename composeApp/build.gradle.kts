@@ -189,7 +189,7 @@ val generateVersionInfo by tasks.registering {
         val file = file("src/commonMain/kotlin/utils/VersionInfo.kt")
         file.writeText(
             """
-            package misc
+            package utils
             
             object VersionInfo {
                 const val VERSION_NAME = "$verName"
