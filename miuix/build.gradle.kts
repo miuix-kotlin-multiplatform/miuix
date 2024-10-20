@@ -47,7 +47,6 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(libs.jetbrains.compose.window.size)
-            implementation(libs.jetbrains.kotlinx.datetime)
         }
     }
 }
