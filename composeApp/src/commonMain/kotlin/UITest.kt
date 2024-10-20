@@ -15,9 +15,9 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material.icons.rounded.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -74,7 +74,7 @@ fun UITest(
 
     val items = listOf(
         NavigationItem("HomePage", Icons.Rounded.Home),
-        NavigationItem("DropDown", Icons.Rounded.Star),
+        NavigationItem("DropDown", Icons.Rounded.Favorite),
         NavigationItem("Settings", Icons.Rounded.Settings)
     )
 
