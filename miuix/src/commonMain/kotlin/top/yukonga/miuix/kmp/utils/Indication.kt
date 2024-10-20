@@ -15,6 +15,7 @@ import androidx.compose.ui.node.DelegatableNode
 import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.node.invalidateDraw
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 
 /**
  * Miuix default [Indication] that draws a rectangular overlay when pressed.
@@ -37,6 +38,8 @@ class MiuixIndication(
         private var isHovered = false
         private var isFocused = false
         private var isPopupExpanded = false
+        private var lastClickTime = 0L
+        private val clickThreshold = 300L
         private val animatedAlpha = Animatable(0f)
 
         override fun onAttach() {
@@ -62,6 +65,11 @@ class MiuixIndication(
 
                         is PressInteraction.Cancel, is PressInteraction.Release -> {
                             isPressed = false
+                            val currentTime = Clock.System.now().toEpochMilliseconds()
+                            if (currentTime - lastClickTime < clickThreshold) {
+                                animatedAlpha.snapTo(0f)
+                            }
+                            lastClickTime = currentTime
                             if (!isHovered && !isFocused && !isPopupExpanded) {
                                 animatedAlpha.animateTo(0f)
                             } else if (isPopupExpanded) {

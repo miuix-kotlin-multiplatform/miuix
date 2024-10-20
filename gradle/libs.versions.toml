@@ -9,11 +9,13 @@ androidx-window = "1.3.0"
 compose-plugin = "1.7.0"
 dokka = "1.9.20"
 kotlin = "2.0.21"
+kotlinx-datetime = "0.6.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
 androidx-window = { group = "androidx.window", name = "window", version.ref = "androidx-window" }
 jetbrains-compose-window-size = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "compose-plugin" }
+jetbrains-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
