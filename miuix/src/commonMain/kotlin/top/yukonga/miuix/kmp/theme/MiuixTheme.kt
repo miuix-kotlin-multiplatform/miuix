@@ -20,7 +20,7 @@ fun MiuixTheme(
     textStyles: TextStyles = MiuixTheme.textStyles,
     content: @Composable () -> Unit
 ) {
-    val miuixColors = remember(colorScheme) { colorScheme }
+    val miuixColors = remember { colorScheme.copy() }.apply { updateColorsFrom(colorScheme) }
     val miuixTextStyles = remember(colorScheme.onBackground) {
         defaultTextStyles(
             main = textStyles.main.copy(color = colorScheme.onBackground),
