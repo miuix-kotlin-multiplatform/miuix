@@ -71,7 +71,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showPopup
-import top.yukonga.miuix.kmp.utils.PopupInteraction
+import top.yukonga.miuix.kmp.utils.HoldDownInteraction
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import kotlin.math.roundToInt
@@ -114,6 +114,7 @@ fun SuperDropdown(
     val interactionSource = remember { MutableInteractionSource() }
     val isDropdownExpanded = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
+    val held = remember { mutableStateOf<HoldDownInteraction.Hold?>(null) }
     val hapticFeedback = LocalHapticFeedback.current
     val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     var alignLeft by rememberSaveable { mutableStateOf(true) }
@@ -125,9 +126,15 @@ fun SuperDropdown(
     DisposableEffect(Unit) {
         onDispose {
             dismissPopup(isDropdownExpanded)
+        }
+    }
+
+    if (!isDropdownExpanded.value) {
+        held.value?.let { oldValue ->
             coroutineScope.launch {
-                interactionSource.emit(PopupInteraction.Close)
+                interactionSource.emit(HoldDownInteraction.Release(oldValue))
             }
+            held.value = null
         }
     }
 
@@ -181,7 +188,9 @@ fun SuperDropdown(
                 isDropdownExpanded.value = enabled
                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                 coroutineScope.launch {
-                    interactionSource.emit(PopupInteraction.Open)
+                    interactionSource.emit(HoldDownInteraction.Hold().also {
+                        held.value = it
+                    })
                 }
             }
         },
@@ -227,9 +236,6 @@ fun SuperDropdown(
 
         BackHandler(enabled = isDropdownExpanded.value) {
             dismissPopup(isDropdownExpanded)
-            coroutineScope.launch {
-                interactionSource.emit(PopupInteraction.Close)
-            }
         }
 
         showPopup(
@@ -246,9 +252,6 @@ fun SuperDropdown(
                             detectTapGestures(
                                 onTap = {
                                     dismissPopup(isDropdownExpanded)
-                                    coroutineScope.launch {
-                                        interactionSource.emit(PopupInteraction.Close)
-                                    }
                                 }
                             )
                         }
@@ -293,9 +296,6 @@ fun SuperDropdown(
                                     onSelectedIndexChange = {
                                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                         onSelectedIndexChange(it)
-                                        coroutineScope.launch {
-                                            interactionSource.emit(PopupInteraction.Close)
-                                        }
                                         dismissPopup(isDropdownExpanded)
                                     },
                                     textWidthDp = textWidthDp,
