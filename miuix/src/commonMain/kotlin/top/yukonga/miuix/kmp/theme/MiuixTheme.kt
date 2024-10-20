@@ -25,7 +25,19 @@ fun MiuixTheme(
         defaultTextStyles(
             main = textStyles.main.copy(color = colorScheme.onBackground),
             title = textStyles.title.copy(color = colorScheme.onBackground),
-            paragraph = textStyles.paragraph.copy(color = colorScheme.onBackground)
+            paragraph = textStyles.paragraph.copy(color = colorScheme.onBackground),
+            body1 = textStyles.body1.copy(color = colorScheme.onBackground),
+            body2 = textStyles.body2.copy(color = colorScheme.onBackground),
+            button = textStyles.button.copy(color = colorScheme.onBackground),
+            footnote1 = textStyles.footnote1.copy(color = colorScheme.onBackground),
+            footnote2 = textStyles.footnote2.copy(color = colorScheme.onBackground),
+            headline1 = textStyles.headline1.copy(color = colorScheme.onBackground),
+            headline2 = textStyles.headline2.copy(color = colorScheme.onBackground),
+            subtitle = textStyles.subtitle.copy(color = colorScheme.onBackground),
+            title1 = textStyles.title1.copy(color = colorScheme.onBackground),
+            title2 = textStyles.title2.copy(color = colorScheme.onBackground),
+            title3 = textStyles.title3.copy(color = colorScheme.onBackground),
+            title4 = textStyles.title4.copy(color = colorScheme.onBackground)
         )
     }
     val miuixRipple = remember(colorScheme.onBackground) {

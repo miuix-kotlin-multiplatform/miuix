@@ -29,7 +29,7 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 fun Card(
     modifier: Modifier = Modifier,
     insideMargin: DpSize = DpSize(0.dp, 0.dp),
-    cornerRadius: Dp = 18.dp,
+    cornerRadius: Dp = 16.dp,
     color: Color = MiuixTheme.colorScheme.surface,
     content: @Composable ColumnScope.() -> Unit
 ) {

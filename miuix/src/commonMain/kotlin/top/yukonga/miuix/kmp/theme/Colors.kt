@@ -43,7 +43,7 @@ import androidx.compose.ui.graphics.Color
  * @param surface The surface color.
  * @param onSurface The color of the text on surface color.
  * @param surfaceVariant The variant color of the surface color.
- * @param onSurfaceVariantDialog The color of the dialog summary on surface variant color.
+ * @param onSurfaceSecondary The color of the dialog summary on surface variant color.
  * @param onSurfaceVariantSummary The color of the summary on surface variant color.
  * @param onSurfaceVariantActions The color of the actions on surface variant color.
  * @param disabledOnSurface The color of the text on disabled surface color.
@@ -92,7 +92,7 @@ class Colors(
     surface: Color,
     onSurface: Color,
     surfaceVariant: Color,
-    onSurfaceVariantDialog: Color,
+    onSurfaceSecondary: Color,
     onSurfaceVariantSummary: Color,
     onSurfaceVariantActions: Color,
     disabledOnSurface: Color,
@@ -171,7 +171,7 @@ class Colors(
         internal set
     var surfaceVariant by mutableStateOf(surfaceVariant, structuralEqualityPolicy())
         internal set
-    var onSurfaceVariantDialog by mutableStateOf(onSurfaceVariantDialog, structuralEqualityPolicy())
+    var onSurfaceSecondary by mutableStateOf(onSurfaceSecondary, structuralEqualityPolicy())
         internal set
     var onSurfaceVariantSummary by mutableStateOf(onSurfaceVariantSummary, structuralEqualityPolicy())
         internal set
@@ -233,7 +233,7 @@ class Colors(
         surface: Color = this.surface,
         onSurface: Color = this.onSurface,
         surfaceVariant: Color = this.surfaceVariant,
-        onSurfaceVariantDialog: Color = this.onSurfaceVariantDialog,
+        onSurfaceSecondary: Color = this.onSurfaceSecondary,
         onSurfaceVariantSummary: Color = this.onSurfaceVariantSummary,
         onSurfaceVariantActions: Color = this.onSurfaceVariantActions,
         disabledOnSurface: Color = this.disabledOnSurface,
@@ -280,7 +280,7 @@ class Colors(
         surface,
         onSurface,
         surfaceVariant,
-        onSurfaceVariantDialog,
+        onSurfaceSecondary,
         onSurfaceVariantSummary,
         onSurfaceVariantActions,
         disabledOnSurface,
@@ -330,9 +330,9 @@ fun lightColorScheme(
     surface: Color = Color.White,
     onSurface: Color = Color.Black,
     surfaceVariant: Color = Color.White,
-    onSurfaceVariantDialog: Color = Color(0xFF333333),
-    onSurfaceVariantSummary: Color = Color(0xFF666666),
-    onSurfaceVariantActions: Color = Color(0xFF999999),
+    onSurfaceSecondary: Color = Color(0xCC000000),
+    onSurfaceVariantSummary: Color = Color(0x99000000),
+    onSurfaceVariantActions: Color = Color(0x66000000),
     disabledOnSurface: Color = Color(0xFFB2B2B2),
     outline: Color = Color(0xFFD9D9D9),
     dividerLine: Color = Color(0xFFE0E0E0),
@@ -377,7 +377,7 @@ fun lightColorScheme(
     surface,
     onSurface,
     surfaceVariant,
-    onSurfaceVariantDialog,
+    onSurfaceSecondary,
     onSurfaceVariantSummary,
     onSurfaceVariantActions,
     disabledOnSurface,
@@ -424,11 +424,11 @@ fun darkColorScheme(
     onBackground: Color = Color(0xFFE8E8E8),
     onBackgroundVariant: Color = Color(0xFF787E96),
     surface: Color = Color(0xFF242424),
-    onSurface: Color = Color(0xFFE9E9E9),
+    onSurface: Color = Color(0xE6FFFFFF),
     surfaceVariant: Color = Color(0xFF181818),
-    onSurfaceVariantDialog: Color = Color(0xFFD2D2D2),
-    onSurfaceVariantSummary: Color = Color(0xFF929292),
-    onSurfaceVariantActions: Color = Color(0xFF7B7B7B),
+    onSurfaceSecondary: Color = Color(0xCCFFFFFF),
+    onSurfaceVariantSummary: Color = Color(0x80FFFFFF),
+    onSurfaceVariantActions: Color = Color(0x66FFFFFF),
     disabledOnSurface: Color = Color(0xFF666666),
     outline: Color = Color(0xFF404040),
     dividerLine: Color = Color(0xFF393939),
@@ -473,7 +473,7 @@ fun darkColorScheme(
     surface,
     onSurface,
     surfaceVariant,
-    onSurfaceVariantDialog,
+    onSurfaceSecondary,
     onSurfaceVariantSummary,
     onSurfaceVariantActions,
     disabledOnSurface,
@@ -522,7 +522,7 @@ internal fun Colors.updateColorsFrom(other: Colors) {
     surface = other.surface
     onSurface = other.onSurface
     surfaceVariant = other.surfaceVariant
-    onSurfaceVariantDialog = other.onSurfaceVariantDialog
+    onSurfaceSecondary = other.onSurfaceSecondary
     onSurfaceVariantSummary = other.onSurfaceVariantSummary
     onSurfaceVariantActions = other.onSurfaceVariantActions
     disabledOnSurface = other.disabledOnSurface

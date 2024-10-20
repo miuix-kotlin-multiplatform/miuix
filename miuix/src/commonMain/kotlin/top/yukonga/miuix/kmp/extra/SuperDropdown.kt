@@ -65,7 +65,7 @@ import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.ArrowUpDown
+import top.yukonga.miuix.kmp.icon.icons.ArrowUpDownIntegrated
 import top.yukonga.miuix.kmp.icon.icons.Check
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
@@ -168,17 +168,18 @@ fun SuperDropdown(
         summaryColor = summaryColor,
         rightActions = {
             Text(
-                modifier = Modifier.padding(end = 6.dp),
+                modifier = Modifier.widthIn(max = 130.dp),
                 text = items[selectedIndex],
-                fontSize = 15.sp,
+                fontSize = MiuixTheme.textStyles.body2.fontSize,
                 color = actionColor,
                 textAlign = TextAlign.End,
             )
             Image(
                 modifier = Modifier
-                    .size(15.dp)
+                    .padding(start = 8.dp)
+                    .size(10.dp, 16.dp)
                     .align(Alignment.CenterVertically),
-                imageVector = MiuixIcons.ArrowUpDown,
+                imageVector = MiuixIcons.ArrowUpDownIntegrated,
                 colorFilter = BlendModeColorFilter(actionColor, BlendMode.SrcIn),
                 contentDescription = null
             )

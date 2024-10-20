@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -81,6 +82,7 @@ fun BasicComponent(
                     }
                 }
             }
+            .heightIn(min = 56.dp)
             .fillMaxWidth()
             .then(paddingModifier),
         verticalAlignment = Alignment.CenterVertically,
@@ -99,6 +101,7 @@ fun BasicComponent(
             title?.let {
                 Text(
                     text = it,
+                    fontSize = MiuixTheme.textStyles.headline1.fontSize,
                     fontWeight = FontWeight.Medium,
                     color = titleColor
                 )
@@ -106,7 +109,7 @@ fun BasicComponent(
             summary?.let {
                 Text(
                     text = it,
-                    fontSize = MiuixTheme.textStyles.title.fontSize,
+                    fontSize = MiuixTheme.textStyles.body2.fontSize,
                     color = summaryColor
                 )
             }

@@ -47,8 +47,7 @@ class MiuixIndication(
         private var pressedAnimation: Job? = null
         private var restingAnimation: Job? = null
 
-        private suspend fun updateStates() {
-            animatedAlpha.stop()
+        private fun updateStates() {
             var targetAlpha = 0.0f
             if (isHovered) targetAlpha += 0.06f
             if (isFocused) targetAlpha += 0.08f

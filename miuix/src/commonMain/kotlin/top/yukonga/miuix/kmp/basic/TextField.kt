@@ -195,9 +195,9 @@ fun TextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    insideMargin: DpSize = DpSize(16.dp, 16.dp),
+    insideMargin: DpSize = DpSize(16.dp, 15.dp),
     backgroundColor: Color = MiuixTheme.colorScheme.secondaryContainer,
-    cornerRadius: Dp = 18.dp,
+    cornerRadius: Dp = 16.dp,
     label: String = "",
     labelColor: Color = MiuixTheme.colorScheme.onSecondaryContainer,
     enabled: Boolean = true,
@@ -223,7 +223,7 @@ fun TextField(
         else Modifier.padding(vertical = insideMargin.height)
     }
     val isFocused by interactionSource.collectIsFocusedAsState()
-    val borderWidth by animateDpAsState(if (isFocused) 1.6.dp else 0.dp)
+    val borderWidth by animateDpAsState(if (isFocused) 2.0.dp else 0.dp)
     val borderColor by animateColorAsState(if (isFocused) MiuixTheme.colorScheme.primary else backgroundColor)
     val labelOffsetY by animateDpAsState(if (value.isNotEmpty()) -(insideMargin.height / 2) else 0.dp)
     val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty()) (insideMargin.height / 2) else 0.dp)
