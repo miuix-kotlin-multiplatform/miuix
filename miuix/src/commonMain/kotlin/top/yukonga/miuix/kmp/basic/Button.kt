@@ -30,6 +30,7 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
  * @param enabled Whether the [Button] is enabled.
  * @param submit Whether the [Button] is a submit button.
  * @param cornerRadius The corner radius of the [Button].
+ * @param minHeight The minimum height of the [Button].
  */
 @Composable
 fun Button(
@@ -38,7 +39,8 @@ fun Button(
     onClick: () -> Unit,
     enabled: Boolean = true,
     submit: Boolean = false,
-    cornerRadius: Dp = 18.dp
+    cornerRadius: Dp = 16.dp,
+    minHeight: Dp = 40.dp
 ) {
     val hapticFeedback = LocalHapticFeedback.current
     val color by rememberUpdatedState(getButtonColor(enabled, submit))
@@ -56,7 +58,7 @@ fun Button(
     ) {
         Row(
             Modifier
-                .defaultMinSize(minWidth = 58.dp, minHeight = 40.dp)
+                .defaultMinSize(minWidth = 58.dp, minHeight = minHeight)
                 .padding(16.dp, 16.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
@@ -64,6 +66,7 @@ fun Button(
             Text(
                 text = text,
                 color = textColor,
+                fontSize = MiuixTheme.textStyles.button.fontSize,
                 fontWeight = FontWeight.Medium
             )
         }

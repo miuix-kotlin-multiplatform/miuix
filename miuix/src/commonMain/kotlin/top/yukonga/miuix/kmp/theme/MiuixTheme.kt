@@ -10,31 +10,27 @@ import top.yukonga.miuix.kmp.utils.MiuixIndication
 /**
  * The default theme that provides color and text styles for the Miuix components.
  *
- * @param colorScheme The color scheme for the Miuix components.
+ * @param colors The color scheme for the Miuix components.
  * @param textStyles The text styles for the Miuix components.
  * @param content The content of the Miuix theme.
  */
 @Composable
 fun MiuixTheme(
-    colorScheme: Colors = MiuixTheme.colorScheme,
+    colors: Colors = MiuixTheme.colorScheme,
     textStyles: TextStyles = MiuixTheme.textStyles,
     content: @Composable () -> Unit
 ) {
-    val miuixColors = remember { colorScheme.copy() }.apply { updateColorsFrom(colorScheme) }
-    val miuixTextStyles = remember(colorScheme.onBackground) {
-        defaultTextStyles(
-            main = textStyles.main.copy(color = colorScheme.onBackground),
-            title = textStyles.title.copy(color = colorScheme.onBackground),
-            paragraph = textStyles.paragraph.copy(color = colorScheme.onBackground)
-        )
+    val miuixColors = remember { colors.copy() }.apply {
+        updateColorsFrom(colors)
     }
-    val miuixRipple = remember(colorScheme.onBackground) {
-        MiuixIndication(backgroundColor = colorScheme.onBackground)
+    val miuixTextStyles = remember { textStyles }
+    val miuixIndication = remember(colors.onBackground) {
+        MiuixIndication(backgroundColor = colors.onBackground)
     }
     CompositionLocalProvider(
         LocalColors provides miuixColors,
         LocalTextStyles provides miuixTextStyles,
-        LocalIndication provides miuixRipple
+        LocalIndication provides miuixIndication
     ) {
         content()
     }

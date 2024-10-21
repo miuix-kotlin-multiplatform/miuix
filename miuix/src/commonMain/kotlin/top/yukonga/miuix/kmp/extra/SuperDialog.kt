@@ -28,7 +28,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -60,7 +59,7 @@ fun SuperDialog(
     title: String? = null,
     titleColor: Color = MiuixTheme.colorScheme.onSurface,
     summary: String? = null,
-    summaryColor: Color = MiuixTheme.colorScheme.onSurfaceVariantDialog,
+    summaryColor: Color = MiuixTheme.colorScheme.onSurfaceSecondary,
     backgroundColor: Color = MiuixTheme.colorScheme.surfaceVariant,
     show: MutableState<Boolean>,
     onDismissRequest: (() -> Unit)? = null,
@@ -129,9 +128,10 @@ fun SuperDialog(
                     ) {
                         title?.let {
                             Text(
-                                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
+                                modifier = Modifier.fillMaxWidth()
+                                    .padding(start = 36.dp, end = 36.dp, bottom = 16.dp),
                                 text = it,
-                                fontSize = 20.sp,
+                                fontSize = MiuixTheme.textStyles.title4.fontSize,
                                 fontWeight = FontWeight.Medium,
                                 textAlign = TextAlign.Center,
                                 color = titleColor
@@ -139,8 +139,10 @@ fun SuperDialog(
                         }
                         summary?.let {
                             Text(
-                                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
+                                modifier = Modifier.fillMaxWidth()
+                                    .padding(start = 28.dp, end = 28.dp, bottom = 16.dp),
                                 text = it,
+                                fontSize = MiuixTheme.textStyles.body1.fontSize,
                                 textAlign = TextAlign.Center,
                                 color = summaryColor
                             )

@@ -53,7 +53,6 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastFirst
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import kotlin.math.abs
@@ -524,7 +523,7 @@ private fun TopAppBarLayout(
                 Text(
                     text = title,
                     maxLines = 1,
-                    fontSize = 20.sp,
+                    fontSize = MiuixTheme.textStyles.title3.fontSize,
                     fontWeight = FontWeight.Medium
                 )
             }
@@ -544,7 +543,7 @@ private fun TopAppBarLayout(
                 Text(
                     text = largeTitle,
                     maxLines = 1,
-                    fontSize = 32.sp,
+                    fontSize = MiuixTheme.textStyles.title1.fontSize,
                     fontWeight = FontWeight.Normal
                 )
             }

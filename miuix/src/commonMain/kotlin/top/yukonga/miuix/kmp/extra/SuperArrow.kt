@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.icon.MiuixIcons
@@ -60,15 +59,15 @@ fun SuperArrow(
             if (rightText != null) {
                 Text(
                     text = rightText,
-                    fontSize = 15.sp,
+                    fontSize = MiuixTheme.textStyles.body2.fontSize,
                     color = MiuixTheme.colorScheme.onSurfaceVariantActions,
                     textAlign = TextAlign.End,
                 )
             }
             Image(
                 modifier = Modifier
-                    .size(15.dp)
-                    .padding(start = 6.dp),
+                    .padding(start = 8.dp)
+                    .size(10.dp, 16.dp),
                 imageVector = MiuixIcons.ArrowRight,
                 contentDescription = null,
                 colorFilter = BlendModeColorFilter(MiuixTheme.colorScheme.onSurfaceVariantActions, BlendMode.SrcIn),

@@ -8,7 +8,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**
@@ -32,7 +31,7 @@ fun SmallTitle(
     Text(
         modifier = modifier.then(paddingModifier),
         text = text,
-        fontSize = 14.sp,
+        fontSize = MiuixTheme.textStyles.subtitle.fontSize,
         fontWeight = FontWeight.Medium,
         color = textColor
     )
