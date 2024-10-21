@@ -27,7 +27,7 @@ kotlin {
 @Composable
 fun App() {
    MiuixTheme(
-        colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+        colors = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
     ) {
        // Other content...
     }

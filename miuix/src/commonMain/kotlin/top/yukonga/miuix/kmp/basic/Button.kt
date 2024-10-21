@@ -30,6 +30,7 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
  * @param enabled Whether the [Button] is enabled.
  * @param submit Whether the [Button] is a submit button.
  * @param cornerRadius The corner radius of the [Button].
+ * @param minHeight The minimum height of the [Button].
  */
 @Composable
 fun Button(

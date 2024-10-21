@@ -43,7 +43,7 @@ import androidx.compose.ui.graphics.Color
  * @param surface The surface color.
  * @param onSurface The color of the text on surface color.
  * @param surfaceVariant The variant color of the surface color.
- * @param onSurfaceSecondary The color of the dialog summary on surface variant color.
+ * @param onSurfaceSecondary The color of the text on surface secondary color.
  * @param onSurfaceVariantSummary The color of the summary on surface variant color.
  * @param onSurfaceVariantActions The color of the actions on surface variant color.
  * @param disabledOnSurface The color of the text on disabled surface color.
