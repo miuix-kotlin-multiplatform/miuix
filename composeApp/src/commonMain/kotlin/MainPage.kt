@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import component.OtherComponent
 import component.TextComponent
 import top.yukonga.miuix.kmp.basic.BasicComponent
+import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.InputField
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
@@ -66,13 +67,10 @@ fun MainPage(
                                 onExpandedChange = { expanded = it },
                                 label = "Search",
                                 leadingIcon = {
-                                    Image(
+                                    Icon(
                                         modifier = Modifier.padding(horizontal = 16.dp),
                                         imageVector = MiuixIcons.Search,
-                                        colorFilter = BlendModeColorFilter(
-                                            MiuixTheme.colorScheme.onSurfaceContainer,
-                                            BlendMode.SrcIn
-                                        ),
+                                        tint = MiuixTheme.colorScheme.onSurfaceContainer,
                                         contentDescription = "Search"
                                     )
                                 },

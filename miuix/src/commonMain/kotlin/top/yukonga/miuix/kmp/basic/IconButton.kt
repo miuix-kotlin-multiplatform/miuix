@@ -26,7 +26,7 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
  * @param backgroundColor The background color of of the [IconButton].
  * @param minHeight The minimum height of of the [IconButton].
  * @param minWidth The minimum width of the [IconButton].
- * @param content The content of this icon button, typically an [Image].
+ * @param content The content of this icon button, typically an [Icon].
  */
 @Composable
 fun IconButton(

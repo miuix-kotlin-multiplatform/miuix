@@ -39,6 +39,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.FloatingActionButton
 import top.yukonga.miuix.kmp.basic.HorizontalPager
+import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.NavigationBar
@@ -49,7 +50,6 @@ import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.GitHub
-import top.yukonga.miuix.kmp.theme.MiuixTheme
 import utils.FPSMonitor
 
 @OptIn(FlowPreview::class)
@@ -111,9 +111,8 @@ fun UITest(
                             modifier = Modifier.padding(end = 12.dp),
                             onClick = { }
                         ) {
-                            Image(
+                            Icon(
                                 imageVector = Icons.Rounded.Menu,
-                                colorFilter = ColorFilter.tint(MiuixTheme.colorScheme.onBackground.copy(0.8f)),
                                 contentDescription = "Menu"
                             )
                         }
