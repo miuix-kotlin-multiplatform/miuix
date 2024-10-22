@@ -11,10 +11,10 @@ import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**
- * A title component with Miuix style.
+ * A [SmallTitle] with Miuix style.
  *
  * @param modifier The modifier to be applied to the [SmallTitle].
- * @param text The text to be displayed in the title.
+ * @param text The text to be displayed in the [SmallTitle].
  * @param textColor The color of the [SmallTitle].
  * @param insideMargin The margin inside the [SmallTitle].
  */

@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 /**
- * A horizontal pager with Miuix style.
+ * A [HorizontalPager] component with Miuix style.
  *
  * @param modifier The modifier to be applied to the [HorizontalPager].
  * @param pagerState The state of the [HorizontalPager].

@@ -43,6 +43,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.BlendModeColorFilter
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.PointerEventType
@@ -69,9 +70,9 @@ import top.yukonga.miuix.kmp.icon.icons.ArrowUpDownIntegrated
 import top.yukonga.miuix.kmp.icon.icons.Check
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
+import top.yukonga.miuix.kmp.utils.HoldDownInteraction
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showPopup
-import top.yukonga.miuix.kmp.utils.HoldDownInteraction
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import kotlin.math.roundToInt
@@ -180,7 +181,7 @@ fun SuperDropdown(
                     .size(10.dp, 16.dp)
                     .align(Alignment.CenterVertically),
                 imageVector = MiuixIcons.ArrowUpDownIntegrated,
-                colorFilter = BlendModeColorFilter(actionColor, BlendMode.SrcIn),
+                colorFilter = ColorFilter.tint(actionColor),
                 contentDescription = null
             )
         },
@@ -413,7 +414,6 @@ fun calculateOffsetYPx(
         val offset = dropdownOffsetPx - dropdownHeightPx / 2 + componentHeightPx / 2
         if (offset > insideHeightPx + statusBarPx) offset else insideHeightPx + statusBarPx
     }
-
 }
 
 /**

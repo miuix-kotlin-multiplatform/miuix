@@ -14,7 +14,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 /**
- * A card component with Miuix style.
+ * A [Card] component with Miuix style.
  * Card contain contain content and actions that relate information about a subject.
  *
  * This [Card] does not handle input events

@@ -29,7 +29,7 @@ import kotlin.math.pow
 import kotlin.math.round
 
 /**
- * A slider component with Miuix style.
+ * A [Slider] component with Miuix style.
  *
  * @param modifier The modifier to be applied to the [Slider].
  * @param progress The current progress of the [Slider].

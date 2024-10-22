@@ -34,7 +34,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 /**
- * A text field component with Miuix style.
+ * A [TextField] component with Miuix style.
  *
  * @param value The input [TextFieldValue] to be shown in the text field.
  * @param onValueChange The callback that is triggered when the input service updates values in

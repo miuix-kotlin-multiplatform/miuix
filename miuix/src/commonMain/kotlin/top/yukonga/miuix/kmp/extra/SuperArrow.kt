@@ -7,9 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.BlendModeColorFilter
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -47,6 +46,7 @@ fun SuperArrow(
     enabled: Boolean = true
 ) {
     val updatedOnClick by rememberUpdatedState(onClick)
+    val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     BasicComponent(
         modifier = modifier,
         insideMargin = insideMargin,
@@ -60,7 +60,7 @@ fun SuperArrow(
                 Text(
                     text = rightText,
                     fontSize = MiuixTheme.textStyles.body2.fontSize,
-                    color = MiuixTheme.colorScheme.onSurfaceVariantActions,
+                    color = actionColor,
                     textAlign = TextAlign.End,
                 )
             }
@@ -70,7 +70,7 @@ fun SuperArrow(
                     .size(10.dp, 16.dp),
                 imageVector = MiuixIcons.ArrowRight,
                 contentDescription = null,
-                colorFilter = BlendModeColorFilter(MiuixTheme.colorScheme.onSurfaceVariantActions, BlendMode.SrcIn),
+                colorFilter = ColorFilter.tint(actionColor),
             )
         },
         onClick = {

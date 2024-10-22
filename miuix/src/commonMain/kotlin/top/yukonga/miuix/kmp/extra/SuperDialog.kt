@@ -38,7 +38,7 @@ import top.yukonga.miuix.kmp.utils.getRoundedCorner
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
 /**
- * A dialog with a title, a summary, and a content.
+ * A dialog with a title, a summary, and other contents.
  *
  * @param modifier The modifier to be applied to the [SuperDialog].
  * @param title The title of the [SuperDialog].

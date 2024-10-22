@@ -35,7 +35,7 @@ import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 /**
- * A search bar with Miuix style.
+ * A [SearchBar] component with Miuix style.
  *
  * @param modifier the [Modifier] to be applied to the [SearchBar].
  * @param inputField the input field to input a query in the [SearchBar].

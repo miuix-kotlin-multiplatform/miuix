@@ -34,7 +34,7 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import kotlin.math.absoluteValue
 
 /**
- * A switch with Miuix style.
+ * A [Switch] component with Miuix style.
  *
  * @param modifier The modifier to be applied to the [Switch].
  * @param checked The checked state of the [Switch].

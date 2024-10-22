@@ -24,7 +24,8 @@ import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**
- * A text component with Miuix style.
+ * A [Text] component with Miuix style.
+ *
  * High level element that displays text and provides semantics / accessibility information.
  *
  * @param text the text to be displayed

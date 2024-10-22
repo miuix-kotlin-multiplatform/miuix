@@ -42,7 +42,7 @@ import top.yukonga.miuix.kmp.utils.Platform
 import top.yukonga.miuix.kmp.utils.platform
 
 /**
- * A navigation bar that with 2 to 5 items.
+ * A [NavigationBar] that with 2 to 5 items.
  *
  * @param modifier The modifier to be applied to the [NavigationBar].
  * @param items The items of the [NavigationBar].

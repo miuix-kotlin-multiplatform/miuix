@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**
- * A checkbox component with Miuix style.
+ * A [Checkbox] component with Miuix style.
  *
  * @param modifier The modifier to be applied to the [Checkbox].
  * @param checked The current state of the [Checkbox].

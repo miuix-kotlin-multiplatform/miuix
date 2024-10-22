@@ -29,20 +29,14 @@ import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMapNotNull
 import androidx.compose.ui.util.fastMaxBy
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.MiuixPopupHost
 
 /**
- * A scaffold component with Miuix style.
- * Scaffold implements the basic material design visual layout structure.
+ * A [Scaffold] component with Miuix style.
  *
- * This component provides API to put together several material components to construct your screen,
- * by ensuring proper layout strategy for them and collecting necessary data so these components
- * will work together correctly.
+ * This implements the basic miuix design visual layout structure.
  *
  * To show a [Snackbar], use [SnackbarHostState.showSnackbar].
- * To show a MiuixDialog, use [MiuixPopupUtil.showDialog].
- * To show a MiuixPopup, use [MiuixPopupUtil.showPopup].
  *
  * @param modifier the [Modifier] to be applied to this scaffold.
  * @param topBar top app bar of the screen.

@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**
- * A surface component with Miuix style.
+ * A [Surface] component with Miuix style.
  *
  * @param modifier The modifier to be applied to the [Surface].
  * @param shape The shape of the [Surface].
@@ -50,7 +50,7 @@ fun Surface(
 }
 
 /**
- * A surface component with Miuix style.
+ * A [Surface] component with Miuix style.
  *
  * @param modifier The modifier to be applied to the [Surface].
  * @param onClick The callback when the [Surface] is clicked.

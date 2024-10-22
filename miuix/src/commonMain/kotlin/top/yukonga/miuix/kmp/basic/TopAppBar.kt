@@ -59,7 +59,7 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 /**
- * A top app bar that can collapse and expand based on the scroll position of the content below it.
+ * A [TopAppBar] that can collapse and expand based on the scroll position of the content below it.
  *
  * The [TopAppBar] can be configured with a title, a navigation icon, and action icons. The large
  * title will collapse when the content is scrolled up and expand when the content is scrolled down.

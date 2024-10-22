@@ -17,7 +17,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 /**
- * A floating action button component with Miuix style.
+ * A [FloatingActionButton] component with Miuix style.
  *
  * @param modifier The modifier to be applied to the [FloatingActionButton].
  * @param onClick The callback when the [FloatingActionButton] is clicked.

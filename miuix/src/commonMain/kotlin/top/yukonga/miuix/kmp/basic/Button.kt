@@ -22,7 +22,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 /**
- * A button component with Miuix style.
+ * A [Button] component with Miuix style.
  *
  * @param modifier The modifier to be applied to the [Button].
  * @param text The text of the [Button].
@@ -30,6 +30,7 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
  * @param enabled Whether the [Button] is enabled.
  * @param submit Whether the [Button] is a submit button.
  * @param cornerRadius The corner radius of the [Button].
+ * @param minWidth The minimum width of the [Button].
  * @param minHeight The minimum height of the [Button].
  */
 @Composable
@@ -40,6 +41,7 @@ fun Button(
     enabled: Boolean = true,
     submit: Boolean = false,
     cornerRadius: Dp = 16.dp,
+    minWidth: Dp = 58.dp,
     minHeight: Dp = 40.dp
 ) {
     val hapticFeedback = LocalHapticFeedback.current
@@ -58,7 +60,7 @@ fun Button(
     ) {
         Row(
             Modifier
-                .defaultMinSize(minWidth = 58.dp, minHeight = minHeight)
+                .defaultMinSize(minWidth = minWidth, minHeight = minHeight)
                 .padding(16.dp, 16.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
@@ -74,7 +76,7 @@ fun Button(
 }
 
 @Composable
-private fun getButtonColor(enabled: Boolean, submit: Boolean): Color {
+fun getButtonColor(enabled: Boolean, submit: Boolean): Color {
     return if (enabled) {
         if (submit) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.secondaryVariant
     } else {
@@ -83,7 +85,7 @@ private fun getButtonColor(enabled: Boolean, submit: Boolean): Color {
 }
 
 @Composable
-private fun getTextColor(enabled: Boolean, submit: Boolean): Color {
+fun getTextColor(enabled: Boolean, submit: Boolean): Color {
     return if (enabled) {
         if (submit) MiuixTheme.colorScheme.onPrimary else MiuixTheme.colorScheme.onSecondaryVariant
     } else {
