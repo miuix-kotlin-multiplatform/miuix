@@ -5,7 +5,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.captionBarPadding
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,7 +29,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.FlowPreview
@@ -145,9 +143,9 @@ fun UITest(
                         uriHandler.openUri("https://github.com/miuix-kotlin-multiplatform/miuix")
                     }
                 ) {
-                    Image(
+                    Icon(
                         imageVector = MiuixIcons.GitHub,
-                        colorFilter = ColorFilter.tint(Color.White),
+                        tint = Color.White,
                         contentDescription = "GitHub"
                     )
                 }
