@@ -358,4 +358,4 @@ value class MiuixFabPosition internal constructor(@Suppress("unused") private va
 internal class FabPlacement(val left: Int, val width: Int, val height: Int)
 
 // FAB spacing above the bottom bar / bottom of the Scaffold
-private val FabSpacing = 16.dp
+private val FabSpacing = 12.dp
