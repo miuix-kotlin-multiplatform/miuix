@@ -18,6 +18,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Fix display scaling issue on some devices, such as Xiaomi 15 / Xiaomi 15 Pro
+        val metrics = resources.displayMetrics
+        val density = metrics.density
+        val targetDensity = Math.round(density)
+        metrics.density = targetDensity.toFloat()
+        metrics.densityDpi = targetDensity * 160
+        resources.displayMetrics.setTo(metrics)
+
         setContent {
             val colorMode = remember { mutableIntStateOf(0) }
             val darkMode = colorMode.intValue == 2 || (isSystemInDarkTheme() && colorMode.intValue == 0)
