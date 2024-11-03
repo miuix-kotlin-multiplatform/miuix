@@ -120,7 +120,7 @@ fun InputField(
     onExpandedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    insideMargin: DpSize = DpSize(14.dp, 14.dp),
+    insideMargin: DpSize = DpSize(12.dp, 12.dp),
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     interactionSource: MutableInteractionSource? = null,
