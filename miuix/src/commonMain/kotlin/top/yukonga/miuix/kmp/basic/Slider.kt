@@ -31,8 +31,9 @@ import kotlin.math.round
 /**
  * A [Slider] component with Miuix style.
  *
- * @param modifier The modifier to be applied to the [Slider].
  * @param progress The current progress of the [Slider].
+ * @param onProgressChange The callback to be called when the progress changes.
+ * @param modifier The modifier to be applied to the [Slider].
  * @param enabled Whether the [Slider] is enabled.
  * @param minValue The minimum value of the [Slider]. It is required
  *   that [minValue] < [maxValue].
@@ -40,19 +41,18 @@ import kotlin.math.round
  * @param height The height of the [Slider].
  * @param effect Whether to show the effect of the [Slider].
  * @param decimalPlaces The number of decimal places to be displayed in the drag indicator.
- * @param onProgressChange The callback to be called when the progress changes.
  */
 @Composable
 fun Slider(
-    modifier: Modifier = Modifier,
     progress: Float,
+    onProgressChange: (Float) -> Unit,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     minValue: Float = 0f,
     maxValue: Float = 1f,
     height: Dp = 30.dp,
     effect: Boolean = false,
-    decimalPlaces: Int = 2,
-    onProgressChange: (Float) -> Unit
+    decimalPlaces: Int = 2
 ) {
     val hapticFeedback = LocalHapticFeedback.current
     var dragOffset by remember { mutableStateOf(0f) }

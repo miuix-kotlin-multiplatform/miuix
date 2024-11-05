@@ -40,13 +40,13 @@ import top.yukonga.miuix.kmp.utils.getWindowSize
 /**
  * A dialog with a title, a summary, and other contents.
  *
+ * @param show The show state of the [SuperDialog].
  * @param modifier The modifier to be applied to the [SuperDialog].
  * @param title The title of the [SuperDialog].
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperDialog].
  * @param summaryColor The color of the summary.
  * @param backgroundColor The background color of the [SuperDialog].
- * @param show The show state of the [SuperDialog].
  * @param onDismissRequest The callback when the [SuperDialog] is dismissed.
  * @param outsideMargin The margin outside the [SuperDialog].
  * @param insideMargin The margin inside the [SuperDialog].
@@ -55,13 +55,13 @@ import top.yukonga.miuix.kmp.utils.getWindowSize
  */
 @Composable
 fun SuperDialog(
+    show: MutableState<Boolean>,
     modifier: Modifier = Modifier,
     title: String? = null,
     titleColor: Color = MiuixTheme.colorScheme.onSurface,
     summary: String? = null,
     summaryColor: Color = MiuixTheme.colorScheme.onSurfaceSecondary,
     backgroundColor: Color = MiuixTheme.colorScheme.surfaceVariant,
-    show: MutableState<Boolean>,
     onDismissRequest: (() -> Unit)? = null,
     outsideMargin: DpSize = DpSize(12.dp, 12.dp),
     insideMargin: Dp = 24.dp,

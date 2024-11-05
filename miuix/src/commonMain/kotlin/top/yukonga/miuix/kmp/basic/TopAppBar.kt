@@ -64,9 +64,9 @@ import kotlin.math.roundToInt
  * The [TopAppBar] can be configured with a title, a navigation icon, and action icons. The large
  * title will collapse when the content is scrolled up and expand when the content is scrolled down.
  *
+ * @param title The title of the [TopAppBar].
  * @param modifier The modifier to be applied to the  [TopAppBar].
  * @param color The background color of the [TopAppBar].
- * @param title The title of the [TopAppBar].
  * @param largeTitle The large title of the [TopAppBar], If not specified, it will be the same as title.
  * @param navigationIcon The [Composable] content that represents the navigation icon.
  * @param actions The [Composable] content that represents the action icons.
@@ -76,9 +76,9 @@ import kotlin.math.roundToInt
  */
 @Composable
 fun TopAppBar(
+    title: String,
     modifier: Modifier = Modifier,
     color: Color = MiuixTheme.colorScheme.background,
-    title: String,
     largeTitle: String? = null,
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},

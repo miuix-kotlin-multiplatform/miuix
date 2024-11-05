@@ -18,29 +18,29 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 /**
  * A switch with a title and a summary.
  *
- * @param modifier The modifier to be applied to the [SuperSwitch].
  * @param title The title of the [SuperSwitch].
+ * @param checked The checked state of the [SuperSwitch].
+ * @param onCheckedChange The callback when the checked state of the [SuperSwitch] is changed.
+ * @param modifier The modifier to be applied to the [SuperSwitch].
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperSwitch].
  * @param summaryColor The color of the summary.
  * @param leftAction The [Composable] content that on the left side of the [SuperSwitch].
  * @param rightActions The [Composable] content on the right side of the [SuperSwitch].
- * @param checked The checked state of the [SuperSwitch].
- * @param onCheckedChange The callback when the checked state of the [SuperSwitch] is changed.
  * @param insideMargin The margin inside the [SuperSwitch].
  * @param enabled Whether the [SuperSwitch] is clickable.
  */
 @Composable
 fun SuperSwitch(
-    modifier: Modifier = Modifier,
     title: String,
+    checked: Boolean,
+    onCheckedChange: ((Boolean) -> Unit)?,
+    modifier: Modifier = Modifier,
     titleColor: Color = MiuixTheme.colorScheme.onSurface,
     summary: String? = null,
     summaryColor: Color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
     leftAction: @Composable (() -> Unit)? = null,
     rightActions: @Composable RowScope.() -> Unit = {},
-    checked: Boolean,
-    onCheckedChange: ((Boolean) -> Unit)?,
     insideMargin: DpSize = DpSize(16.dp, 16.dp),
     enabled: Boolean = true
 ) {

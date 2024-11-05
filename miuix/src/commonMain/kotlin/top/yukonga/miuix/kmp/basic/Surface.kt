@@ -52,8 +52,8 @@ fun Surface(
 /**
  * A [Surface] component with Miuix style.
  *
- * @param modifier The modifier to be applied to the [Surface].
  * @param onClick The callback when the [Surface] is clicked.
+ * @param modifier The modifier to be applied to the [Surface].
  * @param enabled Whether the [Surface] is enabled.
  * @param shape The shape of the [Surface].
  * @param color The color of the [Surface].
@@ -64,8 +64,8 @@ fun Surface(
 @Composable
 @NonRestartableComposable
 fun Surface(
-    modifier: Modifier = Modifier,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     shape: Shape = RectangleShape,
     color: Color = MiuixTheme.colorScheme.background,

@@ -36,16 +36,16 @@ import kotlin.math.absoluteValue
 /**
  * A [Switch] component with Miuix style.
  *
- * @param modifier The modifier to be applied to the [Switch].
  * @param checked The checked state of the [Switch].
  * @param onCheckedChange The callback to be called when the state of the [Switch] changes.
+ * @param modifier The modifier to be applied to the [Switch].
  * @param enabled Whether the [Switch] is enabled.
  */
 @Composable
 fun Switch(
-    modifier: Modifier = Modifier,
     checked: Boolean,
     onCheckedChange: ((Boolean) -> Unit)?,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true
 ) {
     val isChecked by rememberUpdatedState(checked)

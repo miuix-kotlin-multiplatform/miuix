@@ -44,20 +44,20 @@ import top.yukonga.miuix.kmp.utils.platform
 /**
  * A [NavigationBar] that with 2 to 5 items.
  *
- * @param modifier The modifier to be applied to the [NavigationBar].
  * @param items The items of the [NavigationBar].
  * @param selected The selected index of the [NavigationBar].
- * @param color The color of the [NavigationBar].
  * @param onClick The callback when the item of the [NavigationBar] is clicked.
+ * @param modifier The modifier to be applied to the [NavigationBar].
+ * @param color The color of the [NavigationBar].
  * @param defaultWindowInsetsPadding whether to apply default window insets padding to the [NavigationBar].
  */
 @Composable
 fun NavigationBar(
-    modifier: Modifier = Modifier,
     items: List<NavigationItem>,
     selected: Int,
-    color: Color = MiuixTheme.colorScheme.surfaceContainer,
     onClick: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    color: Color = MiuixTheme.colorScheme.surfaceContainer,
     defaultWindowInsetsPadding: Boolean = true
 ) {
     require(items.size in 2..5) { "BottomBar must have between 2 and 5 items" }

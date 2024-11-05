@@ -13,15 +13,15 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 /**
  * A [SmallTitle] with Miuix style.
  *
- * @param modifier The modifier to be applied to the [SmallTitle].
  * @param text The text to be displayed in the [SmallTitle].
+ * @param modifier The modifier to be applied to the [SmallTitle].
  * @param textColor The color of the [SmallTitle].
  * @param insideMargin The margin inside the [SmallTitle].
  */
 @Composable
 fun SmallTitle(
-    modifier: Modifier = Modifier,
     text: String,
+    modifier: Modifier = Modifier,
     textColor: Color = MiuixTheme.colorScheme.onBackgroundVariant,
     insideMargin: DpSize = DpSize(28.dp, 8.dp),
 ) {

@@ -17,8 +17,8 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 /**
  * A [FloatingActionButton] component with Miuix style.
  *
- * @param modifier The modifier to be applied to the [FloatingActionButton].
  * @param onClick The callback when the [FloatingActionButton] is clicked.
+ * @param modifier The modifier to be applied to the [FloatingActionButton].
  * @param shape The shape of the [FloatingActionButton].
  * @param containerColor The color of the [FloatingActionButton].
  * @param shadowElevation The shadow elevation of the [FloatingActionButton].
@@ -26,8 +26,8 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  */
 @Composable
 fun FloatingActionButton(
-    modifier: Modifier = Modifier,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     shape: Shape = RoundedCornerShape(60.dp),
     containerColor: Color = MiuixTheme.colorScheme.primary,
     shadowElevation: Float = 18f,

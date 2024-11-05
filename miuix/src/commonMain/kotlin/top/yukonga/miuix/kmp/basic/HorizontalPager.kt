@@ -17,8 +17,8 @@ import androidx.compose.ui.Modifier
 /**
  * A [HorizontalPager] component with Miuix style.
  *
- * @param modifier The modifier to be applied to the [HorizontalPager].
  * @param pagerState The state of the [HorizontalPager].
+ * @param modifier The modifier to be applied to the [HorizontalPager].
  * @param beyondViewportPageCount The count of pages beyond the viewport.
  * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [HorizontalPager].
  * @param pageContent The content of the [HorizontalPager].
@@ -27,13 +27,13 @@ import androidx.compose.ui.Modifier
  */
 @Composable
 fun HorizontalPager(
-    modifier: Modifier = Modifier,
     pagerState: PagerState,
+    modifier: Modifier = Modifier,
     beyondViewportPageCount: Int = 1,
     defaultWindowInsetsPadding: Boolean = true,
-    pageContent: @Composable (pageIndex: Int) -> Unit,
     userScrollEnabled: Boolean = false,
-    flingBehavior: TargetedFlingBehavior = PagerDefaults.flingBehavior(state = pagerState)
+    flingBehavior: TargetedFlingBehavior = PagerDefaults.flingBehavior(state = pagerState),
+    pageContent: @Composable (pageIndex: Int) -> Unit
 ) {
     HorizontalPager(
         modifier =

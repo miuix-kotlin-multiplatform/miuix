@@ -37,21 +37,21 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 /**
  * A [SearchBar] component with Miuix style.
  *
- * @param modifier the [Modifier] to be applied to the [SearchBar].
  * @param inputField the input field to input a query in the [SearchBar].
- * @param expanded whether the [SearchBar] is expanded and showing search results.
  * @param onExpandedChange the callback to be invoked when the [SearchBar]'s expanded state is
  *   changed.
+ * @param modifier the [Modifier] to be applied to the [SearchBar].
+ * @param expanded whether the [SearchBar] is expanded and showing search results.
  * @param outsideRightAction the action to be shown at the right side of the [SearchBar] when it is
  *   expanded.
  * @param content the content to be shown when the [SearchBar] is expanded.
  */
 @Composable
 fun SearchBar(
-    modifier: Modifier = Modifier,
     inputField: @Composable () -> Unit,
-    expanded: Boolean = false,
     onExpandedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    expanded: Boolean = false,
     outsideRightAction: @Composable (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {

@@ -24,9 +24,9 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 /**
  * A [Button] component with Miuix style.
  *
- * @param modifier The modifier to be applied to the [Button].
  * @param text The text of the [Button].
  * @param onClick The callback when the [Button] is clicked.
+ * @param modifier The modifier to be applied to the [Button].
  * @param enabled Whether the [Button] is enabled.
  * @param submit Whether the [Button] is a submit button.
  * @param cornerRadius The corner radius of the [Button].
@@ -35,9 +35,9 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
  */
 @Composable
 fun Button(
-    modifier: Modifier = Modifier,
     text: String,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     submit: Boolean = false,
     cornerRadius: Dp = 16.dp,

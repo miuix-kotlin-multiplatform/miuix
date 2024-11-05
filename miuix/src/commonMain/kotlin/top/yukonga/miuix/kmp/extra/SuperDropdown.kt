@@ -80,36 +80,36 @@ import kotlin.math.roundToInt
 /**
  * A dropdown with a title and a summary.
  *
+ * @param title The title of the [SuperDropdown].
+ * @param items The options of the [SuperDropdown].
+ * @param selectedIndex The index of the selected option.
+ * @param onSelectedIndexChange The callback when the index is selected.
  * @param modifier The modifier to be applied to the [SuperDropdown].
  * @param popupModifier The modifier to be applied to the popup of the [SuperDropdown].
- * @param title The title of the [SuperDropdown].
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperDropdown].
  * @param summaryColor The color of the summary.
- * @param items The options of the [SuperDropdown].
  * @param horizontalPadding The horizontal padding of the [SuperDropdown].
  * @param alwaysRight Whether the popup is always show on the right side.
  * @param insideMargin The margin inside the [SuperDropdown].
  * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [SuperDropdown].
- * @param selectedIndex The index of the selected option.
- * @param onSelectedIndexChange The callback when the index is selected.
  * @param enabled Whether the [SuperDropdown] is enabled.
  */
 @Composable
 fun SuperDropdown(
+    title: String,
+    items: List<String>,
+    selectedIndex: Int,
+    onSelectedIndexChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
     popupModifier: Modifier = Modifier,
-    title: String,
     titleColor: Color = MiuixTheme.colorScheme.onSurface,
     summary: String? = null,
     summaryColor: Color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
-    items: List<String>,
     alwaysRight: Boolean = false,
     horizontalPadding: Dp = 0.dp,
     insideMargin: DpSize = DpSize(16.dp, 16.dp),
     defaultWindowInsetsPadding: Boolean = true,
-    selectedIndex: Int,
-    onSelectedIndexChange: (Int) -> Unit,
     enabled: Boolean = true
 ) {
     val interactionSource = remember { MutableInteractionSource() }

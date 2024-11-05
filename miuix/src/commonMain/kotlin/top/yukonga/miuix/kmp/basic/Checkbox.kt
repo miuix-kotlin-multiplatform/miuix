@@ -37,16 +37,16 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 /**
  * A [Checkbox] component with Miuix style.
  *
- * @param modifier The modifier to be applied to the [Checkbox].
  * @param checked The current state of the [Checkbox].
  * @param onCheckedChange The callback to be called when the state of the [Checkbox] changes.
+ * @param modifier The modifier to be applied to the [Checkbox].
  * @param enabled Whether the [Checkbox] is enabled.
  */
 @Composable
 fun Checkbox(
-    modifier: Modifier = Modifier,
     checked: Boolean,
     onCheckedChange: ((Boolean) -> Unit)?,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
     val isChecked by rememberUpdatedState(checked)

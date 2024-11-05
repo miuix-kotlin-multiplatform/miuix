@@ -21,8 +21,8 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 /**
  * A arrow with a title and a summary.
  *
- * @param modifier The modifier to be applied to the [SuperArrow].
  * @param title The title of the [SuperArrow].
+ * @param modifier The modifier to be applied to the [SuperArrow].
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperArrow].
  * @param summaryColor The color of the summary.
@@ -34,8 +34,8 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  */
 @Composable
 fun SuperArrow(
-    modifier: Modifier = Modifier,
     title: String,
+    modifier: Modifier = Modifier,
     titleColor: Color = MiuixTheme.colorScheme.onSurface,
     summary: String? = null,
     summaryColor: Color = MiuixTheme.colorScheme.onSurfaceVariantSummary,

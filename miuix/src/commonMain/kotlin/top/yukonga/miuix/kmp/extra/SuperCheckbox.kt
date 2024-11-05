@@ -18,28 +18,28 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 /**
  * A checkbox with a title and a summary.
  *
- * @param modifier The modifier to be applied to the [SuperCheckbox].
  * @param title The title of the [SuperCheckbox].
+ * @param checked The checked state of the [SuperCheckbox].
+ * @param onCheckedChange The callback when the checked state of the [SuperCheckbox] is changed.
+ * @param modifier The modifier to be applied to the [SuperCheckbox].
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperCheckbox].
  * @param summaryColor The color of the summary.
  * @param rightActions The [Composable] content that on the right side of the [SuperCheckbox].
- * @param checked The checked state of the [SuperCheckbox].
- * @param onCheckedChange The callback when the checked state of the [SuperCheckbox] is changed.
  * @param insideMargin The margin inside the [SuperCheckbox].
  * @param enabled Whether the [SuperCheckbox] is clickable.
  */
 @Composable
 fun SuperCheckbox(
-    modifier: Modifier = Modifier,
     title: String,
+    checked: Boolean,
+    onCheckedChange: ((Boolean) -> Unit)?,
+    modifier: Modifier = Modifier,
     titleColor: Color = MiuixTheme.colorScheme.onSurface,
     summary: String? = null,
     summaryColor: Color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
     rightActions: @Composable RowScope.() -> Unit = {},
-    checked: Boolean,
     checkboxLocation: CheckboxLocation = CheckboxLocation.Left,
-    onCheckedChange: ((Boolean) -> Unit)?,
     insideMargin: DpSize = DpSize(16.dp, 16.dp),
     enabled: Boolean = true
 ) {
