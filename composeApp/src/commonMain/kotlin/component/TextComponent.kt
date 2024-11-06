@@ -328,7 +328,6 @@ fun TextComponent() {
     dialog2(showDialog2)
 }
 
-
 @Composable
 fun dialog(showDialog: MutableState<Boolean>) {
     val value = remember { mutableStateOf("") }
@@ -376,13 +375,14 @@ fun dialog2(showDialog: MutableState<Boolean>) {
     var miuixSuperSwitchState by remember { mutableStateOf(false) }
     SuperDialog(
         title = "Dialog 2",
-        backgroundColor = MiuixTheme.colorScheme.background,
         show = showDialog,
         onDismissRequest = {
             dismissDialog(showDialog)
         }
     ) {
-        Card {
+        Card(
+            color = MiuixTheme.colorScheme.secondaryContainer,
+        ) {
             SuperDropdown(
                 title = "Dropdown",
                 items = dropdownOptions,
