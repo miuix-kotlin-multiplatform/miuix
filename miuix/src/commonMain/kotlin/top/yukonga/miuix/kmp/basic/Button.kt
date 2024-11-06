@@ -2,21 +2,20 @@ package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
@@ -24,71 +23,190 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 /**
  * A [Button] component with Miuix style.
  *
- * @param text The text of the [Button].
  * @param onClick The callback when the [Button] is clicked.
  * @param modifier The modifier to be applied to the [Button].
  * @param enabled Whether the [Button] is enabled.
- * @param submit Whether the [Button] is a submit button.
+ * @param colors The [ButtonColors] of the [Button].
  * @param cornerRadius The corner radius of the [Button].
  * @param minWidth The minimum width of the [Button].
  * @param minHeight The minimum height of the [Button].
+ * @param insideMargin The margin inside the [Button].
+ * @param content The [Composable] content of the [Button].
  */
 @Composable
 fun Button(
-    text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    submit: Boolean = false,
-    cornerRadius: Dp = 16.dp,
-    minWidth: Dp = 58.dp,
-    minHeight: Dp = 40.dp
+    colors: ButtonColors = ButtonDefaults.buttonColors(),
+    cornerRadius: Dp = ButtonDefaults.ConorRadius,
+    minWidth: Dp = ButtonDefaults.MinWidth,
+    minHeight: Dp = ButtonDefaults.MinHeight,
+    insideMargin: DpSize = DpSize(16.dp, 16.dp),
+    content: @Composable RowScope.() -> Unit
 ) {
-    val hapticFeedback = LocalHapticFeedback.current
-    val color by rememberUpdatedState(getButtonColor(enabled, submit))
-    val textColor by rememberUpdatedState(getTextColor(enabled, submit))
-
     Surface(
         onClick = {
             onClick()
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
         },
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
         shape = SmoothRoundedCornerShape(cornerRadius),
-        color = color
+        color = colors.color(enabled)
     ) {
         Row(
             Modifier
                 .defaultMinSize(minWidth = minWidth, minHeight = minHeight)
-                .padding(16.dp, 16.dp),
+                .padding(insideMargin.width, insideMargin.height),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = text,
-                color = textColor,
-                fontSize = MiuixTheme.textStyles.button.fontSize,
-                fontWeight = FontWeight.Medium
-            )
-        }
+            content = content
+        )
     }
 }
 
+/**
+ * A [TextButton] component with Miuix style.
+ *
+ * @param text The text of the [TextButton].
+ * @param onClick The callback when the [TextButton] is clicked.
+ * @param modifier The modifier to be applied to the [TextButton].
+ * @param enabled Whether the [TextButton] is enabled.
+ * @param colors The [TextButtonColors] of the [TextButton].
+ * @param cornerRadius The corner radius of the [TextButton].
+ * @param minWidth The minimum width of the [TextButton].
+ * @param minHeight The minimum height of the [TextButton].
+ * @param insideMargin The margin inside the [TextButton].
+ */
 @Composable
-fun getButtonColor(enabled: Boolean, submit: Boolean): Color {
-    return if (enabled) {
-        if (submit) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.secondaryVariant
-    } else {
-        if (submit) MiuixTheme.colorScheme.disabledPrimaryButton else MiuixTheme.colorScheme.disabledSecondaryVariant
+fun TextButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    colors: TextButtonColors = ButtonDefaults.textButtonColors(),
+    cornerRadius: Dp = ButtonDefaults.ConorRadius,
+    minWidth: Dp = ButtonDefaults.MinWidth,
+    minHeight: Dp = ButtonDefaults.MinHeight,
+    insideMargin: DpSize = DpSize(16.dp, 16.dp),
+) {
+    Surface(
+        onClick = {
+            onClick()
+        },
+        enabled = enabled,
+        modifier = modifier.semantics { role = Role.Button },
+        shape = SmoothRoundedCornerShape(cornerRadius),
+        color = colors.color(enabled)
+    ) {
+        Row(
+            Modifier
+                .defaultMinSize(minWidth = minWidth, minHeight = minHeight)
+                .padding(insideMargin.width, insideMargin.height),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            content = {
+                Text(
+                    text = text,
+                    color = colors.textColor(enabled),
+                    style = MiuixTheme.textStyles.button
+                )
+            }
+        )
     }
 }
 
-@Composable
-fun getTextColor(enabled: Boolean, submit: Boolean): Color {
-    return if (enabled) {
-        if (submit) MiuixTheme.colorScheme.onPrimary else MiuixTheme.colorScheme.onSecondaryVariant
-    } else {
-        if (submit) MiuixTheme.colorScheme.disabledOnPrimaryButton else MiuixTheme.colorScheme.disabledOnSecondaryVariant
+object ButtonDefaults {
+
+    /**
+     * The default min width applied for all buttons. Note that you can override it by applying
+     * Modifier.widthIn directly on the button composable.
+     */
+    val MinWidth = 58.dp
+
+    /**
+     * The default min height applied for all buttons. Note that you can override it by applying
+     * Modifier.heightIn directly on the button composable.
+     */
+    val MinHeight = 40.dp
+
+    /**
+     * The default corner radius applied for all buttons.
+     */
+    val ConorRadius = 16.dp
+
+    /**
+     * The default [ButtonColors] for all buttons.
+     */
+    @Composable
+    fun buttonColors(
+        color: Color = MiuixTheme.colorScheme.secondaryVariant,
+        disabledColor: Color = MiuixTheme.colorScheme.disabledSecondaryVariant
+    ): ButtonColors {
+        return ButtonColors(
+            color = color,
+            disabledColor = disabledColor
+        )
     }
+
+    /**
+     * The [ButtonColors] for primary buttons.
+     */
+    @Composable
+    fun buttonColorsPrimary() = ButtonColors(
+        color = MiuixTheme.colorScheme.primary,
+        disabledColor = MiuixTheme.colorScheme.disabledPrimaryButton
+    )
+
+    /**
+     * The default [TextButtonColors] for all text buttons.
+     */
+    @Composable
+    fun textButtonColors(
+        color: Color = MiuixTheme.colorScheme.secondaryVariant,
+        disabledColor: Color = MiuixTheme.colorScheme.disabledSecondaryVariant,
+        textColor: Color = MiuixTheme.colorScheme.onSecondaryVariant,
+        disabledTextColor: Color = MiuixTheme.colorScheme.disabledOnSecondaryVariant
+    ): TextButtonColors {
+        return TextButtonColors(
+            color = color,
+            disabledColor = disabledColor,
+            textColor = textColor,
+            disabledTextColor = disabledTextColor
+        )
+    }
+
+    /**
+     * The [TextButtonColors] for primary text buttons.
+     */
+    @Composable
+    fun textButtonColorsPrimary() = TextButtonColors(
+        color = MiuixTheme.colorScheme.primary,
+        disabledColor = MiuixTheme.colorScheme.disabledPrimaryButton,
+        textColor = MiuixTheme.colorScheme.onPrimary,
+        disabledTextColor = MiuixTheme.colorScheme.disabledOnPrimaryButton
+    )
+}
+
+@Immutable
+class ButtonColors(
+    private val color: Color,
+    private val disabledColor: Color
+) {
+    @Stable
+    internal fun color(enabled: Boolean): Color = if (enabled) color else disabledColor
+}
+
+@Immutable
+class TextButtonColors(
+    private val color: Color,
+    private val disabledColor: Color,
+    private val textColor: Color,
+    private val disabledTextColor: Color
+) {
+    @Stable
+    internal fun color(enabled: Boolean): Color = if (enabled) color else disabledColor
+
+    @Stable
+    internal fun textColor(enabled: Boolean): Color = if (enabled) textColor else disabledTextColor
 }

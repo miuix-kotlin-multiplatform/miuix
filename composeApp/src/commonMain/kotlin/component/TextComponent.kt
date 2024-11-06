@@ -25,13 +25,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.Box
-import top.yukonga.miuix.kmp.basic.Button
+import top.yukonga.miuix.kmp.basic.ButtonDefaults
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Checkbox
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.SmallTitle
 import top.yukonga.miuix.kmp.basic.Switch
 import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.basic.TextButton
 import top.yukonga.miuix.kmp.basic.TextField
 import top.yukonga.miuix.kmp.extra.CheckboxLocation
 import top.yukonga.miuix.kmp.extra.SuperArrow
@@ -348,21 +349,21 @@ fun dialog(showDialog: MutableState<Boolean>) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Button(
-                modifier = Modifier.weight(1f),
+            TextButton(
                 text = "Cancel",
                 onClick = {
                     dismissDialog(showDialog)
-                }
+                },
+                modifier = Modifier.weight(1f)
             )
             Spacer(Modifier.width(20.dp))
-            Button(
-                modifier = Modifier.weight(1f),
+            TextButton(
                 text = "Confirm",
-                submit = true,
                 onClick = {
                     dismissDialog(showDialog)
-                }
+                },
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.textButtonColorsPrimary()
             )
         }
     }
@@ -402,21 +403,21 @@ fun dialog2(showDialog: MutableState<Boolean>) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Button(
-                modifier = Modifier.weight(1f),
+            TextButton(
                 text = "Cancel",
                 onClick = {
                     dismissDialog(showDialog)
-                }
+                },
+                modifier = Modifier.weight(1f)
             )
             Spacer(Modifier.width(20.dp))
-            Button(
-                modifier = Modifier.weight(1f),
+            TextButton(
                 text = "Confirm",
-                submit = true,
                 onClick = {
                     dismissDialog(showDialog)
-                }
+                },
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.textButtonColorsPrimary()
             )
         }
     }

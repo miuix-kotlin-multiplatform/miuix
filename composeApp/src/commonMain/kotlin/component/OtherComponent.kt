@@ -22,11 +22,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import top.yukonga.miuix.kmp.basic.Button
+import top.yukonga.miuix.kmp.basic.ButtonDefaults
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Slider
 import top.yukonga.miuix.kmp.basic.SmallTitle
 import top.yukonga.miuix.kmp.basic.Text
+import top.yukonga.miuix.kmp.basic.TextButton
 import top.yukonga.miuix.kmp.basic.TextField
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
@@ -49,23 +50,23 @@ fun OtherComponent(padding: PaddingValues) {
             .padding(bottom = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Button(
-            modifier = Modifier.weight(1f),
+        TextButton(
             text = buttonText,
             onClick = {
                 clickCount++
                 buttonText = "Click: $clickCount"
-            }
+            },
+            modifier = Modifier.weight(1f)
         )
         Spacer(Modifier.width(12.dp))
-        Button(
-            modifier = Modifier.weight(1f),
+        TextButton(
             text = submitButtonText,
-            submit = true,
             onClick = {
                 submitClickCount++
                 submitButtonText = "Click: $submitClickCount"
-            }
+            },
+            modifier = Modifier.weight(1f),
+            colors = ButtonDefaults.textButtonColorsPrimary()
         )
     }
 
@@ -76,20 +77,19 @@ fun OtherComponent(padding: PaddingValues) {
             .padding(bottom = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Button(
-            modifier = Modifier.weight(1f),
+        TextButton(
             text = "Disabled",
-            submit = false,
-            enabled = false,
-            onClick = {}
+            onClick = {},
+            modifier = Modifier.weight(1f),
+            enabled = false
         )
         Spacer(Modifier.width(12.dp))
-        Button(
-            modifier = Modifier.weight(1f),
+        TextButton(
             text = "Disabled",
-            submit = true,
+            onClick = {},
             enabled = false,
-            onClick = {}
+            modifier = Modifier.weight(1f),
+            colors = ButtonDefaults.textButtonColorsPrimary()
         )
     }
 
