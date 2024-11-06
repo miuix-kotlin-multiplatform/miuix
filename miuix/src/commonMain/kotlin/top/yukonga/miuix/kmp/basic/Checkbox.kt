@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathMeasure
@@ -40,6 +43,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  * @param checked The current state of the [Checkbox].
  * @param onCheckedChange The callback to be called when the state of the [Checkbox] changes.
  * @param modifier The modifier to be applied to the [Checkbox].
+ * @param colors The [CheckboxColors] of the [Checkbox].
  * @param enabled Whether the [Checkbox] is enabled.
  */
 @Composable
@@ -47,16 +51,18 @@ fun Checkbox(
     checked: Boolean,
     onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier,
+    colors: CheckboxColors = CheckboxDefaults.checkboxColors(),
     enabled: Boolean = true,
 ) {
     val isChecked by rememberUpdatedState(checked)
     var isPressed by remember { mutableStateOf(false) }
     val hapticFeedback = LocalHapticFeedback.current
-    val backgroundColor by animateColorAsState(if (isChecked) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.secondary)
-    val disabledBackgroundColor by rememberUpdatedState(if (isChecked) MiuixTheme.colorScheme.disabledPrimary else MiuixTheme.colorScheme.disabledSecondary)
-    val checkboxSize by animateDpAsState(if (!enabled) 22.dp else if (isPressed) 20.dp else 22.dp)
-    val checkmarkColor by animateColorAsState(if (checked) MiuixTheme.colorScheme.onPrimary else backgroundColor)
-    val disabledCheckmarkColor by animateColorAsState(if (checked) MiuixTheme.colorScheme.disabledOnPrimary else disabledBackgroundColor)
+    val checkboxSize by animateDpAsState(
+        if (!enabled) 22.dp else if (isPressed) 20.dp else 22.dp
+    )
+    val backgroundColor by animateColorAsState(
+        if (isChecked) colors.checkedBackgroundColor(enabled) else colors.uncheckedBackgroundColor(enabled)
+    )
     val rotationAngle by animateFloatAsState(
         if (checked) 0f else 25f,
         animationSpec = tween(durationMillis = 200)
@@ -107,7 +113,7 @@ fun Checkbox(
         Canvas(
             modifier = Modifier
                 .requiredSize(checkboxSize)
-                .drawBehind { drawRect(if (enabled) backgroundColor else disabledBackgroundColor) }
+                .drawBehind { drawRect(backgroundColor) }
         ) {
             val svgPath =
                 "m400-416 236-236q11-11 28-11t28 11q11 11 11 28t-11 28L428-332q-12 12-28 12t-28-12L268-436q-11-11-11-28t11-28q11-11 28-11t28 11l76 76Z"
@@ -123,8 +129,49 @@ fun Checkbox(
                 val length = pathMeasure.length
                 val animatedPath = Path()
                 pathMeasure.getSegment(length * (1 - pathProgress), length, animatedPath, true)
-                drawPath(animatedPath, if (enabled) checkmarkColor else disabledCheckmarkColor)
+                drawPath(animatedPath, colors.foregroundColor(enabled))
             }
         }
     }
+}
+
+object CheckboxDefaults {
+
+    @Composable
+    fun checkboxColors(
+        foregroundColor: Color = MiuixTheme.colorScheme.onPrimary,
+        disabledForegroundColor: Color = MiuixTheme.colorScheme.disabledOnPrimary,
+        checkedBackgroundColor: Color = MiuixTheme.colorScheme.primary,
+        uncheckedBackgroundColor: Color = MiuixTheme.colorScheme.secondary,
+        disabledCheckedBackgroundColor: Color = MiuixTheme.colorScheme.disabledPrimary,
+        disabledUncheckedBackgroundColor: Color = MiuixTheme.colorScheme.disabledSecondary
+    ): CheckboxColors {
+        return CheckboxColors(
+            foregroundColor = foregroundColor,
+            disabledForegroundColor = disabledForegroundColor,
+            checkedBackgroundColor = checkedBackgroundColor,
+            uncheckedBackgroundColor = uncheckedBackgroundColor,
+            disabledCheckedBackgroundColor = disabledCheckedBackgroundColor,
+            disabledUncheckedBackgroundColor = disabledUncheckedBackgroundColor
+        )
+    }
+}
+
+@Immutable
+class CheckboxColors(
+    private val foregroundColor: Color,
+    private val disabledForegroundColor: Color,
+    private val checkedBackgroundColor: Color,
+    private val uncheckedBackgroundColor: Color,
+    private val disabledCheckedBackgroundColor: Color,
+    private val disabledUncheckedBackgroundColor: Color
+) {
+    @Stable
+    internal fun foregroundColor(enabled: Boolean): Color = if (enabled) foregroundColor else disabledForegroundColor
+
+    @Stable
+    internal fun checkedBackgroundColor(enabled: Boolean): Color = if (enabled) checkedBackgroundColor else disabledCheckedBackgroundColor
+
+    @Stable
+    internal fun uncheckedBackgroundColor(enabled: Boolean): Color = if (enabled) uncheckedBackgroundColor else disabledUncheckedBackgroundColor
 }

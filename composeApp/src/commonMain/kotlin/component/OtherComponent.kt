@@ -122,7 +122,7 @@ fun OtherComponent(padding: PaddingValues) {
         onProgressChange = { newProgress -> progress = newProgress },
         modifier = Modifier
             .padding(horizontal = 12.dp)
-            .padding(bottom = 12.dp),
+            .padding(bottom = 12.dp)
     )
 
     Slider(
@@ -131,7 +131,7 @@ fun OtherComponent(padding: PaddingValues) {
         enabled = false,
         modifier = Modifier
             .padding(horizontal = 12.dp)
-            .padding(bottom = 12.dp),
+            .padding(bottom = 12.dp)
     )
 
     SmallTitle(text = "Card")

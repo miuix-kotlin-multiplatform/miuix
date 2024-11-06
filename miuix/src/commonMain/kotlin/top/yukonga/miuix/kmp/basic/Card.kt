@@ -20,17 +20,17 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
  * This [Card] does not handle input events
  *
  * @param modifier The modifier to be applied to the [Card].
- * @param insideMargin The margin inside the [Card].
  * @param cornerRadius The corner radius of the [Card].
+ * @param insideMargin The margin inside the [Card].
  * @param color The color of the [Card].
  * @param content The [Composable] content of the [Card].
  */
 @Composable
 fun Card(
     modifier: Modifier = Modifier,
-    insideMargin: DpSize = DpSize(0.dp, 0.dp),
-    cornerRadius: Dp = 16.dp,
-    color: Color = MiuixTheme.colorScheme.surface,
+    cornerRadius: Dp = CardDefaults.ConorRadius,
+    insideMargin: DpSize = CardDefaults.InsideMargin,
+    color: Color = CardDefaults.DefaultColor(),
     content: @Composable ColumnScope.() -> Unit
 ) {
     val shape = remember { SmoothRoundedCornerShape(cornerRadius) }
@@ -48,4 +48,23 @@ fun Card(
             content = content
         )
     }
+}
+
+object CardDefaults {
+
+    /**
+     * The default corner radius of the [Card].
+     */
+    val ConorRadius = 16.dp
+
+    /**
+     * The default margin inside the [Card].
+     */
+    val InsideMargin = DpSize(0.dp, 0.dp)
+
+    /**
+     * The default color width of the [Card].
+     */
+    @Composable
+    fun DefaultColor() = MiuixTheme.colorScheme.surface
 }

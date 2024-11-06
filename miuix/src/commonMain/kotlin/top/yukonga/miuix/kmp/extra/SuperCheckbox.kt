@@ -8,12 +8,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.BasicComponent
+import top.yukonga.miuix.kmp.basic.BasicComponentColors
+import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.basic.Checkbox
-import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.basic.CheckboxColors
+import top.yukonga.miuix.kmp.basic.CheckboxDefaults
 
 /**
  * A checkbox with a title and a summary.
@@ -25,6 +26,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperCheckbox].
  * @param summaryColor The color of the summary.
+ * @param checkboxColors The [CheckboxColors] of the [SuperCheckbox].
  * @param rightActions The [Composable] content that on the right side of the [SuperCheckbox].
  * @param insideMargin The margin inside the [SuperCheckbox].
  * @param enabled Whether the [SuperCheckbox] is clickable.
@@ -35,12 +37,13 @@ fun SuperCheckbox(
     checked: Boolean,
     onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier,
-    titleColor: Color = MiuixTheme.colorScheme.onSurface,
+    titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
     summary: String? = null,
-    summaryColor: Color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
+    summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
+    checkboxColors: CheckboxColors = CheckboxDefaults.checkboxColors(),
     rightActions: @Composable RowScope.() -> Unit = {},
     checkboxLocation: CheckboxLocation = CheckboxLocation.Left,
-    insideMargin: DpSize = DpSize(16.dp, 16.dp),
+    insideMargin: DpSize = BasicComponentDefaults.InsideMargin,
     enabled: Boolean = true
 ) {
     var isChecked by remember { mutableStateOf(checked) }
@@ -60,7 +63,8 @@ fun SuperCheckbox(
                 Checkbox(
                     checked = isChecked,
                     onCheckedChange = updatedOnCheckedChange,
-                    enabled = enabled
+                    enabled = enabled,
+                    colors = checkboxColors
                 )
             }
         } else null,
@@ -70,7 +74,8 @@ fun SuperCheckbox(
                 Checkbox(
                     checked = isChecked,
                     onCheckedChange = updatedOnCheckedChange,
-                    enabled = enabled
+                    enabled = enabled,
+                    colors = checkboxColors
                 )
             }
         },

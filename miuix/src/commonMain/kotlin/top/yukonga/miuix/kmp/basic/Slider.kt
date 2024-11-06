@@ -6,6 +6,8 @@ import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,6 +41,7 @@ import kotlin.math.round
  *   that [minValue] < [maxValue].
  * @param maxValue The maximum value of the [Slider].
  * @param height The height of the [Slider].
+ * @param colors The [SliderColors] of the [Slider].
  * @param effect Whether to show the effect of the [Slider].
  * @param decimalPlaces The number of decimal places to be displayed in the drag indicator.
  */
@@ -50,7 +53,8 @@ fun Slider(
     enabled: Boolean = true,
     minValue: Float = 0f,
     maxValue: Float = 1f,
-    height: Dp = 30.dp,
+    height: Dp = SliderDefaults.MinHeight,
+    colors: SliderColors = SliderDefaults.sliderColors(),
     effect: Boolean = false,
     decimalPlaces: Int = 2
 ) {
@@ -67,8 +71,6 @@ fun Slider(
             (round(newValue * factor) / factor).coerceIn(minValue, maxValue)
         }
     }
-    val foregroundColor = rememberUpdatedState(if (enabled) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.disabledPrimarySlider)
-    val backgroundColor = rememberUpdatedState(MiuixTheme.colorScheme.tertiaryContainerVariant)
 
     Box(
         modifier = if (enabled) {
@@ -105,8 +107,8 @@ fun Slider(
         SliderBackground(
             modifier = Modifier.fillMaxWidth().height(height),
             height = height,
-            backgroundColor = backgroundColor.value,
-            foregroundColor = foregroundColor.value,
+            backgroundColor = colors.backgroundColor(enabled),
+            foregroundColor = colors.foregroundColor(enabled),
             effect = effect,
             progress = progress,
             minValue = minValue,
@@ -139,4 +141,45 @@ fun SliderBackground(
             cornerRadius = cornerRadius
         )
     }
+}
+
+object SliderDefaults {
+
+    /**
+     * The default minimum height of the [Slider].
+     */
+    val MinHeight = 30.dp
+
+    /**
+     * The default [SliderColors] of the [Slider].
+     */
+    @Composable
+    fun sliderColors(
+        foregroundColor: Color = MiuixTheme.colorScheme.primary,
+        disabledForegroundColor: Color = MiuixTheme.colorScheme.disabledPrimarySlider,
+        backgroundColor: Color = MiuixTheme.colorScheme.tertiaryContainerVariant,
+        disabledBackgroundColor: Color = MiuixTheme.colorScheme.disabledSecondary
+    ): SliderColors {
+        return SliderColors(
+            foregroundColor = foregroundColor,
+            disabledForegroundColor = disabledForegroundColor,
+            backgroundColor = backgroundColor,
+            disabledBackgroundColor = disabledBackgroundColor
+        )
+    }
+}
+
+
+@Immutable
+class SliderColors(
+    private val foregroundColor: Color,
+    private val disabledForegroundColor: Color,
+    private val backgroundColor: Color,
+    private val disabledBackgroundColor: Color
+) {
+    @Stable
+    internal fun foregroundColor(enabled: Boolean): Color = if (enabled) foregroundColor else disabledForegroundColor
+
+    @Stable
+    internal fun backgroundColor(enabled: Boolean): Color = if (enabled) backgroundColor else disabledBackgroundColor
 }

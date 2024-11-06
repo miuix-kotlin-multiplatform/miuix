@@ -26,10 +26,10 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
  * @param onClick The callback when the [Button] is clicked.
  * @param modifier The modifier to be applied to the [Button].
  * @param enabled Whether the [Button] is enabled.
- * @param colors The [ButtonColors] of the [Button].
  * @param cornerRadius The corner radius of the [Button].
  * @param minWidth The minimum width of the [Button].
  * @param minHeight The minimum height of the [Button].
+ * @param colors The [ButtonColors] of the [Button].
  * @param insideMargin The margin inside the [Button].
  * @param content The [Composable] content of the [Button].
  */
@@ -38,11 +38,11 @@ fun Button(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    colors: ButtonColors = ButtonDefaults.buttonColors(),
     cornerRadius: Dp = ButtonDefaults.ConorRadius,
     minWidth: Dp = ButtonDefaults.MinWidth,
     minHeight: Dp = ButtonDefaults.MinHeight,
-    insideMargin: DpSize = DpSize(16.dp, 16.dp),
+    colors: ButtonColors = ButtonDefaults.buttonColors(),
+    insideMargin: DpSize = ButtonDefaults.InsideMargin,
     content: @Composable RowScope.() -> Unit
 ) {
     Surface(
@@ -88,7 +88,7 @@ fun TextButton(
     cornerRadius: Dp = ButtonDefaults.ConorRadius,
     minWidth: Dp = ButtonDefaults.MinWidth,
     minHeight: Dp = ButtonDefaults.MinHeight,
-    insideMargin: DpSize = DpSize(16.dp, 16.dp),
+    insideMargin: DpSize = ButtonDefaults.InsideMargin,
 ) {
     Surface(
         onClick = {
@@ -134,6 +134,11 @@ object ButtonDefaults {
      * The default corner radius applied for all buttons.
      */
     val ConorRadius = 16.dp
+
+    /**
+     * The default inside margin applied for all buttons.
+     */
+    val InsideMargin = DpSize(16.dp, 16.dp)
 
     /**
      * The default [ButtonColors] for all buttons.

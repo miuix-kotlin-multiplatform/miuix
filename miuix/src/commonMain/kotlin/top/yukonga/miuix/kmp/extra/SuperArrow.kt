@@ -4,6 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
@@ -13,6 +15,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.BasicComponent
+import top.yukonga.miuix.kmp.basic.BasicComponentColors
+import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.ArrowRight
@@ -28,6 +32,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  * @param summaryColor The color of the summary.
  * @param leftAction The [Composable] content that on the left side of the [SuperArrow].
  * @param rightText The text on the right side of the [SuperArrow].
+ * @param rightActionColor The color of the right action.
  * @param onClick The callback when the [SuperArrow] is clicked.
  * @param insideMargin The margin inside the [SuperArrow].
  * @param enabled Whether the [SuperArrow] is clickable.
@@ -36,17 +41,18 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 fun SuperArrow(
     title: String,
     modifier: Modifier = Modifier,
-    titleColor: Color = MiuixTheme.colorScheme.onSurface,
+    titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
     summary: String? = null,
-    summaryColor: Color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
+    summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
     leftAction: @Composable (() -> Unit)? = null,
     rightText: String? = null,
+    rightActionColor: RightActionColors = SuperArrowDefaults.rightActionColors(),
     onClick: (() -> Unit)? = null,
-    insideMargin: DpSize = DpSize(16.dp, 16.dp),
+    insideMargin: DpSize = BasicComponentDefaults.InsideMargin,
     enabled: Boolean = true
 ) {
     val updatedOnClick by rememberUpdatedState(onClick)
-    val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
+
     BasicComponent(
         modifier = modifier,
         insideMargin = insideMargin,
@@ -60,7 +66,7 @@ fun SuperArrow(
                 Text(
                     text = rightText,
                     fontSize = MiuixTheme.textStyles.body2.fontSize,
-                    color = actionColor,
+                    color = rightActionColor.color(enabled),
                     textAlign = TextAlign.End,
                 )
             }
@@ -70,7 +76,7 @@ fun SuperArrow(
                     .size(10.dp, 16.dp),
                 imageVector = MiuixIcons.ArrowRight,
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(actionColor),
+                colorFilter = ColorFilter.tint(rightActionColor.color(enabled)),
             )
         },
         onClick = {
@@ -80,4 +86,27 @@ fun SuperArrow(
         },
         enabled = enabled
     )
+}
+
+object SuperArrowDefaults {
+
+    /**
+     * The default color of the arrow.
+     */
+    @Composable
+    fun rightActionColors() = RightActionColors(
+        color = MiuixTheme.colorScheme.onSurfaceVariantActions,
+        disabledColor = MiuixTheme.colorScheme.disabledOnSecondaryVariant
+    )
+
+}
+
+
+@Immutable
+class RightActionColors(
+    private val color: Color,
+    private val disabledColor: Color
+) {
+    @Stable
+    internal fun color(enabled: Boolean): Color = if (enabled) color else disabledColor
 }

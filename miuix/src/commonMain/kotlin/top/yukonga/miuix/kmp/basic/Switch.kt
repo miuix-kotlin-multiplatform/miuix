@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -39,6 +42,7 @@ import kotlin.math.absoluteValue
  * @param checked The checked state of the [Switch].
  * @param onCheckedChange The callback to be called when the state of the [Switch] changes.
  * @param modifier The modifier to be applied to the [Switch].
+ * @param colors The [SwitchColors] of the [Switch].
  * @param enabled Whether the [Switch] is enabled.
  */
 @Composable
@@ -46,6 +50,7 @@ fun Switch(
     checked: Boolean,
     onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier,
+    colors: SwitchColors = SwitchDefaults.switchColors(),
     enabled: Boolean = true
 ) {
     val isChecked by rememberUpdatedState(checked)
@@ -74,16 +79,14 @@ fun Switch(
     )
 
     val backgroundColor by animateColorAsState(
-        if (isChecked) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.secondary,
+        if (isChecked) colors.checkedTrackColor(enabled) else colors.uncheckedTrackColor(enabled),
         animationSpec = tween(durationMillis = 200)
     )
-    val disabledBackgroundColor by rememberUpdatedState(
-        if (isChecked) MiuixTheme.colorScheme.disabledPrimary else MiuixTheme.colorScheme.disabledSecondary
+
+    val thumbColor by animateColorAsState(
+        if (isChecked) colors.checkedThumbColor(enabled) else colors.uncheckedThumbColor(enabled)
     )
-    val thumbColor by rememberUpdatedState(if (isChecked) MiuixTheme.colorScheme.onPrimary else MiuixTheme.colorScheme.onSecondary)
-    val disabledThumbColor by rememberUpdatedState(
-        if (isChecked) MiuixTheme.colorScheme.disabledOnPrimary else MiuixTheme.colorScheme.disabledOnSecondary
-    )
+
     val toggleableModifier = remember(onCheckedChange, isChecked, enabled) {
         if (onCheckedChange != null) {
             Modifier.toggleable(
@@ -108,7 +111,7 @@ fun Switch(
             .size(52.dp, 28.5.dp)
             .requiredSize(52.dp, 28.5.dp)
             .clip(SmoothRoundedCornerShape(52.dp))
-            .drawBehind { drawRect(if (enabled) backgroundColor else disabledBackgroundColor) }
+            .drawBehind { drawRect(backgroundColor) }
             .pointerInput(Unit) {
                 detectHorizontalDragGestures(
                     onDragStart = {
@@ -159,9 +162,62 @@ fun Switch(
                 .align(Alignment.CenterStart)
                 .size(thumbSize)
                 .background(
-                    if (enabled) thumbColor else disabledThumbColor,
+                    color = thumbColor,
                     shape = RoundedCornerShape(100.dp)
                 )
         )
     }
+}
+
+object SwitchDefaults {
+
+    /**
+     * The default colors for the [Switch].
+     */
+    @Composable
+    fun switchColors(
+        checkedThumbColor: Color = MiuixTheme.colorScheme.onPrimary,
+        uncheckedThumbColor: Color = MiuixTheme.colorScheme.onSecondary,
+        disabledCheckedThumbColor: Color = MiuixTheme.colorScheme.disabledOnPrimary,
+        disabledUncheckedThumbColor: Color = MiuixTheme.colorScheme.disabledOnSecondary,
+        checkedTrackColor: Color = MiuixTheme.colorScheme.primary,
+        uncheckedTrackColor: Color = MiuixTheme.colorScheme.secondary,
+        disabledCheckedTrackColor: Color = MiuixTheme.colorScheme.disabledPrimary,
+        disabledUncheckedTrackColor: Color = MiuixTheme.colorScheme.disabledSecondary
+    ): SwitchColors {
+        return SwitchColors(
+            checkedThumbColor = checkedThumbColor,
+            uncheckedThumbColor = uncheckedThumbColor,
+            disabledCheckedThumbColor = disabledCheckedThumbColor,
+            disabledUncheckedThumbColor = disabledUncheckedThumbColor,
+            checkedTrackColor = checkedTrackColor,
+            uncheckedTrackColor = uncheckedTrackColor,
+            disabledCheckedTrackColor = disabledCheckedTrackColor,
+            disabledUncheckedTrackColor = disabledUncheckedTrackColor
+        )
+    }
+}
+
+@Immutable
+class SwitchColors(
+    private val checkedThumbColor: Color,
+    private val uncheckedThumbColor: Color,
+    private val disabledCheckedThumbColor: Color,
+    private val disabledUncheckedThumbColor: Color,
+    private val checkedTrackColor: Color,
+    private val uncheckedTrackColor: Color,
+    private val disabledCheckedTrackColor: Color,
+    private val disabledUncheckedTrackColor: Color
+) {
+    @Stable
+    internal fun checkedThumbColor(enabled: Boolean): Color = if (enabled) checkedThumbColor else disabledCheckedThumbColor
+
+    @Stable
+    internal fun uncheckedThumbColor(enabled: Boolean): Color = if (enabled) uncheckedThumbColor else disabledUncheckedThumbColor
+
+    @Stable
+    internal fun checkedTrackColor(enabled: Boolean): Color = if (enabled) checkedTrackColor else disabledCheckedTrackColor
+
+    @Stable
+    internal fun uncheckedTrackColor(enabled: Boolean): Color = if (enabled) uncheckedTrackColor else disabledUncheckedTrackColor
 }

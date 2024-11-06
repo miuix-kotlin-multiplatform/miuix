@@ -63,6 +63,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.BasicComponent
+import top.yukonga.miuix.kmp.basic.BasicComponentColors
+import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.icon.MiuixIcons
@@ -103,12 +105,12 @@ fun SuperDropdown(
     onSelectedIndexChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
     popupModifier: Modifier = Modifier,
-    titleColor: Color = MiuixTheme.colorScheme.onSurface,
+    titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
     summary: String? = null,
-    summaryColor: Color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
+    summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
     alwaysRight: Boolean = false,
     horizontalPadding: Dp = 0.dp,
-    insideMargin: DpSize = DpSize(16.dp, 16.dp),
+    insideMargin: DpSize = BasicComponentDefaults.InsideMargin,
     defaultWindowInsetsPadding: Boolean = true,
     enabled: Boolean = true
 ) {

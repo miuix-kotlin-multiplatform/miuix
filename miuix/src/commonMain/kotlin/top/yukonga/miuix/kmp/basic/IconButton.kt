@@ -22,8 +22,8 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
  * @param onClick The callback when the [IconButton] is clicked.
  * @param modifier The modifier to be applied to the [IconButton]
  * @param enabled Whether the [IconButton] is enabled.
- * @param cornerRadius The corner radius of of the [IconButton].
  * @param backgroundColor The background color of of the [IconButton].
+ * @param cornerRadius The corner radius of of the [IconButton].
  * @param minHeight The minimum height of of the [IconButton].
  * @param minWidth The minimum width of the [IconButton].
  * @param content The content of this icon button, typically an [Icon].
@@ -33,10 +33,10 @@ fun IconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    cornerRadius: Dp = 40.dp,
     backgroundColor: Color = Color.Unspecified,
-    minHeight: Dp = 40.dp,
-    minWidth: Dp = 40.dp,
+    cornerRadius: Dp = IconButtonDefaults.ConorRadius,
+    minHeight: Dp = IconButtonDefaults.MinHeight,
+    minWidth: Dp = IconButtonDefaults.MinWidth,
     content: @Composable () -> Unit
 ) {
     Box(
@@ -53,4 +53,22 @@ fun IconButton(
     ) {
         content()
     }
+}
+
+object IconButtonDefaults {
+
+    /**
+     * The default minimum width of the [IconButton].
+     */
+    val MinWidth = 40.dp
+
+    /**
+     * The default minimum height of the [IconButton].
+     */
+    val MinHeight = 40.dp
+
+    /**
+     * The default corner radius of the [IconButton].
+     */
+    val ConorRadius = 40.dp
 }

@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,14 +43,13 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  * @param interactionSource The [MutableInteractionSource] for the [BasicComponent].
  */
 @Composable
-@Suppress("NAME_SHADOWING")
 fun BasicComponent(
     modifier: Modifier = Modifier,
-    insideMargin: DpSize? = null,
+    insideMargin: DpSize = BasicComponentDefaults.InsideMargin,
     title: String? = null,
-    titleColor: Color = MiuixTheme.colorScheme.onSurface,
+    titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
     summary: String? = null,
-    summaryColor: Color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
+    summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
     leftAction: @Composable (() -> Unit?)? = null,
     rightActions: @Composable RowScope.() -> Unit = {},
     onClick: (() -> Unit)? = null,
@@ -56,12 +57,7 @@ fun BasicComponent(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
     var pointerPressed by remember { mutableStateOf(false) }
-    val insideMargin = remember { insideMargin } ?: remember { DpSize(16.dp, 16.dp) }
-    val paddingModifier = remember(insideMargin) {
-        Modifier.padding(horizontal = insideMargin.width, vertical = insideMargin.height)
-    }
-    val titleColor = if (enabled) titleColor else MiuixTheme.colorScheme.disabledOnSecondaryVariant
-    val summaryColor = if (enabled) summaryColor else MiuixTheme.colorScheme.disabledOnSecondaryVariant
+
     Row(
         modifier = if (onClick != null && enabled) {
             modifier
@@ -84,7 +80,10 @@ fun BasicComponent(
             }
             .heightIn(min = 56.dp)
             .fillMaxWidth()
-            .then(paddingModifier),
+            .padding(
+                horizontal = insideMargin.width,
+                vertical = insideMargin.height
+            ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -103,14 +102,14 @@ fun BasicComponent(
                     text = it,
                     fontSize = MiuixTheme.textStyles.headline1.fontSize,
                     fontWeight = FontWeight.Medium,
-                    color = titleColor
+                    color = titleColor.color(enabled)
                 )
             }
             summary?.let {
                 Text(
                     text = it,
                     fontSize = MiuixTheme.textStyles.body2.fontSize,
-                    color = summaryColor
+                    color = summaryColor.color(enabled)
                 )
             }
         }
@@ -124,4 +123,39 @@ fun BasicComponent(
             )
         }
     }
+}
+
+object BasicComponentDefaults {
+
+    /**
+     * The default margin inside the [BasicComponent].
+     */
+    val InsideMargin = DpSize(16.dp, 16.dp)
+
+    /**
+     * The default color of the title.
+     */
+    @Composable
+    fun titleColor() = BasicComponentColors(
+        color = MiuixTheme.colorScheme.onSurface,
+        disabledColor = MiuixTheme.colorScheme.disabledOnSecondaryVariant
+    )
+
+    /**
+     * The default color of the summary.
+     */
+    @Composable
+    fun summaryColor() = BasicComponentColors(
+        color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
+        disabledColor = MiuixTheme.colorScheme.disabledOnSecondaryVariant
+    )
+}
+
+@Immutable
+class BasicComponentColors(
+    private val color: Color,
+    private val disabledColor: Color
+) {
+    @Stable
+    internal fun color(enabled: Boolean): Color = if (enabled) color else disabledColor
 }

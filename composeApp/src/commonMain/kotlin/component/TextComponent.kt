@@ -158,28 +158,25 @@ fun TextComponent() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Checkbox(
-                modifier = Modifier,
                 checked = checkbox,
                 onCheckedChange = { checkbox = it }
-
             )
             Checkbox(
-                modifier = Modifier.padding(start = 8.dp),
                 checked = checkboxTrue,
-                onCheckedChange = { checkboxTrue = it }
+                onCheckedChange = { checkboxTrue = it },
+                modifier = Modifier.padding(start = 8.dp)
             )
             Checkbox(
-                modifier = Modifier.padding(start = 8.dp),
-                enabled = false,
                 checked = false,
-                onCheckedChange = { }
-
+                onCheckedChange = { },
+                modifier = Modifier.padding(start = 8.dp),
+                enabled = false
             )
             Checkbox(
-                modifier = Modifier.padding(start = 8.dp),
-                enabled = false,
                 checked = true,
-                onCheckedChange = { }
+                onCheckedChange = { },
+                modifier = Modifier.padding(start = 8.dp),
+                enabled = false
             )
         }
 
@@ -235,21 +232,21 @@ fun TextComponent() {
                 onCheckedChange = { switch = it }
             )
             Switch(
-                modifier = Modifier.padding(start = 6.dp),
                 checked = switchTrue,
-                onCheckedChange = { switchTrue = it }
+                onCheckedChange = { switchTrue = it },
+                modifier = Modifier.padding(start = 6.dp)
             )
             Switch(
-                modifier = Modifier.padding(start = 6.dp),
-                enabled = false,
                 checked = false,
-                onCheckedChange = { }
+                onCheckedChange = { },
+                modifier = Modifier.padding(start = 6.dp),
+                enabled = false
             )
             Switch(
-                modifier = Modifier.padding(start = 6.dp),
-                enabled = false,
                 checked = true,
-                onCheckedChange = { }
+                onCheckedChange = { },
+                modifier = Modifier.padding(start = 6.dp),
+                enabled = false
             )
         }
 

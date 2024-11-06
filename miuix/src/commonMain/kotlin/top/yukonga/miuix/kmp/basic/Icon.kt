@@ -30,7 +30,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  * @param contentDescription text used by accessibility services to describe what this icon
  *   represents. This should always be provided unless this icon is used for decorative purposes,
  *   and does not represent a meaningful action that a user can take. This text should be localized,
- *   such as by using [androidx.compose.ui.res.stringResource] or similar
+ *   such as by using [stringResource] or similar
  * @param modifier the [Modifier] to be applied to this icon
  * @param tint tint to be applied to [imageVector]. If [Color.Unspecified] is provided, then no tint
  *   is applied.
@@ -40,7 +40,7 @@ fun Icon(
     imageVector: ImageVector,
     contentDescription: String?,
     modifier: Modifier = Modifier,
-    tint: Color = MiuixTheme.colorScheme.onBackground
+    tint: Color = IconDefaults.DefaultTint()
 ) {
     Icon(
         painter = rememberVectorPainter(imageVector),
@@ -57,7 +57,7 @@ fun Icon(
  * @param contentDescription text used by accessibility services to describe what this icon
  *   represents. This should always be provided unless this icon is used for decorative purposes,
  *   and does not represent a meaningful action that a user can take. This text should be localized,
- *   such as by using [androidx.compose.ui.res.stringResource] or similar
+ *   such as by using [stringResource] or similar
  * @param modifier the [Modifier] to be applied to this icon
  * @param tint tint to be applied to [bitmap]. If [Color.Unspecified] is provided, then no tint is
  *   applied.
@@ -67,7 +67,7 @@ fun Icon(
     bitmap: ImageBitmap,
     contentDescription: String?,
     modifier: Modifier = Modifier,
-    tint: Color = MiuixTheme.colorScheme.onBackground
+    tint: Color = IconDefaults.DefaultTint()
 ) {
     val painter = remember(bitmap) { BitmapPainter(bitmap) }
     Icon(
@@ -85,7 +85,7 @@ fun Icon(
  * @param contentDescription text used by accessibility services to describe what this icon
  *   represents. This should always be provided unless this icon is used for decorative purposes,
  *   and does not represent a meaningful action that a user can take. This text should be localized,
- *   such as by using [androidx.compose.ui.res.stringResource] or similar
+ *   such as by using [stringResource] or similar
  * @param modifier the [Modifier] to be applied to this icon
  * @param tint tint to be applied to [painter]. If [Color.Unspecified] is provided, then no tint is
  *   applied.
@@ -95,7 +95,7 @@ fun Icon(
     painter: Painter,
     contentDescription: String?,
     modifier: Modifier = Modifier,
-    tint: Color = MiuixTheme.colorScheme.onBackground
+    tint: Color = IconDefaults.DefaultTint()
 ) {
     val colorFilter =
         remember(tint) { if (tint == Color.Unspecified) null else ColorFilter.tint(tint) }
@@ -130,3 +130,11 @@ private fun Size.isInfinite() = width.isInfinite() && height.isInfinite()
 
 // Default icon size, for icons with no intrinsic size information
 private val DefaultIconSizeModifier = Modifier.size(24.dp)
+
+object IconDefaults {
+    /**
+     * The default tint of the [Icon].
+     */
+    @Composable
+    fun DefaultTint() = MiuixTheme.colorScheme.onBackground
+}

@@ -23,7 +23,7 @@ fun SmallTitle(
     text: String,
     modifier: Modifier = Modifier,
     textColor: Color = MiuixTheme.colorScheme.onBackgroundVariant,
-    insideMargin: DpSize = DpSize(28.dp, 8.dp),
+    insideMargin: DpSize = DpSize(28.dp, 8.dp)
 ) {
     val paddingModifier = remember(insideMargin) {
         Modifier.padding(horizontal = insideMargin.width, vertical = insideMargin.height)

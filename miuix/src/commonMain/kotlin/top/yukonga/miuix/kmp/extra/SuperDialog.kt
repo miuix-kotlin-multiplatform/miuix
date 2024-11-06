@@ -25,7 +25,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.Box
@@ -58,13 +57,13 @@ fun SuperDialog(
     show: MutableState<Boolean>,
     modifier: Modifier = Modifier,
     title: String? = null,
-    titleColor: Color = MiuixTheme.colorScheme.onSurface,
+    titleColor: Color = SuperDialogDefaults.titleColor(),
     summary: String? = null,
-    summaryColor: Color = MiuixTheme.colorScheme.onSurfaceSecondary,
-    backgroundColor: Color = MiuixTheme.colorScheme.surfaceVariant,
+    summaryColor: Color = SuperDialogDefaults.summaryColor(),
+    backgroundColor: Color = SuperDialogDefaults.backgroundColor(),
     onDismissRequest: (() -> Unit)? = null,
-    outsideMargin: DpSize = DpSize(12.dp, 12.dp),
-    insideMargin: Dp = 24.dp,
+    outsideMargin: DpSize = SuperDialogDefaults.outsideMargin,
+    insideMargin: DpSize = SuperDialogDefaults.insideMargin,
     defaultWindowInsetsPadding: Boolean = true,
     content: @Composable () -> Unit
 ) {
@@ -124,7 +123,10 @@ fun SuperDialog(
                                 color = backgroundColor,
                                 shape = SmoothRoundedCornerShape(bottomCornerRadius)
                             )
-                            .padding(insideMargin),
+                            .padding(
+                                horizontal = insideMargin.width,
+                                vertical = insideMargin.height
+                            ),
                     ) {
                         title?.let {
                             Text(
@@ -153,6 +155,37 @@ fun SuperDialog(
             }
         )
     }
+}
+
+object SuperDialogDefaults {
+
+    /**
+     * The default color of the title.
+     */
+    @Composable
+    fun titleColor() = MiuixTheme.colorScheme.onSurface
+
+    /**
+     * The default color of the summary.
+     */
+    @Composable
+    fun summaryColor() = MiuixTheme.colorScheme.onSurfaceSecondary
+
+    /**
+     * The default background color of the [SuperDialog].
+     */
+    @Composable
+    fun backgroundColor() = MiuixTheme.colorScheme.surfaceVariant
+
+    /**
+     * The default margin outside the [SuperDialog].
+     */
+    val outsideMargin = DpSize(12.dp, 12.dp)
+
+    /**
+     * The default margin inside the [SuperDialog].
+     */
+    val insideMargin = DpSize(24.dp, 24.dp)
 }
 
 /**
