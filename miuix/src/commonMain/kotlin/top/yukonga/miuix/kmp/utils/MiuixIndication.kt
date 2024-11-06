@@ -6,15 +6,8 @@ import androidx.compose.foundation.Indication
 import androidx.compose.foundation.IndicationNodeFactory
 import androidx.compose.foundation.interaction.FocusInteraction
 import androidx.compose.foundation.interaction.HoverInteraction
-import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.InteractionSource
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
@@ -22,6 +15,7 @@ import androidx.compose.ui.node.DelegatableNode
 import androidx.compose.ui.node.DrawModifierNode
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction
 
 /**
  * Miuix default [Indication] that draws a rectangular overlay when pressed.
@@ -111,50 +105,4 @@ class MiuixIndication(
             drawRect(color = backgroundColor.copy(alpha = animatedAlpha.value), size = size)
         }
     }
-}
-
-/**
- * An interaction related to hold down events.
- *
- * @see Hold
- * @see Release
- */
-interface HoldDownInteraction : Interaction {
-    /**
-     * An interaction representing a hold down event on a component.
-     *
-     * @see Release
-     */
-    class Hold : HoldDownInteraction
-
-    /**
-     * An interaction representing a [Hold] event being released on a component.
-     *
-     * @property hold the source [Hold] interaction that is being released
-     *
-     * @see Hold
-     */
-    class Release(val hold: Hold) : HoldDownInteraction
-}
-
-/**
- * Subscribes to this [MutableInteractionSource] and returns a [State] representing whether this
- * component is selected or not.
- *
- * @return [State] representing whether this component is being focused or not
- */
-@Composable
-fun InteractionSource.collectIsHeldDownAsState(): State<Boolean> {
-    val isHeldDown = remember { mutableStateOf(false) }
-    LaunchedEffect(this) {
-        val holdInteraction = mutableListOf<HoldDownInteraction.Hold>()
-        interactions.collect { interaction ->
-            when (interaction) {
-                is HoldDownInteraction.Hold -> holdInteraction.add(interaction)
-                is HoldDownInteraction.Release -> holdInteraction.remove(interaction.hold)
-            }
-            isHeldDown.value = holdInteraction.isNotEmpty()
-        }
-    }
-    return isHeldDown
 }
