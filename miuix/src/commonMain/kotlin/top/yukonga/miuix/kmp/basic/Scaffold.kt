@@ -29,6 +29,7 @@ import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMapNotNull
 import androidx.compose.ui.util.fastMaxBy
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtil
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.MiuixPopupHost
 
 /**
@@ -45,6 +46,8 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.MiuixPopupHost
  * @param floatingActionButtonPosition position of the floating action button.
  * @param snackbarHost component to host [Snackbar]s that are pushed to be shown via
  *   [SnackbarHostState.showSnackbar], typically a [SnackbarHost].
+ * @param popupHost component to host [SuperDropdown]s & [SuperDialog]s that are pushed to be shown via
+ *   [MiuixPopupUtil.showPopup] & [MiuixPopupUtil.showDialog], typically a [MiuixPopupHost].
  * @param containerColor the color used for the background of this scaffold. Use [Color.Transparent]
  *   to have no color.
  * @param contentWindowInsets window insets to be passed to [content] slot via [PaddingValues]
