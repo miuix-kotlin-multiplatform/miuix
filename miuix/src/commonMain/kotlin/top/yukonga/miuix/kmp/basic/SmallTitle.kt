@@ -1,12 +1,12 @@
 package top.yukonga.miuix.kmp.basic
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
@@ -23,10 +23,10 @@ fun SmallTitle(
     text: String,
     modifier: Modifier = Modifier,
     textColor: Color = MiuixTheme.colorScheme.onBackgroundVariant,
-    insideMargin: DpSize = DpSize(28.dp, 8.dp)
+    insideMargin: PaddingValues = PaddingValues(28.dp, 8.dp)
 ) {
     val paddingModifier = remember(insideMargin) {
-        Modifier.padding(horizontal = insideMargin.width, vertical = insideMargin.height)
+        Modifier.padding(insideMargin)
     }
     Text(
         modifier = modifier.then(paddingModifier),

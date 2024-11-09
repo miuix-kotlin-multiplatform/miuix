@@ -1,6 +1,7 @@
 package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
@@ -42,7 +43,7 @@ fun Button(
     minWidth: Dp = ButtonDefaults.MinWidth,
     minHeight: Dp = ButtonDefaults.MinHeight,
     colors: ButtonColors = ButtonDefaults.buttonColors(),
-    insideMargin: DpSize = ButtonDefaults.InsideMargin,
+    insideMargin: PaddingValues = ButtonDefaults.InsideMargin,
     content: @Composable RowScope.() -> Unit
 ) {
     Surface(
@@ -57,7 +58,7 @@ fun Button(
         Row(
             Modifier
                 .defaultMinSize(minWidth = minWidth, minHeight = minHeight)
-                .padding(insideMargin.width, insideMargin.height),
+                .padding(insideMargin),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             content = content
@@ -88,7 +89,7 @@ fun TextButton(
     cornerRadius: Dp = ButtonDefaults.ConorRadius,
     minWidth: Dp = ButtonDefaults.MinWidth,
     minHeight: Dp = ButtonDefaults.MinHeight,
-    insideMargin: DpSize = ButtonDefaults.InsideMargin,
+    insideMargin: PaddingValues = ButtonDefaults.InsideMargin,
 ) {
     Surface(
         onClick = {
@@ -102,7 +103,7 @@ fun TextButton(
         Row(
             Modifier
                 .defaultMinSize(minWidth = minWidth, minHeight = minHeight)
-                .padding(insideMargin.width, insideMargin.height),
+                .padding(insideMargin),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             content = {
@@ -138,7 +139,7 @@ object ButtonDefaults {
     /**
      * The default inside margin applied for all buttons.
      */
-    val InsideMargin = DpSize(16.dp, 16.dp)
+    val InsideMargin = PaddingValues(16.dp)
 
     /**
      * The default [ButtonColors] for all buttons.

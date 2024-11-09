@@ -2,13 +2,13 @@ package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
@@ -29,14 +29,11 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 fun Card(
     modifier: Modifier = Modifier,
     cornerRadius: Dp = CardDefaults.ConorRadius,
-    insideMargin: DpSize = CardDefaults.InsideMargin,
+    insideMargin: PaddingValues = CardDefaults.InsideMargin,
     color: Color = CardDefaults.DefaultColor(),
     content: @Composable ColumnScope.() -> Unit
 ) {
     val shape = remember { SmoothRoundedCornerShape(cornerRadius) }
-    val paddingModifier = remember(insideMargin) {
-        Modifier.padding(vertical = insideMargin.height, horizontal = insideMargin.width)
-    }
 
     Surface(
         modifier = modifier,
@@ -44,7 +41,7 @@ fun Card(
         color = color,
     ) {
         Column(
-            modifier = paddingModifier,
+            modifier = Modifier.padding(insideMargin),
             content = content
         )
     }
@@ -60,7 +57,7 @@ object CardDefaults {
     /**
      * The default margin inside the [Card].
      */
-    val InsideMargin = DpSize(0.dp, 0.dp)
+    val InsideMargin = PaddingValues(0.dp)
 
     /**
      * The default color width of the [Card].

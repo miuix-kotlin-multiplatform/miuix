@@ -129,7 +129,7 @@ fun InputField(
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
 
     val paddingModifier = remember(insideMargin, leadingIcon, trailingIcon) {
-        if (leadingIcon == null && trailingIcon == null) Modifier.padding(insideMargin.width, vertical = insideMargin.height)
+        if (leadingIcon == null && trailingIcon == null) Modifier.padding(horizontal = insideMargin.width, vertical = insideMargin.height)
         else if (leadingIcon == null) Modifier.padding(start = insideMargin.width).padding(vertical = insideMargin.height)
         else if (trailingIcon == null) Modifier.padding(end = insideMargin.width).padding(vertical = insideMargin.height)
         else Modifier.padding(vertical = insideMargin.height)

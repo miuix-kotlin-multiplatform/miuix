@@ -141,7 +141,7 @@ fun OtherComponent(padding: PaddingValues) {
             .padding(horizontal = 12.dp)
             .padding(bottom = 12.dp),
         color = MiuixTheme.colorScheme.primaryVariant,
-        insideMargin = DpSize(16.dp, 16.dp)
+        insideMargin = PaddingValues(16.dp)
     ) {
         Text(
             color = MiuixTheme.colorScheme.onPrimary,
@@ -156,7 +156,7 @@ fun OtherComponent(padding: PaddingValues) {
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
             .padding(bottom = 12.dp + padding.calculateBottomPadding()),
-        insideMargin = DpSize(16.dp, 16.dp)
+        insideMargin = PaddingValues(16.dp)
     ) {
         Text(
             color = MiuixTheme.colorScheme.onSurface,
