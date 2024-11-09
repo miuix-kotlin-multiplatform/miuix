@@ -65,7 +65,7 @@ fun MainPage(
                                 label = "Search",
                                 leadingIcon = {
                                     Icon(
-                                        modifier = Modifier.padding(horizontal = 16.dp),
+                                        modifier = Modifier.padding(start = 12.dp, end = 8.dp),
                                         imageVector = MiuixIcons.Search,
                                         tint = MiuixTheme.colorScheme.onSurfaceContainer,
                                         contentDescription = "Search"

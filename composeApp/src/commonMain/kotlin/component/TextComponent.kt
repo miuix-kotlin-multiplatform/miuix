@@ -72,11 +72,14 @@ fun TextComponent() {
             title = "Title",
             summary = "Summary",
             leftAction = {
-                Text(text = "Left")
+                Text(
+                    text = "Left",
+                    modifier = Modifier.padding(end = 16.dp)
+                )
             },
             rightActions = {
                 Text(text = "Right1")
-                Spacer(Modifier.width(6.dp))
+                Spacer(Modifier.width(10.dp))
                 Text(text = "Right2")
             },
             onClick = {},
@@ -88,6 +91,7 @@ fun TextComponent() {
             leftAction = {
                 Text(
                     text = "Left",
+                    modifier = Modifier.padding(end = 16.dp),
                     color = MiuixTheme.colorScheme.disabledOnSecondaryVariant
                 )
             },
@@ -96,7 +100,7 @@ fun TextComponent() {
                     text = "Right1",
                     color = MiuixTheme.colorScheme.disabledOnSecondaryVariant
                 )
-                Spacer(Modifier.width(6.dp))
+                Spacer(Modifier.width(10.dp))
                 Text(
                     text = "Right2",
                     color = MiuixTheme.colorScheme.disabledOnSecondaryVariant
@@ -116,6 +120,7 @@ fun TextComponent() {
             leftAction = {
                 Box(
                     contentAlignment = Alignment.TopStart,
+                    modifier = Modifier.padding(end = 16.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.AccountBox,
@@ -154,7 +159,7 @@ fun TextComponent() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 12.dp),
+                .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Checkbox(
@@ -186,7 +191,7 @@ fun TextComponent() {
             checked = miuixSuperRightCheckboxState,
             rightActions = {
                 Text(
-                    modifier = Modifier.padding(end = 6.dp),
+                    modifier = Modifier.padding(end = 10.dp),
                     text = miuixSuperRightCheckbox,
                     color = MiuixTheme.colorScheme.onSurfaceVariantActions
                 )
@@ -224,7 +229,7 @@ fun TextComponent() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 12.dp),
+                .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Switch(

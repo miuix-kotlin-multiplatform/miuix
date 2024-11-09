@@ -19,7 +19,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.ButtonDefaults
@@ -141,7 +140,7 @@ fun OtherComponent(padding: PaddingValues) {
             .padding(horizontal = 12.dp)
             .padding(bottom = 12.dp),
         color = MiuixTheme.colorScheme.primaryVariant,
-        insideMargin = DpSize(16.dp, 16.dp)
+        insideMargin = PaddingValues(16.dp)
     ) {
         Text(
             color = MiuixTheme.colorScheme.onPrimary,
@@ -156,7 +155,7 @@ fun OtherComponent(padding: PaddingValues) {
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
             .padding(bottom = 12.dp + padding.calculateBottomPadding()),
-        insideMargin = DpSize(16.dp, 16.dp)
+        insideMargin = PaddingValues(16.dp)
     ) {
         Text(
             color = MiuixTheme.colorScheme.onSurface,
