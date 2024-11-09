@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
@@ -45,7 +45,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 @Composable
 fun BasicComponent(
     modifier: Modifier = Modifier,
-    insideMargin: DpSize = BasicComponentDefaults.InsideMargin,
+    insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     title: String? = null,
     titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
     summary: String? = null,
@@ -80,19 +80,12 @@ fun BasicComponent(
             }
             .heightIn(min = 56.dp)
             .fillMaxWidth()
-            .padding(
-                horizontal = insideMargin.width,
-                vertical = insideMargin.height
-            ),
+            .padding(insideMargin),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         leftAction?.let {
-            Box(
-                modifier = Modifier.padding(end = 16.dp)
-            ) {
-                it()
-            }
+            it()
         }
         Column(
             modifier = Modifier.weight(1f)
@@ -130,7 +123,7 @@ object BasicComponentDefaults {
     /**
      * The default margin inside the [BasicComponent].
      */
-    val InsideMargin = DpSize(16.dp, 16.dp)
+    val InsideMargin = PaddingValues(16.dp)
 
     /**
      * The default color of the title.

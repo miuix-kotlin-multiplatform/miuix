@@ -65,6 +65,7 @@ fun Scaffold(
     floatingActionButton: @Composable () -> Unit = {},
     floatingActionButtonPosition: MiuixFabPosition = MiuixFabPosition.End,
     snackbarHost: @Composable () -> Unit = {},
+    popupHost: @Composable () -> Unit = { MiuixPopupHost() },
     containerColor: Color = MiuixTheme.colorScheme.background,
     contentWindowInsets: WindowInsets = WindowInsets.statusBars,
     content: @Composable (PaddingValues) -> Unit
@@ -91,7 +92,7 @@ fun Scaffold(
             snackbar = snackbarHost,
             fab = floatingActionButton,
             fabPosition = floatingActionButtonPosition,
-            popup = { MiuixPopupHost() },
+            popup = popupHost,
             contentWindowInsets = safeInsets,
         )
     }

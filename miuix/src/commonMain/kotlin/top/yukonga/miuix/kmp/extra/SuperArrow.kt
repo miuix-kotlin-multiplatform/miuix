@@ -1,6 +1,7 @@
 package top.yukonga.miuix.kmp.extra
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -12,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
@@ -48,7 +48,7 @@ fun SuperArrow(
     rightText: String? = null,
     rightActionColor: RightActionColors = SuperArrowDefaults.rightActionColors(),
     onClick: (() -> Unit)? = null,
-    insideMargin: DpSize = BasicComponentDefaults.InsideMargin,
+    insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     enabled: Boolean = true
 ) {
     val updatedOnClick by rememberUpdatedState(onClick)
