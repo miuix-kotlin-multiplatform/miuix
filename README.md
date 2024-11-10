@@ -26,10 +26,22 @@ kotlin {
 ```
 @Composable
 fun App() {
-   MiuixTheme(
+    MiuixTheme(
         colors = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
     ) {
-       // Other content...
+        Scaffold(
+            topBar = {
+                // TopBar
+            },
+            bottomBar = {
+                // BottomBar
+            },
+            floatingActionButton = {
+                // FloatingActionButton
+            },
+        ) {
+            // Other Content...
+        }
     }
 }
 ```
