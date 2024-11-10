@@ -80,8 +80,8 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showPopup
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
-import xiaomihelper.miuix.generated.resources.Res
-import xiaomihelper.miuix.generated.resources.button_cancel
+import top.yukonga.miuix.kmp.resources.Res
+import top.yukonga.miuix.kmp.resources.button_cancel
 import kotlin.math.roundToInt
 
 @Composable
@@ -96,6 +96,7 @@ fun SuperSpinner(
     summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
     mode: SpinnerMode = SpinnerMode.Dropdown,
     horizontalPadding: Dp = 0.dp,
+    leftAction: @Composable (() -> Unit)? = null,
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     defaultWindowInsetsPadding: Boolean = true,
     enabled: Boolean = true,
@@ -157,6 +158,7 @@ fun SuperSpinner(
         titleColor = titleColor,
         summary = summary,
         summaryColor = summaryColor,
+        leftAction = leftAction,
         rightActions = {
             if (showValue) {
                 Text(

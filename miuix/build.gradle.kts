@@ -58,3 +58,9 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }
+
+compose.resources {
+    publicResClass = false
+    packageOfResClass = "top.yukonga.miuix.kmp.resources"
+    generateResClass = auto
+}
