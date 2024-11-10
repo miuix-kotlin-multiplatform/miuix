@@ -9,6 +9,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
@@ -106,16 +107,8 @@ fun NavigationBar(
                     )
                     val fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal
                     Column(
-                        modifier = if (defaultWindowInsetsPadding) {
-                            modifier
-                                .height(
-                                    NavigationBarHeight
-                                            + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-                                            + animatedCaptionBarHeight
-                                )
-                        } else {
-                            modifier.height(NavigationBarHeight)
-                        }
+                        modifier = modifier
+                            .height(NavigationBarHeight)
                             .weight(1f / items.size)
                             .pointerInput(Unit) {
                                 detectTapGestures(
@@ -145,6 +138,14 @@ fun NavigationBar(
                         )
                     }
                 }
+            }
+            if (defaultWindowInsetsPadding) {
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + animatedCaptionBarHeight)
+                        .pointerInput(Unit) { detectTapGestures { /* Do nothing to consume the click */ } }
+                )
             }
         }
     }
