@@ -342,7 +342,7 @@ fun SuperSpinner(
 }
 
 /**
- * A [SuperSpinnerAsDialog] component with Miuix style.
+ * A [SuperSpinner] component with Miuix style, show Spinner as dialog.
  *
  * @param title the title of the [SuperSpinner].
  * @param items the list of [SpinnerEntry] to be shown in the [SuperSpinner].
@@ -362,7 +362,7 @@ fun SuperSpinner(
  * @param onSelectedIndexChange the callback to be invoked when the selected index of the [SuperSpinner] is changed.
  */
 @Composable
-fun SuperSpinnerAsDialog(
+fun SuperSpinner(
     title: String,
     items: List<SpinnerEntry>,
     selectedIndex: Int,

@@ -86,7 +86,6 @@ import kotlin.math.roundToInt
  * @param title The title of the [SuperDropdown].
  * @param items The options of the [SuperDropdown].
  * @param selectedIndex The index of the selected option.
- * @param onSelectedIndexChange The callback when the index is selected.
  * @param modifier The modifier to be applied to the [SuperDropdown].
  * @param popupModifier The modifier to be applied to the popup of the [SuperDropdown].
  * @param titleColor The color of the title.
@@ -97,13 +96,14 @@ import kotlin.math.roundToInt
  * @param insideMargin The margin inside the [SuperDropdown].
  * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [SuperDropdown].
  * @param enabled Whether the [SuperDropdown] is enabled.
+ * @param showValue Whether to show the selected value of the [SuperDropdown].
+ * @param onSelectedIndexChange The callback when the selected index of the [SuperDropdown] is changed.
  */
 @Composable
 fun SuperDropdown(
     title: String,
     items: List<String>,
     selectedIndex: Int,
-    onSelectedIndexChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
     popupModifier: Modifier = Modifier,
     titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
@@ -113,7 +113,9 @@ fun SuperDropdown(
     horizontalPadding: Dp = 0.dp,
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     defaultWindowInsetsPadding: Boolean = true,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    showValue: Boolean = true,
+    onSelectedIndexChange: ((Int) -> Unit)?,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isDropdownExpanded = remember { mutableStateOf(false) }
@@ -171,13 +173,15 @@ fun SuperDropdown(
         summary = summary,
         summaryColor = summaryColor,
         rightActions = {
-            Text(
-                modifier = Modifier.widthIn(max = 130.dp),
-                text = items[selectedIndex],
-                fontSize = MiuixTheme.textStyles.body2.fontSize,
-                color = actionColor,
-                textAlign = TextAlign.End,
-            )
+            if (showValue) {
+                Text(
+                    modifier = Modifier.widthIn(max = 130.dp),
+                    text = items[selectedIndex],
+                    fontSize = MiuixTheme.textStyles.body2.fontSize,
+                    color = actionColor,
+                    textAlign = TextAlign.End,
+                )
+            }
             Image(
                 modifier = Modifier
                     .padding(start = 8.dp)
@@ -310,7 +314,7 @@ fun SuperDropdown(
                                 isSelected = selectedIndex == index,
                                 onSelectedIndexChange = {
                                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    onSelectedIndexChange(it)
+                                    onSelectedIndexChange?.let { it1 -> it1(it) }
                                     dismissPopup(isDropdownExpanded)
                                 },
                                 textWidthDp = textWidthDp,

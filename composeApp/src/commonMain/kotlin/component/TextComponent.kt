@@ -49,7 +49,6 @@ import top.yukonga.miuix.kmp.extra.SuperCheckbox
 import top.yukonga.miuix.kmp.extra.SuperDialog
 import top.yukonga.miuix.kmp.extra.SuperDropdown
 import top.yukonga.miuix.kmp.extra.SuperSpinner
-import top.yukonga.miuix.kmp.extra.SuperSpinnerAsDialog
 import top.yukonga.miuix.kmp.extra.SuperSwitch
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
@@ -369,7 +368,7 @@ fun TextComponent() {
             mode = SpinnerMode.AlwaysOnRight,
         )
 
-        SuperSpinnerAsDialog(
+        SuperSpinner(
             title = "Spinner",
             summary = "Spinner as Dialog",
             dialogButtonString = "Cancel",
