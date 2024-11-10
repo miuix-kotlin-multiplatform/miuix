@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.captionBar
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -49,6 +49,7 @@ import top.yukonga.miuix.kmp.utils.platform
  * @param onClick The callback when the item of the [NavigationBar] is clicked.
  * @param modifier The modifier to be applied to the [NavigationBar].
  * @param color The color of the [NavigationBar].
+ * @param showDivider Whether to show the divider line between the [NavigationBar] and the content.
  * @param defaultWindowInsetsPadding whether to apply default window insets padding to the [NavigationBar].
  */
 @Composable
@@ -58,6 +59,7 @@ fun NavigationBar(
     onClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
     color: Color = MiuixTheme.colorScheme.surfaceContainer,
+    showDivider: Boolean = true,
     defaultWindowInsetsPadding: Boolean = true
 ) {
     require(items.size in 2..5) { "BottomBar must have between 2 and 5 items" }
@@ -68,25 +70,22 @@ fun NavigationBar(
         targetValue = if (captionBarBottomPadding > 0.dp) captionBarBottomPadding else 0.dp,
         animationSpec = tween(durationMillis = 300)
     )
-    Surface(color = color) {
+    Surface(
+        color = color
+    ) {
         Column(
-            modifier = if (defaultWindowInsetsPadding) {
-                modifier
-                    .navigationBarsPadding()
-                    .padding(bottom = animatedCaptionBarHeight)
-            } else {
-                modifier
-            }
+            modifier = modifier
                 .fillMaxWidth()
                 .background(Color.Transparent)
         ) {
-            HorizontalDivider(
-                thickness = 0.75.dp,
-                color = MiuixTheme.colorScheme.dividerLine
-            )
+            if (showDivider) {
+                HorizontalDivider(
+                    thickness = 0.75.dp,
+                    color = MiuixTheme.colorScheme.dividerLine
+                )
+            }
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -107,10 +106,17 @@ fun NavigationBar(
                     )
                     val fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal
                     Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
+                        modifier = if (defaultWindowInsetsPadding) {
+                            modifier
+                                .height(
+                                    NavigationBarHeight
+                                            + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+                                            + animatedCaptionBarHeight
+                                )
+                        } else {
+                            modifier.height(NavigationBarHeight)
+                        }
                             .weight(1f / items.size)
-                            .height(NavigationBarHeight)
                             .pointerInput(Unit) {
                                 detectTapGestures(
                                     onPress = {
@@ -120,7 +126,8 @@ fun NavigationBar(
                                     },
                                     onTap = { onClick(index) }
                                 )
-                            }
+                            },
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Image(
                             modifier = Modifier.size(32.dp).padding(top = 6.dp),
@@ -145,7 +152,6 @@ fun NavigationBar(
 
 /** The default expanded height of a [NavigationBar]. */
 val NavigationBarHeight: Dp = if (platform() != Platform.IOS) 64.dp else 48.dp
-
 
 /**
  * The data class for [NavigationBar].
