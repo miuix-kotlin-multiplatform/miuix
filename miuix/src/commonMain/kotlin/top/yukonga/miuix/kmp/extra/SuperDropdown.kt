@@ -92,8 +92,8 @@ import kotlin.math.roundToInt
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperDropdown].
  * @param summaryColor The color of the summary.
+ * @param mode The dropdown show mode of the [SuperDropdown].
  * @param horizontalPadding The horizontal padding of the [SuperDropdown].
- * @param alwaysRight Whether the popup is always show on the right side.
  * @param insideMargin The margin inside the [SuperDropdown].
  * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [SuperDropdown].
  * @param enabled Whether the [SuperDropdown] is enabled.
@@ -109,7 +109,7 @@ fun SuperDropdown(
     titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
     summary: String? = null,
     summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
-    alwaysRight: Boolean = false,
+    mode: DropDownMode = DropDownMode.Normal,
     horizontalPadding: Dp = 0.dp,
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     defaultWindowInsetsPadding: Boolean = true,
@@ -275,7 +275,7 @@ fun SuperDropdown(
                     LazyColumn(
                         modifier = Modifier
                             .onGloballyPositioned { layoutCoordinates ->
-                                offsetXPx = if (alwaysRight || !alignLeft) {
+                                offsetXPx = if (mode == DropDownMode.AlwaysAtRight || !alignLeft) {
                                     dropdownOffsetXPx + componentWidthPx - insideRightPx - layoutCoordinates.size.width - paddingPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize.value else 0
                                 } else {
                                     dropdownOffsetXPx + paddingPx + insideLeftPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize.value else 0
@@ -375,7 +375,7 @@ fun DropdownImpl(
         Text(
             modifier = Modifier.width(textWidthDp ?: 50.dp),
             text = text,
-            fontSize = 16.sp,
+            fontSize = MiuixTheme.textStyles.body1.fontSize,
             fontWeight = FontWeight.Medium,
             color = textColor,
         )
@@ -437,3 +437,11 @@ fun calculateOffsetYPx(
  * Only one dropdown is allowed to be displayed at a time.
  */
 val dropdownStates = mutableStateListOf<MutableState<Boolean>>()
+
+/**
+ * The dropdown show mode.
+ */
+enum class DropDownMode {
+    Normal,
+    AlwaysAtRight
+}

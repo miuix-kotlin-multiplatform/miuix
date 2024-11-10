@@ -62,7 +62,6 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.stringResource
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
@@ -80,10 +79,29 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showPopup
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
-import top.yukonga.miuix.kmp.resources.Res
-import top.yukonga.miuix.kmp.resources.button_cancel
 import kotlin.math.roundToInt
 
+
+/**
+ * A [SuperSpinner] component with Miuix style.
+ *
+ * @param title the title of the [SuperSpinner].
+ * @param items the list of [SpinnerEntry] to be shown in the [SuperSpinner].
+ * @param selectedIndex the index of the selected item in the [SuperSpinner].
+ * @param modifier the [Modifier] to be applied to the [SuperSpinner].
+ * @param popupModifier the [Modifier] to be applied to the popup of the [SuperSpinner].
+ * @param titleColor the color of the title of the [SuperSpinner].
+ * @param summary the summary of the [SuperSpinner].
+ * @param summaryColor the color of the summary of the [SuperSpinner].
+ * @param mode the mode of the [SuperSpinner].
+ * @param horizontalPadding the horizontal padding of the [SuperSpinner].
+ * @param leftAction the action to be shown at the left side of the [SuperSpinner].
+ * @param insideMargin the [PaddingValues] to be applied inside the [SuperSpinner].
+ * @param defaultWindowInsetsPadding whether to apply the default window insets padding to the [SuperSpinner].
+ * @param enabled whether the [SuperSpinner] is enabled.
+ * @param showValue whether to show the value of the [SuperSpinner].
+ * @param onSelectedIndexChange the callback to be invoked when the selected index of the [SuperSpinner] is changed.
+ */
 @Composable
 fun SuperSpinner(
     title: String,
@@ -94,7 +112,7 @@ fun SuperSpinner(
     titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
     summary: String? = null,
     summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
-    mode: SpinnerMode = SpinnerMode.Dropdown,
+    mode: SpinnerMode = SpinnerMode.Normal,
     horizontalPadding: Dp = 0.dp,
     leftAction: @Composable (() -> Unit)? = null,
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
@@ -194,169 +212,313 @@ fun SuperSpinner(
     )
 
     if (isDropdownExpanded.value) {
-        if (mode == SpinnerMode.Dialog) {
-            SuperDialog(
-                modifier = popupModifier,
-                title = title,
-                show = isDropdownExpanded,
-                onDismissRequest = {
-                    dismissDialog(isDropdownExpanded)
-                },
-                insideMargin = DpSize(0.dp, 24.dp)
-            ) {
-                Column {
-                    LazyColumn {
+
+        val alwaysRight = mode == SpinnerMode.AlwaysAtRight
+
+        if (!dropdownStates.contains(isDropdownExpanded)) dropdownStates.add(isDropdownExpanded)
+        LaunchedEffect(isDropdownExpanded.value) {
+            if (isDropdownExpanded.value) {
+                dropdownStates.forEach { state -> if (state != isDropdownExpanded) state.value = false }
+            }
+        }
+
+        val density = LocalDensity.current
+        var offsetXPx by remember { mutableIntStateOf(0) }
+        var offsetYPx by remember { mutableIntStateOf(0) }
+        val getWindowSize = rememberUpdatedState(getWindowSize())
+        val windowHeightPx by rememberUpdatedState(getWindowSize.value.height)
+        val statusBarPx by rememberUpdatedState(
+            with(density) { WindowInsets.statusBars.asPaddingValues().calculateTopPadding().toPx() }.roundToInt()
+        )
+        val navigationBarPx by rememberUpdatedState(
+            with(density) { WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
+        )
+        val captionBarPx by rememberUpdatedState(
+            with(density) { WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
+        )
+        val dropdownMaxHeight by rememberUpdatedState(with(density) {
+            (windowHeightPx - statusBarPx - navigationBarPx - captionBarPx).toDp()
+        })
+        val dropdownElevation by rememberUpdatedState(with(density) {
+            11.dp.toPx()
+        })
+        val insideLeftPx by rememberUpdatedState(with(density) {
+            insideMargin.calculateLeftPadding(LayoutDirection.Ltr).toPx()
+        }.roundToInt())
+        val insideRightPx by rememberUpdatedState(with(density) {
+            insideMargin.calculateRightPadding(LayoutDirection.Ltr).toPx()
+        }.roundToInt())
+        val insideTopPx by rememberUpdatedState(with(density) {
+            insideMargin.calculateTopPadding().toPx()
+        }.roundToInt())
+        val insideBottomPx by rememberUpdatedState(with(density) {
+            insideMargin.calculateBottomPadding().toPx()
+        }.roundToInt())
+        val displayCutoutLeftSize = rememberUpdatedState(with(density) {
+            WindowInsets.displayCutout.asPaddingValues(density).calculateLeftPadding(LayoutDirection.Ltr).toPx()
+        }.roundToInt())
+        val paddingPx by rememberUpdatedState(with(density) {
+            horizontalPadding.toPx()
+        }.roundToInt())
+
+        BackHandler(enabled = isDropdownExpanded.value) {
+            dismissPopup(isDropdownExpanded)
+        }
+
+        showPopup(
+            content = {
+                Box(
+                    modifier = if (defaultWindowInsetsPadding) {
+                        popupModifier
+                            .windowInsetsPadding(
+                                WindowInsets.displayCutout.only(
+                                    WindowInsetsSides.Horizontal
+                                )
+                            )
+                    } else {
+                        popupModifier
+                    }
+                        .fillMaxSize()
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onTap = {
+                                    dismissPopup(isDropdownExpanded)
+                                }
+                            )
+                        }
+                        .offset {
+                            IntOffset(offsetXPx, offsetYPx)
+                        }
+                ) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .onGloballyPositioned { layoutCoordinates ->
+                                offsetXPx = if (alwaysRight || !alignLeft) {
+                                    dropdownOffsetXPx + componentWidthPx - insideRightPx - layoutCoordinates.size.width - paddingPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize.value else 0
+                                } else {
+                                    dropdownOffsetXPx + paddingPx + insideLeftPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize.value else 0
+                                }
+                                offsetYPx = calculateOffsetYPx(
+                                    windowHeightPx,
+                                    dropdownOffsetYPx,
+                                    layoutCoordinates.size.height,
+                                    componentHeightPx,
+                                    insideTopPx,
+                                    insideBottomPx,
+                                    statusBarPx,
+                                    navigationBarPx,
+                                    captionBarPx
+                                )
+                            }
+                            .heightIn(50.dp, dropdownMaxHeight)
+                            .align(AbsoluteAlignment.TopLeft)
+                            .graphicsLayer(
+                                shadowElevation = dropdownElevation,
+                                shape = SmoothRoundedCornerShape(16.dp),
+                                ambientShadowColor = Color.Black.copy(alpha = 0.3f),
+                                spotShadowColor = Color.Black.copy(alpha = 0.3f)
+                            )
+                            .clip(SmoothRoundedCornerShape(16.dp))
+                            .background(MiuixTheme.colorScheme.surface)
+                    ) {
                         items(items.size) { index ->
                             SpinnerItemImpl(
                                 entry = items[index],
                                 entryCount = items.size,
                                 isSelected = selectedIndex == index,
                                 index = index,
-                                dialogMode = true
+                                dialogMode = false
                             ) {
                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                 onSelectedIndexChange?.let { it1 -> it1(it) }
-                                dismissDialog(isDropdownExpanded)
+                                dismissPopup(isDropdownExpanded)
                             }
                         }
                     }
-                    TextButton(
-                        modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp).fillMaxWidth(),
-                        text = stringResource(Res.string.button_cancel),
-                        minHeight = 50.dp,
-                        onClick = {
+                }
+            }
+        )
+    }
+}
+
+/**
+ * A [SuperSpinnerAsDialog] component with Miuix style.
+ *
+ * @param title the title of the [SuperSpinner].
+ * @param items the list of [SpinnerEntry] to be shown in the [SuperSpinner].
+ * @param selectedIndex the index of the selected item in the [SuperSpinner].
+ * @param dialogButtonString the string of the button in the dialog.
+ * @param modifier the [Modifier] to be applied to the [SuperSpinner].
+ * @param popupModifier the [Modifier] to be applied to the popup of the [SuperSpinner].
+ * @param titleColor the color of the title of the [SuperSpinner].
+ * @param summary the summary of the [SuperSpinner].
+ * @param summaryColor the color of the summary of the [SuperSpinner].
+ * @param horizontalPadding the horizontal padding of the [SuperSpinner].
+ * @param leftAction the action to be shown at the left side of the [SuperSpinner].
+ * @param insideMargin the [PaddingValues] to be applied inside the [SuperSpinner].
+ * @param defaultWindowInsetsPadding whether to apply the default window insets padding to the [SuperSpinner].
+ * @param enabled whether the [SuperSpinner] is enabled.
+ * @param showValue whether to show the value of the [SuperSpinner].
+ * @param onSelectedIndexChange the callback to be invoked when the selected index of the [SuperSpinner] is changed.
+ */
+@Composable
+fun SuperSpinnerAsDialog(
+    title: String,
+    items: List<SpinnerEntry>,
+    selectedIndex: Int,
+    dialogButtonString: String,
+    modifier: Modifier = Modifier,
+    popupModifier: Modifier = Modifier,
+    titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
+    summary: String? = null,
+    summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
+    horizontalPadding: Dp = 0.dp,
+    leftAction: @Composable (() -> Unit)? = null,
+    insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
+    defaultWindowInsetsPadding: Boolean = true,
+    enabled: Boolean = true,
+    showValue: Boolean = true,
+    onSelectedIndexChange: ((Int) -> Unit)?,
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isDropdownExpanded = remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+    val held = remember { mutableStateOf<HoldDownInteraction.Hold?>(null) }
+    val hapticFeedback = LocalHapticFeedback.current
+    val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
+    var alignLeft by rememberSaveable { mutableStateOf(true) }
+    var dropdownOffsetXPx by remember { mutableIntStateOf(0) }
+    var dropdownOffsetYPx by remember { mutableIntStateOf(0) }
+    var componentHeightPx by remember { mutableIntStateOf(0) }
+    var componentWidthPx by remember { mutableIntStateOf(0) }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            dismissPopup(isDropdownExpanded)
+        }
+    }
+
+    if (!isDropdownExpanded.value) {
+        held.value?.let { oldValue ->
+            coroutineScope.launch {
+                interactionSource.emit(HoldDownInteraction.Release(oldValue))
+            }
+            held.value = null
+        }
+    }
+
+    BasicComponent(
+        modifier = modifier
+            .pointerInput(Unit) {
+                awaitPointerEventScope {
+                    while (enabled) {
+                        val event = awaitPointerEvent()
+                        if (event.type != PointerEventType.Move) {
+                            val eventChange = event.changes.first()
+                            alignLeft = eventChange.position.x < (size.width / 2)
+                        }
+                    }
+                }
+            }
+            .onGloballyPositioned { coordinates ->
+                if (isDropdownExpanded.value) {
+                    val positionInWindow = coordinates.positionInWindow()
+                    dropdownOffsetXPx = positionInWindow.x.toInt()
+                    dropdownOffsetYPx = positionInWindow.y.toInt()
+                    componentHeightPx = coordinates.size.height
+                    componentWidthPx = coordinates.size.width
+                }
+            },
+        interactionSource = interactionSource,
+        insideMargin = insideMargin,
+        title = title,
+        titleColor = titleColor,
+        summary = summary,
+        summaryColor = summaryColor,
+        leftAction = leftAction,
+        rightActions = {
+            if (showValue) {
+                Text(
+                    modifier = Modifier.widthIn(max = 130.dp),
+                    text = items[selectedIndex].title ?: "",
+                    fontSize = MiuixTheme.textStyles.body2.fontSize,
+                    color = actionColor,
+                    textAlign = TextAlign.End,
+                )
+            }
+            Image(
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .size(10.dp, 16.dp)
+                    .align(Alignment.CenterVertically),
+                imageVector = MiuixIcons.ArrowUpDownIntegrated,
+                colorFilter = ColorFilter.tint(actionColor),
+                contentDescription = null
+            )
+        },
+        onClick = {
+            if (enabled) {
+                isDropdownExpanded.value = true
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                coroutineScope.launch {
+                    interactionSource.emit(HoldDownInteraction.Hold().also {
+                        held.value = it
+                    })
+                }
+            }
+        },
+        enabled = enabled
+    )
+
+    if (isDropdownExpanded.value) {
+        SuperDialog(
+            modifier = popupModifier,
+            title = title,
+            show = isDropdownExpanded,
+            onDismissRequest = {
+                dismissDialog(isDropdownExpanded)
+            },
+            insideMargin = DpSize(0.dp, 24.dp)
+        ) {
+            Column {
+                LazyColumn {
+                    items(items.size) { index ->
+                        SpinnerItemImpl(
+                            entry = items[index],
+                            entryCount = items.size,
+                            isSelected = selectedIndex == index,
+                            index = index,
+                            dialogMode = true
+                        ) {
+                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                            onSelectedIndexChange?.let { it1 -> it1(it) }
                             dismissDialog(isDropdownExpanded)
                         }
-                    )
-                }
-            }
-        } else {
-            val alwaysRight = mode == SpinnerMode.DropdownAtRight
-
-            if (!dropdownStates.contains(isDropdownExpanded)) dropdownStates.add(isDropdownExpanded)
-            LaunchedEffect(isDropdownExpanded.value) {
-                if (isDropdownExpanded.value) {
-                    dropdownStates.forEach { state -> if (state != isDropdownExpanded) state.value = false }
-                }
-            }
-
-            val density = LocalDensity.current
-            var offsetXPx by remember { mutableIntStateOf(0) }
-            var offsetYPx by remember { mutableIntStateOf(0) }
-            val getWindowSize = rememberUpdatedState(getWindowSize())
-            val windowHeightPx by rememberUpdatedState(getWindowSize.value.height)
-            val statusBarPx by rememberUpdatedState(
-                with(density) { WindowInsets.statusBars.asPaddingValues().calculateTopPadding().toPx() }.roundToInt()
-            )
-            val navigationBarPx by rememberUpdatedState(
-                with(density) { WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
-            )
-            val captionBarPx by rememberUpdatedState(
-                with(density) { WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
-            )
-            val dropdownMaxHeight by rememberUpdatedState(with(density) {
-                (windowHeightPx - statusBarPx - navigationBarPx - captionBarPx).toDp()
-            })
-            val dropdownElevation by rememberUpdatedState(with(density) {
-                11.dp.toPx()
-            })
-            val insideLeftPx by rememberUpdatedState(with(density) {
-                insideMargin.calculateLeftPadding(LayoutDirection.Ltr).toPx()
-            }.roundToInt())
-            val insideRightPx by rememberUpdatedState(with(density) {
-                insideMargin.calculateRightPadding(LayoutDirection.Ltr).toPx()
-            }.roundToInt())
-            val insideTopPx by rememberUpdatedState(with(density) {
-                insideMargin.calculateTopPadding().toPx()
-            }.roundToInt())
-            val insideBottomPx by rememberUpdatedState(with(density) {
-                insideMargin.calculateBottomPadding().toPx()
-            }.roundToInt())
-            val displayCutoutLeftSize = rememberUpdatedState(with(density) {
-                WindowInsets.displayCutout.asPaddingValues(density).calculateLeftPadding(
-                    LayoutDirection.Ltr).toPx()
-            }.roundToInt())
-            val paddingPx by rememberUpdatedState(with(density) { horizontalPadding.toPx() }.roundToInt())
-
-            BackHandler(enabled = isDropdownExpanded.value) {
-                dismissPopup(isDropdownExpanded)
-            }
-
-            showPopup(
-                content = {
-                    Box(
-                        modifier = if (defaultWindowInsetsPadding) {
-                            popupModifier
-                                .windowInsetsPadding(
-                                    WindowInsets.displayCutout.only(
-                                        WindowInsetsSides.Horizontal))
-                        } else {
-                            popupModifier
-                        }
-                            .fillMaxSize()
-                            .pointerInput(Unit) {
-                                detectTapGestures(
-                                    onTap = {
-                                        dismissPopup(isDropdownExpanded)
-                                    }
-                                )
-                            }
-                            .offset {
-                                IntOffset(offsetXPx, offsetYPx)
-                            }
-                    ) {
-                        LazyColumn(
-                            modifier = Modifier
-                                .onGloballyPositioned { layoutCoordinates ->
-                                    offsetXPx = if (alwaysRight || !alignLeft) {
-                                        dropdownOffsetXPx + componentWidthPx - insideRightPx - layoutCoordinates.size.width - paddingPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize.value else 0
-                                    } else {
-                                        dropdownOffsetXPx + paddingPx + insideLeftPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize.value else 0
-                                    }
-                                    offsetYPx = calculateOffsetYPx(
-                                        windowHeightPx,
-                                        dropdownOffsetYPx,
-                                        layoutCoordinates.size.height,
-                                        componentHeightPx,
-                                        insideTopPx,
-                                        insideBottomPx,
-                                        statusBarPx,
-                                        navigationBarPx,
-                                        captionBarPx
-                                    )
-                                }
-                                .heightIn(50.dp, dropdownMaxHeight)
-                                .align(AbsoluteAlignment.TopLeft)
-                                .graphicsLayer(
-                                    shadowElevation = dropdownElevation,
-                                    shape = SmoothRoundedCornerShape(16.dp),
-                                    ambientShadowColor = Color.Black.copy(alpha = 0.3f),
-                                    spotShadowColor = Color.Black.copy(alpha = 0.3f)
-                                )
-                                .clip(SmoothRoundedCornerShape(16.dp))
-                                .background(MiuixTheme.colorScheme.surface)
-                        ) {
-                            items(items.size) { index ->
-                                SpinnerItemImpl(
-                                    entry = items[index],
-                                    entryCount = items.size,
-                                    isSelected = selectedIndex == index,
-                                    index = index,
-                                    dialogMode = false
-                                ) {
-                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    onSelectedIndexChange?.let { it1 -> it1(it) }
-                                    dismissPopup(isDropdownExpanded)
-                                }
-                            }
-                        }
                     }
                 }
-            )
+                TextButton(
+                    modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp).fillMaxWidth(),
+                    text = dialogButtonString,
+                    minHeight = 50.dp,
+                    onClick = {
+                        dismissDialog(isDropdownExpanded)
+                    }
+                )
+            }
         }
     }
 }
 
+/**
+ * The implementation of the spinner.
+ *
+ * @param entry the [SpinnerEntry] to be shown in the spinner.
+ * @param entryCount the count of the entries in the spinner.
+ * @param isSelected whether the entry is selected.
+ * @param index the index of the entry.
+ * @param dialogMode whether the spinner is in dialog mode.
+ * @param onSelectedIndexChange the callback to be invoked when the selected index of the spinner is changed.
+ */
 @Composable
 fun SpinnerItemImpl(
     entry: SpinnerEntry,
@@ -433,14 +595,19 @@ fun SpinnerItemImpl(
     }
 }
 
+/**
+ * The spinner entry.
+ */
 data class SpinnerEntry(
     val icon: @Composable ((Modifier) -> Unit)? = null,
     val title: String? = null,
     val summary: String? = null
 )
 
+/**
+ * The spinner show mode.
+ */
 enum class SpinnerMode {
-    Dropdown,
-    DropdownAtRight,
-    Dialog
+    Normal,
+    AlwaysAtRight
 }
