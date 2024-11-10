@@ -56,6 +56,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntOffset
@@ -185,6 +186,8 @@ fun SuperSpinner(
                     fontSize = MiuixTheme.textStyles.body2.fontSize,
                     color = actionColor,
                     textAlign = TextAlign.End,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 2
                 )
             }
             Image(
@@ -353,10 +356,8 @@ fun SuperSpinner(
  * @param titleColor the color of the title of the [SuperSpinner].
  * @param summary the summary of the [SuperSpinner].
  * @param summaryColor the color of the summary of the [SuperSpinner].
- * @param horizontalPadding the horizontal padding of the [SuperSpinner].
  * @param leftAction the action to be shown at the left side of the [SuperSpinner].
  * @param insideMargin the [PaddingValues] to be applied inside the [SuperSpinner].
- * @param defaultWindowInsetsPadding whether to apply the default window insets padding to the [SuperSpinner].
  * @param enabled whether the [SuperSpinner] is enabled.
  * @param showValue whether to show the value of the [SuperSpinner].
  * @param onSelectedIndexChange the callback to be invoked when the selected index of the [SuperSpinner] is changed.
@@ -372,10 +373,8 @@ fun SuperSpinner(
     titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
     summary: String? = null,
     summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
-    horizontalPadding: Dp = 0.dp,
     leftAction: @Composable (() -> Unit)? = null,
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
-    defaultWindowInsetsPadding: Boolean = true,
     enabled: Boolean = true,
     showValue: Boolean = true,
     onSelectedIndexChange: ((Int) -> Unit)?,
@@ -444,6 +443,8 @@ fun SuperSpinner(
                     fontSize = MiuixTheme.textStyles.body2.fontSize,
                     color = actionColor,
                     textAlign = TextAlign.End,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 2
                 )
             }
             Image(
