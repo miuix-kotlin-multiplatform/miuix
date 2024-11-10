@@ -334,7 +334,7 @@ fun TextComponent() {
             items = dropdownOptions,
             selectedIndex = dropdownOptionSelectedRight.value,
             onSelectedIndexChange = { newOption -> dropdownOptionSelectedRight.value = newOption },
-            mode = DropDownMode.AlwaysAtRight
+            mode = DropDownMode.AlwaysOnRight
         )
 
         SuperDropdown(
@@ -366,7 +366,7 @@ fun TextComponent() {
             items = spinnerOptions,
             selectedIndex = spinnerOptionSelectedRight.value,
             onSelectedIndexChange = { newOption -> spinnerOptionSelectedRight.value = newOption },
-            mode = SpinnerMode.AlwaysAtRight,
+            mode = SpinnerMode.AlwaysOnRight,
         )
 
         SuperSpinnerAsDialog(

@@ -275,7 +275,7 @@ fun SuperDropdown(
                     LazyColumn(
                         modifier = Modifier
                             .onGloballyPositioned { layoutCoordinates ->
-                                offsetXPx = if (mode == DropDownMode.AlwaysAtRight || !alignLeft) {
+                                offsetXPx = if (mode == DropDownMode.AlwaysOnRight || !alignLeft) {
                                     dropdownOffsetXPx + componentWidthPx - insideRightPx - layoutCoordinates.size.width - paddingPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize.value else 0
                                 } else {
                                     dropdownOffsetXPx + paddingPx + insideLeftPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize.value else 0
@@ -443,5 +443,5 @@ val dropdownStates = mutableStateListOf<MutableState<Boolean>>()
  */
 enum class DropDownMode {
     Normal,
-    AlwaysAtRight
+    AlwaysOnRight
 }

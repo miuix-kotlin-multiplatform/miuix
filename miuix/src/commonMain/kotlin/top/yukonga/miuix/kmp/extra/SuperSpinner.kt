@@ -213,7 +213,7 @@ fun SuperSpinner(
 
     if (isDropdownExpanded.value) {
 
-        val alwaysRight = mode == SpinnerMode.AlwaysAtRight
+        val alwaysRight = mode == SpinnerMode.AlwaysOnRight
 
         if (!dropdownStates.contains(isDropdownExpanded)) dropdownStates.add(isDropdownExpanded)
         LaunchedEffect(isDropdownExpanded.value) {
@@ -609,5 +609,5 @@ data class SpinnerEntry(
  */
 enum class SpinnerMode {
     Normal,
-    AlwaysAtRight
+    AlwaysOnRight
 }
