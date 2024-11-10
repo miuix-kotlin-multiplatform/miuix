@@ -22,6 +22,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.Box
@@ -35,10 +41,14 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TextButton
 import top.yukonga.miuix.kmp.basic.TextField
 import top.yukonga.miuix.kmp.extra.CheckboxLocation
+import top.yukonga.miuix.kmp.extra.DropDownMode
+import top.yukonga.miuix.kmp.extra.SpinnerEntry
+import top.yukonga.miuix.kmp.extra.SpinnerMode
 import top.yukonga.miuix.kmp.extra.SuperArrow
 import top.yukonga.miuix.kmp.extra.SuperCheckbox
 import top.yukonga.miuix.kmp.extra.SuperDialog
 import top.yukonga.miuix.kmp.extra.SuperDropdown
+import top.yukonga.miuix.kmp.extra.SuperSpinner
 import top.yukonga.miuix.kmp.extra.SuperSwitch
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
@@ -52,8 +62,17 @@ fun TextComponent() {
     var switch by remember { mutableStateOf(false) }
     var switchTrue by remember { mutableStateOf(true) }
     val dropdownOptions = listOf("Option 1", "Option 2", "Option 3", "Option 4")
-    val dropdownSelectedOption = remember { mutableStateOf(0) }
-    val dropdownSelectedOptionRight = remember { mutableStateOf(1) }
+    val dropdownOptionSelected = remember { mutableStateOf(0) }
+    val dropdownOptionSelectedRight = remember { mutableStateOf(1) }
+    val spinnerOptions = listOf(
+        SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFF5B29)) }, "Option 1", "Red"),
+        SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFF36D167)) }, "Option 2", "Green"),
+        SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFF3482FF)) }, "Option 3", "Blue"),
+        SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFFB21D)) }, "Option 4", "Yellow"),
+    )
+    val spinnerOptionSelected = remember { mutableStateOf(0) }
+    val spinnerOptionSelectedRight = remember { mutableStateOf(1) }
+    val spinnerOptionSelectedDialog = remember { mutableStateOf(2) }
     var miuixSuperCheckbox by remember { mutableStateOf("State: false") }
     var miuixSuperCheckboxState by remember { mutableStateOf(false) }
     var miuixSuperRightCheckbox by remember { mutableStateOf("false") }
@@ -295,7 +314,6 @@ fun TextComponent() {
     }
 
     SmallTitle(text = "Dropdown")
-
     Card(
         modifier = Modifier
             .padding(horizontal = 12.dp)
@@ -305,22 +323,63 @@ fun TextComponent() {
             title = "Dropdown",
             summary = "Popup near click",
             items = dropdownOptions,
-            selectedIndex = dropdownSelectedOption.value,
-            onSelectedIndexChange = { newOption -> dropdownSelectedOption.value = newOption },
+            selectedIndex = dropdownOptionSelected.value,
+            onSelectedIndexChange = { newOption -> dropdownOptionSelected.value = newOption },
         )
 
         SuperDropdown(
             title = "Dropdown",
             summary = "Popup always on right",
-            alwaysRight = true,
             items = dropdownOptions,
-            selectedIndex = dropdownSelectedOptionRight.value,
-            onSelectedIndexChange = { newOption -> dropdownSelectedOptionRight.value = newOption },
+            selectedIndex = dropdownOptionSelectedRight.value,
+            onSelectedIndexChange = { newOption -> dropdownOptionSelectedRight.value = newOption },
+            mode = DropDownMode.AlwaysOnRight
         )
 
         SuperDropdown(
             title = "Disabled Dropdown",
             items = listOf("Option 3"),
+            selectedIndex = 0,
+            onSelectedIndexChange = {},
+            enabled = false
+        )
+    }
+
+    SmallTitle(text = "Spinner")
+    Card(
+        modifier = Modifier
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 6.dp)
+    ) {
+        SuperSpinner(
+            title = "Spinner",
+            summary = "Spinner near click",
+            items = spinnerOptions,
+            selectedIndex = spinnerOptionSelected.value,
+            onSelectedIndexChange = { newOption -> spinnerOptionSelected.value = newOption },
+        )
+
+        SuperSpinner(
+            title = "Spinner",
+            summary = "Spinner always on right",
+            items = spinnerOptions,
+            selectedIndex = spinnerOptionSelectedRight.value,
+            onSelectedIndexChange = { newOption -> spinnerOptionSelectedRight.value = newOption },
+            mode = SpinnerMode.AlwaysOnRight,
+        )
+
+        SuperSpinner(
+            title = "Spinner",
+            summary = "Spinner as Dialog",
+            dialogButtonString = "Cancel",
+            items = spinnerOptions,
+            selectedIndex = spinnerOptionSelectedDialog.value,
+            onSelectedIndexChange = { newOption -> spinnerOptionSelectedDialog.value = newOption },
+        )
+
+        SuperSpinner(
+            title = "Disabled Spinner",
+            items = listOf(SpinnerEntry(icon = null, title = "Option 4")),
             selectedIndex = 0,
             onSelectedIndexChange = {},
             enabled = false
@@ -422,5 +481,19 @@ fun dialog2(showDialog: MutableState<Boolean>) {
                 colors = ButtonDefaults.textButtonColorsPrimary()
             )
         }
+    }
+}
+
+class RoundedRectanglePainter(
+    private val cornerRadius: Dp = 6.dp
+) : Painter() {
+    override val intrinsicSize = Size.Unspecified
+
+    override fun DrawScope.onDraw() {
+        drawRoundRect(
+            color = Color.White,
+            size = Size(size.width, size.height),
+            cornerRadius = CornerRadius(cornerRadius.toPx(), cornerRadius.toPx())
+        )
     }
 }

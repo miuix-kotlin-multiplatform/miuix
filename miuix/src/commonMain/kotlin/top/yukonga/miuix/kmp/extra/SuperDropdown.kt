@@ -86,34 +86,36 @@ import kotlin.math.roundToInt
  * @param title The title of the [SuperDropdown].
  * @param items The options of the [SuperDropdown].
  * @param selectedIndex The index of the selected option.
- * @param onSelectedIndexChange The callback when the index is selected.
  * @param modifier The modifier to be applied to the [SuperDropdown].
  * @param popupModifier The modifier to be applied to the popup of the [SuperDropdown].
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperDropdown].
  * @param summaryColor The color of the summary.
+ * @param mode The dropdown show mode of the [SuperDropdown].
  * @param horizontalPadding The horizontal padding of the [SuperDropdown].
- * @param alwaysRight Whether the popup is always show on the right side.
  * @param insideMargin The margin inside the [SuperDropdown].
  * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [SuperDropdown].
  * @param enabled Whether the [SuperDropdown] is enabled.
+ * @param showValue Whether to show the selected value of the [SuperDropdown].
+ * @param onSelectedIndexChange The callback when the selected index of the [SuperDropdown] is changed.
  */
 @Composable
 fun SuperDropdown(
     title: String,
     items: List<String>,
     selectedIndex: Int,
-    onSelectedIndexChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
     popupModifier: Modifier = Modifier,
     titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
     summary: String? = null,
     summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
-    alwaysRight: Boolean = false,
+    mode: DropDownMode = DropDownMode.Normal,
     horizontalPadding: Dp = 0.dp,
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     defaultWindowInsetsPadding: Boolean = true,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    showValue: Boolean = true,
+    onSelectedIndexChange: ((Int) -> Unit)?,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isDropdownExpanded = remember { mutableStateOf(false) }
@@ -171,13 +173,15 @@ fun SuperDropdown(
         summary = summary,
         summaryColor = summaryColor,
         rightActions = {
-            Text(
-                modifier = Modifier.widthIn(max = 130.dp),
-                text = items[selectedIndex],
-                fontSize = MiuixTheme.textStyles.body2.fontSize,
-                color = actionColor,
-                textAlign = TextAlign.End,
-            )
+            if (showValue) {
+                Text(
+                    modifier = Modifier.widthIn(max = 130.dp),
+                    text = items[selectedIndex],
+                    fontSize = MiuixTheme.textStyles.body2.fontSize,
+                    color = actionColor,
+                    textAlign = TextAlign.End,
+                )
+            }
             Image(
                 modifier = Modifier
                     .padding(start = 8.dp)
@@ -275,7 +279,7 @@ fun SuperDropdown(
                     LazyColumn(
                         modifier = Modifier
                             .onGloballyPositioned { layoutCoordinates ->
-                                offsetXPx = if (alwaysRight || !alignLeft) {
+                                offsetXPx = if (mode == DropDownMode.AlwaysOnRight || !alignLeft) {
                                     dropdownOffsetXPx + componentWidthPx - insideRightPx - layoutCoordinates.size.width - paddingPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize.value else 0
                                 } else {
                                     dropdownOffsetXPx + paddingPx + insideLeftPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize.value else 0
@@ -303,21 +307,19 @@ fun SuperDropdown(
                             .clip(SmoothRoundedCornerShape(16.dp))
                             .background(MiuixTheme.colorScheme.surface)
                     ) {
-                        item {
-                            items.forEachIndexed { index, option ->
-                                DropdownImpl(
-                                    text = option,
-                                    optionSize = items.size,
-                                    isSelected = items[selectedIndex] == option,
-                                    onSelectedIndexChange = {
-                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        onSelectedIndexChange(it)
-                                        dismissPopup(isDropdownExpanded)
-                                    },
-                                    textWidthDp = textWidthDp,
-                                    index = index
-                                )
-                            }
+                        items(items.size) { index ->
+                            DropdownImpl(
+                                text = items[index],
+                                optionSize = items.size,
+                                isSelected = selectedIndex == index,
+                                onSelectedIndexChange = {
+                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    onSelectedIndexChange?.let { it1 -> it1(it) }
+                                    dismissPopup(isDropdownExpanded)
+                                },
+                                textWidthDp = textWidthDp,
+                                index = index
+                            )
                         }
                     }
                 }
@@ -377,7 +379,7 @@ fun DropdownImpl(
         Text(
             modifier = Modifier.width(textWidthDp ?: 50.dp),
             text = text,
-            fontSize = 16.sp,
+            fontSize = MiuixTheme.textStyles.body1.fontSize,
             fontWeight = FontWeight.Medium,
             color = textColor,
         )
@@ -439,3 +441,11 @@ fun calculateOffsetYPx(
  * Only one dropdown is allowed to be displayed at a time.
  */
 val dropdownStates = mutableStateListOf<MutableState<Boolean>>()
+
+/**
+ * The dropdown show mode.
+ */
+enum class DropDownMode {
+    Normal,
+    AlwaysOnRight
+}
