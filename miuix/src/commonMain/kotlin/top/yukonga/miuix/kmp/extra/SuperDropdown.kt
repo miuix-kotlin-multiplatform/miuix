@@ -303,21 +303,19 @@ fun SuperDropdown(
                             .clip(SmoothRoundedCornerShape(16.dp))
                             .background(MiuixTheme.colorScheme.surface)
                     ) {
-                        item {
-                            items.forEachIndexed { index, option ->
-                                DropdownImpl(
-                                    text = option,
-                                    optionSize = items.size,
-                                    isSelected = items[selectedIndex] == option,
-                                    onSelectedIndexChange = {
-                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        onSelectedIndexChange(it)
-                                        dismissPopup(isDropdownExpanded)
-                                    },
-                                    textWidthDp = textWidthDp,
-                                    index = index
-                                )
-                            }
+                        items(items.size) { index ->
+                            DropdownImpl(
+                                text = items[index],
+                                optionSize = items.size,
+                                isSelected = selectedIndex == index,
+                                onSelectedIndexChange = {
+                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    onSelectedIndexChange(it)
+                                    dismissPopup(isDropdownExpanded)
+                                },
+                                textWidthDp = textWidthDp,
+                                index = index
+                            )
                         }
                     }
                 }
