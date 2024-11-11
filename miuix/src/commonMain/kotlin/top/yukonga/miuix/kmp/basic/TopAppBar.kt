@@ -136,6 +136,58 @@ fun TopAppBar(
     }
 }
 
+@Composable
+fun SmallTopAppBar(
+    title: String,
+    modifier: Modifier = Modifier,
+    color: Color = MiuixTheme.colorScheme.background,
+    navigationIcon: @Composable () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
+    scrollBehavior: ScrollBehavior? = null,
+    defaultWindowInsetsPadding: Boolean = true,
+    horizontalPadding: Dp = 28.dp
+) {
+    SideEffect {
+        // Sets the height offset limit of the SmallTopAppBar to 0f
+        // To ensure that the content can still scroll normally even when scrollBehavior is passed.
+        scrollBehavior?.state?.heightOffsetLimit = 0f
+    }
+
+    // Wrap the given actions in a Row.
+    val actionsRow =
+        @Composable {
+            Row(
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+                content = actions
+            )
+        }
+    // Compose a MiuixSurface with a MiuixTopAppBarLayout content.
+    // The surface's background color is animated as specified above.
+    // The height of the app bar is determined by subtracting the bar's height offset from the
+    // app bar's defined constant height value (i.e. the ContainerHeight token).
+    Surface(
+        color = color,
+        modifier = if (defaultWindowInsetsPadding) {
+            modifier
+                .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
+                .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal))
+        } else {
+            modifier
+        }
+            .pointerInput(Unit) {
+                detectVerticalDragGestures { _, _ -> }
+            }
+    ) {
+        SmallTopAppBarLayout(
+            title = title,
+            navigationIcon = navigationIcon,
+            actions = actionsRow,
+            horizontalPadding = horizontalPadding
+        )
+    }
+}
+
 /**
  * Returns a [ScrollBehavior] that adjusts its properties to affect the colors and
  * height of the top app bar.
@@ -472,16 +524,16 @@ private fun interface ScrolledOffset {
 }
 
 /**
- * The base [Layout] for all top app bars. This function lays out a top app bar navigation icon
+ * The base [Layout] for [TopAppBar]. This function lays out a top app bar navigation icon
  * (leading icon), a title (header), and action icons (trailing icons). Note that the navigation and
  * the actions are optional.
  *
- * @param title the top app bar title (header)
- * @param navigationIcon a navigation icon [Composable]
- * @param actions actions [Composable]
- * @param scrolledOffset a function that provides the scroll offset of the top app bar
- * @param expandedHeightPx the expanded height of the top app bar in pixels
- * @param horizontalPadding the horizontal padding of the [TopAppBar]
+ * @param title the top app bar title (header).
+ * @param navigationIcon a navigation icon [Composable].
+ * @param actions actions [Composable].
+ * @param scrolledOffset a function that provides the scroll offset of the top app bar.
+ * @param expandedHeightPx the expanded height of the top app bar in pixels.
+ * @param horizontalPadding the horizontal padding of the [TopAppBar].
  */
 @Composable
 private fun TopAppBarLayout(
@@ -626,6 +678,117 @@ private fun TopAppBarLayout(
             largeTitlePlaceable.placeRelative(
                 x = 0,
                 y = layoutHeight - largeTitlePlaceable.height
+            )
+        }
+    }
+}
+
+
+/**
+ * The base [Layout] for [SmallTopAppBar]. This function lays out a top app bar navigation icon
+ * (leading icon), a title (header), and action icons (trailing icons). Note that the navigation and
+ * the actions are optional.
+ *
+ * @param title the top app bar title (header).
+ * @param navigationIcon a navigation icon [Composable].
+ * @param actions actions [Composable].
+ * @param horizontalPadding the horizontal padding of the [SmallTopAppBar].
+ */
+@Composable
+private fun SmallTopAppBarLayout(
+    title: String,
+    navigationIcon: @Composable () -> Unit,
+    actions: @Composable () -> Unit,
+    horizontalPadding: Dp
+) {
+    Layout(
+        {
+            Box(
+                Modifier
+                    .layoutId("navigationIcon")
+            ) {
+                navigationIcon()
+            }
+            Box(
+                Modifier
+                    .layoutId("title")
+                    .padding(horizontal = horizontalPadding)
+            ) {
+                Text(
+                    text = title,
+                    maxLines = 1,
+                    fontSize = MiuixTheme.textStyles.title3.fontSize,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            Box(
+                Modifier
+                    .layoutId("actionIcons")
+            ) {
+                actions()
+            }
+        },
+        modifier = Modifier
+            .windowInsetsPadding(WindowInsets.statusBars)
+            .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
+            .heightIn(max = 56.dp)
+    ) { measurables, constraints ->
+        val navigationIconPlaceable =
+            measurables
+                .fastFirst { it.layoutId == "navigationIcon" }
+                .measure(constraints.copy(minWidth = 0))
+
+        val actionIconsPlaceable =
+            measurables
+                .fastFirst { it.layoutId == "actionIcons" }
+                .measure(constraints.copy(minWidth = 0))
+
+        val maxTitleWidth =
+            if (constraints.maxWidth == Constraints.Infinity) {
+                constraints.maxWidth
+            } else {
+                (constraints.maxWidth - navigationIconPlaceable.width - actionIconsPlaceable.width)
+                    .coerceAtLeast(0)
+            }
+
+        val titlePlaceable =
+            measurables
+                .fastFirst { it.layoutId == "title" }
+                .measure(constraints.copy(minWidth = 0, maxWidth = maxTitleWidth))
+
+
+        val layoutHeight =
+            if (constraints.maxHeight == Constraints.Infinity) {
+                constraints.maxHeight
+            } else {
+                constraints.maxHeight
+            }
+
+        layout(constraints.maxWidth, layoutHeight) {
+            val verticalCenter = 60.dp.roundToPx() / 2
+
+            // Navigation icon
+            navigationIconPlaceable.placeRelative(
+                x = 0,
+                y = verticalCenter - navigationIconPlaceable.height / 2
+            )
+
+            // Title
+            var baseX = (constraints.maxWidth - titlePlaceable.width) / 2
+            if (baseX < navigationIconPlaceable.width) {
+                baseX += (navigationIconPlaceable.width - baseX)
+            } else if (baseX + titlePlaceable.width > constraints.maxWidth - actionIconsPlaceable.width) {
+                baseX += ((constraints.maxWidth - actionIconsPlaceable.width) - (baseX + titlePlaceable.width))
+            }
+            titlePlaceable.placeRelative(
+                x = baseX,
+                y = verticalCenter - titlePlaceable.height / 2
+            )
+
+            // Action icons
+            actionIconsPlaceable.placeRelative(
+                x = constraints.maxWidth - actionIconsPlaceable.width,
+                y = verticalCenter - actionIconsPlaceable.height / 2
             )
         }
     }

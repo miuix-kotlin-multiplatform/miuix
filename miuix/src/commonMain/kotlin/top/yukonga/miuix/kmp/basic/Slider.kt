@@ -1,17 +1,13 @@
 package top.yukonga.miuix.kmp.basic
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
@@ -26,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -188,7 +183,6 @@ object SliderDefaults {
     }
 }
 
-
 @Immutable
 class SliderColors(
     private val foregroundColor: Color,
@@ -196,8 +190,7 @@ class SliderColors(
     private val backgroundColor: Color
 ) {
     @Stable
-    internal fun foregroundColor(enabled: Boolean): Color =
-        if (enabled) foregroundColor else disabledForegroundColor
+    internal fun foregroundColor(enabled: Boolean): Color = if (enabled) foregroundColor else disabledForegroundColor
 
     @Stable
     internal fun backgroundColor(): Color = backgroundColor

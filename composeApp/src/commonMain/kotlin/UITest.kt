@@ -5,6 +5,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.captionBarPadding
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,6 +45,7 @@ import top.yukonga.miuix.kmp.basic.NavigationBar
 import top.yukonga.miuix.kmp.basic.NavigationItem
 import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
+import top.yukonga.miuix.kmp.basic.SmallTopAppBar
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.icon.MiuixIcons
@@ -101,21 +103,41 @@ fun UITest(
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
-                TopAppBar(
-                    title = "Miuix",
-                    scrollBehavior = currentScrollBehavior,
-                    actions = {
-                        IconButton(
-                            modifier = Modifier.padding(end = 12.dp),
-                            onClick = { }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Menu,
-                                contentDescription = "Menu"
-                            )
-                        }
-                    },
-                )
+                BoxWithConstraints {
+                    if (maxWidth > 840.dp) {
+                        SmallTopAppBar(
+                            title = "Miuix",
+                            scrollBehavior = currentScrollBehavior,
+                            actions = {
+                                IconButton(
+                                    modifier = Modifier.padding(end = 12.dp),
+                                    onClick = { }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.Menu,
+                                        contentDescription = "Menu"
+                                    )
+                                }
+                            }
+                        )
+                    } else {
+                        TopAppBar(
+                            title = "Miuix",
+                            scrollBehavior = currentScrollBehavior,
+                            actions = {
+                                IconButton(
+                                    modifier = Modifier.padding(end = 12.dp),
+                                    onClick = { }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.Menu,
+                                        contentDescription = "Menu"
+                                    )
+                                }
+                            }
+                        )
+                    }
+                }
             }
         },
         bottomBar = {
