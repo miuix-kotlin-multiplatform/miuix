@@ -1,8 +1,17 @@
 package top.yukonga.miuix.kmp.basic
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.indication
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
@@ -16,6 +25,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -99,6 +110,7 @@ fun Slider(
                     }
                 )
             }
+                .indication(remember { MutableInteractionSource() }, LocalIndication.current)
         } else {
             modifier
         },
@@ -107,12 +119,13 @@ fun Slider(
         SliderBackground(
             modifier = Modifier.fillMaxWidth().height(height),
             height = height,
-            backgroundColor = colors.backgroundColor(enabled),
+            backgroundColor = colors.backgroundColor(),
             foregroundColor = colors.foregroundColor(enabled),
             effect = effect,
             progress = progress,
             minValue = minValue,
             maxValue = maxValue,
+            isDragging = isDragging,
         )
     }
 }
@@ -127,8 +140,16 @@ fun SliderBackground(
     progress: Float,
     minValue: Float,
     maxValue: Float,
+    isDragging: Boolean,
 ) {
-    Canvas(modifier = modifier.clip(SmoothRoundedCornerShape(height)).background(backgroundColor)) {
+    val backgroundAlpha = animateFloatAsState(
+        targetValue = if (isDragging) 0.044f else 0f,
+        animationSpec = tween(150)
+    ).value
+    Canvas(
+        modifier = modifier.clip(SmoothRoundedCornerShape(height)).background(backgroundColor)
+            .drawBehind { drawRect(Color.Black.copy(alpha = backgroundAlpha)) }
+    ) {
         val barHeight = size.height
         val barWidth = size.width
         val progressWidth = barWidth * ((progress - minValue) / (maxValue - minValue))
@@ -157,14 +178,12 @@ object SliderDefaults {
     fun sliderColors(
         foregroundColor: Color = MiuixTheme.colorScheme.primary,
         disabledForegroundColor: Color = MiuixTheme.colorScheme.disabledPrimarySlider,
-        backgroundColor: Color = MiuixTheme.colorScheme.tertiaryContainerVariant,
-        disabledBackgroundColor: Color = MiuixTheme.colorScheme.disabledSecondary
+        backgroundColor: Color = MiuixTheme.colorScheme.tertiaryContainerVariant
     ): SliderColors {
         return SliderColors(
             foregroundColor = foregroundColor,
             disabledForegroundColor = disabledForegroundColor,
-            backgroundColor = backgroundColor,
-            disabledBackgroundColor = disabledBackgroundColor
+            backgroundColor = backgroundColor
         )
     }
 }
@@ -174,12 +193,12 @@ object SliderDefaults {
 class SliderColors(
     private val foregroundColor: Color,
     private val disabledForegroundColor: Color,
-    private val backgroundColor: Color,
-    private val disabledBackgroundColor: Color
+    private val backgroundColor: Color
 ) {
     @Stable
-    internal fun foregroundColor(enabled: Boolean): Color = if (enabled) foregroundColor else disabledForegroundColor
+    internal fun foregroundColor(enabled: Boolean): Color =
+        if (enabled) foregroundColor else disabledForegroundColor
 
     @Stable
-    internal fun backgroundColor(enabled: Boolean): Color = if (enabled) backgroundColor else disabledBackgroundColor
+    internal fun backgroundColor(): Color = backgroundColor
 }
