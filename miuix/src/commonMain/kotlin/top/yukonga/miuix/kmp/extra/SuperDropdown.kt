@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.BlendModeColorFilter
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.PointerEventType
@@ -130,6 +131,21 @@ fun SuperDropdown(
     var componentHeightPx by remember { mutableStateOf(0) }
     var componentWidthPx by remember { mutableStateOf(0) }
 
+    val density = LocalDensity.current
+    val getWindowSize = rememberUpdatedState(getWindowSize())
+    val windowHeightPx by rememberUpdatedState(getWindowSize.value.height)
+    val windowWidthPx by rememberUpdatedState(getWindowSize.value.width)
+    val insideLeftPx by rememberUpdatedState(with(density) {
+        insideMargin.calculateLeftPadding(LayoutDirection.Ltr).toPx()
+    }.roundToInt())
+    val insideRightPx by rememberUpdatedState(with(density) {
+        insideMargin.calculateRightPadding(LayoutDirection.Ltr).toPx()
+    }.roundToInt())
+    val transformOriginXPadding by rememberUpdatedState(with(density) {
+        64.dp.toPx()
+    })
+    var transformOrigin by mutableStateOf(TransformOrigin.Center)
+
     DisposableEffect(Unit) {
         onDispose {
             dismissPopup(isDropdownExpanded)
@@ -165,6 +181,16 @@ fun SuperDropdown(
                     dropdownOffsetYPx = positionInWindow.y.toInt()
                     componentHeightPx = coordinates.size.height
                     componentWidthPx = coordinates.size.width
+                    val xInWindow = dropdownOffsetXPx + if (mode == DropDownMode.AlwaysOnRight || !alignLeft) {
+                        componentWidthPx - insideRightPx - transformOriginXPadding
+                    } else {
+                        insideLeftPx + transformOriginXPadding
+                    }
+                    val yInWindow = dropdownOffsetYPx - componentHeightPx / 3
+                    transformOrigin = TransformOrigin(
+                        xInWindow / windowWidthPx.toFloat(),
+                        yInWindow / windowHeightPx.toFloat()
+                    )
                 }
             },
         interactionSource = interactionSource,
@@ -216,14 +242,11 @@ fun SuperDropdown(
             }
         }
 
-        val density = LocalDensity.current
         var offsetXPx by remember { mutableStateOf(0) }
         var offsetYPx by remember { mutableStateOf(0) }
         val textMeasurer = rememberTextMeasurer()
         val textStyle = remember { TextStyle(fontWeight = FontWeight.Medium, fontSize = 16.sp) }
         val textWidthDp = remember(items) { items.maxOfOrNull { with(density) { textMeasurer.measure(text = it, style = textStyle).size.width.toDp() } } }
-        val getWindowSize = rememberUpdatedState(getWindowSize())
-        val windowHeightPx by rememberUpdatedState(getWindowSize.value.height)
         val statusBarPx by rememberUpdatedState(
             with(density) { WindowInsets.statusBars.asPaddingValues().calculateTopPadding().toPx() }.roundToInt()
         )
@@ -239,12 +262,6 @@ fun SuperDropdown(
         val dropdownElevation by rememberUpdatedState(with(density) {
             11.dp.toPx()
         })
-        val insideLeftPx by rememberUpdatedState(with(density) {
-            insideMargin.calculateLeftPadding(LayoutDirection.Ltr).toPx()
-        }.roundToInt())
-        val insideRightPx by rememberUpdatedState(with(density) {
-            insideMargin.calculateRightPadding(LayoutDirection.Ltr).toPx()
-        }.roundToInt())
         val insideTopPx by rememberUpdatedState(with(density) {
             insideMargin.calculateTopPadding().toPx()
         }.roundToInt())
@@ -261,6 +278,7 @@ fun SuperDropdown(
         }
 
         showPopup(
+            transformOrigin = { transformOrigin },
             content = {
                 Box(
                     modifier = if (defaultWindowInsetsPadding) {
