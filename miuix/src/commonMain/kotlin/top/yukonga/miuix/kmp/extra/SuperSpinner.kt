@@ -163,7 +163,9 @@ fun SuperSpinner(
                         val event = awaitPointerEvent()
                         if (event.type != PointerEventType.Move) {
                             val eventChange = event.changes.first()
-                            alignLeft = eventChange.position.x < (size.width / 2)
+                            if (eventChange.pressed) {
+                                alignLeft = eventChange.position.x < (size.width / 2)
+                            }
                         }
                     }
                 }

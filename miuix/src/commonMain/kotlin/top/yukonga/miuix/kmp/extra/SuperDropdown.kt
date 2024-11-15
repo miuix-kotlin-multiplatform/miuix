@@ -30,6 +30,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -126,10 +127,10 @@ fun SuperDropdown(
     val hapticFeedback = LocalHapticFeedback.current
     val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     var alignLeft by rememberSaveable { mutableStateOf(true) }
-    var dropdownOffsetXPx by remember { mutableStateOf(0) }
-    var dropdownOffsetYPx by remember { mutableStateOf(0) }
-    var componentHeightPx by remember { mutableStateOf(0) }
-    var componentWidthPx by remember { mutableStateOf(0) }
+    var dropdownOffsetXPx by remember { mutableIntStateOf(0) }
+    var dropdownOffsetYPx by remember { mutableIntStateOf(0) }
+    var componentHeightPx by remember { mutableIntStateOf(0) }
+    var componentWidthPx by remember { mutableIntStateOf(0) }
 
     val getWindowSize = rememberUpdatedState(getWindowSize())
     val windowHeightPx by rememberUpdatedState(getWindowSize.value.height)
@@ -159,7 +160,9 @@ fun SuperDropdown(
                         val event = awaitPointerEvent()
                         if (event.type != PointerEventType.Move) {
                             val eventChange = event.changes.first()
-                            alignLeft = eventChange.position.x < (size.width / 2)
+                            if (eventChange.pressed) {
+                                alignLeft = eventChange.position.x < (size.width / 2)
+                            }
                         }
                     }
                 }
