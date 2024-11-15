@@ -179,9 +179,9 @@ class MiuixPopupUtil {
                 visible = isPopupShowing.value,
                 modifier = Modifier.zIndex(2f).fillMaxSize(),
                 enter = fadeIn(
-                    animationSpec = tween(150, easing = DecelerateEasing(1.5f))
+                    animationSpec = tween(150, easing = AccelerateEasing(1.5f))
                 ) + scaleIn(
-                    initialScale = 0.8f,
+                    initialScale = 0.4f,
                     animationSpec = tween(150, easing = DecelerateEasing(1.5f)),
                     transformOrigin = popupTransformOrigin.value.invoke()
                 ),

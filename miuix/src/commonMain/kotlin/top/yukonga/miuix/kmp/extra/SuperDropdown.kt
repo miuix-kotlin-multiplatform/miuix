@@ -141,9 +141,6 @@ fun SuperDropdown(
     val insideRightPx by rememberUpdatedState(with(density) {
         insideMargin.calculateRightPadding(LayoutDirection.Ltr).toPx()
     }.roundToInt())
-    val transformOriginXPadding by rememberUpdatedState(with(density) {
-        64.dp.toPx()
-    })
     var transformOrigin by mutableStateOf(TransformOrigin.Center)
 
     DisposableEffect(Unit) {
@@ -181,12 +178,8 @@ fun SuperDropdown(
                     dropdownOffsetYPx = positionInWindow.y.toInt()
                     componentHeightPx = coordinates.size.height
                     componentWidthPx = coordinates.size.width
-                    val xInWindow = dropdownOffsetXPx + if (mode == DropDownMode.AlwaysOnRight || !alignLeft) {
-                        componentWidthPx - insideRightPx - transformOriginXPadding
-                    } else {
-                        insideLeftPx + transformOriginXPadding
-                    }
-                    val yInWindow = dropdownOffsetYPx - componentHeightPx / 3
+                    val xInWindow = dropdownOffsetXPx + if (mode == DropDownMode.AlwaysOnRight || !alignLeft) componentWidthPx else 0
+                    val yInWindow = dropdownOffsetYPx + componentHeightPx / 2
                     transformOrigin = TransformOrigin(
                         xInWindow / windowWidthPx.toFloat(),
                         yInWindow / windowHeightPx.toFloat()
