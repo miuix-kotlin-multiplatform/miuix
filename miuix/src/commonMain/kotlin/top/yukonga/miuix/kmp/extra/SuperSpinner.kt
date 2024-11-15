@@ -135,16 +135,9 @@ fun SuperSpinner(
     var componentHeightPx by remember { mutableIntStateOf(0) }
     var componentWidthPx by remember { mutableIntStateOf(0) }
 
-    val density = LocalDensity.current
     val getWindowSize = rememberUpdatedState(getWindowSize())
     val windowHeightPx by rememberUpdatedState(getWindowSize.value.height)
     val windowWidthPx by rememberUpdatedState(getWindowSize.value.width)
-    val insideLeftPx by rememberUpdatedState(with(density) {
-        insideMargin.calculateLeftPadding(LayoutDirection.Ltr).toPx()
-    }.roundToInt())
-    val insideRightPx by rememberUpdatedState(with(density) {
-        insideMargin.calculateRightPadding(LayoutDirection.Ltr).toPx()
-    }.roundToInt())
     var transformOrigin by mutableStateOf(TransformOrigin.Center)
 
     DisposableEffect(Unit) {
@@ -244,6 +237,7 @@ fun SuperSpinner(
             }
         }
 
+        val density = LocalDensity.current
         var offsetXPx by remember { mutableIntStateOf(0) }
         var offsetYPx by remember { mutableIntStateOf(0) }
         val statusBarPx by rememberUpdatedState(
@@ -261,6 +255,12 @@ fun SuperSpinner(
         val dropdownElevation by rememberUpdatedState(with(density) {
             11.dp.toPx()
         })
+        val insideLeftPx by rememberUpdatedState(with(density) {
+            insideMargin.calculateLeftPadding(LayoutDirection.Ltr).toPx()
+        }.roundToInt())
+        val insideRightPx by rememberUpdatedState(with(density) {
+            insideMargin.calculateRightPadding(LayoutDirection.Ltr).toPx()
+        }.roundToInt())
         val insideTopPx by rememberUpdatedState(with(density) {
             insideMargin.calculateTopPadding().toPx()
         }.roundToInt())

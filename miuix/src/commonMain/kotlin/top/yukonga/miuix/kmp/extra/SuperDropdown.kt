@@ -131,16 +131,9 @@ fun SuperDropdown(
     var componentHeightPx by remember { mutableStateOf(0) }
     var componentWidthPx by remember { mutableStateOf(0) }
 
-    val density = LocalDensity.current
     val getWindowSize = rememberUpdatedState(getWindowSize())
     val windowHeightPx by rememberUpdatedState(getWindowSize.value.height)
     val windowWidthPx by rememberUpdatedState(getWindowSize.value.width)
-    val insideLeftPx by rememberUpdatedState(with(density) {
-        insideMargin.calculateLeftPadding(LayoutDirection.Ltr).toPx()
-    }.roundToInt())
-    val insideRightPx by rememberUpdatedState(with(density) {
-        insideMargin.calculateRightPadding(LayoutDirection.Ltr).toPx()
-    }.roundToInt())
     var transformOrigin by mutableStateOf(TransformOrigin.Center)
 
     DisposableEffect(Unit) {
@@ -235,6 +228,7 @@ fun SuperDropdown(
             }
         }
 
+        val density = LocalDensity.current
         var offsetXPx by remember { mutableStateOf(0) }
         var offsetYPx by remember { mutableStateOf(0) }
         val textMeasurer = rememberTextMeasurer()
@@ -255,6 +249,12 @@ fun SuperDropdown(
         val dropdownElevation by rememberUpdatedState(with(density) {
             11.dp.toPx()
         })
+        val insideLeftPx by rememberUpdatedState(with(density) {
+            insideMargin.calculateLeftPadding(LayoutDirection.Ltr).toPx()
+        }.roundToInt())
+        val insideRightPx by rememberUpdatedState(with(density) {
+            insideMargin.calculateRightPadding(LayoutDirection.Ltr).toPx()
+        }.roundToInt())
         val insideTopPx by rememberUpdatedState(with(density) {
             insideMargin.calculateTopPadding().toPx()
         }.roundToInt())
