@@ -30,6 +30,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +46,7 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.BlendModeColorFilter
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.PointerEventType
@@ -125,10 +127,15 @@ fun SuperDropdown(
     val hapticFeedback = LocalHapticFeedback.current
     val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     var alignLeft by rememberSaveable { mutableStateOf(true) }
-    var dropdownOffsetXPx by remember { mutableStateOf(0) }
-    var dropdownOffsetYPx by remember { mutableStateOf(0) }
-    var componentHeightPx by remember { mutableStateOf(0) }
-    var componentWidthPx by remember { mutableStateOf(0) }
+    var dropdownOffsetXPx by remember { mutableIntStateOf(0) }
+    var dropdownOffsetYPx by remember { mutableIntStateOf(0) }
+    var componentHeightPx by remember { mutableIntStateOf(0) }
+    var componentWidthPx by remember { mutableIntStateOf(0) }
+
+    val getWindowSize = rememberUpdatedState(getWindowSize())
+    val windowHeightPx by rememberUpdatedState(getWindowSize.value.height)
+    val windowWidthPx by rememberUpdatedState(getWindowSize.value.width)
+    var transformOrigin by mutableStateOf(TransformOrigin.Center)
 
     DisposableEffect(Unit) {
         onDispose {
@@ -153,7 +160,9 @@ fun SuperDropdown(
                         val event = awaitPointerEvent()
                         if (event.type != PointerEventType.Move) {
                             val eventChange = event.changes.first()
-                            alignLeft = eventChange.position.x < (size.width / 2)
+                            if (eventChange.pressed) {
+                                alignLeft = eventChange.position.x < (size.width / 2)
+                            }
                         }
                     }
                 }
@@ -165,6 +174,12 @@ fun SuperDropdown(
                     dropdownOffsetYPx = positionInWindow.y.toInt()
                     componentHeightPx = coordinates.size.height
                     componentWidthPx = coordinates.size.width
+                    val xInWindow = dropdownOffsetXPx + if (mode == DropDownMode.AlwaysOnRight || !alignLeft) componentWidthPx else 0
+                    val yInWindow = dropdownOffsetYPx + componentHeightPx / 2
+                    transformOrigin = TransformOrigin(
+                        xInWindow / windowWidthPx.toFloat(),
+                        yInWindow / windowHeightPx.toFloat()
+                    )
                 }
             },
         interactionSource = interactionSource,
@@ -222,8 +237,6 @@ fun SuperDropdown(
         val textMeasurer = rememberTextMeasurer()
         val textStyle = remember { TextStyle(fontWeight = FontWeight.Medium, fontSize = 16.sp) }
         val textWidthDp = remember(items) { items.maxOfOrNull { with(density) { textMeasurer.measure(text = it, style = textStyle).size.width.toDp() } } }
-        val getWindowSize = rememberUpdatedState(getWindowSize())
-        val windowHeightPx by rememberUpdatedState(getWindowSize.value.height)
         val statusBarPx by rememberUpdatedState(
             with(density) { WindowInsets.statusBars.asPaddingValues().calculateTopPadding().toPx() }.roundToInt()
         )
@@ -261,6 +274,7 @@ fun SuperDropdown(
         }
 
         showPopup(
+            transformOrigin = { transformOrigin },
             content = {
                 Box(
                     modifier = if (defaultWindowInsetsPadding) {

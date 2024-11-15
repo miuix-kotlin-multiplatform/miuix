@@ -46,6 +46,7 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.BlendModeColorFilter
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.PointerEventType
@@ -134,6 +135,11 @@ fun SuperSpinner(
     var componentHeightPx by remember { mutableIntStateOf(0) }
     var componentWidthPx by remember { mutableIntStateOf(0) }
 
+    val getWindowSize = rememberUpdatedState(getWindowSize())
+    val windowHeightPx by rememberUpdatedState(getWindowSize.value.height)
+    val windowWidthPx by rememberUpdatedState(getWindowSize.value.width)
+    var transformOrigin by mutableStateOf(TransformOrigin.Center)
+
     DisposableEffect(Unit) {
         onDispose {
             dismissPopup(isDropdownExpanded)
@@ -157,7 +163,9 @@ fun SuperSpinner(
                         val event = awaitPointerEvent()
                         if (event.type != PointerEventType.Move) {
                             val eventChange = event.changes.first()
-                            alignLeft = eventChange.position.x < (size.width / 2)
+                            if (eventChange.pressed) {
+                                alignLeft = eventChange.position.x < (size.width / 2)
+                            }
                         }
                     }
                 }
@@ -169,6 +177,12 @@ fun SuperSpinner(
                     dropdownOffsetYPx = positionInWindow.y.toInt()
                     componentHeightPx = coordinates.size.height
                     componentWidthPx = coordinates.size.width
+                    val xInWindow = dropdownOffsetXPx + if (mode == SpinnerMode.AlwaysOnRight || !alignLeft) componentWidthPx else 0
+                    val yInWindow = dropdownOffsetYPx + componentHeightPx / 2
+                    transformOrigin = TransformOrigin(
+                        xInWindow / windowWidthPx.toFloat(),
+                        yInWindow / windowHeightPx.toFloat()
+                    )
                 }
             },
         interactionSource = interactionSource,
@@ -228,8 +242,6 @@ fun SuperSpinner(
         val density = LocalDensity.current
         var offsetXPx by remember { mutableIntStateOf(0) }
         var offsetYPx by remember { mutableIntStateOf(0) }
-        val getWindowSize = rememberUpdatedState(getWindowSize())
-        val windowHeightPx by rememberUpdatedState(getWindowSize.value.height)
         val statusBarPx by rememberUpdatedState(
             with(density) { WindowInsets.statusBars.asPaddingValues().calculateTopPadding().toPx() }.roundToInt()
         )
@@ -269,6 +281,7 @@ fun SuperSpinner(
         }
 
         showPopup(
+            transformOrigin = { transformOrigin },
             content = {
                 Box(
                     modifier = if (defaultWindowInsetsPadding) {

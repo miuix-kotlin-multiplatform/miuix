@@ -15,9 +15,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -37,6 +41,7 @@ class MiuixPopupUtil {
         private var isDialogShowing = mutableStateOf(false)
         private var popupContext = mutableStateOf<(@Composable () -> Unit)?>(null)
         private var dialogContext = mutableStateOf<(@Composable () -> Unit)?>(null)
+        private var popupTransformOrigin = mutableStateOf({ TransformOrigin.Center })
 
         /**
          * Show a dialog.
@@ -68,12 +73,15 @@ class MiuixPopupUtil {
          * Show a popup.
          *
          * @param content The [Composable] content of the popup.
+         * @param transformOrigin The pivot point in terms of fraction of the overall size, used for scale transformations. By default it's [TransformOrigin.Center].
          */
         @Composable
         fun showPopup(
             content: (@Composable () -> Unit)? = null,
+            transformOrigin: (() -> TransformOrigin) = { TransformOrigin.Center }
         ) {
             if (isPopupShowing.value) return
+            popupTransformOrigin.value = transformOrigin
             isPopupShowing.value = true
             popupContext.value = content
         }
@@ -100,11 +108,20 @@ class MiuixPopupUtil {
             val windowWidth by rememberUpdatedState(getWindowSize.width.dp / density.density)
             val windowHeight by rememberUpdatedState(getWindowSize.height.dp / density.density)
             val largeScreen by rememberUpdatedState { derivedStateOf { (windowHeight >= 480.dp && windowWidth >= 840.dp) } }
+            var dimEnterDuration by remember { mutableIntStateOf(0) }
+            var dimExitDuration by remember { mutableIntStateOf(0) }
+            if (isDialogShowing.value) {
+                dimEnterDuration = 300
+                dimExitDuration = 250
+            } else if (isPopupShowing.value) {
+                dimEnterDuration = 150
+                dimExitDuration = 150
+            }
             AnimatedVisibility(
                 visible = isDialogShowing.value || isPopupShowing.value,
                 modifier = Modifier.zIndex(1f).fillMaxSize(),
-                enter = fadeIn(animationSpec = tween(300, easing = DecelerateEasing(1.5f))),
-                exit = fadeOut(animationSpec = tween(250, easing = DecelerateEasing(1.5f)))
+                enter = fadeIn(animationSpec = tween(dimEnterDuration, easing = DecelerateEasing(1.5f))),
+                exit = fadeOut(animationSpec = tween(dimExitDuration, easing = DecelerateEasing(1.5f)))
             ) {
                 Box(
                     modifier = Modifier
@@ -162,16 +179,18 @@ class MiuixPopupUtil {
                 visible = isPopupShowing.value,
                 modifier = Modifier.zIndex(2f).fillMaxSize(),
                 enter = fadeIn(
-                    animationSpec = tween(150, easing = DecelerateEasing(1.5f))
+                    animationSpec = tween(150, easing = AccelerateEasing(1.5f))
                 ) + scaleIn(
-                    initialScale = 0.8f,
-                    animationSpec = tween(150, easing = DecelerateEasing(1.5f))
+                    initialScale = 0.4f,
+                    animationSpec = tween(150, easing = DecelerateEasing(1.5f)),
+                    transformOrigin = popupTransformOrigin.value.invoke()
                 ),
                 exit = fadeOut(
                     animationSpec = tween(150, easing = AccelerateEasing(3.0f))
                 ) + scaleOut(
                     targetScale = 0.8f,
-                    animationSpec = tween(150, easing = AccelerateEasing(3.0f))
+                    animationSpec = tween(150, easing = AccelerateEasing(3.0f)),
+                    transformOrigin = popupTransformOrigin.value.invoke()
                 )
             ) {
                 Box(
