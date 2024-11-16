@@ -229,9 +229,6 @@ fun SuperSpinner(
     )
 
     if (isDropdownExpanded.value) {
-
-        val alwaysRight = mode == SpinnerMode.AlwaysOnRight
-
         if (!dropdownStates.contains(isDropdownExpanded)) dropdownStates.add(isDropdownExpanded)
         LaunchedEffect(isDropdownExpanded.value) {
             if (isDropdownExpanded.value) {
@@ -269,7 +266,7 @@ fun SuperSpinner(
         val insideBottomPx by rememberUpdatedState(with(density) {
             insideMargin.calculateBottomPadding().toPx()
         }.roundToInt())
-        val displayCutoutLeftSize = rememberUpdatedState(with(density) {
+        val displayCutoutLeftSize by rememberUpdatedState(with(density) {
             WindowInsets.displayCutout.asPaddingValues(density).calculateLeftPadding(LayoutDirection.Ltr).toPx()
         }.roundToInt())
         val paddingPx by rememberUpdatedState(with(density) {
@@ -308,16 +305,16 @@ fun SuperSpinner(
                 ) {
                     LazyColumn(
                         modifier = Modifier
-                            .onGloballyPositioned { layoutCoordinates ->
-                                offsetXPx = if (alwaysRight || !alignLeft) {
-                                    dropdownOffsetXPx + componentWidthPx - insideRightPx - layoutCoordinates.size.width - paddingPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize.value else 0
+                            .onGloballyPositioned { coordinates ->
+                                offsetXPx = if (mode == SpinnerMode.AlwaysOnRight || !alignLeft) {
+                                    dropdownOffsetXPx + componentWidthPx - insideRightPx - coordinates.size.width - paddingPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize else 0
                                 } else {
-                                    dropdownOffsetXPx + paddingPx + insideLeftPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize.value else 0
+                                    dropdownOffsetXPx + paddingPx + insideLeftPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize else 0
                                 }
                                 offsetYPx = calculateOffsetYPx(
                                     windowHeightPx,
                                     dropdownOffsetYPx,
-                                    layoutCoordinates.size.height,
+                                    coordinates.size.height,
                                     componentHeightPx,
                                     insideTopPx,
                                     insideBottomPx,

@@ -78,7 +78,7 @@ class MiuixPopupUtil {
         @Composable
         fun showPopup(
             content: (@Composable () -> Unit)? = null,
-            transformOrigin: (() -> TransformOrigin) = { TransformOrigin.Center }
+            transformOrigin: (() -> TransformOrigin) = { TransformOrigin.Center },
         ) {
             if (isPopupShowing.value) return
             popupTransformOrigin.value = transformOrigin
@@ -179,16 +179,16 @@ class MiuixPopupUtil {
                 visible = isPopupShowing.value,
                 modifier = Modifier.zIndex(2f).fillMaxSize(),
                 enter = fadeIn(
-                    animationSpec = tween(150, easing = AccelerateEasing(1.5f))
+                    animationSpec = tween(150, delayMillis = 50, easing = DecelerateEasing(1.5f))
                 ) + scaleIn(
-                    initialScale = 0.4f,
+                    initialScale = 0.8f,
                     animationSpec = tween(150, easing = DecelerateEasing(1.5f)),
                     transformOrigin = popupTransformOrigin.value.invoke()
                 ),
                 exit = fadeOut(
                     animationSpec = tween(150, easing = AccelerateEasing(3.0f))
                 ) + scaleOut(
-                    targetScale = 0.8f,
+                    targetScale = 0.85f,
                     animationSpec = tween(150, easing = AccelerateEasing(3.0f)),
                     transformOrigin = popupTransformOrigin.value.invoke()
                 )

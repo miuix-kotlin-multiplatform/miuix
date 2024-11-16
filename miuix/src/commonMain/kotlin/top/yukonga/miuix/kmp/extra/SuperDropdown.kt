@@ -264,7 +264,7 @@ fun SuperDropdown(
         val insideBottomPx by rememberUpdatedState(with(density) {
             insideMargin.calculateBottomPadding().toPx()
         }.roundToInt())
-        val displayCutoutLeftSize = rememberUpdatedState(with(density) {
+        val displayCutoutLeftSize by rememberUpdatedState(with(density) {
             WindowInsets.displayCutout.asPaddingValues(density).calculateLeftPadding(LayoutDirection.Ltr).toPx()
         }.roundToInt())
         val paddingPx by rememberUpdatedState(with(density) { horizontalPadding.toPx() }.roundToInt())
@@ -295,16 +295,16 @@ fun SuperDropdown(
                 ) {
                     LazyColumn(
                         modifier = Modifier
-                            .onGloballyPositioned { layoutCoordinates ->
+                            .onGloballyPositioned { coordinates ->
                                 offsetXPx = if (mode == DropDownMode.AlwaysOnRight || !alignLeft) {
-                                    dropdownOffsetXPx + componentWidthPx - insideRightPx - layoutCoordinates.size.width - paddingPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize.value else 0
+                                    dropdownOffsetXPx + componentWidthPx - insideRightPx - coordinates.size.width - paddingPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize else 0
                                 } else {
-                                    dropdownOffsetXPx + paddingPx + insideLeftPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize.value else 0
+                                    dropdownOffsetXPx + paddingPx + insideLeftPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize else 0
                                 }
                                 offsetYPx = calculateOffsetYPx(
                                     windowHeightPx,
                                     dropdownOffsetYPx,
-                                    layoutCoordinates.size.height,
+                                    coordinates.size.height,
                                     componentHeightPx,
                                     insideTopPx,
                                     insideBottomPx,
