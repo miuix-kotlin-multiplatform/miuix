@@ -24,7 +24,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
@@ -33,7 +32,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import kotlin.math.absoluteValue
 
 /**
@@ -63,13 +61,14 @@ fun Switch(
         )
     }
     var isPressed by remember { mutableStateOf(false) }
-    var dragOffset by remember { mutableStateOf(0f) }
+    var trackDragOffset by remember { mutableStateOf(0f) }
+    var thumbDragOffset by remember { mutableStateOf(0f) }
     val thumbOffset by animateDpAsState(
         targetValue = if (isChecked) {
-            if (!enabled) 28.dp else if (isPressed) 26.5.dp else 28.dp
+            if (!enabled) 26.dp else if (isPressed) 24.dp else 26.dp
         } else {
-            if (!enabled) 4.dp else if (isPressed) 2.5.dp else 4.dp
-        } + dragOffset.dp,
+            if (!enabled) 4.dp else if (isPressed) 3.dp else 4.dp
+        } + thumbDragOffset.dp,
         animationSpec = springSpec
     )
 
@@ -108,51 +107,28 @@ fun Switch(
     Box(
         modifier = modifier
             .wrapContentSize(Alignment.Center)
-            .size(52.dp, 28.5.dp)
-            .requiredSize(52.dp, 28.5.dp)
-            .clip(SmoothRoundedCornerShape(52.dp))
-            .drawBehind { drawRect(backgroundColor) }
+            .size(50.dp, 28.5.dp)
+            .requiredSize(50.dp, 28.5.dp)
+            .clip(RoundedCornerShape(100.dp))
+            .background(backgroundColor)
             .pointerInput(Unit) {
                 detectHorizontalDragGestures(
-                    onDragStart = {
-                        isPressed = true
-                        hasVibrated = false
-                    },
                     onDragEnd = {
-                        isPressed = false
-                        val switchWidth = 24f
-                        if (dragOffset.absoluteValue > switchWidth / 2) {
-                            if (enabled) onCheckedChange?.invoke(!isChecked)
+                        if (trackDragOffset != 0f) {
+                            onCheckedChange?.invoke(!isChecked)
+                            if (thumbOffset == 4.dp || thumbOffset == 26.dp)
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                         }
-                        dragOffset = 0f
+                        trackDragOffset = 0f
                     },
                     onDragCancel = {
-                        isPressed = false
-                        dragOffset = 0f
-                    },
-                    onHorizontalDrag = { change, dragAmount ->
-                        if (!enabled) return@detectHorizontalDragGestures
-                        val newOffset = dragOffset + dragAmount / 2
-                        dragOffset =
-                            if (isChecked) newOffset.coerceIn(-24f, 0f) else newOffset.coerceIn(0f, 24f)
-                        if (isChecked) {
-                            if (dragOffset in -23f..-1f) {
-                                hasVibrated = false
-                            } else if ((dragOffset == -24f || dragOffset == 0f) && !hasVibrated) {
-                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                hasVibrated = true
-                            }
-                        } else {
-                            if (dragOffset in 1f..23f) {
-                                hasVibrated = false
-                            } else if ((dragOffset == 0f || dragOffset == 24f) && !hasVibrated) {
-                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                hasVibrated = true
-                            }
-                        }
-                        change.consume()
+                        trackDragOffset = 0f
                     }
-                )
+                ) { change, dragAmount ->
+                    if (!enabled) return@detectHorizontalDragGestures
+                    trackDragOffset = dragAmount
+                    change.consume()
+                }
             }
             .then(toggleableModifier)
     ) {
@@ -165,6 +141,47 @@ fun Switch(
                     color = thumbColor,
                     shape = RoundedCornerShape(100.dp)
                 )
+                .pointerInput(Unit) {
+                    detectHorizontalDragGestures(
+                        onDragStart = {
+                            isPressed = true
+                            hasVibrated = false
+                        },
+                        onDragEnd = {
+                            isPressed = false
+                            val switchWidth = 21f
+                            if (thumbDragOffset.absoluteValue > switchWidth / 2) {
+                                onCheckedChange?.invoke(!isChecked)
+                            }
+                            thumbDragOffset = 0f
+                        },
+                        onDragCancel = {
+                            isPressed = false
+                            thumbDragOffset = 0f
+                        }
+                    ) { change, dragAmount ->
+                        if (!enabled) return@detectHorizontalDragGestures
+                        val newOffset = thumbDragOffset + dragAmount / 2
+                        thumbDragOffset =
+                            if (isChecked) newOffset.coerceIn(-21f, 0f) else newOffset.coerceIn(0f, 21f)
+                        if (isChecked) {
+                            if (thumbDragOffset in -20f..-1f) {
+                                hasVibrated = false
+                            } else if ((thumbDragOffset == -21f || thumbDragOffset == 0f) && !hasVibrated) {
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                hasVibrated = true
+                            }
+                        } else {
+                            if (thumbDragOffset in 1f..20f) {
+                                hasVibrated = false
+                            } else if ((thumbDragOffset == 0f || thumbDragOffset == 21f) && !hasVibrated) {
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                hasVibrated = true
+                            }
+                        }
+                        change.consume()
+                    }
+                }
         )
     }
 }
@@ -210,14 +227,18 @@ class SwitchColors(
     private val disabledUncheckedTrackColor: Color
 ) {
     @Stable
-    internal fun checkedThumbColor(enabled: Boolean): Color = if (enabled) checkedThumbColor else disabledCheckedThumbColor
+    internal fun checkedThumbColor(enabled: Boolean): Color =
+        if (enabled) checkedThumbColor else disabledCheckedThumbColor
 
     @Stable
-    internal fun uncheckedThumbColor(enabled: Boolean): Color = if (enabled) uncheckedThumbColor else disabledUncheckedThumbColor
+    internal fun uncheckedThumbColor(enabled: Boolean): Color =
+        if (enabled) uncheckedThumbColor else disabledUncheckedThumbColor
 
     @Stable
-    internal fun checkedTrackColor(enabled: Boolean): Color = if (enabled) checkedTrackColor else disabledCheckedTrackColor
+    internal fun checkedTrackColor(enabled: Boolean): Color =
+        if (enabled) checkedTrackColor else disabledCheckedTrackColor
 
     @Stable
-    internal fun uncheckedTrackColor(enabled: Boolean): Color = if (enabled) uncheckedTrackColor else disabledUncheckedTrackColor
+    internal fun uncheckedTrackColor(enabled: Boolean): Color =
+        if (enabled) uncheckedTrackColor else disabledUncheckedTrackColor
 }

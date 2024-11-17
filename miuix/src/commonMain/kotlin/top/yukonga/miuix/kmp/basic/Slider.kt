@@ -21,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -141,9 +140,12 @@ fun SliderBackground(
         targetValue = if (isDragging) 0.044f else 0f,
         animationSpec = tween(150)
     ).value
+
     Canvas(
-        modifier = modifier.clip(SmoothRoundedCornerShape(height)).background(backgroundColor)
-            .drawBehind { drawRect(Color.Black.copy(alpha = backgroundAlpha)) }
+        modifier = modifier
+            .clip(SmoothRoundedCornerShape(height))
+            .background(backgroundColor)
+            .background(Color.Black.copy(alpha = backgroundAlpha))
     ) {
         val barHeight = size.height
         val barWidth = size.width
@@ -190,7 +192,8 @@ class SliderColors(
     private val backgroundColor: Color
 ) {
     @Stable
-    internal fun foregroundColor(enabled: Boolean): Color = if (enabled) foregroundColor else disabledForegroundColor
+    internal fun foregroundColor(enabled: Boolean): Color =
+        if (enabled) foregroundColor else disabledForegroundColor
 
     @Stable
     internal fun backgroundColor(): Color = backgroundColor
