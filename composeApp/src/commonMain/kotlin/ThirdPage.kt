@@ -1,19 +1,12 @@
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.LazyColumn
@@ -108,51 +101,34 @@ fun ThirdPage(
 fun dialog(showDialog: MutableState<Boolean>) {
     SuperDialog(
         title = "About",
-        summary = "Demo app for Miuix",
         show = showDialog,
         onDismissRequest = { dismissDialog(showDialog) },
         content = {
-            Column {
-                val uriHandler = LocalUriHandler.current
-                Text(
-                    text = "Version: " + VersionInfo.VERSION_NAME + " (" + VersionInfo.VERSION_CODE + ")"
+            val uriHandler = LocalUriHandler.current
+            Text(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp),
+                text = "APP Version: " + VersionInfo.VERSION_NAME + " (" + VersionInfo.VERSION_CODE + ")"
+                        + "\nJDK Version: " + VersionInfo.JDK_VERSION
+            )
+            Card(
+                color = MiuixTheme.colorScheme.secondaryContainer,
+            ) {
+                SuperArrow(
+                    title = "View Source",
+                    rightText = "GitHub",
+                    onClick = {
+                        uriHandler.openUri("https://github.com/miuix-kotlin-multiplatform/miuix")
+                    }
+
                 )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "View Source: "
-                    )
-                    Text(
-                        text = AnnotatedString(
-                            text = "GitHub",
-                            spanStyle = SpanStyle(textDecoration = TextDecoration.Underline, color = MiuixTheme.colorScheme.primary)
-                        ),
-                        modifier = Modifier.clickable(
-                            onClick = {
-                                uriHandler.openUri("https://github.com/miuix-kotlin-multiplatform/miuix")
-                            }
-                        )
-                    )
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Join Group: "
-                    )
-                    Text(
-                        text = AnnotatedString(
-                            text = "Telegram",
-                            spanStyle = SpanStyle(textDecoration = TextDecoration.Underline, color = MiuixTheme.colorScheme.primary)
-                        ),
-                        modifier = Modifier.clickable(
-                            onClick = {
-                                uriHandler.openUri("https://t.me/YuKongA13579")
-                            },
-                        )
-                    )
-                }
+                SuperArrow(
+                    title = "Join Group",
+                    rightText = "Telegram",
+                    onClick = {
+                        uriHandler.openUri("https://t.me/YuKongA13579")
+                    }
+                )
             }
-        })
+        }
+    )
 }

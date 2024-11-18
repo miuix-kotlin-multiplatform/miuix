@@ -130,8 +130,9 @@ fun SuperDialog(
                     ) {
                         title?.let {
                             Text(
-                                modifier = Modifier.fillMaxWidth()
-                                    .padding(start = 36.dp, end = 36.dp, bottom = 16.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 12.dp),
                                 text = it,
                                 fontSize = MiuixTheme.textStyles.title4.fontSize,
                                 fontWeight = FontWeight.Medium,
@@ -141,8 +142,9 @@ fun SuperDialog(
                         }
                         summary?.let {
                             Text(
-                                modifier = Modifier.fillMaxWidth()
-                                    .padding(start = 28.dp, end = 28.dp, bottom = 16.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 12.dp),
                                 text = it,
                                 fontSize = MiuixTheme.textStyles.body1.fontSize,
                                 textAlign = TextAlign.Center,

@@ -20,8 +20,12 @@ val verName = "1.0.2"
 val verCode = getVersionCode()
 val xcf = XCFramework(appName + "Framework")
 
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+}
+
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 
     androidTarget()
 
@@ -171,7 +175,7 @@ compose.desktop {
 }
 
 fun getGitCommitCount(): Int {
-    val process = Runtime.getRuntime().exec("git rev-list --count HEAD")
+    val process = Runtime.getRuntime().exec(arrayOf("git", "rev-list", "--count", "HEAD"))
     return process.inputStream.bufferedReader().use { it.readText().trim().toInt() }
 }
 
@@ -181,6 +185,7 @@ fun getVersionCode(): Int {
 
 val generateVersionInfo by tasks.registering {
     doLast {
+        val jdkVersion = System.getProperty("java.version")
         val file = file("src/commonMain/kotlin/utils/VersionInfo.kt")
         file.writeText(
             """
@@ -189,6 +194,7 @@ val generateVersionInfo by tasks.registering {
             object VersionInfo {
                 const val VERSION_NAME = "$verName"
                 const val VERSION_CODE = $verCode
+                const val JDK_VERSION = "$jdkVersion"
             }
             """.trimIndent()
         )

@@ -9,10 +9,14 @@ plugins {
     id("org.jetbrains.dokka")
 }
 
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+}
+
 kotlin {
     withSourcesJar(true)
 
-    jvmToolchain(17)
+    jvmToolchain(21)
 
     androidTarget {
         publishLibraryVariants("release")
@@ -35,8 +39,6 @@ kotlin {
     }
 
     sourceSets {
-        val desktopMain by getting
-
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.window)
