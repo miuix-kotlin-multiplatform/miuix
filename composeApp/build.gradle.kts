@@ -164,6 +164,8 @@ compose.desktop {
 
         buildTypes.release.proguard {
             configurationFiles.from("proguard-rules-jvm.pro")
+            version.set("7.6.0")
+            optimize.set(false)
         }
 
         nativeDistributions {
