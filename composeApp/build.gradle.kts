@@ -16,7 +16,7 @@ plugins {
 
 val appName = "Miuix"
 val pkgName = "top.yukonga.miuix.uitest"
-val verName = "1.0.2"
+val verName = "1.0.3"
 val verCode = getVersionCode()
 val xcf = XCFramework(appName + "Framework")
 
@@ -235,4 +235,3 @@ tasks.register<Exec>("assembleMiuixMacosUniversalReleaseBinary") {
     group = "macos native"
     description = "Build macOS universal binary"
 }
-
