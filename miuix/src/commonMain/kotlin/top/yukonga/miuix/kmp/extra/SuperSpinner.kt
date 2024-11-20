@@ -85,26 +85,25 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import kotlin.math.roundToInt
 
-
 /**
- * A [SuperSpinner] component with Miuix style.
+ * A spinner component with Miuix style.
  *
- * @param title the title of the [SuperSpinner].
- * @param items the list of [SpinnerEntry] to be shown in the [SuperSpinner].
- * @param selectedIndex the index of the selected item in the [SuperSpinner].
- * @param modifier the [Modifier] to be applied to the [SuperSpinner].
- * @param popupModifier the [Modifier] to be applied to the popup of the [SuperSpinner].
- * @param titleColor the color of the title of the [SuperSpinner].
- * @param summary the summary of the [SuperSpinner].
- * @param summaryColor the color of the summary of the [SuperSpinner].
- * @param mode the mode of the [SuperSpinner].
- * @param horizontalPadding the horizontal padding of the [SuperSpinner].
- * @param leftAction the action to be shown at the left side of the [SuperSpinner].
- * @param insideMargin the [PaddingValues] to be applied inside the [SuperSpinner].
- * @param defaultWindowInsetsPadding whether to apply the default window insets padding to the [SuperSpinner].
- * @param enabled whether the [SuperSpinner] is enabled.
- * @param showValue whether to show the value of the [SuperSpinner].
- * @param onSelectedIndexChange the callback to be invoked when the selected index of the [SuperSpinner] is changed.
+ * @param title The title of the [SuperSpinner].
+ * @param items The list of [SpinnerEntry] to be shown in the [SuperSpinner].
+ * @param selectedIndex The index of the selected item in the [SuperSpinner].
+ * @param modifier The [Modifier] to be applied to the [SuperSpinner].
+ * @param popupModifier The [Modifier] to be applied to the popup of the [SuperSpinner].
+ * @param titleColor The color of the title of the [SuperSpinner].
+ * @param summary The summary of the [SuperSpinner].
+ * @param summaryColor The color of the summary of the [SuperSpinner].
+ * @param mode The mode of the [SuperSpinner].
+ * @param horizontalPadding The horizontal padding of the [SuperSpinner].
+ * @param leftAction The action to be shown at the left side of the [SuperSpinner].
+ * @param insideMargin The [PaddingValues] to be applied inside the [SuperSpinner].
+ * @param defaultWindowInsetsPadding Whether to apply the default window insets padding to the [SuperSpinner].
+ * @param enabled Whether the [SuperSpinner] is enabled.
+ * @param showValue Whether to show the value of the [SuperSpinner].
+ * @param onSelectedIndexChange The callback to be invoked when the selected index of the [SuperSpinner] is changed.
  */
 @Composable
 fun SuperSpinner(
@@ -224,8 +223,8 @@ fun SuperSpinner(
                             )
                         }
                     }
-                ) { _,_ ->
-                    layout(0,0) {}
+                ) { _, _ ->
+                    layout(0, 0) {}
                 }
             }
             leftAction?.invoke()
@@ -314,11 +313,13 @@ fun SuperSpinner(
                             )
                         }
                         .layout { measurable, constraints ->
-                            val placeable = measurable.measure(constraints.copy(
-                                minWidth = 200.dp.roundToPx(),
-                                minHeight = 50.dp.roundToPx(),
-                                maxHeight = windowHeightPx - statusBarPx - navigationBarPx - captionBarPx
-                            ))
+                            val placeable = measurable.measure(
+                                constraints.copy(
+                                    minWidth = 200.dp.roundToPx(),
+                                    minHeight = 50.dp.roundToPx(),
+                                    maxHeight = windowHeightPx - statusBarPx - navigationBarPx - captionBarPx
+                                )
+                            )
                             layout(constraints.maxWidth, constraints.maxHeight) {
                                 val xCoordinate = calculateOffsetXPx(
                                     componentInnerOffsetXPx,

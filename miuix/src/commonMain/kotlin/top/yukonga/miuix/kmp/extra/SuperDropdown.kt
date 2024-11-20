@@ -219,8 +219,8 @@ fun SuperDropdown(
                             )
                         }
                     }
-                ) { _,_ ->
-                    layout(0,0) {}
+                ) { _, _ ->
+                    layout(0, 0) {}
                 }
             }
         },
@@ -304,11 +304,13 @@ fun SuperDropdown(
                             )
                         }
                         .layout { measurable, constraints ->
-                            val placeable = measurable.measure(constraints.copy(
-                                minWidth = 200.dp.roundToPx(),
-                                minHeight = 50.dp.roundToPx(),
-                                maxHeight = windowHeightPx - statusBarPx - navigationBarPx - captionBarPx
-                            ))
+                            val placeable = measurable.measure(
+                                constraints.copy(
+                                    minWidth = 200.dp.roundToPx(),
+                                    minHeight = 50.dp.roundToPx(),
+                                    maxHeight = windowHeightPx - statusBarPx - navigationBarPx - captionBarPx
+                                )
+                            )
                             layout(constraints.maxWidth, constraints.maxHeight) {
                                 val xCoordinate = calculateOffsetXPx(
                                     componentInnerOffsetXPx,
@@ -431,6 +433,18 @@ fun DropdownImpl(
     }
 }
 
+/**
+ * Calculate the offset of the dropdown.
+ *
+ * @param componentInnerOffsetXPx The offset of the component inside.
+ * @param componentInnerWidthPx The width of the component inside.
+ * @param dropdownWidthPx The width of the dropdown.
+ * @param extraPaddingPx The extra padding of the dropdown.
+ * @param displayCutoutLeftSizePx The size of the display cutout on the left.
+ * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the dropdown.
+ * @param alignRight Whether to align the dropdown to the right.
+ * @return The offset of the dropdown.
+ */
 fun calculateOffsetXPx(
     componentInnerOffsetXPx: Int,
     componentInnerWidthPx: Int,
