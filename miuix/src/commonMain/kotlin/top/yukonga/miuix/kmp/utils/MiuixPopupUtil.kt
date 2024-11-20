@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import top.yukonga.miuix.kmp.anim.AccelerateEasing
 import top.yukonga.miuix.kmp.anim.DecelerateEasing
 import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Scaffold
@@ -179,17 +178,17 @@ class MiuixPopupUtil {
                 visible = isPopupShowing.value,
                 modifier = Modifier.zIndex(2f).fillMaxSize(),
                 enter = fadeIn(
-                    animationSpec = tween(150, delayMillis = 50, easing = DecelerateEasing(1.5f))
+                    animationSpec = tween(150, easing = DecelerateEasing(1.5f))
                 ) + scaleIn(
                     initialScale = 0.8f,
                     animationSpec = tween(150, easing = DecelerateEasing(1.5f)),
                     transformOrigin = popupTransformOrigin.value.invoke()
                 ),
                 exit = fadeOut(
-                    animationSpec = tween(150, easing = AccelerateEasing(3.0f))
+                    animationSpec = tween(150, easing = DecelerateEasing(1.5f))
                 ) + scaleOut(
-                    targetScale = 0.85f,
-                    animationSpec = tween(150, easing = AccelerateEasing(3.0f)),
+                    targetScale = 0.8f,
+                    animationSpec = tween(150, easing = DecelerateEasing(1.5f)),
                     transformOrigin = popupTransformOrigin.value.invoke()
                 )
             ) {
