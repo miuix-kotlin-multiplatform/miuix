@@ -1,10 +1,13 @@
 package top.yukonga.miuix.kmp.extra
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,10 +16,7 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.captionBar
 import androidx.compose.foundation.layout.displayCutout
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -49,8 +49,9 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
@@ -80,7 +81,6 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showPopup
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
-import kotlin.math.max
 import kotlin.math.roundToInt
 
 /**
@@ -121,21 +121,23 @@ fun SuperDropdown(
     onSelectedIndexChange: ((Int) -> Unit)?,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val isDropdownPreExpand = remember { mutableStateOf(false) }
     val isDropdownExpanded = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val held = remember { mutableStateOf<HoldDownInteraction.Hold?>(null) }
     val hapticFeedback = LocalHapticFeedback.current
     val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     var alignLeft by rememberSaveable { mutableStateOf(true) }
-    var dropdownOffsetXPx by remember { mutableIntStateOf(0) }
-    var dropdownOffsetYPx by remember { mutableIntStateOf(0) }
-    var componentHeightPx by remember { mutableIntStateOf(0) }
-    var componentWidthPx by remember { mutableIntStateOf(0) }
+    var componentInnerOffsetXPx by remember { mutableIntStateOf(0) }
+    var componentInnerOffsetYPx by remember { mutableIntStateOf(0) }
+    var componentInnerHeightPx by remember { mutableIntStateOf(0) }
+    var componentInnerWidthPx by remember { mutableIntStateOf(0) }
 
+    val density = LocalDensity.current
     val getWindowSize = rememberUpdatedState(getWindowSize())
     val windowHeightPx by rememberUpdatedState(getWindowSize.value.height)
     val windowWidthPx by rememberUpdatedState(getWindowSize.value.width)
-    var transformOrigin by mutableStateOf(TransformOrigin.Center)
+    var transformOrigin by remember { mutableStateOf(TransformOrigin.Center) }
 
     DisposableEffect(Unit) {
         onDispose {
@@ -154,40 +156,74 @@ fun SuperDropdown(
 
     BasicComponent(
         modifier = modifier
+            .indication(
+                interactionSource = interactionSource,
+                indication = LocalIndication.current
+            )
             .pointerInput(Unit) {
-                awaitPointerEventScope {
-                    while (enabled) {
-                        val event = awaitPointerEvent()
-                        if (event.type != PointerEventType.Move) {
-                            val eventChange = event.changes.first()
-                            if (eventChange.pressed) {
-                                alignLeft = eventChange.position.x < (size.width / 2)
+                detectTapGestures(
+                    onPress = { position ->
+                        if (enabled) {
+                            alignLeft = position.x < (size.width / 2)
+                            isDropdownPreExpand.value = true
+                            val pressInteraction = PressInteraction.Press(position)
+                            coroutineScope.launch {
+                                interactionSource.emit(pressInteraction)
+                            }
+                            val released = tryAwaitRelease()
+                            isDropdownPreExpand.value = false
+                            if (released) {
+                                isDropdownExpanded.value = enabled
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                coroutineScope.launch {
+                                    interactionSource.emit(HoldDownInteraction.Hold().also {
+                                        held.value = it
+                                    })
+                                    interactionSource.emit(PressInteraction.Release(pressInteraction))
+                                }
+                            } else {
+                                coroutineScope.launch {
+                                    interactionSource.emit(PressInteraction.Cancel(pressInteraction))
+                                }
                             }
                         }
                     }
-                }
-            }
-            .onGloballyPositioned { coordinates ->
-                if (isDropdownExpanded.value) {
-                    val positionInWindow = coordinates.positionInWindow()
-                    dropdownOffsetXPx = positionInWindow.x.toInt()
-                    dropdownOffsetYPx = positionInWindow.y.toInt()
-                    componentHeightPx = coordinates.size.height
-                    componentWidthPx = coordinates.size.width
-                    val xInWindow = dropdownOffsetXPx + if (mode == DropDownMode.AlwaysOnRight || !alignLeft) componentWidthPx else 0
-                    val yInWindow = dropdownOffsetYPx + componentHeightPx / 2
-                    transformOrigin = TransformOrigin(
-                        xInWindow / windowWidthPx.toFloat(),
-                        yInWindow / windowHeightPx.toFloat()
-                    )
-                }
+                )
             },
-        interactionSource = interactionSource,
         insideMargin = insideMargin,
         title = title,
         titleColor = titleColor,
         summary = summary,
         summaryColor = summaryColor,
+        leftAction = {
+            if (isDropdownPreExpand.value) {
+                Layout(
+                    content = {},
+                    modifier = Modifier.onGloballyPositioned { childCoordinates ->
+                        val parentCoordinates =
+                            childCoordinates.parentLayoutCoordinates ?: return@onGloballyPositioned
+                        val positionInWindow = parentCoordinates.positionInWindow()
+                        componentInnerOffsetXPx = positionInWindow.x.toInt()
+                        componentInnerOffsetYPx = positionInWindow.y.toInt()
+                        componentInnerHeightPx = parentCoordinates.size.height
+                        componentInnerWidthPx = parentCoordinates.size.width
+                        with(density) {
+                            val xInWindow = componentInnerOffsetXPx + if (mode == DropDownMode.AlwaysOnRight || !alignLeft)
+                                componentInnerWidthPx - 64.dp.roundToPx()
+                            else
+                                64.dp.roundToPx()
+                            val yInWindow = componentInnerOffsetYPx + componentInnerHeightPx / 2 - 56.dp.roundToPx()
+                            transformOrigin = TransformOrigin(
+                                xInWindow / windowWidthPx.toFloat(),
+                                yInWindow / windowHeightPx.toFloat()
+                            )
+                        }
+                    }
+                ) { _, _ ->
+                    layout(0, 0) {}
+                }
+            }
+        },
         rightActions = {
             if (showValue) {
                 Text(
@@ -210,17 +246,6 @@ fun SuperDropdown(
                 contentDescription = null
             )
         },
-        onClick = {
-            if (enabled) {
-                isDropdownExpanded.value = enabled
-                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                coroutineScope.launch {
-                    interactionSource.emit(HoldDownInteraction.Hold().also {
-                        held.value = it
-                    })
-                }
-            }
-        },
         enabled = enabled
     )
     if (isDropdownExpanded.value) {
@@ -231,9 +256,6 @@ fun SuperDropdown(
             }
         }
 
-        val density = LocalDensity.current
-        var offsetXPx by remember { mutableStateOf(0) }
-        var offsetYPx by remember { mutableStateOf(0) }
         val textMeasurer = rememberTextMeasurer()
         val textStyle = remember { TextStyle(fontWeight = FontWeight.Medium, fontSize = 16.sp) }
         val textWidthDp = remember(items) { items.maxOfOrNull { with(density) { textMeasurer.measure(text = it, style = textStyle).size.width.toDp() } } }
@@ -246,18 +268,9 @@ fun SuperDropdown(
         val captionBarPx by rememberUpdatedState(
             with(density) { WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
         )
-        val dropdownMaxHeight by rememberUpdatedState(with(density) {
-            (windowHeightPx - statusBarPx - navigationBarPx - captionBarPx).toDp()
-        })
         val dropdownElevation by rememberUpdatedState(with(density) {
             11.dp.toPx()
         })
-        val insideLeftPx by rememberUpdatedState(with(density) {
-            insideMargin.calculateLeftPadding(LayoutDirection.Ltr).toPx()
-        }.roundToInt())
-        val insideRightPx by rememberUpdatedState(with(density) {
-            insideMargin.calculateRightPadding(LayoutDirection.Ltr).toPx()
-        }.roundToInt())
         val insideTopPx by rememberUpdatedState(with(density) {
             insideMargin.calculateTopPadding().toPx()
         }.roundToInt())
@@ -283,7 +296,6 @@ fun SuperDropdown(
                     } else {
                         popupModifier
                     }
-                        .fillMaxSize()
                         .pointerInput(Unit) {
                             detectTapGestures(
                                 onTap = {
@@ -291,29 +303,41 @@ fun SuperDropdown(
                                 }
                             )
                         }
-                        .offset(x = offsetXPx.dp / density.density, y = offsetYPx.dp / density.density)
-                ) {
-                    LazyColumn(
-                        modifier = Modifier
-                            .onGloballyPositioned { coordinates ->
-                                offsetXPx = if (mode == DropDownMode.AlwaysOnRight || !alignLeft) {
-                                    dropdownOffsetXPx + componentWidthPx - insideRightPx - coordinates.size.width - paddingPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize else 0
-                                } else {
-                                    dropdownOffsetXPx + paddingPx + insideLeftPx - if (defaultWindowInsetsPadding) displayCutoutLeftSize else 0
-                                }
-                                offsetYPx = calculateOffsetYPx(
+                        .layout { measurable, constraints ->
+                            val placeable = measurable.measure(
+                                constraints.copy(
+                                    minWidth = 200.dp.roundToPx(),
+                                    minHeight = 50.dp.roundToPx(),
+                                    maxHeight = windowHeightPx - statusBarPx - navigationBarPx - captionBarPx
+                                )
+                            )
+                            layout(constraints.maxWidth, constraints.maxHeight) {
+                                val xCoordinate = calculateOffsetXPx(
+                                    componentInnerOffsetXPx,
+                                    componentInnerWidthPx,
+                                    placeable.width,
+                                    paddingPx,
+                                    displayCutoutLeftSize,
+                                    defaultWindowInsetsPadding,
+                                    (mode == DropDownMode.AlwaysOnRight || !alignLeft)
+                                )
+                                val yCoordinate = calculateOffsetYPx(
                                     windowHeightPx,
-                                    dropdownOffsetYPx,
-                                    coordinates.size.height,
-                                    componentHeightPx,
+                                    componentInnerOffsetYPx,
+                                    placeable.height,
+                                    componentInnerHeightPx,
                                     insideTopPx,
                                     insideBottomPx,
                                     statusBarPx,
                                     navigationBarPx,
                                     captionBarPx
                                 )
+                                placeable.place(xCoordinate, yCoordinate)
                             }
-                            .heightIn(50.dp, dropdownMaxHeight)
+                        }
+                ) {
+                    LazyColumn(
+                        modifier = Modifier
                             .align(AbsoluteAlignment.TopLeft)
                             .graphicsLayer(
                                 shadowElevation = dropdownElevation,
@@ -412,6 +436,34 @@ fun DropdownImpl(
 /**
  * Calculate the offset of the dropdown.
  *
+ * @param componentInnerOffsetXPx The offset of the component inside.
+ * @param componentInnerWidthPx The width of the component inside.
+ * @param dropdownWidthPx The width of the dropdown.
+ * @param extraPaddingPx The extra padding of the dropdown.
+ * @param displayCutoutLeftSizePx The size of the display cutout on the left.
+ * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the dropdown.
+ * @param alignRight Whether to align the dropdown to the right.
+ * @return The offset of the dropdown.
+ */
+fun calculateOffsetXPx(
+    componentInnerOffsetXPx: Int,
+    componentInnerWidthPx: Int,
+    dropdownWidthPx: Int,
+    extraPaddingPx: Int,
+    displayCutoutLeftSizePx: Int,
+    defaultWindowInsetsPadding: Boolean,
+    alignRight: Boolean
+): Int {
+    return if (alignRight) {
+        componentInnerOffsetXPx + componentInnerWidthPx - dropdownWidthPx - extraPaddingPx - if (defaultWindowInsetsPadding) displayCutoutLeftSizePx else 0
+    } else {
+        componentInnerOffsetXPx + extraPaddingPx - if (defaultWindowInsetsPadding) displayCutoutLeftSizePx else 0
+    }
+}
+
+/**
+ * Calculate the offset of the dropdown.
+ *
  * @param windowHeightPx The height of the window.
  * @param dropdownOffsetPx The default offset of the dropdown.
  * @param dropdownHeightPx The height of the dropdown.
@@ -434,24 +486,16 @@ fun calculateOffsetYPx(
     navigationBarPx: Int,
     captionBarPx: Int
 ): Int {
-    return if (windowHeightPx - captionBarPx - navigationBarPx - dropdownOffsetPx - componentHeightPx > dropdownHeightPx) {
+    return (if (windowHeightPx - captionBarPx - navigationBarPx - dropdownOffsetPx - componentHeightPx > dropdownHeightPx) {
         // Show below
-        dropdownOffsetPx + componentHeightPx - insideBottomHeightPx / 2
+        dropdownOffsetPx + componentHeightPx + insideBottomHeightPx / 2
     } else if (dropdownOffsetPx - statusBarPx > dropdownHeightPx) {
         // Show above
-        dropdownOffsetPx - dropdownHeightPx + insideTopHeightPx / 2
-    } else if (windowHeightPx - statusBarPx - captionBarPx - navigationBarPx <= dropdownHeightPx) {
-        // Special handling when the height of the popup is maxsize (== windowHeightPx)
-        statusBarPx
+        dropdownOffsetPx - dropdownHeightPx - insideTopHeightPx / 2
     } else {
-        val maxInsideHeight = max(insideTopHeightPx, insideBottomHeightPx)
-        if (windowHeightPx - dropdownOffsetPx < dropdownHeightPx / 2 + captionBarPx + navigationBarPx + maxInsideHeight + componentHeightPx / 2) {
-            windowHeightPx - dropdownHeightPx - maxInsideHeight - captionBarPx - navigationBarPx
-        } else {
-            val offset = dropdownOffsetPx - dropdownHeightPx / 2 + componentHeightPx / 2
-            if (offset > maxInsideHeight + statusBarPx) offset else maxInsideHeight + statusBarPx
-        }
-    }
+        // Middle
+        dropdownOffsetPx + componentHeightPx / 2 - dropdownHeightPx / 2
+    }).coerceIn(statusBarPx, windowHeightPx - captionBarPx - navigationBarPx)
 }
 
 /**
