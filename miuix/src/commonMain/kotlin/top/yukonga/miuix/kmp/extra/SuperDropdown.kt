@@ -66,6 +66,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
@@ -80,8 +83,10 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showPopup
+import top.yukonga.miuix.kmp.utils.Platform
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
+import top.yukonga.miuix.kmp.utils.platform
 import kotlin.math.roundToInt
 
 /**
@@ -128,6 +133,8 @@ fun SuperDropdown(
     val held = remember { mutableStateOf<HoldDownInteraction.Hold?>(null) }
     val hapticFeedback = LocalHapticFeedback.current
     val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
+
+    var pressInteraction: PressInteraction.Press? = null
     var alignLeft by rememberSaveable { mutableStateOf(true) }
     var componentInnerOffsetXPx by remember { mutableIntStateOf(0) }
     var componentInnerOffsetYPx by remember { mutableIntStateOf(0) }
@@ -166,29 +173,51 @@ fun SuperDropdown(
             )
             .pointerInput(Unit) {
                 detectTapGestures(
-                    onPress = { position ->
+                    onPress = { offset ->
                         if (enabled) {
-                            alignLeft = position.x < (size.width / 2)
-                            isDropdownPreExpand.value = true
-                            val pressInteraction = PressInteraction.Press(position)
-                            coroutineScope.launch {
-                                interactionSource.emit(pressInteraction)
-                            }
-                            val released = tryAwaitRelease()
-                            isDropdownPreExpand.value = false
-                            if (released) {
-                                isDropdownExpanded.value = enabled
-                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                coroutineScope.launch {
+                            coroutineScope {
+                                val delayJob = launch {
+                                    alignLeft = offset.x < (size.width / 2)
+                                    isDropdownPreExpand.value = true
+                                    delay(
+                                        when (platform()) {
+                                            Platform.IOS -> 150
+                                            Platform.Android -> 100
+                                            else -> 0
+                                        }
+                                    )
+                                    val press = PressInteraction.Press(offset)
+                                    interactionSource.emit(press)
+                                    pressInteraction = press
+                                }
+                                val success = tryAwaitRelease()
+                                isDropdownPreExpand.value = false
+                                if (success) {
+                                    isDropdownExpanded.value = enabled
+                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                     interactionSource.emit(HoldDownInteraction.Hold().also {
                                         held.value = it
                                     })
-                                    interactionSource.emit(PressInteraction.Release(pressInteraction))
                                 }
-                            } else {
-                                coroutineScope.launch {
-                                    interactionSource.emit(PressInteraction.Cancel(pressInteraction))
+                                if (delayJob.isActive) {
+                                    delayJob.cancelAndJoin()
+                                    if (success) {
+                                        val press = PressInteraction.Press(offset)
+                                        val release = PressInteraction.Release(press)
+                                        interactionSource.emit(press)
+                                        interactionSource.emit(release)
+                                    }
+                                } else {
+                                    pressInteraction?.let { pressInteraction ->
+                                        val endInteraction = if (success) {
+                                            PressInteraction.Release(pressInteraction)
+                                        } else {
+                                            PressInteraction.Cancel(pressInteraction)
+                                        }
+                                        interactionSource.emit(endInteraction)
+                                    }
                                 }
+                                pressInteraction = null
                             }
                         }
                     }
