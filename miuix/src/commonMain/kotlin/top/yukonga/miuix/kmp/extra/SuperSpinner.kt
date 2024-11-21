@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.indication
+import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
@@ -132,6 +133,7 @@ fun SuperSpinner(
     val hapticFeedback = LocalHapticFeedback.current
     val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     var alignLeft by rememberSaveable { mutableStateOf(true) }
+    val isHovered = remember { mutableStateOf(false) }
     var componentInnerOffsetXPx by remember { mutableIntStateOf(0) }
     var componentInnerOffsetYPx by remember { mutableIntStateOf(0) }
     var componentInnerHeightPx by remember { mutableIntStateOf(0) }
@@ -156,10 +158,23 @@ fun SuperSpinner(
             }
             held.value = null
         }
+        if (isHovered.value) {
+            coroutineScope.launch {
+                interactionSource.emit(HoverInteraction.Enter())
+            }
+        } else {
+            coroutineScope.launch {
+                interactionSource.emit(HoverInteraction.Exit(HoverInteraction.Enter()))
+            }
+        }
     }
 
     BasicComponent(
-        modifier = modifier
+        modifier = modifierPlatform(
+            modifier = modifier,
+            isHovered = isHovered,
+            isEnable = enabled
+        )
             .indication(
                 interactionSource = interactionSource,
                 indication = LocalIndication.current
