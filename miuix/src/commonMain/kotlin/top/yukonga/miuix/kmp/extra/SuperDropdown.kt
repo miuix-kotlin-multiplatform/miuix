@@ -529,7 +529,7 @@ fun calculateOffsetYPx(
     } else {
         // Middle
         dropdownOffsetPx + componentHeightPx / 2 - dropdownHeightPx / 2
-    }).coerceIn(statusBarPx, windowHeightPx - captionBarPx - navigationBarPx)
+    }).coerceIn(statusBarPx, windowHeightPx - captionBarPx - navigationBarPx - dropdownHeightPx)
 }
 
 /**
