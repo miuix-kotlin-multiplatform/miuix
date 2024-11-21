@@ -169,7 +169,8 @@ fun SuperDropdown(
                 indication = LocalIndication.current
             )
             .hoverable(
-                interactionSource = interactionSource
+                interactionSource = interactionSource,
+                enabled = enabled
             )
             .pointerInput(Unit) {
                 detectTapGestures(

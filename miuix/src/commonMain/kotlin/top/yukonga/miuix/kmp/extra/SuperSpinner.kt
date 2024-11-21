@@ -173,7 +173,8 @@ fun SuperSpinner(
                 indication = LocalIndication.current
             )
             .hoverable(
-                interactionSource = interactionSource
+                interactionSource = interactionSource,
+                enabled = enabled
             )
             .pointerInput(Unit) {
                 detectTapGestures(
