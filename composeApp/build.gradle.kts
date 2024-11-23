@@ -82,9 +82,6 @@ kotlin {
         val desktopMain by getting
 
         androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(compose.uiTooling)
-
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
@@ -98,10 +95,13 @@ kotlin {
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
-            implementation(compose.preview)
-            implementation(compose.uiTooling)
         }
     }
+}
+
+dependencies {
+    implementation(compose.preview)
+    debugImplementation(compose.uiTooling)
 }
 
 android {
