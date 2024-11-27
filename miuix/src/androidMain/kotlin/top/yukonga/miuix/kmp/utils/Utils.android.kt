@@ -9,13 +9,12 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.window.layout.WindowMetrics
 import androidx.window.layout.WindowMetricsCalculator
 
 @Composable
 actual fun getWindowSize(): WindowSize {
     val context = LocalContext.current
-    val windowMetrics: WindowMetrics = WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(context)
+    val windowMetrics = WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(context)
     val widthPx = windowMetrics.bounds.width()
     val heightPx = windowMetrics.bounds.height()
     return WindowSize(widthPx, heightPx)

@@ -84,8 +84,9 @@ fun Modifier.overScrollVertical(
     scrollEasing: ((currentOffset: Float, newOffset: Float) -> Float)? = null,
     springStiff: Float = OutBoundSpringStiff,
     springDamp: Float = OutBoundSpringDamp,
-    onOverscroll: ((Boolean) -> Unit)? = null
-): Modifier = overScrollOutOfBound(isVertical = true, nestedScrollToParent, scrollEasing, springStiff, springDamp, onOverscroll)
+    onOverscroll: ((Boolean) -> Unit)? = null,
+    isEnabled: () -> Boolean = { platform() == Platform.Android }
+): Modifier = overScrollOutOfBound(isVertical = true, nestedScrollToParent, scrollEasing, springStiff, springDamp, onOverscroll, isEnabled)
 
 /**
  * @see overScrollOutOfBound
@@ -96,22 +97,25 @@ fun Modifier.overScrollHorizontal(
     scrollEasing: ((currentOffset: Float, newOffset: Float) -> Float)? = null,
     springStiff: Float = OutBoundSpringStiff,
     springDamp: Float = OutBoundSpringDamp,
-    onOverscroll: ((Boolean) -> Unit)? = null
-): Modifier = overScrollOutOfBound(isVertical = false, nestedScrollToParent, scrollEasing, springStiff, springDamp, onOverscroll)
+    onOverscroll: ((Boolean) -> Unit)? = null,
+    isEnabled: () -> Boolean = { platform() == Platform.Android }
+): Modifier = overScrollOutOfBound(isVertical = false, nestedScrollToParent, scrollEasing, springStiff, springDamp, onOverscroll, isEnabled)
 
 /**
  * OverScroll effect for scrollable Composable.
  *
  * @Author: cormor
  * @Email: cangtiansuo@gmail.com
- * @param isVertical is vertical, or horizontal ?
- * @param nestedScrollToParent Whether to dispatch nested scroll events to parent
+ * @param isVertical is vertical, or horizontal?
+ * @param nestedScrollToParent Whether to dispatch nested scroll events to parent.
  * @param scrollEasing U can refer to [DefaultParabolaScrollEasing], The incoming values are the currently existing overscroll Offset
  * and the new offset from the gesture.
  * modify it to cooperate with [springStiff] to customize the sliding damping effect.
  * The current default easing comes from iOS, you don't need to modify it!
  * @param springStiff springStiff for overscroll effect，For better user experience, the new value is not recommended to be higher than[StiffnessMediumLow]
- * @param springDamp springDamp for overscroll effect，generally do not need to set
+ * @param springDamp springDamp for overscroll effect，generally do not need to set。
+ * @param onOverscroll Callback when the overscroll state changes, the parameter is whether the current state is Overscrolling.
+ * @param isEnabled Whether to enable Overscroll effect, default is true.
  */
 @Stable
 @Suppress("NAME_SHADOWING")
@@ -121,9 +125,10 @@ fun Modifier.overScrollOutOfBound(
     scrollEasing: ((currentOffset: Float, newOffset: Float) -> Float)?,
     springStiff: Float = OutBoundSpringStiff,
     springDamp: Float = OutBoundSpringDamp,
-    onOverscroll: ((Boolean) -> Unit)? = null
+    onOverscroll: ((Boolean) -> Unit)? = null,
+    isEnabled: () -> Boolean = { platform() == Platform.Android }
 ): Modifier = composed {
-    if (!enableOverscroll()) return@composed this
+    if (!isEnabled()) return@composed this
     val onOverscroll by rememberUpdatedState(onOverscroll)
     val nestedScrollToParent by rememberUpdatedState(nestedScrollToParent)
     val scrollEasing by rememberUpdatedState(scrollEasing ?: DefaultParabolaScrollEasing)
@@ -308,5 +313,3 @@ fun rememberOverscrollFlingBehavior(
         }
     }
 }
-
-expect fun enableOverscroll(): Boolean

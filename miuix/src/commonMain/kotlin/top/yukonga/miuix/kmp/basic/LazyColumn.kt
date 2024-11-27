@@ -11,8 +11,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import top.yukonga.miuix.kmp.utils.enableOverscroll
+import top.yukonga.miuix.kmp.utils.Platform
 import top.yukonga.miuix.kmp.utils.overScrollVertical
+import top.yukonga.miuix.kmp.utils.platform
 import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
 
 /**
@@ -22,7 +23,7 @@ import top.yukonga.miuix.kmp.utils.rememberOverscrollFlingBehavior
  * @param state The state of the [LazyColumn].
  * @param contentPadding The padding to apply to the content.
  * @param userScrollEnabled Whether the user can scroll the [LazyColumn].
- * @param enableOverScroll Whether to enable over-scroll.
+ * @param isEnabledOverScroll Whether the Overscroll is enabled.
  * @param topAppBarScrollBehavior The scroll behavior of the top app bar.
  * @param content The [Composable] content of the [LazyColumn].
  */
@@ -32,13 +33,13 @@ fun LazyColumn(
     state: LazyListState = rememberLazyListState(),
     contentPadding: PaddingValues = PaddingValues(0.dp),
     userScrollEnabled: Boolean = true,
-    enableOverScroll: Boolean = true,
+    isEnabledOverScroll: () -> Boolean = { platform() == Platform.Android },
     topAppBarScrollBehavior: ScrollBehavior? = null,
     content: LazyListScope.() -> Unit
 ) {
-    val firstModifier = remember(enableOverScroll, enableOverscroll()) {
-        if (enableOverScroll && enableOverscroll()) {
-            modifier.overScrollVertical(onOverscroll = { topAppBarScrollBehavior?.isPinned = it })
+    val firstModifier = remember(isEnabledOverScroll) {
+        if (isEnabledOverScroll.invoke()) {
+            modifier.overScrollVertical(onOverscroll = { topAppBarScrollBehavior?.isPinned = it }, isEnabled = isEnabledOverScroll)
         } else {
             modifier
         }
@@ -49,7 +50,7 @@ fun LazyColumn(
         } ?: firstModifier
     }
     val flingBehavior =
-        if (enableOverScroll && enableOverscroll()) {
+        if (isEnabledOverScroll.invoke()) {
             rememberOverscrollFlingBehavior { state }
         } else {
             ScrollableDefaults.flingBehavior()
