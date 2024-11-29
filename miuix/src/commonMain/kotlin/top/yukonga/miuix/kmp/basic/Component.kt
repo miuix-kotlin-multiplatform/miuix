@@ -114,19 +114,29 @@ object BasicComponentDefaults {
      * The default color of the title.
      */
     @Composable
-    fun titleColor() = BasicComponentColors(
-        color = MiuixTheme.colorScheme.onSurface,
-        disabledColor = MiuixTheme.colorScheme.disabledOnSecondaryVariant
-    )
+    fun titleColor(
+        color: Color = MiuixTheme.colorScheme.onSurface,
+        disabledColor: Color = MiuixTheme.colorScheme.disabledOnSecondaryVariant
+    ): BasicComponentColors {
+        return BasicComponentColors(
+            color = color,
+            disabledColor = disabledColor
+        )
+    }
 
     /**
      * The default color of the summary.
      */
     @Composable
-    fun summaryColor() = BasicComponentColors(
-        color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
-        disabledColor = MiuixTheme.colorScheme.disabledOnSecondaryVariant
-    )
+    fun summaryColor(
+        color: Color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
+        disabledColor: Color = MiuixTheme.colorScheme.disabledOnSecondaryVariant
+    ): BasicComponentColors {
+        return BasicComponentColors(
+            color = color,
+            disabledColor = disabledColor
+        )
+    }
 }
 
 @Immutable
