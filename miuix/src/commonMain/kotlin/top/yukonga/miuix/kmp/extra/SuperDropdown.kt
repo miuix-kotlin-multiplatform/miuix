@@ -56,14 +56,11 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
  * @param items The options of the [SuperDropdown].
  * @param selectedIndex The index of the selected option.
  * @param modifier The modifier to be applied to the [SuperDropdown].
- * @param popupModifier The modifier to be applied to the popup of the [SuperDropdown].
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperDropdown].
  * @param summaryColor The color of the summary.
  * @param mode The dropdown show mode of the [SuperDropdown].
- * @param horizontalPadding The horizontal padding of the [SuperDropdown].
  * @param insideMargin The margin inside the [SuperDropdown].
- * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [SuperDropdown].
  * @param enabled Whether the [SuperDropdown] is enabled.
  * @param showValue Whether to show the selected value of the [SuperDropdown].
  * @param onSelectedIndexChange The callback when the selected index of the [SuperDropdown] is changed.
@@ -74,14 +71,11 @@ fun SuperDropdown(
     items: List<String>,
     selectedIndex: Int,
     modifier: Modifier = Modifier,
-    popupModifier: Modifier = Modifier,
     titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
     summary: String? = null,
     summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
     mode: DropDownMode = DropDownMode.Normal,
-    horizontalPadding: Dp = 0.dp,
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
-    defaultWindowInsetsPadding: Boolean = true,
     enabled: Boolean = true,
     showValue: Boolean = true,
     onSelectedIndexChange: ((Int) -> Unit)?,

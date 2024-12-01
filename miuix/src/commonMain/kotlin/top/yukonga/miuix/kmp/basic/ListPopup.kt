@@ -44,6 +44,16 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showPopup
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
+/**
+ * A popup with a list of items.
+ *
+ * @param show The show state of the [ListPopup].
+ * @param popupModifier The modifier to be applied to the [ListPopup].
+ * @param popupPositionProvider The [PopupPositionProvider] of the [ListPopup].
+ * @param alignment The alignment of the [ListPopup].
+ * @param onDismissRequest The callback when the [ListPopup] is dismissed.
+ * @param content The [Composable] content of the [ListPopup].
+ */
 @Composable
 fun ListPopup(
     show: MutableState<Boolean>,
@@ -101,12 +111,14 @@ fun ListPopup(
 
     DisposableEffect(popupPositionProvider, alignment) {
         val popupMargins = popupPositionProvider.getMargins()
-        popupMargin = with(density) { IntRect(
-            left = popupMargins.calculateLeftPadding(layoutDirection).roundToPx(),
-            top = popupMargins.calculateTopPadding().roundToPx(),
-            right = popupMargins.calculateRightPadding(layoutDirection).roundToPx(),
-            bottom = popupMargins.calculateBottomPadding().roundToPx()
-        ) }
+        popupMargin = with(density) {
+            IntRect(
+                left = popupMargins.calculateLeftPadding(layoutDirection).roundToPx(),
+                top = popupMargins.calculateTopPadding().roundToPx(),
+                right = popupMargins.calculateRightPadding(layoutDirection).roundToPx(),
+                bottom = popupMargins.calculateBottomPadding().roundToPx()
+            )
+        }
         if (popupContentSize != IntSize.Zero) {
             offset = popupPositionProvider.calculatePosition(
                 parentBounds,
@@ -198,7 +210,8 @@ fun ListPopup(
                         PopupPositionProvider.Align.Right,
                         PopupPositionProvider.Align.TopRight,
                         PopupPositionProvider.Align.BottomRight,
-                ))
+                    )
+                )
                     parentBounds.right - popupMargin.right - 64.dp.roundToPx()
                 else
                     parentBounds.left + popupMargin.left + 64.dp.roundToPx()
@@ -282,6 +295,7 @@ object ListPopupDefaults {
                 y = offsetY.coerceIn(windowBounds.top + popupMargin.top, windowBounds.bottom - popupContentSize.height - popupMargin.bottom)
             )
         }
+
         override fun getMargins(): PaddingValues {
             return PaddingValues(horizontal = 0.dp, vertical = 8.dp)
         }
@@ -302,18 +316,22 @@ object ListPopupDefaults {
                     offsetX = anchorBounds.left + popupMargin.left
                     offsetY = anchorBounds.bottom + popupMargin.top
                 }
+
                 PopupPositionProvider.Align.TopRight -> {
                     offsetX = anchorBounds.right - popupContentSize.width - popupMargin.right
                     offsetY = anchorBounds.bottom + popupMargin.top
                 }
+
                 PopupPositionProvider.Align.BottomLeft -> {
                     offsetX = anchorBounds.left + popupMargin.left
                     offsetY = anchorBounds.top - popupContentSize.height - popupMargin.bottom
                 }
+
                 PopupPositionProvider.Align.BottomRight -> {
                     offsetX = anchorBounds.right - popupContentSize.width - popupMargin.right
                     offsetY = anchorBounds.top - popupContentSize.height - popupMargin.bottom
                 }
+
                 else -> {
                     // Fallback
                     offsetX = if (alignment == PopupPositionProvider.Align.Right) {

@@ -39,7 +39,6 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
@@ -65,15 +64,12 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
  * @param items The list of [SpinnerEntry] to be shown in the [SuperSpinner].
  * @param selectedIndex The index of the selected item in the [SuperSpinner].
  * @param modifier The [Modifier] to be applied to the [SuperSpinner].
- * @param popupModifier The [Modifier] to be applied to the popup of the [SuperSpinner].
  * @param titleColor The color of the title of the [SuperSpinner].
  * @param summary The summary of the [SuperSpinner].
  * @param summaryColor The color of the summary of the [SuperSpinner].
  * @param mode The mode of the [SuperSpinner].
- * @param horizontalPadding The horizontal padding of the [SuperSpinner].
  * @param leftAction The action to be shown at the left side of the [SuperSpinner].
  * @param insideMargin The [PaddingValues] to be applied inside the [SuperSpinner].
- * @param defaultWindowInsetsPadding Whether to apply the default window insets padding to the [SuperSpinner].
  * @param enabled Whether the [SuperSpinner] is enabled.
  * @param showValue Whether to show the value of the [SuperSpinner].
  * @param onSelectedIndexChange The callback to be invoked when the selected index of the [SuperSpinner] is changed.
@@ -84,15 +80,12 @@ fun SuperSpinner(
     items: List<SpinnerEntry>,
     selectedIndex: Int,
     modifier: Modifier = Modifier,
-    popupModifier: Modifier = Modifier,
     titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
     summary: String? = null,
     summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
     mode: SpinnerMode = SpinnerMode.Normal,
-    horizontalPadding: Dp = 0.dp,
     leftAction: @Composable (() -> Unit)? = null,
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
-    defaultWindowInsetsPadding: Boolean = true,
     enabled: Boolean = true,
     showValue: Boolean = true,
     onSelectedIndexChange: ((Int) -> Unit)?,

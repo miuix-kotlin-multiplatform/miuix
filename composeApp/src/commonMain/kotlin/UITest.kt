@@ -178,12 +178,16 @@ fun UITest(
                                         }
                                     ) {
                                         LazyColumn {
-                                            items(items.size) { index ->
+                                            items(items.take(3).size) { index ->
                                                 DropdownImpl(
                                                     text = items[index].label,
-                                                    optionSize = items.size,
-                                                    isSelected = false,
+                                                    optionSize = items.take(3).size,
+                                                    isSelected = items[index] == items[targetPage],
                                                     onSelectedIndexChange = {
+                                                        targetPage = index
+                                                        coroutineScope.launch {
+                                                            pagerState.animateScrollToPage(index)
+                                                        }
                                                         dismissPopup(showTopPopup)
                                                         isTopPopupExpanded.value = false
                                                     },
@@ -228,12 +232,16 @@ fun UITest(
                         }
                     ) {
                         LazyColumn {
-                            items(items.size) { index ->
+                            items(items.take(3).size) { index ->
                                 DropdownImpl(
                                     text = items[index].label,
-                                    optionSize = items.size,
-                                    isSelected = false,
+                                    optionSize = items.take(3).size,
+                                    isSelected = items[index] == items[targetPage],
                                     onSelectedIndexChange = {
+                                        targetPage = index
+                                        coroutineScope.launch {
+                                            pagerState.animateScrollToPage(index)
+                                        }
                                         dismissPopup(showBottomPopup)
                                         isBottomPopupExpanded.value = false
                                     },

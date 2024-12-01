@@ -71,7 +71,8 @@ class MiuixPopupUtil {
         /**
          * Show a popup.
          *
-         * @param transformOrigin The pivot point in terms of fraction of the overall size, used for scale transformations. By default it's [TransformOrigin.Center].
+         * @param transformOrigin The pivot point in terms of fraction of the overall size,
+         *   used for scale transformations. By default it's [TransformOrigin.Center].
          * @param content The [Composable] content of the popup.
          */
         @Composable
