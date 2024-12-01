@@ -267,7 +267,7 @@ object ListPopupDefaults {
             } else {
                 anchorBounds.left + popupMargin.left
             }
-            val offsetY = if (windowBounds.height - anchorBounds.height > popupContentSize.height) {
+            val offsetY = if (windowBounds.bottom - anchorBounds.bottom > popupContentSize.height) {
                 // Show below
                 anchorBounds.bottom + popupMargin.bottom
             } else if (anchorBounds.top - windowBounds.top > popupContentSize.height) {
@@ -321,7 +321,7 @@ object ListPopupDefaults {
                     } else {
                         anchorBounds.left + popupMargin.left
                     }
-                    offsetY = if (windowBounds.height - anchorBounds.height > popupContentSize.height) {
+                    offsetY = if (windowBounds.bottom - anchorBounds.bottom > popupContentSize.height) {
                         // Show below
                         anchorBounds.bottom + popupMargin.bottom
                     } else if (anchorBounds.top - windowBounds.top > popupContentSize.height) {
