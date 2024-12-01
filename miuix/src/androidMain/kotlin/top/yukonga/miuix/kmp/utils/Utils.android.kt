@@ -4,20 +4,29 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.view.RoundedCorner
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.window.layout.WindowMetricsCalculator
+import kotlin.math.max
+import kotlin.math.min
 
 @Composable
 actual fun getWindowSize(): WindowSize {
+    val configuration = LocalConfiguration.current
+    val screenWidthDp = configuration.screenWidthDp
+    val screenHeightDp = configuration.screenHeightDp
     val context = LocalContext.current
     val windowMetrics = WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(context)
     val widthPx = windowMetrics.bounds.width()
     val heightPx = windowMetrics.bounds.height()
-    return WindowSize(widthPx, heightPx)
+    return if (screenWidthDp > screenHeightDp)
+        WindowSize(max(widthPx, heightPx), min(widthPx, heightPx))
+    else
+        WindowSize(min(widthPx, heightPx), max(widthPx, heightPx))
 }
 
 actual fun platform(): Platform = Platform.Android

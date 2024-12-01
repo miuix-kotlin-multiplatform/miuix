@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -344,30 +345,44 @@ fun SuperSpinner(
             },
             insideMargin = DpSize(0.dp, 24.dp)
         ) {
-            Column {
-                LazyColumn {
-                    items(items.size) { index ->
-                        SpinnerItemImpl(
-                            entry = items[index],
-                            entryCount = items.size,
-                            isSelected = selectedIndex == index,
-                            index = index,
-                            dialogMode = true
-                        ) {
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                            onSelectedIndexChange?.let { it1 -> it1(it) }
-                            dismissDialog(isDropdownExpanded)
+            Layout(
+                content = {
+                    LazyColumn {
+                        items(items.size) { index ->
+                            SpinnerItemImpl(
+                                entry = items[index],
+                                entryCount = items.size,
+                                isSelected = selectedIndex == index,
+                                index = index,
+                                dialogMode = true
+                            ) {
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                onSelectedIndexChange?.let { it1 -> it1(it) }
+                                dismissDialog(isDropdownExpanded)
+                            }
                         }
                     }
+                    TextButton(
+                        modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp).fillMaxWidth(),
+                        text = dialogButtonString,
+                        minHeight = 50.dp,
+                        onClick = {
+                            dismissDialog(isDropdownExpanded)
+                        }
+                    )
                 }
-                TextButton(
-                    modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp).fillMaxWidth(),
-                    text = dialogButtonString,
-                    minHeight = 50.dp,
-                    onClick = {
-                        dismissDialog(isDropdownExpanded)
-                    }
-                )
+            ) { measurables, constraints ->
+                if (measurables.size != 2) {
+                    layout(0, 0) { }
+                }
+                val button = measurables[1].measure(constraints)
+                val lazyList = measurables[0].measure(constraints.copy(
+                    maxHeight = constraints.maxHeight - button.height
+                ))
+                layout(constraints.maxWidth, lazyList.height + button.height) {
+                    lazyList.place(0, 0)
+                    button.place(0, lazyList.height)
+                }
             }
         }
     }

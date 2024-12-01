@@ -68,22 +68,21 @@ fun ListPopup(
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
     val getWindowSize = rememberUpdatedState(getWindowSize())
-    val windowHeightPx by rememberUpdatedState(getWindowSize.value.height)
-    val windowWidthPx by rememberUpdatedState(getWindowSize.value.width)
+    var windowSize by remember { mutableStateOf(IntSize(getWindowSize.value.width, getWindowSize.value.height)) }
 
     var parentBounds by remember { mutableStateOf(IntRect.Zero) }
     val windowBounds by rememberUpdatedState(with(density) {
         IntRect(
             left = WindowInsets.displayCutout.asPaddingValues(density).calculateLeftPadding(layoutDirection).roundToPx(),
             top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding().roundToPx(),
-            right = windowWidthPx -
+            right = windowSize.width -
                     WindowInsets.displayCutout.asPaddingValues(density).calculateRightPadding(layoutDirection).roundToPx(),
-            bottom = windowHeightPx -
+            bottom = windowSize.height -
                     WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().roundToPx() -
                     WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().roundToPx()
         )
     })
-    var popupContentSize by remember { mutableStateOf(IntSize.Zero) }
+    var popupContentSize = IntSize.Zero
     var popupMargin by remember { mutableStateOf(IntRect.Zero) }
 
 
@@ -155,14 +154,7 @@ fun ListPopup(
                                 maxHeight = windowBounds.height
                             )
                         )
-                        val popupMargins = popupPositionProvider.getMargins()
                         popupContentSize = IntSize(placeable.width, placeable.height)
-                        popupMargin = IntRect(
-                            left = popupMargins.calculateLeftPadding(layoutDirection).roundToPx(),
-                            top = popupMargins.calculateTopPadding().roundToPx(),
-                            right = popupMargins.calculateRightPadding(layoutDirection).roundToPx(),
-                            bottom = popupMargins.calculateBottomPadding().roundToPx()
-                        )
                         offset = popupPositionProvider.calculatePosition(
                             parentBounds,
                             windowBounds,
@@ -205,6 +197,9 @@ fun ListPopup(
                 right = positionInWindow.x.toInt() + parentCoordinates.size.width,
                 bottom = positionInWindow.y.toInt() + parentCoordinates.size.height
             )
+            val windowHeightPx = getWindowSize.value.height
+            val windowWidthPx = getWindowSize.value.width
+            windowSize = IntSize(windowWidthPx, windowHeightPx)
             with(density) {
                 val xInWindow = if (alignment in listOf(
                         PopupPositionProvider.Align.Right,

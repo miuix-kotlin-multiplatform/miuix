@@ -16,9 +16,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -57,6 +54,8 @@ import top.yukonga.miuix.kmp.icon.icons.GitHub
 import top.yukonga.miuix.kmp.icon.icons.ImmersionMore
 import top.yukonga.miuix.kmp.icon.icons.Info
 import top.yukonga.miuix.kmp.icon.icons.More
+import top.yukonga.miuix.kmp.icon.icons.NavigatorSwitch
+import top.yukonga.miuix.kmp.icon.icons.Settings
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
 import utils.FPSMonitor
 
@@ -84,9 +83,9 @@ fun UITest(
     }
 
     val items = listOf(
-        NavigationItem("HomePage", Icons.Rounded.Home),
+        NavigationItem("HomePage", MiuixIcons.NavigatorSwitch),
         NavigationItem("DropDown", MiuixIcons.Info),
-        NavigationItem("Settings", Icons.Rounded.Settings),
+        NavigationItem("Settings", MiuixIcons.Settings),
         NavigationItem("More", MiuixIcons.More)
     )
 
@@ -133,12 +132,16 @@ fun UITest(
                                         }
                                     ) {
                                         LazyColumn {
-                                            items(items.size) { index ->
+                                            items(items.take(3).size) { index ->
                                                 DropdownImpl(
                                                     text = items[index].label,
-                                                    optionSize = items.size,
-                                                    isSelected = false,
+                                                    optionSize = items.take(3).size,
+                                                    isSelected = items[index] == items[targetPage],
                                                     onSelectedIndexChange = {
+                                                        targetPage = index
+                                                        coroutineScope.launch {
+                                                            pagerState.animateScrollToPage(index)
+                                                        }
                                                         dismissPopup(showTopPopup)
                                                         isTopPopupExpanded.value = false
                                                     },
