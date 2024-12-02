@@ -67,7 +67,10 @@ fun SuperDialog(
     defaultWindowInsetsPadding: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    if (show.value) {
+    if (!show.value) {
+        dialogStates.remove(show)
+        onDismissRequest?.invoke()
+    } else {
         if (!dialogStates.contains(show)) dialogStates.add(show)
         LaunchedEffect(show.value) {
             if (show.value) {
@@ -82,7 +85,7 @@ fun SuperDialog(
         val paddingModifier = remember(outsideMargin) { Modifier.padding(horizontal = outsideMargin.width).padding(bottom = outsideMargin.height) }
         val roundedCorner by rememberUpdatedState(getRoundedCorner())
         val bottomCornerRadius by remember { derivedStateOf { if (roundedCorner != 0.dp) roundedCorner - outsideMargin.width else 32.dp } }
-        val contentAlignment by rememberUpdatedState { derivedStateOf { if (windowHeight >= 480.dp && windowWidth >= 840.dp) Alignment.Center else Alignment.BottomCenter } }
+        val contentAlignment by remember { derivedStateOf { if (windowHeight >= 480.dp && windowWidth >= 840.dp) Alignment.Center else Alignment.BottomCenter } }
 
         BackHandler(enabled = show.value) {
             onDismissRequest?.invoke()
@@ -114,7 +117,7 @@ fun SuperDialog(
                             .pointerInput(Unit) {
                                 detectTapGestures { /* Do nothing to consume the click */ }
                             }
-                            .align(contentAlignment.invoke().value)
+                            .align(contentAlignment)
                             .graphicsLayer(
                                 shape = SmoothRoundedCornerShape(bottomCornerRadius),
                                 clip = false

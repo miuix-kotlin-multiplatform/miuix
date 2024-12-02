@@ -14,10 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -54,33 +50,36 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 
 @Composable
-fun TextComponent() {
-    val showDialog = remember { mutableStateOf(false) }
-    val showDialog2 = remember { mutableStateOf(false) }
-    var checkbox by remember { mutableStateOf(false) }
-    var checkboxTrue by remember { mutableStateOf(true) }
-    var switch by remember { mutableStateOf(false) }
-    var switchTrue by remember { mutableStateOf(true) }
+fun TextComponent(
+    showDialog: MutableState<Boolean>,
+    dialogTextFieldValue: MutableState<String>,
+    showDialog2: MutableState<Boolean>,
+    dialog2dropdownSelectedOption: MutableState<Int>,
+    dialog2SuperSwitchState: MutableState<Boolean>,
+    checkbox: MutableState<Boolean>,
+    checkboxTrue: MutableState<Boolean>,
+    switch: MutableState<Boolean>,
+    switchTrue: MutableState<Boolean>,
+    dropdownOptionSelected: MutableState<Int>,
+    dropdownOptionSelectedRight: MutableState<Int>,
+    spinnerOptionSelected: MutableState<Int>,
+    spinnerOptionSelectedRight: MutableState<Int>,
+    spinnerOptionSelectedDialog: MutableState<Int>,
+    miuixSuperCheckbox: MutableState<String>,
+    miuixSuperCheckboxState: MutableState<Boolean>,
+    miuixSuperRightCheckbox: MutableState<String>,
+    miuixSuperRightCheckboxState: MutableState<Boolean>,
+    miuixSuperSwitch: MutableState<String>,
+    miuixSuperSwitchState: MutableState<Boolean>,
+    miuixSuperSwitchAnimState: MutableState<Boolean>,
+) {
     val dropdownOptions = listOf("Option 1", "Option 2", "Option 3", "Option 4")
-    val dropdownOptionSelected = remember { mutableStateOf(0) }
-    val dropdownOptionSelectedRight = remember { mutableStateOf(1) }
     val spinnerOptions = listOf(
         SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFF5B29)) }, "Option 1", "Red"),
         SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFF36D167)) }, "Option 2", "Green"),
         SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFF3482FF)) }, "Option 3", "Blue"),
         SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFFB21D)) }, "Option 4", "Yellow"),
     )
-    val spinnerOptionSelected = remember { mutableStateOf(0) }
-    val spinnerOptionSelectedRight = remember { mutableStateOf(1) }
-    val spinnerOptionSelectedDialog = remember { mutableStateOf(2) }
-    var miuixSuperCheckbox by remember { mutableStateOf("State: false") }
-    var miuixSuperCheckboxState by remember { mutableStateOf(false) }
-    var miuixSuperRightCheckbox by remember { mutableStateOf("false") }
-    var miuixSuperRightCheckboxState by remember { mutableStateOf(false) }
-    var miuixSuperSwitch by remember { mutableStateOf("false") }
-    var miuixSuperSwitchState by remember { mutableStateOf(false) }
-    var miuixSuperSwitchAnimState by remember { mutableStateOf(false) }
-
     SmallTitle(text = "Basic")
     Card(
         modifier = Modifier
@@ -182,12 +181,12 @@ fun TextComponent() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Checkbox(
-                checked = checkbox,
-                onCheckedChange = { checkbox = it }
+                checked = checkbox.value,
+                onCheckedChange = { checkbox.value = it }
             )
             Checkbox(
-                checked = checkboxTrue,
-                onCheckedChange = { checkboxTrue = it },
+                checked = checkboxTrue.value,
+                onCheckedChange = { checkboxTrue.value = it },
                 modifier = Modifier.padding(start = 8.dp)
             )
             Checkbox(
@@ -207,27 +206,27 @@ fun TextComponent() {
         SuperCheckbox(
             checkboxLocation = CheckboxLocation.Right,
             title = "Checkbox",
-            checked = miuixSuperRightCheckboxState,
+            checked = miuixSuperRightCheckboxState.value,
             rightActions = {
                 Text(
                     modifier = Modifier.padding(end = 10.dp),
-                    text = miuixSuperRightCheckbox,
+                    text = miuixSuperRightCheckbox.value,
                     color = MiuixTheme.colorScheme.onSurfaceVariantActions
                 )
             },
             onCheckedChange = {
-                miuixSuperRightCheckboxState = it
-                miuixSuperRightCheckbox = "$it"
+                miuixSuperRightCheckboxState.value = it
+                miuixSuperRightCheckbox.value = "$it"
             },
         )
 
         SuperCheckbox(
             title = "Checkbox",
-            summary = miuixSuperCheckbox,
-            checked = miuixSuperCheckboxState,
+            summary = miuixSuperCheckbox.value,
+            checked = miuixSuperCheckboxState.value,
             onCheckedChange = {
-                miuixSuperCheckboxState = it
-                miuixSuperCheckbox = "State: $it"
+                miuixSuperCheckboxState.value = it
+                miuixSuperCheckbox.value = "State: $it"
             },
         )
 
@@ -252,12 +251,12 @@ fun TextComponent() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Switch(
-                checked = switch,
-                onCheckedChange = { switch = it }
+                checked = switch.value,
+                onCheckedChange = { switch.value = it }
             )
             Switch(
-                checked = switchTrue,
-                onCheckedChange = { switchTrue = it },
+                checked = switchTrue.value,
+                onCheckedChange = { switchTrue.value = it },
                 modifier = Modifier.padding(start = 6.dp)
             )
             Switch(
@@ -277,30 +276,30 @@ fun TextComponent() {
         SuperSwitch(
             title = "Switch",
             summary = "Click to expand a Switch",
-            checked = miuixSuperSwitchAnimState,
+            checked = miuixSuperSwitchAnimState.value,
             onCheckedChange = {
-                miuixSuperSwitchAnimState = it
+                miuixSuperSwitchAnimState.value = it
             },
         )
 
         AnimatedVisibility(
-            visible = miuixSuperSwitchAnimState,
+            visible = miuixSuperSwitchAnimState.value,
             enter = fadeIn() + expandVertically(),
             exit = fadeOut() + shrinkVertically()
         ) {
             SuperSwitch(
                 title = "Switch",
-                checked = miuixSuperSwitchState,
+                checked = miuixSuperSwitchState.value,
                 rightActions = {
                     Text(
                         modifier = Modifier.padding(end = 6.dp),
-                        text = miuixSuperSwitch,
+                        text = miuixSuperSwitch.value,
                         color = MiuixTheme.colorScheme.onSurfaceVariantActions
                     )
                 },
                 onCheckedChange = {
-                    miuixSuperSwitchState = it
-                    miuixSuperSwitch = "$it"
+                    miuixSuperSwitchState.value = it
+                    miuixSuperSwitch.value = "$it"
                 },
             )
         }
@@ -386,13 +385,15 @@ fun TextComponent() {
         )
     }
 
-    dialog(showDialog)
-    dialog2(showDialog2)
+    dialog(showDialog, dialogTextFieldValue)
+    dialog2(showDialog2, dialog2dropdownSelectedOption, dialog2SuperSwitchState)
 }
 
 @Composable
-fun dialog(showDialog: MutableState<Boolean>) {
-    val value = remember { mutableStateOf("") }
+fun dialog(
+    showDialog: MutableState<Boolean>,
+    dialogTextFieldValue: MutableState<String>
+) {
     SuperDialog(
         title = "Dialog 1",
         summary = "Summary",
@@ -403,9 +404,9 @@ fun dialog(showDialog: MutableState<Boolean>) {
     ) {
         TextField(
             modifier = Modifier.padding(bottom = 16.dp),
-            value = value.value,
+            value = dialogTextFieldValue.value,
             maxLines = 1,
-            onValueChange = { value.value = it }
+            onValueChange = { dialogTextFieldValue.value = it }
         )
         Row(
             horizontalArrangement = Arrangement.SpaceBetween
@@ -431,10 +432,12 @@ fun dialog(showDialog: MutableState<Boolean>) {
 }
 
 @Composable
-fun dialog2(showDialog: MutableState<Boolean>) {
+fun dialog2(
+    showDialog: MutableState<Boolean>,
+    dialog2dropdownSelectedOption: MutableState<Int>,
+    dialog2SuperSwitchState: MutableState<Boolean>
+) {
     val dropdownOptions = listOf("Option 1", "Option 2")
-    val dropdownSelectedOption = remember { mutableStateOf(0) }
-    var miuixSuperSwitchState by remember { mutableStateOf(false) }
     SuperDialog(
         title = "Dialog 2",
         show = showDialog,
@@ -448,14 +451,14 @@ fun dialog2(showDialog: MutableState<Boolean>) {
             SuperDropdown(
                 title = "Dropdown",
                 items = dropdownOptions,
-                selectedIndex = dropdownSelectedOption.value,
-                onSelectedIndexChange = { newOption -> dropdownSelectedOption.value = newOption }
+                selectedIndex = dialog2dropdownSelectedOption.value,
+                onSelectedIndexChange = { newOption -> dialog2dropdownSelectedOption.value = newOption }
             )
             SuperSwitch(
                 title = "Switch",
-                checked = miuixSuperSwitchState,
+                checked = dialog2SuperSwitchState.value,
                 onCheckedChange = {
-                    miuixSuperSwitchState = it
+                    dialog2SuperSwitchState.value = it
                 }
             )
         }

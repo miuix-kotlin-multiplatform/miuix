@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -41,7 +40,39 @@ fun MainPage(
     padding: PaddingValues
 ) {
     var miuixSearchValue by remember { mutableStateOf("") }
-    var expanded by rememberSaveable { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) }
+
+    val showDialog = remember { mutableStateOf(false) }
+    val dialogTextFieldValue = remember { mutableStateOf("") }
+    val showDialog2 = remember { mutableStateOf(false) }
+    val dialog2dropdownSelectedOption = remember { mutableStateOf(0) }
+    val dialog2SuperSwitchState = remember { mutableStateOf(false) }
+    val checkbox = remember { mutableStateOf(false) }
+    val checkboxTrue = remember { mutableStateOf(true) }
+    val switch = remember { mutableStateOf(false) }
+    val switchTrue = remember { mutableStateOf(true) }
+    val dropdownOptionSelected = remember { mutableStateOf(0) }
+    val dropdownOptionSelectedRight = remember { mutableStateOf(1) }
+    val spinnerOptionSelected = remember { mutableStateOf(0) }
+    val spinnerOptionSelectedRight = remember { mutableStateOf(1) }
+    val spinnerOptionSelectedDialog = remember { mutableStateOf(2) }
+    val miuixSuperCheckbox = remember { mutableStateOf("State: false") }
+    val miuixSuperCheckboxState = remember { mutableStateOf(false) }
+    val miuixSuperRightCheckbox = remember { mutableStateOf("false") }
+    val miuixSuperRightCheckboxState = remember { mutableStateOf(false) }
+    val miuixSuperSwitch = remember { mutableStateOf("false") }
+    val miuixSuperSwitchState = remember { mutableStateOf(false) }
+    val miuixSuperSwitchAnimState = remember { mutableStateOf(false) }
+
+    val textComponent = @Composable {
+        TextComponent(
+            showDialog, dialogTextFieldValue, showDialog2, dialog2dropdownSelectedOption, dialog2SuperSwitchState,
+            checkbox, checkboxTrue, switch, switchTrue, dropdownOptionSelected, dropdownOptionSelectedRight, spinnerOptionSelected,
+            spinnerOptionSelectedRight, spinnerOptionSelectedDialog, miuixSuperCheckbox, miuixSuperCheckboxState,
+            miuixSuperRightCheckbox, miuixSuperRightCheckboxState, miuixSuperSwitch, miuixSuperSwitchState, miuixSuperSwitchAnimState
+        )
+    }
+    val otherComponent = @Composable { OtherComponent(padding) }
 
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize()
@@ -113,12 +144,12 @@ fun MainPage(
                     item(
                         key = "text"
                     ) {
-                        TextComponent()
+                        textComponent()
                     }
                     item(
                         key = "other"
                     ) {
-                        OtherComponent(padding)
+                        otherComponent()
                     }
                 }
             }
@@ -195,9 +226,9 @@ fun MainPage(
                     }
                     if (!expanded) {
                         item(
-                            key = "text"
+                            key = "other"
                         ) {
-                            OtherComponent(padding)
+                            otherComponent()
                             Spacer(modifier = Modifier.height(6.dp))
                         }
                     }
@@ -209,8 +240,10 @@ fun MainPage(
                     contentPadding = PaddingValues(top = padding.calculateTopPadding()),
                     topAppBarScrollBehavior = topAppBarScrollBehavior
                 ) {
-                    item {
-                        TextComponent()
+                    item(
+                        key = "text"
+                    ) {
+                        textComponent()
                         Spacer(modifier = Modifier.height(12.dp + padding.calculateBottomPadding()))
                     }
                 }
