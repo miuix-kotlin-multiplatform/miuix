@@ -90,7 +90,6 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
 
-            implementation(compose.material3)
             implementation(project(":miuix"))
         }
         desktopMain.dependencies {
