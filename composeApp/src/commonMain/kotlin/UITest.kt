@@ -11,14 +11,11 @@ import androidx.compose.foundation.layout.captionBarPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.Menu
-import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -40,16 +37,26 @@ import top.yukonga.miuix.kmp.basic.FloatingActionButton
 import top.yukonga.miuix.kmp.basic.HorizontalPager
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
+import top.yukonga.miuix.kmp.basic.ListPopup
+import top.yukonga.miuix.kmp.basic.ListPopupDefaults
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.NavigationBar
 import top.yukonga.miuix.kmp.basic.NavigationItem
+import top.yukonga.miuix.kmp.basic.PopupPositionProvider
 import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.SmallTopAppBar
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
+import top.yukonga.miuix.kmp.extra.DropdownImpl
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.GitHub
+import top.yukonga.miuix.kmp.icon.icons.ImmersionMore
+import top.yukonga.miuix.kmp.icon.icons.Info
+import top.yukonga.miuix.kmp.icon.icons.More
+import top.yukonga.miuix.kmp.icon.icons.NavigatorSwitch
+import top.yukonga.miuix.kmp.icon.icons.Settings
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
 import utils.FPSMonitor
 
 @OptIn(FlowPreview::class)
@@ -76,9 +83,10 @@ fun UITest(
     }
 
     val items = listOf(
-        NavigationItem("HomePage", Icons.Rounded.Home),
-        NavigationItem("DropDown", Icons.Rounded.Favorite),
-        NavigationItem("Settings", Icons.Rounded.Settings)
+        NavigationItem("HomePage", MiuixIcons.NavigatorSwitch),
+        NavigationItem("DropDown", MiuixIcons.Info),
+        NavigationItem("Settings", MiuixIcons.Settings),
+        NavigationItem("More", MiuixIcons.More)
     )
 
     LaunchedEffect(pagerState) {
@@ -92,6 +100,11 @@ fun UITest(
     val showBottomBar = remember { mutableStateOf(true) }
     val showFloatingActionButton = remember { mutableStateOf(true) }
     val enablePageUserScroll = remember { mutableStateOf(false) }
+
+    val isTopPopupExpanded = remember { mutableStateOf(false) }
+    val showTopPopup = remember { mutableStateOf(false) }
+    val isBottomPopupExpanded = remember { mutableStateOf(false) }
+    val showBottomPopup = remember { mutableStateOf(false) }
 
     val uriHandler = LocalUriHandler.current
 
@@ -109,12 +122,45 @@ fun UITest(
                             title = "Miuix",
                             scrollBehavior = currentScrollBehavior,
                             actions = {
+                                if (isTopPopupExpanded.value) {
+                                    ListPopup(
+                                        show = showTopPopup,
+                                        popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
+                                        alignment = PopupPositionProvider.Align.TopRight,
+                                        onDismissRequest = {
+                                            isTopPopupExpanded.value = false
+                                        }
+                                    ) {
+                                        LazyColumn {
+                                            items(items.take(3).size) { index ->
+                                                DropdownImpl(
+                                                    text = items[index].label,
+                                                    optionSize = items.take(3).size,
+                                                    isSelected = items[index] == items[targetPage],
+                                                    onSelectedIndexChange = {
+                                                        targetPage = index
+                                                        coroutineScope.launch {
+                                                            pagerState.animateScrollToPage(index)
+                                                        }
+                                                        dismissPopup(showTopPopup)
+                                                        isTopPopupExpanded.value = false
+                                                    },
+                                                    textWidthDp = 100.dp,
+                                                    index = index
+                                                )
+                                            }
+                                        }
+                                    }
+                                    showTopPopup.value = true
+                                }
                                 IconButton(
-                                    modifier = Modifier.padding(end = 12.dp),
-                                    onClick = { }
+                                    modifier = Modifier.padding(end = 21.dp).size(40.dp),
+                                    onClick = {
+                                        isTopPopupExpanded.value = true
+                                    }
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Rounded.Menu,
+                                        imageVector = MiuixIcons.ImmersionMore,
                                         contentDescription = "Menu"
                                     )
                                 }
@@ -125,12 +171,45 @@ fun UITest(
                             title = "Miuix",
                             scrollBehavior = currentScrollBehavior,
                             actions = {
+                                if (isTopPopupExpanded.value) {
+                                    ListPopup(
+                                        show = showTopPopup,
+                                        popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
+                                        alignment = PopupPositionProvider.Align.TopRight,
+                                        onDismissRequest = {
+                                            isTopPopupExpanded.value = false
+                                        }
+                                    ) {
+                                        LazyColumn {
+                                            items(items.take(3).size) { index ->
+                                                DropdownImpl(
+                                                    text = items[index].label,
+                                                    optionSize = items.take(3).size,
+                                                    isSelected = items[index] == items[targetPage],
+                                                    onSelectedIndexChange = {
+                                                        targetPage = index
+                                                        coroutineScope.launch {
+                                                            pagerState.animateScrollToPage(index)
+                                                        }
+                                                        dismissPopup(showTopPopup)
+                                                        isTopPopupExpanded.value = false
+                                                    },
+                                                    textWidthDp = 100.dp,
+                                                    index = index
+                                                )
+                                            }
+                                        }
+                                    }
+                                    showTopPopup.value = true
+                                }
                                 IconButton(
-                                    modifier = Modifier.padding(end = 12.dp),
-                                    onClick = { }
+                                    modifier = Modifier.padding(end = 21.dp).size(40.dp),
+                                    onClick = {
+                                        isTopPopupExpanded.value = true
+                                    }
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Rounded.Menu,
+                                        imageVector = MiuixIcons.ImmersionMore,
                                         contentDescription = "Menu"
                                     )
                                 }
@@ -146,13 +225,48 @@ fun UITest(
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
+                if (isBottomPopupExpanded.value) {
+                    ListPopup(
+                        show = showBottomPopup,
+                        popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
+                        alignment = PopupPositionProvider.Align.BottomRight,
+                        onDismissRequest = {
+                            isBottomPopupExpanded.value = false
+                        }
+                    ) {
+                        LazyColumn {
+                            items(items.take(3).size) { index ->
+                                DropdownImpl(
+                                    text = items[index].label,
+                                    optionSize = items.take(3).size,
+                                    isSelected = items[index] == items[targetPage],
+                                    onSelectedIndexChange = {
+                                        targetPage = index
+                                        coroutineScope.launch {
+                                            pagerState.animateScrollToPage(index)
+                                        }
+                                        dismissPopup(showBottomPopup)
+                                        isBottomPopupExpanded.value = false
+                                    },
+                                    textWidthDp = 100.dp,
+                                    index = index
+                                )
+                            }
+                        }
+                    }
+                    showBottomPopup.value = true
+                }
                 NavigationBar(
                     items = items,
                     selected = targetPage,
                     onClick = { index ->
-                        targetPage = index
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(index)
+                        if (index in 0..2) {
+                            targetPage = index
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(index)
+                            }
+                        } else {
+                            isBottomPopupExpanded.value = true
                         }
                     }
                 )

@@ -1,79 +1,53 @@
 package top.yukonga.miuix.kmp.extra
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.hoverable
-import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.captionBar
-import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.BlendModeColorFilter
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.TransformOrigin
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
-import top.yukonga.miuix.kmp.basic.Box
+import top.yukonga.miuix.kmp.basic.ListPopup
+import top.yukonga.miuix.kmp.basic.PopupPositionProvider
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TextButton
 import top.yukonga.miuix.kmp.icon.MiuixIcons
@@ -81,15 +55,8 @@ import top.yukonga.miuix.kmp.icon.icons.ArrowUpDownIntegrated
 import top.yukonga.miuix.kmp.icon.icons.Check
 import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showPopup
-import top.yukonga.miuix.kmp.utils.Platform
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
-import top.yukonga.miuix.kmp.utils.getWindowSize
-import top.yukonga.miuix.kmp.utils.platform
-import kotlin.math.roundToInt
 
 /**
  * A spinner component with Miuix style.
@@ -98,15 +65,12 @@ import kotlin.math.roundToInt
  * @param items The list of [SpinnerEntry] to be shown in the [SuperSpinner].
  * @param selectedIndex The index of the selected item in the [SuperSpinner].
  * @param modifier The [Modifier] to be applied to the [SuperSpinner].
- * @param popupModifier The [Modifier] to be applied to the popup of the [SuperSpinner].
  * @param titleColor The color of the title of the [SuperSpinner].
  * @param summary The summary of the [SuperSpinner].
  * @param summaryColor The color of the summary of the [SuperSpinner].
  * @param mode The mode of the [SuperSpinner].
- * @param horizontalPadding The horizontal padding of the [SuperSpinner].
  * @param leftAction The action to be shown at the left side of the [SuperSpinner].
  * @param insideMargin The [PaddingValues] to be applied inside the [SuperSpinner].
- * @param defaultWindowInsetsPadding Whether to apply the default window insets padding to the [SuperSpinner].
  * @param enabled Whether the [SuperSpinner] is enabled.
  * @param showValue Whether to show the value of the [SuperSpinner].
  * @param onSelectedIndexChange The callback to be invoked when the selected index of the [SuperSpinner] is changed.
@@ -117,43 +81,30 @@ fun SuperSpinner(
     items: List<SpinnerEntry>,
     selectedIndex: Int,
     modifier: Modifier = Modifier,
-    popupModifier: Modifier = Modifier,
     titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
     summary: String? = null,
     summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
     mode: SpinnerMode = SpinnerMode.Normal,
-    horizontalPadding: Dp = 0.dp,
     leftAction: @Composable (() -> Unit)? = null,
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
-    defaultWindowInsetsPadding: Boolean = true,
     enabled: Boolean = true,
     showValue: Boolean = true,
     onSelectedIndexChange: ((Int) -> Unit)?,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    val isDropdownPreExpand = remember { mutableStateOf(false) }
     val isDropdownExpanded = remember { mutableStateOf(false) }
+    val showPopup = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val held = remember { mutableStateOf<HoldDownInteraction.Hold?>(null) }
     val hapticFeedback = LocalHapticFeedback.current
     val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
 
-    var pressInteraction: PressInteraction.Press? = null
     var alignLeft by rememberSaveable { mutableStateOf(true) }
-    var componentInnerOffsetXPx by remember { mutableIntStateOf(0) }
-    var componentInnerOffsetYPx by remember { mutableIntStateOf(0) }
-    var componentInnerHeightPx by remember { mutableIntStateOf(0) }
-    var componentInnerWidthPx by remember { mutableIntStateOf(0) }
-
-    val density = LocalDensity.current
-    val getWindowSize = rememberUpdatedState(getWindowSize())
-    val windowHeightPx by rememberUpdatedState(getWindowSize.value.height)
-    val windowWidthPx by rememberUpdatedState(getWindowSize.value.width)
-    var transformOrigin by remember { mutableStateOf(TransformOrigin.Center) }
 
     DisposableEffect(Unit) {
         onDispose {
-            dismissPopup(isDropdownExpanded)
+            dismissPopup(showPopup)
+            isDropdownExpanded.value = false
         }
     }
 
@@ -168,98 +119,55 @@ fun SuperSpinner(
 
     BasicComponent(
         modifier = modifier
-            .indication(
-                interactionSource = interactionSource,
-                indication = LocalIndication.current
-            )
-            .hoverable(
-                interactionSource = interactionSource,
-                enabled = enabled
-            )
             .pointerInput(Unit) {
-                detectTapGestures(
-                    onPress = { offset ->
-                        if (enabled) {
-                            coroutineScope {
-                                val delayJob = launch {
-                                    alignLeft = offset.x < (size.width / 2)
-                                    isDropdownPreExpand.value = true
-                                    delay(
-                                        when (platform()) {
-                                            Platform.IOS -> 150
-                                            Platform.Android -> 100
-                                            else -> 0
-                                        }
-                                    )
-                                    val press = PressInteraction.Press(offset)
-                                    interactionSource.emit(press)
-                                    pressInteraction = press
-                                }
-                                val success = tryAwaitRelease()
-                                isDropdownPreExpand.value = false
-                                if (success) {
-                                    isDropdownExpanded.value = enabled
-                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    interactionSource.emit(HoldDownInteraction.Hold().also {
-                                        held.value = it
-                                    })
-                                }
-                                if (delayJob.isActive) {
-                                    delayJob.cancelAndJoin()
-                                    if (success) {
-                                        val press = PressInteraction.Press(offset)
-                                        val release = PressInteraction.Release(press)
-                                        interactionSource.emit(press)
-                                        interactionSource.emit(release)
-                                    }
-                                } else {
-                                    pressInteraction?.let { pressInteraction ->
-                                        val endInteraction = if (success) {
-                                            PressInteraction.Release(pressInteraction)
-                                        } else {
-                                            PressInteraction.Cancel(pressInteraction)
-                                        }
-                                        interactionSource.emit(endInteraction)
-                                    }
-                                }
-                                pressInteraction = null
+                awaitPointerEventScope {
+                    while (enabled) {
+                        val event = awaitPointerEvent()
+                        if (event.type != PointerEventType.Move) {
+                            val eventChange = event.changes.first()
+                            if (eventChange.pressed) {
+                                alignLeft = eventChange.position.x < (size.width / 2)
                             }
                         }
                     }
-                )
+                }
             },
+        interactionSource = interactionSource,
         insideMargin = insideMargin,
         title = title,
         titleColor = titleColor,
         summary = summary,
         summaryColor = summaryColor,
         leftAction = {
-            if (isDropdownPreExpand.value) {
-                Layout(
-                    content = {},
-                    modifier = Modifier.onGloballyPositioned { childCoordinates ->
-                        val parentCoordinates =
-                            childCoordinates.parentLayoutCoordinates ?: return@onGloballyPositioned
-                        val positionInWindow = parentCoordinates.positionInWindow()
-                        componentInnerOffsetXPx = positionInWindow.x.toInt()
-                        componentInnerOffsetYPx = positionInWindow.y.toInt()
-                        componentInnerHeightPx = parentCoordinates.size.height
-                        componentInnerWidthPx = parentCoordinates.size.width
-                        with(density) {
-                            val xInWindow = componentInnerOffsetXPx + if (mode == SpinnerMode.AlwaysOnRight || !alignLeft)
-                                componentInnerWidthPx - 64.dp.roundToPx()
-                            else
-                                64.dp.roundToPx()
-                            val yInWindow = componentInnerOffsetYPx + componentInnerHeightPx / 2 - 56.dp.roundToPx()
-                            transformOrigin = TransformOrigin(
-                                xInWindow / windowWidthPx.toFloat(),
-                                yInWindow / windowHeightPx.toFloat()
-                            )
+            if (isDropdownExpanded.value) {
+                ListPopup(
+                    show = showPopup,
+                    alignment = if ((mode == SpinnerMode.AlwaysOnRight || !alignLeft))
+                        PopupPositionProvider.Align.Right
+                    else
+                        PopupPositionProvider.Align.Left,
+                    onDismissRequest = {
+                        isDropdownExpanded.value = false
+                    }
+                ) {
+                    LazyColumn {
+                        items(items.size) { index ->
+                            SpinnerItemImpl(
+                                entry = items[index],
+                                entryCount = items.size,
+                                isSelected = selectedIndex == index,
+                                index = index,
+                                dialogMode = false
+                            ) {
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                onSelectedIndexChange?.let { it1 -> it1(it) }
+                                dismissPopup(showPopup)
+                                isDropdownExpanded.value = false
+                            }
                         }
                     }
-                ) { _, _ ->
-                    layout(0, 0) {}
                 }
+                showPopup.value = true
             }
             leftAction?.invoke()
         },
@@ -285,130 +193,19 @@ fun SuperSpinner(
                 contentDescription = null
             )
         },
-        enabled = enabled
-    )
-
-    if (isDropdownExpanded.value) {
-        if (!dropdownStates.contains(isDropdownExpanded)) dropdownStates.add(isDropdownExpanded)
-        LaunchedEffect(isDropdownExpanded.value) {
-            if (isDropdownExpanded.value) {
-                dropdownStates.forEach { state -> if (state != isDropdownExpanded) state.value = false }
-            }
-        }
-
-        val statusBarPx by rememberUpdatedState(
-            with(density) { WindowInsets.statusBars.asPaddingValues().calculateTopPadding().toPx() }.roundToInt()
-        )
-        val navigationBarPx by rememberUpdatedState(
-            with(density) { WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
-        )
-        val captionBarPx by rememberUpdatedState(
-            with(density) { WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().toPx() }.roundToInt()
-        )
-        val dropdownElevation by rememberUpdatedState(with(density) {
-            11.dp.toPx()
-        })
-        val insideTopPx by rememberUpdatedState(with(density) {
-            insideMargin.calculateTopPadding().toPx()
-        }.roundToInt())
-        val insideBottomPx by rememberUpdatedState(with(density) {
-            insideMargin.calculateBottomPadding().toPx()
-        }.roundToInt())
-        val displayCutoutLeftSize by rememberUpdatedState(with(density) {
-            WindowInsets.displayCutout.asPaddingValues(density).calculateLeftPadding(LayoutDirection.Ltr).toPx()
-        }.roundToInt())
-        val paddingPx by rememberUpdatedState(with(density) {
-            horizontalPadding.toPx()
-        }.roundToInt())
-
-        BackHandler(enabled = isDropdownExpanded.value) {
-            dismissPopup(isDropdownExpanded)
-        }
-
-        showPopup(
-            transformOrigin = { transformOrigin },
-            content = {
-                Box(
-                    modifier = if (defaultWindowInsetsPadding) {
-                        popupModifier
-                            .windowInsetsPadding(
-                                WindowInsets.displayCutout.only(
-                                    WindowInsetsSides.Horizontal
-                                )
-                            )
-                    } else {
-                        popupModifier
-                    }
-                        .pointerInput(Unit) {
-                            detectTapGestures(
-                                onTap = {
-                                    dismissPopup(isDropdownExpanded)
-                                }
-                            )
-                        }
-                        .layout { measurable, constraints ->
-                            val placeable = measurable.measure(
-                                constraints.copy(
-                                    minWidth = 200.dp.roundToPx(),
-                                    minHeight = 50.dp.roundToPx(),
-                                    maxHeight = windowHeightPx - statusBarPx - navigationBarPx - captionBarPx
-                                )
-                            )
-                            layout(constraints.maxWidth, constraints.maxHeight) {
-                                val xCoordinate = calculateOffsetXPx(
-                                    componentInnerOffsetXPx,
-                                    componentInnerWidthPx,
-                                    placeable.width,
-                                    paddingPx,
-                                    displayCutoutLeftSize,
-                                    defaultWindowInsetsPadding,
-                                    (mode == SpinnerMode.AlwaysOnRight || !alignLeft)
-                                )
-                                val yCoordinate = calculateOffsetYPx(
-                                    windowHeightPx,
-                                    componentInnerOffsetYPx,
-                                    placeable.height,
-                                    componentInnerHeightPx,
-                                    insideTopPx,
-                                    insideBottomPx,
-                                    statusBarPx,
-                                    navigationBarPx,
-                                    captionBarPx
-                                )
-                                placeable.place(xCoordinate, yCoordinate)
-                            }
-                        }
-                ) {
-                    LazyColumn(
-                        modifier = Modifier
-                            .align(AbsoluteAlignment.TopLeft)
-                            .graphicsLayer(
-                                shadowElevation = dropdownElevation,
-                                shape = SmoothRoundedCornerShape(16.dp),
-                                ambientShadowColor = Color.Black.copy(alpha = 0.3f),
-                                spotShadowColor = Color.Black.copy(alpha = 0.3f)
-                            )
-                            .clip(SmoothRoundedCornerShape(16.dp))
-                            .background(MiuixTheme.colorScheme.surface)
-                    ) {
-                        items(items.size) { index ->
-                            SpinnerItemImpl(
-                                entry = items[index],
-                                entryCount = items.size,
-                                isSelected = selectedIndex == index,
-                                index = index,
-                                dialogMode = false
-                            ) {
-                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                onSelectedIndexChange?.let { it1 -> it1(it) }
-                                dismissPopup(isDropdownExpanded)
-                            }
-                        }
-                    }
+        onClick = {
+            if (enabled) {
+                isDropdownExpanded.value = enabled
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                coroutineScope.launch {
+                    interactionSource.emit(HoldDownInteraction.Hold().also {
+                        held.value = it
+                    })
                 }
             }
-        )
-    }
+        },
+        enabled = enabled
+    )
 }
 
 /**
@@ -548,30 +345,44 @@ fun SuperSpinner(
             },
             insideMargin = DpSize(0.dp, 24.dp)
         ) {
-            Column {
-                LazyColumn {
-                    items(items.size) { index ->
-                        SpinnerItemImpl(
-                            entry = items[index],
-                            entryCount = items.size,
-                            isSelected = selectedIndex == index,
-                            index = index,
-                            dialogMode = true
-                        ) {
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                            onSelectedIndexChange?.let { it1 -> it1(it) }
-                            dismissDialog(isDropdownExpanded)
+            Layout(
+                content = {
+                    LazyColumn {
+                        items(items.size) { index ->
+                            SpinnerItemImpl(
+                                entry = items[index],
+                                entryCount = items.size,
+                                isSelected = selectedIndex == index,
+                                index = index,
+                                dialogMode = true
+                            ) {
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                onSelectedIndexChange?.let { it1 -> it1(it) }
+                                dismissDialog(isDropdownExpanded)
+                            }
                         }
                     }
+                    TextButton(
+                        modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp).fillMaxWidth(),
+                        text = dialogButtonString,
+                        minHeight = 50.dp,
+                        onClick = {
+                            dismissDialog(isDropdownExpanded)
+                        }
+                    )
                 }
-                TextButton(
-                    modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp).fillMaxWidth(),
-                    text = dialogButtonString,
-                    minHeight = 50.dp,
-                    onClick = {
-                        dismissDialog(isDropdownExpanded)
-                    }
-                )
+            ) { measurables, constraints ->
+                if (measurables.size != 2) {
+                    layout(0, 0) { }
+                }
+                val button = measurables[1].measure(constraints)
+                val lazyList = measurables[0].measure(constraints.copy(
+                    maxHeight = constraints.maxHeight - button.height
+                ))
+                layout(constraints.maxWidth, lazyList.height + button.height) {
+                    lazyList.place(0, 0)
+                    button.place(0, lazyList.height)
+                }
             }
         }
     }

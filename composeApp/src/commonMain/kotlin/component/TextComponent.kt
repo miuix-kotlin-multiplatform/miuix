@@ -449,8 +449,7 @@ fun dialog2(showDialog: MutableState<Boolean>) {
                 title = "Dropdown",
                 items = dropdownOptions,
                 selectedIndex = dropdownSelectedOption.value,
-                onSelectedIndexChange = { newOption -> dropdownSelectedOption.value = newOption },
-                defaultWindowInsetsPadding = false
+                onSelectedIndexChange = { newOption -> dropdownSelectedOption.value = newOption }
             )
             SuperSwitch(
                 title = "Switch",
