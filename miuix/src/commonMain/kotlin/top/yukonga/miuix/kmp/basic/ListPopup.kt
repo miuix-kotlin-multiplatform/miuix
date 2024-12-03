@@ -238,15 +238,17 @@ fun ListPopupColumn(
         modifier = Modifier.verticalScroll(rememberScrollState())
     ) { constraints ->
         var listHeight = 0
+        val tempConstraints = constraints.copy(
+            minWidth = 200.dp.roundToPx(), maxWidth = 288.dp.roundToPx()
+        )
         val listWidth = subcompose("miuixPopupListFake", content).map {
-            it.measure(constraints.copy(
-                minWidth = 200.dp.roundToPx(), maxWidth = 288.dp.roundToPx()
-            ))
+            it.measure(tempConstraints)
         }.maxOf { it.width }.coerceIn(200.dp.roundToPx(), 288.dp.roundToPx())
+        val childConstraints = constraints.copy(
+            minWidth = listWidth, maxWidth = listWidth
+        )
         val placeables = subcompose("miuixPopupListReal", content).map {
-            val placeable = it.measure(constraints.copy(
-                minWidth = listWidth, maxWidth = listWidth
-            ))
+            val placeable = it.measure(childConstraints)
             listHeight += placeable.height
             placeable
         }
