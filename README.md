@@ -2,7 +2,7 @@
 
 **Miuix** is a shared UI library for [Compose Multiplatform](https://www.jetbrains.com/compose-multiplatform/).
 
-Now Supported: **Android** / **Desktop(JVM)** / **iOS** / **WasmJs** / **Js** / **macOS**.
+Now Supported: **Android** / **Desktop(JVM)** / **iOS** / **WasmJs** / **Js** / **macOS(Native)**.
 
 > This library is experimental, any API would be changed in the future without any notification.
 
