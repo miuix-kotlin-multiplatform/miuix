@@ -237,9 +237,7 @@ fun ListPopupColumn(
     SubcomposeLayout(
         modifier = Modifier.verticalScroll(rememberScrollState())
     ) { constraints ->
-        var itemCount = 0
         var listHeight = 0
-        var visibleHeight = 0
         val listWidth = subcompose("miuixPopupListFake", content).map {
             it.measure(constraints.copy(
                 minWidth = 200.dp.roundToPx(), maxWidth = 288.dp.roundToPx()
@@ -249,11 +247,7 @@ fun ListPopupColumn(
             val placeable = it.measure(constraints.copy(
                 minWidth = listWidth, maxWidth = listWidth
             ))
-            if (itemCount < 8) {
-                visibleHeight += placeable.height
-            }
             listHeight += placeable.height
-            itemCount++
             placeable
         }
         layout(listWidth, min(constraints.maxHeight, listHeight)) {
