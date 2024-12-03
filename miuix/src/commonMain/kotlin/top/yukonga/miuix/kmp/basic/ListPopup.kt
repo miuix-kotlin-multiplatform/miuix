@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.captionBar
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +29,7 @@ import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
@@ -43,6 +46,7 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.showPopup
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
+import kotlin.math.min
 
 /**
  * A popup with a list of items.
@@ -52,7 +56,7 @@ import top.yukonga.miuix.kmp.utils.getWindowSize
  * @param popupPositionProvider The [PopupPositionProvider] of the [ListPopup].
  * @param alignment The alignment of the [ListPopup].
  * @param onDismissRequest The callback when the [ListPopup] is dismissed.
- * @param content The [Composable] content of the [ListPopup].
+ * @param content The [Composable] content of the [ListPopup]. You should use the [ListPopupColumn] in general.
  */
 @Composable
 fun ListPopup(
@@ -151,7 +155,7 @@ fun ListPopup(
                             constraints.copy(
                                 minWidth = 200.dp.roundToPx(),
                                 minHeight = 50.dp.roundToPx(),
-                                maxHeight = windowBounds.height
+                                maxHeight = windowBounds.height - popupMargin.top - popupMargin.bottom
                             )
                         )
                         popupContentSize = IntSize(placeable.width, placeable.height)
@@ -219,6 +223,46 @@ fun ListPopup(
         }
     ) { _, _ ->
         layout(0, 0) {}
+    }
+}
+
+/**
+ * A column that automatically aligns the width to the widest item
+ * @param content The items
+ */
+@Composable
+fun ListPopupColumn(
+    content: @Composable () -> Unit
+) {
+    SubcomposeLayout(
+        modifier = Modifier.verticalScroll(rememberScrollState())
+    ) { constraints ->
+        var itemCount = 0
+        var listHeight = 0
+        var visibleHeight = 0
+        val listWidth = subcompose("miuixPopupListFake", content).map {
+            it.measure(constraints.copy(
+                minWidth = 200.dp.roundToPx(), maxWidth = 288.dp.roundToPx()
+            ))
+        }.maxOf { it.width }.coerceIn(200.dp.roundToPx(), 288.dp.roundToPx())
+        val placeables = subcompose("miuixPopupListReal", content).map {
+            val placeable = it.measure(constraints.copy(
+                minWidth = listWidth, maxWidth = listWidth
+            ))
+            if (itemCount < 8) {
+                visibleHeight += placeable.height
+            }
+            listHeight += placeable.height
+            itemCount++
+            placeable
+        }
+        layout(listWidth, min(constraints.maxHeight, listHeight)) {
+            var height = 0
+            placeables.forEach {
+                it.place(0, height)
+                height += it.height
+            }
+        }
     }
 }
 

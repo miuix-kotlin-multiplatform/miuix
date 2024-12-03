@@ -47,6 +47,7 @@ import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.basic.ListPopup
+import top.yukonga.miuix.kmp.basic.ListPopupColumn
 import top.yukonga.miuix.kmp.basic.PopupPositionProvider
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TextButton
@@ -150,10 +151,10 @@ fun SuperSpinner(
                         isDropdownExpanded.value = false
                     }
                 ) {
-                    LazyColumn {
-                        items(items.size) { index ->
+                    ListPopupColumn {
+                        items.forEachIndexed { index, spinnerEntry ->
                             SpinnerItemImpl(
-                                entry = items[index],
+                                entry = spinnerEntry,
                                 entryCount = items.size,
                                 isSelected = selectedIndex == index,
                                 index = index,
@@ -434,11 +435,12 @@ fun SpinnerItemImpl(
             .background(backgroundColor)
             .then(
                 if (dialogMode) Modifier.heightIn(min = 56.dp).widthIn(min = 200.dp).fillMaxWidth().padding(horizontal = 28.dp)
-                else Modifier.widthIn(200.dp, 288.dp).padding(horizontal = 20.dp)
+                else Modifier.padding(horizontal = 20.dp)
             )
             .padding(top = additionalTopPadding, bottom = additionalBottomPadding)
     ) {
         Row(
+            modifier = if (dialogMode) Modifier else Modifier.widthIn(max = 216.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
