@@ -75,9 +75,9 @@ fun TextComponent(
 ) {
     val dropdownOptions = listOf("Option 1", "Option 2", "Option 3", "Option 4")
     val dropdownOptions2 = listOf(
-        "Option 1", "Option 2  (this is a long long long option)", "Option 3", "Option 4",
+        "Option 1", "Option 2", "Option 3", "Option 4",
         "Option 5", "Option 6", "Option 7", "Option 8",
-        "Option 9", "Option 10", "Option 11", "Option 12"
+        "Option 9", "Option 10", "Option 11", "Option 12 (this is a long long long option)"
     )
     val spinnerOptions = listOf(
         SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFF5B29)) }, "Option 1", "Red"),
@@ -87,9 +87,9 @@ fun TextComponent(
     )
     val spinnerOptions2 = listOf(
         SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFF5B29)) }, "Option 1", "Red"),
-        SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFF36D167)) }, "Option 2 (this is a long option)", "Green"),
+        SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFF36D167)) }, "Option 2", "Green"),
         SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFF3482FF)) }, "Option 3", "Blue"),
-        SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFFB21D)) }, "Option 4", "Yellow"),
+        SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFFB21D)) }, "Option 4 (this is a long option)", "Yellow"),
     )
     SmallTitle(text = "Basic")
     Card(
