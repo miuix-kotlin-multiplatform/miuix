@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
@@ -38,6 +37,7 @@ import top.yukonga.miuix.kmp.basic.HorizontalPager
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.ListPopup
+import top.yukonga.miuix.kmp.basic.ListPopupColumn
 import top.yukonga.miuix.kmp.basic.ListPopupDefaults
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.NavigationBar
@@ -131,10 +131,10 @@ fun UITest(
                                             isTopPopupExpanded.value = false
                                         }
                                     ) {
-                                        LazyColumn {
-                                            items(items.take(3).size) { index ->
+                                        ListPopupColumn {
+                                            items.take(3).forEachIndexed { index, navigationItem ->
                                                 DropdownImpl(
-                                                    text = items[index].label,
+                                                    text = navigationItem.label,
                                                     optionSize = items.take(3).size,
                                                     isSelected = items[index] == items[targetPage],
                                                     onSelectedIndexChange = {
@@ -145,7 +145,6 @@ fun UITest(
                                                         dismissPopup(showTopPopup)
                                                         isTopPopupExpanded.value = false
                                                     },
-                                                    textWidthDp = 100.dp,
                                                     index = index
                                                 )
                                             }
@@ -180,10 +179,10 @@ fun UITest(
                                             isTopPopupExpanded.value = false
                                         }
                                     ) {
-                                        LazyColumn {
-                                            items(items.take(3).size) { index ->
+                                        ListPopupColumn {
+                                            items.take(3).forEachIndexed { index, navigationItem ->
                                                 DropdownImpl(
-                                                    text = items[index].label,
+                                                    text = navigationItem.label,
                                                     optionSize = items.take(3).size,
                                                     isSelected = items[index] == items[targetPage],
                                                     onSelectedIndexChange = {
@@ -194,7 +193,6 @@ fun UITest(
                                                         dismissPopup(showTopPopup)
                                                         isTopPopupExpanded.value = false
                                                     },
-                                                    textWidthDp = 100.dp,
                                                     index = index
                                                 )
                                             }
@@ -234,10 +232,10 @@ fun UITest(
                             isBottomPopupExpanded.value = false
                         }
                     ) {
-                        LazyColumn {
-                            items(items.take(3).size) { index ->
+                        ListPopupColumn {
+                            items.take(3).forEachIndexed { index, navigationItem ->
                                 DropdownImpl(
-                                    text = items[index].label,
+                                    text = navigationItem.label,
                                     optionSize = items.take(3).size,
                                     isSelected = items[index] == items[targetPage],
                                     onSelectedIndexChange = {
@@ -248,7 +246,6 @@ fun UITest(
                                         dismissPopup(showBottomPopup)
                                         isBottomPopupExpanded.value = false
                                     },
-                                    textWidthDp = 100.dp,
                                     index = index
                                 )
                             }

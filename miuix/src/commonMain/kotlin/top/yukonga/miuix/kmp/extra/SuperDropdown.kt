@@ -9,9 +9,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -33,13 +31,13 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.basic.ListPopup
+import top.yukonga.miuix.kmp.basic.ListPopupColumn
 import top.yukonga.miuix.kmp.basic.PopupPositionProvider
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.icon.MiuixIcons
@@ -139,10 +137,10 @@ fun SuperDropdown(
                         isDropdownExpanded.value = false
                     }
                 ) {
-                    LazyColumn {
-                        items(items.size) { index ->
+                    ListPopupColumn {
+                        items.forEachIndexed { index, string ->
                             DropdownImpl(
-                                text = items[index],
+                                text = string,
                                 optionSize = items.size,
                                 isSelected = selectedIndex == index,
                                 onSelectedIndexChange = {
@@ -151,7 +149,6 @@ fun SuperDropdown(
                                     dismissPopup(showPopup)
                                     isDropdownExpanded.value = false
                                 },
-                                textWidthDp = 128.dp,
                                 index = index
                             )
                         }
@@ -205,7 +202,6 @@ fun SuperDropdown(
  * @param isSelected Whether the option is selected.
  * @param index The index of the current option in the options.
  * @param onSelectedIndexChange The callback when the index is selected.
- * @param textWidthDp The maximum width of text in options.
  */
 @Composable
 fun DropdownImpl(
@@ -213,8 +209,7 @@ fun DropdownImpl(
     optionSize: Int,
     isSelected: Boolean,
     index: Int,
-    onSelectedIndexChange: (Int) -> Unit,
-    textWidthDp: Dp?
+    onSelectedIndexChange: (Int) -> Unit
 ) {
     val additionalTopPadding = if (index == 0) 20f.dp else 12f.dp
     val additionalBottomPadding = if (index == optionSize - 1) 20f.dp else 12f.dp
@@ -241,12 +236,11 @@ fun DropdownImpl(
                 onSelectedIndexChange(index)
             }
             .background(backgroundColor)
-            .widthIn(200.dp, 288.dp)
             .padding(horizontal = 20.dp)
             .padding(top = additionalTopPadding, bottom = additionalBottomPadding)
     ) {
         Text(
-            modifier = Modifier.width(textWidthDp ?: 128.dp),
+            modifier = Modifier.widthIn(max = 216.dp),
             text = text,
             fontSize = MiuixTheme.textStyles.body1.fontSize,
             fontWeight = FontWeight.Medium,
