@@ -51,8 +51,7 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.ui)
             implementation(compose.components.resources)
-            implementation(libs.jetbrains.compose.collection)
-            implementation(libs.jetbrains.compose.window.size)
+            implementation(libs.compose.window.size)
         }
         nativeMain.dependencies {
             implementation(libs.androidx.graphics.shapes)
