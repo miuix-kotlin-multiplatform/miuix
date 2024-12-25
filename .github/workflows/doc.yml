@@ -32,7 +32,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
       - name: Build Dokka
         run: |
-          ./gradlew :miuix:dokkaHtml
+          ./gradlew :miuix:dokkaGenerate
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
