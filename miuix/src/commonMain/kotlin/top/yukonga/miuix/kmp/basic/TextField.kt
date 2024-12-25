@@ -6,10 +6,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -93,12 +95,12 @@ fun TextField(
         else Modifier.padding(vertical = insideMargin.height)
     }
     val isFocused by interactionSource.collectIsFocusedAsState()
-    val borderWidth by animateDpAsState(if (isFocused) 1.6.dp else 0.dp)
+    val borderWidth by animateDpAsState(if (isFocused) 2.dp else 0.dp)
     val borderColor by animateColorAsState(if (isFocused) MiuixTheme.colorScheme.primary else backgroundColor)
     val labelOffsetY by animateDpAsState(if (value.text.isNotEmpty()) -(insideMargin.height / 2) else 0.dp)
     val innerTextOffsetY by animateDpAsState(if (value.text.isNotEmpty()) (insideMargin.height / 2) else 0.dp)
     val labelFontSize by animateDpAsState(if (value.text.isNotEmpty()) 10.dp else 16.dp)
-    val border = Modifier.border(borderWidth, borderColor, SmoothRoundedCornerShape(cornerRadius))
+    val border = Modifier.border(borderWidth, borderColor, RoundedCornerShape(cornerRadius))
     val labelOffset = if (label != "") Modifier.offset(y = labelOffsetY) else Modifier
     val innerTextOffset = if (label != "") Modifier.offset(y = innerTextOffsetY) else Modifier
 
@@ -228,7 +230,7 @@ fun TextField(
     val labelOffsetY by animateDpAsState(if (value.isNotEmpty()) -(insideMargin.height / 2) else 0.dp)
     val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty()) (insideMargin.height / 2) else 0.dp)
     val labelFontSize by animateDpAsState(if (value.isNotEmpty()) 10.dp else 16.dp)
-    val border = Modifier.border(borderWidth, borderColor, SmoothRoundedCornerShape(cornerRadius))
+    val border = Modifier.border(borderWidth, borderColor, RoundedCornerShape(cornerRadius))
     val labelOffset = if (label != "") Modifier.offset(y = labelOffsetY) else Modifier
     val innerTextOffset = if (label != "") Modifier.offset(y = innerTextOffsetY) else Modifier
 

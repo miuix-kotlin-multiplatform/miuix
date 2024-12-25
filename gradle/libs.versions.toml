@@ -12,7 +12,10 @@ kotlin = "2.1.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
+androidx-graphics-shapes = { group = "androidx.graphics", name = "graphics-shapes", version = "1.0.1" }
+androidx-graphics-shapes-web = { module = "org.jetbrains.androidx.graphics:graphics-shapes", version = "1.0.0-alpha01" }
 androidx-window = { group = "androidx.window", name = "window", version.ref = "androidx-window" }
+jetbrains-compose-collection = { module = "org.jetbrains.compose.collection-internal:collection", version.ref = "compose-plugin" }
 jetbrains-compose-window-size = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "compose-plugin" }
 
 [plugins]

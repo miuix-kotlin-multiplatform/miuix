@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -159,40 +160,40 @@ fun InputField(
         keyboardActions = KeyboardActions(onSearch = { onSearch(query) }),
         interactionSource = interactionSource,
         decorationBox =
-        @Composable { innerTextField ->
-            Box(
-                modifier = Modifier
-                    .background(
-                        color = MiuixTheme.colorScheme.surfaceContainerHigh,
-                        shape = SmoothRoundedCornerShape(50.dp)
-                    )
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (leadingIcon != null) {
-                        leadingIcon()
-                    }
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .then(paddingModifier),
-                        contentAlignment = Alignment.CenterStart
-                    ) {
-                        Text(
-                            text = if (!(query.isNotEmpty() || expanded)) label else "",
-                            color = MiuixTheme.colorScheme.onSurfaceContainerHigh
+            @Composable { innerTextField ->
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = MiuixTheme.colorScheme.surfaceContainerHigh,
+                            shape = SmoothRoundedCornerShape(50.dp)
                         )
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (leadingIcon != null) {
+                            leadingIcon()
+                        }
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .then(paddingModifier),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            Text(
+                                text = if (!(query.isNotEmpty() || expanded)) label else "",
+                                color = MiuixTheme.colorScheme.onSurfaceContainerHigh
+                            )
 
-                        innerTextField()
-                    }
-                    if (trailingIcon != null) {
-                        trailingIcon()
+                            innerTextField()
+                        }
+                        if (trailingIcon != null) {
+                            trailingIcon()
+                        }
                     }
                 }
             }
-        }
     )
 
     val shouldClearFocus = !expanded && focused

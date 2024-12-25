@@ -28,7 +28,7 @@ fun SecondPage(
                     .padding(horizontal = 12.dp)
                     .padding(top = 12.dp, bottom = 12.dp + padding.calculateBottomPadding())
             ) {
-                for (i in 0 until 20) {
+                for (i in 0 until 50) {
                     SuperDropdown(
                         title = "Dropdown",
                         items = dropdownOptions,

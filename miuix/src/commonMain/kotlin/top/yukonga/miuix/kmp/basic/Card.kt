@@ -1,13 +1,19 @@
 package top.yukonga.miuix.kmp.basic
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.semantics.isTraversalGroup
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -33,12 +39,15 @@ fun Card(
     color: Color = CardDefaults.DefaultColor(),
     content: @Composable ColumnScope.() -> Unit
 ) {
-    val shape = remember { SmoothRoundedCornerShape(cornerRadius) }
-
-    Surface(
-        modifier = modifier,
-        shape = shape,
-        color = color,
+    Box(
+        modifier = modifier
+            .background(color = color, shape = SmoothRoundedCornerShape(cornerRadius))
+            .clip(RoundedCornerShape(cornerRadius)) // For touch feedback, because there is a problem when using Smooth RoundedCornerShape.
+            .semantics(mergeDescendants = false) {
+                isTraversalGroup = true
+            }
+            .pointerInput(Unit) {},
+        propagateMinConstraints = true
     ) {
         Column(
             modifier = Modifier.padding(insideMargin),

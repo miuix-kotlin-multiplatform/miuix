@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.Stable
@@ -13,6 +14,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.isTraversalGroup
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**
@@ -32,7 +39,7 @@ fun Surface(
     shape: Shape = RectangleShape,
     color: Color = MiuixTheme.colorScheme.background,
     border: BorderStroke? = null,
-    shadowElevation: Float = 0f,
+    shadowElevation: Dp = 0.dp,
     content: @Composable () -> Unit
 ) {
     Box(
@@ -41,8 +48,12 @@ fun Surface(
                 shape = shape,
                 backgroundColor = color,
                 border = border,
-                shadowElevation = shadowElevation
-            ),
+                shadowElevation = with(LocalDensity.current) { shadowElevation.toPx() }
+            )
+            .semantics(mergeDescendants = false) {
+                isTraversalGroup = true
+            }
+            .pointerInput(Unit) {},
         propagateMinConstraints = true
     ) {
         content()
@@ -70,7 +81,7 @@ fun Surface(
     shape: Shape = RectangleShape,
     color: Color = MiuixTheme.colorScheme.background,
     border: BorderStroke? = null,
-    shadowElevation: Float = 0f,
+    shadowElevation: Dp = 0.dp,
     content: @Composable () -> Unit
 ) {
     Box(
@@ -79,7 +90,7 @@ fun Surface(
                 shape = shape,
                 backgroundColor = color,
                 border = border,
-                shadowElevation = shadowElevation
+                shadowElevation = with(LocalDensity.current) { shadowElevation.toPx() }
             )
             .clickable(
                 enabled = enabled,

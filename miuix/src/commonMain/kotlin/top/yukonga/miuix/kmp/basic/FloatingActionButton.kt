@@ -40,7 +40,7 @@ fun FloatingActionButton(
     modifier: Modifier = Modifier,
     shape: Shape = RoundedCornerShape(60.dp),
     containerColor: Color = MiuixTheme.colorScheme.primary,
-    shadowElevation: Float = 18.0f,
+    shadowElevation: Dp = 4.dp,
     minWidth: Dp = 60.dp,
     minHeight: Dp = 60.dp,
     defaultWindowInsetsPadding: Boolean = true,
