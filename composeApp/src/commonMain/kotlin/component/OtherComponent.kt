@@ -25,6 +25,7 @@ import top.yukonga.miuix.kmp.basic.ButtonDefaults
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Slider
 import top.yukonga.miuix.kmp.basic.SmallTitle
+import top.yukonga.miuix.kmp.basic.TabRow
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TextButton
 import top.yukonga.miuix.kmp.basic.TextField
@@ -41,6 +42,9 @@ fun OtherComponent(padding: PaddingValues) {
     var text2 by remember { mutableStateOf(TextFieldValue("")) }
     var progress by remember { mutableStateOf(0.5f) }
     val progressDisable by remember { mutableStateOf(0.5f) }
+    val tabTexts =
+        listOf("tab1", "tab2", "tab3", "tab4", "tab5", "tab6", "tab7", "tab8", "tab9", "tab10")
+    var selectedTabIndex1 by remember { mutableStateOf(0) }
 
     SmallTitle(text = "Button")
     Row(
@@ -133,6 +137,18 @@ fun OtherComponent(padding: PaddingValues) {
             .padding(bottom = 12.dp)
     )
 
+    SmallTitle(text = "TabRow")
+    TabRow(
+        tabTexts,
+        selectedTabIndex1,
+        modifier = Modifier
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 12.dp)
+    ) {
+        selectedTabIndex1 = it
+    }
+
+
     SmallTitle(text = "Card")
     Card(
         modifier = Modifier
@@ -163,4 +179,6 @@ fun OtherComponent(padding: PaddingValues) {
             style = MiuixTheme.textStyles.paragraph
         )
     }
+
+
 }
