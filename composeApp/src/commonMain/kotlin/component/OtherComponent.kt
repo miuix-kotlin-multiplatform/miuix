@@ -139,8 +139,8 @@ fun OtherComponent(padding: PaddingValues) {
 
     SmallTitle(text = "TabRow")
     TabRow(
-        tabTexts,
-        selectedTabIndex1,
+        tabs = tabTexts,
+        selectedTabIndex = selectedTabIndex1,
         modifier = Modifier
             .padding(horizontal = 12.dp)
             .padding(bottom = 12.dp)
