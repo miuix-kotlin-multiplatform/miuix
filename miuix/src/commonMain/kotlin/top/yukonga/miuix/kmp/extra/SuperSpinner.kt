@@ -40,6 +40,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
@@ -72,6 +73,7 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
  * @param mode The mode of the [SuperSpinner].
  * @param leftAction The action to be shown at the left side of the [SuperSpinner].
  * @param insideMargin The [PaddingValues] to be applied inside the [SuperSpinner].
+ * @param maxHeight The maximum height of the [ListPopup].
  * @param enabled Whether the [SuperSpinner] is enabled.
  * @param showValue Whether to show the value of the [SuperSpinner].
  * @param onSelectedIndexChange The callback to be invoked when the selected index of the [SuperSpinner] is changed.
@@ -88,6 +90,7 @@ fun SuperSpinner(
     mode: SpinnerMode = SpinnerMode.Normal,
     leftAction: @Composable (() -> Unit)? = null,
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
+    maxHeight: Dp? = null,
     enabled: Boolean = true,
     showValue: Boolean = true,
     onSelectedIndexChange: ((Int) -> Unit)?,
@@ -149,7 +152,8 @@ fun SuperSpinner(
                         PopupPositionProvider.Align.Left,
                     onDismissRequest = {
                         isDropdownExpanded.value = false
-                    }
+                    },
+                    maxHeight = maxHeight
                 ) {
                     ListPopupColumn {
                         items.forEachIndexed { index, spinnerEntry ->
@@ -377,9 +381,11 @@ fun SuperSpinner(
                     layout(0, 0) { }
                 }
                 val button = measurables[1].measure(constraints)
-                val lazyList = measurables[0].measure(constraints.copy(
-                    maxHeight = constraints.maxHeight - button.height
-                ))
+                val lazyList = measurables[0].measure(
+                    constraints.copy(
+                        maxHeight = constraints.maxHeight - button.height
+                    )
+                )
                 layout(constraints.maxWidth, lazyList.height + button.height) {
                     lazyList.place(0, 0)
                     button.place(0, lazyList.height)

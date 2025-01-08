@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.BasicComponent
@@ -59,6 +60,7 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
  * @param summaryColor The color of the summary.
  * @param mode The dropdown show mode of the [SuperDropdown].
  * @param insideMargin The margin inside the [SuperDropdown].
+ * @param maxHeight The maximum height of the [ListPopup].
  * @param enabled Whether the [SuperDropdown] is enabled.
  * @param showValue Whether to show the selected value of the [SuperDropdown].
  * @param onSelectedIndexChange The callback when the selected index of the [SuperDropdown] is changed.
@@ -74,6 +76,7 @@ fun SuperDropdown(
     summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
     mode: DropDownMode = DropDownMode.Normal,
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
+    maxHeight: Dp? = null,
     enabled: Boolean = true,
     showValue: Boolean = true,
     onSelectedIndexChange: ((Int) -> Unit)?,
@@ -135,7 +138,8 @@ fun SuperDropdown(
                         PopupPositionProvider.Align.Left,
                     onDismissRequest = {
                         isDropdownExpanded.value = false
-                    }
+                    },
+                    maxHeight = maxHeight
                 ) {
                     ListPopupColumn {
                         items.forEachIndexed { index, string ->

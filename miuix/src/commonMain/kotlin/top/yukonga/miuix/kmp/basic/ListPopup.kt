@@ -35,6 +35,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
@@ -56,6 +57,7 @@ import kotlin.math.min
  * @param popupPositionProvider The [PopupPositionProvider] of the [ListPopup].
  * @param alignment The alignment of the [ListPopup].
  * @param onDismissRequest The callback when the [ListPopup] is dismissed.
+ * @param maxHeight The maximum height of the [ListPopup]. If null, the height will be calculated automatically.
  * @param content The [Composable] content of the [ListPopup]. You should use the [ListPopupColumn] in general.
  */
 @Composable
@@ -65,6 +67,7 @@ fun ListPopup(
     popupPositionProvider: PopupPositionProvider = ListPopupDefaults.DropdownPositionProvider,
     alignment: PopupPositionProvider.Align = PopupPositionProvider.Align.Right,
     onDismissRequest: (() -> Unit)? = null,
+    maxHeight: Dp? = null,
     content: @Composable () -> Unit
 ) {
     var offset by remember { mutableStateOf(IntOffset.Zero) }
@@ -155,7 +158,7 @@ fun ListPopup(
                             constraints.copy(
                                 minWidth = 200.dp.roundToPx(),
                                 minHeight = 50.dp.roundToPx(),
-                                maxHeight = windowBounds.height - popupMargin.top - popupMargin.bottom
+                                maxHeight = if (maxHeight != null) maxHeight.roundToPx() else windowBounds.height - popupMargin.top - popupMargin.bottom
                             )
                         )
                         popupContentSize = IntSize(placeable.width, placeable.height)

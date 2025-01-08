@@ -77,7 +77,7 @@ fun TextComponent(
     val dropdownOptions2 = listOf(
         "Option 1", "Option 2", "Option 3", "Option 4",
         "Option 5", "Option 6", "Option 7", "Option 8",
-        "Option 9", "Option 10", "Option 11", "Option 12 (this is a long long long option)"
+        "Option 9", "Option 10", "Option 11", "Option 12 (this is a longest option)"
     )
     val spinnerOptions = listOf(
         SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFF5B29)) }, "Option 1", "Red"),
@@ -89,7 +89,7 @@ fun TextComponent(
         SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFF5B29)) }, "Option 1", "Red"),
         SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFF36D167)) }, "Option 2", "Green"),
         SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFF3482FF)) }, "Option 3", "Blue"),
-        SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFFB21D)) }, "Option 4 (this is a long option)", "Yellow"),
+        SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFFB21D)) }, "Option 4", "Yellow"),
     )
     SmallTitle(text = "Basic")
     Card(
@@ -343,7 +343,8 @@ fun TextComponent(
             items = dropdownOptions2,
             selectedIndex = dropdownOptionSelectedRight.value,
             onSelectedIndexChange = { newOption -> dropdownOptionSelectedRight.value = newOption },
-            mode = DropDownMode.AlwaysOnRight
+            mode = DropDownMode.AlwaysOnRight,
+            maxHeight = 300.dp
         )
 
         SuperDropdown(
