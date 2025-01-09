@@ -6,7 +6,6 @@ import androidx.compose.animation.core.DecayAnimationSpec
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDecay
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.animateTo
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.rememberSplineBasedDecay
@@ -458,7 +457,7 @@ private class ExitUntilCollapsedScrollBehavior(
             override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
                 val superConsumed = super.onPostFling(consumed, available)
                 return superConsumed +
-                        settleAppBar(state, available.y, flingAnimationSpec, snapAnimationSpec)
+                        settleAppBar(state, available.y, flingAnimationSpec)
             }
         }
 }
@@ -470,8 +469,7 @@ private class ExitUntilCollapsedScrollBehavior(
 private suspend fun settleAppBar(
     state: TopAppBarState,
     velocity: Float,
-    flingAnimationSpec: DecayAnimationSpec<Float>?,
-    snapAnimationSpec: AnimationSpec<Float>?
+    flingAnimationSpec: DecayAnimationSpec<Float>?
 ): Velocity {
     // Check if the app bar is completely collapsed/expanded. If so, no need to settle the app bar,
     // and just return Zero Velocity.
@@ -499,21 +497,6 @@ private suspend fun settleAppBar(
                 // avoid rounding errors and stop if anything is unconsumed
                 if (abs(delta - consumed) > 0.5f) this.cancelAnimation()
             }
-    }
-    // Snap if animation specs were provided.
-    if (snapAnimationSpec != null) {
-        if (state.heightOffset < 0 && state.heightOffset > state.heightOffsetLimit) {
-            AnimationState(initialValue = state.heightOffset).animateTo(
-                if (state.collapsedFraction < 0.5f) {
-                    0f
-                } else {
-                    state.heightOffsetLimit
-                },
-                animationSpec = snapAnimationSpec
-            ) {
-                state.heightOffset = value
-            }
-        }
     }
 
     return Velocity(0f, velocity - remainingVelocity)
