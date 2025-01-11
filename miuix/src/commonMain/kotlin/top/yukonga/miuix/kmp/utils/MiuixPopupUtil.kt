@@ -38,6 +38,7 @@ class MiuixPopupUtil {
     companion object {
         private var isPopupShowing = mutableStateOf(false)
         private var isDialogShowing = mutableStateOf(false)
+        private var isWindowDimming = mutableStateOf(false)
         private var popupContext = mutableStateOf<(@Composable () -> Unit)?>(null)
         private var dialogContext = mutableStateOf<(@Composable () -> Unit)?>(null)
         private var popupTransformOrigin = mutableStateOf({ TransformOrigin.Center })
@@ -73,16 +74,19 @@ class MiuixPopupUtil {
          *
          * @param transformOrigin The pivot point in terms of fraction of the overall size,
          *   used for scale transformations. By default it's [TransformOrigin.Center].
+         * @param windowDimming Whether to dim the window when the popup is showing.
          * @param content The [Composable] content of the popup.
          */
         @Composable
         fun showPopup(
             transformOrigin: (() -> TransformOrigin) = { TransformOrigin.Center },
+            windowDimming: Boolean = true,
             content: (@Composable () -> Unit)? = null,
         ) {
             if (isPopupShowing.value) return
             popupTransformOrigin.value = transformOrigin
             isPopupShowing.value = true
+            isWindowDimming.value = windowDimming
             popupContext.value = content
         }
 
@@ -118,7 +122,7 @@ class MiuixPopupUtil {
                 dimExitDuration = 150
             }
             AnimatedVisibility(
-                visible = isDialogShowing.value || isPopupShowing.value,
+                visible = (isDialogShowing.value || isPopupShowing.value) && isWindowDimming.value,
                 modifier = Modifier.zIndex(1f).fillMaxSize(),
                 enter = fadeIn(animationSpec = tween(dimEnterDuration, easing = DecelerateEasing(1.5f))),
                 exit = fadeOut(animationSpec = tween(dimExitDuration, easing = DecelerateEasing(1.5f)))
@@ -165,7 +169,7 @@ class MiuixPopupUtil {
                     dialogContext.value?.invoke()
                 }
                 AnimatedVisibility(
-                    visible = isPopupShowing.value && isDialogShowing.value,
+                    visible = isPopupShowing.value && isDialogShowing.value && isWindowDimming.value,
                     modifier = Modifier.zIndex(1f).fillMaxSize(),
                 ) {
                     Box(

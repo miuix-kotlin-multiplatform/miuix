@@ -230,7 +230,8 @@ fun UITest(
                         alignment = PopupPositionProvider.Align.BottomRight,
                         onDismissRequest = {
                             isBottomPopupExpanded.value = false
-                        }
+                        },
+                        windowDimming = false
                     ) {
                         ListPopupColumn {
                             items.take(3).forEachIndexed { index, navigationItem ->

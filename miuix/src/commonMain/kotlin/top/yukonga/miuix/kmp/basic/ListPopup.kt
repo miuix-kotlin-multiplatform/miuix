@@ -56,6 +56,7 @@ import kotlin.math.min
  * @param popupModifier The modifier to be applied to the [ListPopup].
  * @param popupPositionProvider The [PopupPositionProvider] of the [ListPopup].
  * @param alignment The alignment of the [ListPopup].
+ * @param windowDimming Whether to dim the window when the [ListPopup] is shown.
  * @param onDismissRequest The callback when the [ListPopup] is dismissed.
  * @param maxHeight The maximum height of the [ListPopup]. If null, the height will be calculated automatically.
  * @param content The [Composable] content of the [ListPopup]. You should use the [ListPopupColumn] in general.
@@ -66,6 +67,7 @@ fun ListPopup(
     popupModifier: Modifier = Modifier,
     popupPositionProvider: PopupPositionProvider = ListPopupDefaults.DropdownPositionProvider,
     alignment: PopupPositionProvider.Align = PopupPositionProvider.Align.Right,
+    windowDimming: Boolean = true,
     onDismissRequest: (() -> Unit)? = null,
     maxHeight: Dp? = null,
     content: @Composable () -> Unit
@@ -143,7 +145,8 @@ fun ListPopup(
             11.dp.toPx()
         })
         showPopup(
-            transformOrigin = { transformOrigin }
+            transformOrigin = { transformOrigin },
+            windowDimming = windowDimming,
         ) {
             Box(
                 modifier = popupModifier
