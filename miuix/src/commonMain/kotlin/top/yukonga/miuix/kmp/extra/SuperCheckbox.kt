@@ -30,6 +30,7 @@ import top.yukonga.miuix.kmp.basic.CheckboxDefaults
  * @param summaryColor The color of the summary.
  * @param checkboxColors The [CheckboxColors] of the [SuperCheckbox].
  * @param rightActions The [Composable] content that on the right side of the [SuperCheckbox].
+ * @param onClick The callback when the [SuperCheckbox] is clicked.
  * @param insideMargin The margin inside the [SuperCheckbox].
  * @param enabled Whether the [SuperCheckbox] is clickable.
  */
@@ -45,6 +46,7 @@ fun SuperCheckbox(
     checkboxColors: CheckboxColors = CheckboxDefaults.checkboxColors(),
     rightActions: @Composable RowScope.() -> Unit = {},
     checkboxLocation: CheckboxLocation = CheckboxLocation.Left,
+    onClick: (() -> Unit)? = null,
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     enabled: Boolean = true
 ) {
@@ -84,6 +86,7 @@ fun SuperCheckbox(
         },
         onClick = {
             if (enabled) {
+                onClick?.invoke()
                 isChecked = !isChecked
                 updatedOnCheckedChange?.invoke(isChecked)
             }

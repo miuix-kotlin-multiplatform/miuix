@@ -76,6 +76,7 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
  * @param maxHeight The maximum height of the [ListPopup].
  * @param enabled Whether the [SuperSpinner] is enabled.
  * @param showValue Whether to show the value of the [SuperSpinner].
+ * @param onClick The callback when the [SuperSpinner] is clicked.
  * @param onSelectedIndexChange The callback to be invoked when the selected index of the [SuperSpinner] is changed.
  */
 @Composable
@@ -93,6 +94,7 @@ fun SuperSpinner(
     maxHeight: Dp? = null,
     enabled: Boolean = true,
     showValue: Boolean = true,
+    onClick: (() -> Unit)? = null,
     onSelectedIndexChange: ((Int) -> Unit)?,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -200,6 +202,7 @@ fun SuperSpinner(
         },
         onClick = {
             if (enabled) {
+                onClick?.invoke()
                 isDropdownExpanded.value = enabled
                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                 coroutineScope.launch {
@@ -229,6 +232,7 @@ fun SuperSpinner(
  * @param insideMargin the [PaddingValues] to be applied inside the [SuperSpinner].
  * @param enabled whether the [SuperSpinner] is enabled.
  * @param showValue whether to show the value of the [SuperSpinner].
+ * @param onClick the callback when the [SuperSpinner] is clicked.
  * @param onSelectedIndexChange the callback to be invoked when the selected index of the [SuperSpinner] is changed.
  */
 @Composable
@@ -246,6 +250,7 @@ fun SuperSpinner(
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     enabled: Boolean = true,
     showValue: Boolean = true,
+    onClick: (() -> Unit)? = null,
     onSelectedIndexChange: ((Int) -> Unit)?,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -328,6 +333,7 @@ fun SuperSpinner(
         },
         onClick = {
             if (enabled) {
+                onClick?.invoke()
                 isDropdownExpanded.value = true
                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                 coroutineScope.launch {

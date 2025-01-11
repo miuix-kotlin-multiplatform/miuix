@@ -63,6 +63,7 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
  * @param maxHeight The maximum height of the [ListPopup].
  * @param enabled Whether the [SuperDropdown] is enabled.
  * @param showValue Whether to show the selected value of the [SuperDropdown].
+ * @param onClick The callback when the [SuperDropdown] is clicked.
  * @param onSelectedIndexChange The callback when the selected index of the [SuperDropdown] is changed.
  */
 @Composable
@@ -79,6 +80,7 @@ fun SuperDropdown(
     maxHeight: Dp? = null,
     enabled: Boolean = true,
     showValue: Boolean = true,
+    onClick: (() -> Unit)? = null,
     onSelectedIndexChange: ((Int) -> Unit)?,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -185,6 +187,7 @@ fun SuperDropdown(
         },
         onClick = {
             if (enabled) {
+                onClick?.invoke()
                 isDropdownExpanded.value = enabled
                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                 coroutineScope.launch {

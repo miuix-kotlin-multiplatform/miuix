@@ -32,6 +32,7 @@ import top.yukonga.miuix.kmp.basic.SwitchDefaults
  * @param leftAction The [Composable] content that on the left side of the [SuperSwitch].
  * @param rightActions The [Composable] content on the right side of the [SuperSwitch].
  * @param insideMargin The margin inside the [SuperSwitch].
+ * @param onClick The callback when the [SuperSwitch] is clicked.
  * @param enabled Whether the [SuperSwitch] is clickable.
  */
 @Composable
@@ -47,6 +48,7 @@ fun SuperSwitch(
     leftAction: @Composable (() -> Unit)? = null,
     rightActions: @Composable RowScope.() -> Unit = {},
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
+    onClick: (() -> Unit)? = null,
     enabled: Boolean = true
 ) {
     var isChecked by remember { mutableStateOf(checked) }
@@ -74,6 +76,7 @@ fun SuperSwitch(
         },
         onClick = {
             if (enabled) {
+                onClick?.invoke()
                 isChecked = !isChecked
                 updatedOnCheckedChange?.invoke(isChecked)
                 localHapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
