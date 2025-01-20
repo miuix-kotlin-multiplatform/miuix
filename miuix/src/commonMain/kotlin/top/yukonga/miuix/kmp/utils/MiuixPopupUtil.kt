@@ -54,6 +54,7 @@ class MiuixPopupUtil {
         ) {
             if (isDialogShowing.value) return
             isDialogShowing.value = true
+            isWindowDimming.value = true
             dialogContext.value = content
         }
 
@@ -66,6 +67,7 @@ class MiuixPopupUtil {
             show: MutableState<Boolean>,
         ) {
             isDialogShowing.value = false
+            isWindowDimming.value = false
             show.value = false
         }
 
@@ -99,6 +101,7 @@ class MiuixPopupUtil {
             show: MutableState<Boolean>,
         ) {
             isPopupShowing.value = false
+            isWindowDimming.value = false
             show.value = false
         }
 
