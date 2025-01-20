@@ -54,7 +54,6 @@ class MiuixPopupUtil {
         ) {
             if (isDialogShowing.value) return
             isDialogShowing.value = true
-            isWindowDimming.value = true
             dialogContext.value = content
         }
 
@@ -67,7 +66,6 @@ class MiuixPopupUtil {
             show: MutableState<Boolean>,
         ) {
             isDialogShowing.value = false
-            isWindowDimming.value = false
             show.value = false
         }
 
@@ -101,7 +99,6 @@ class MiuixPopupUtil {
             show: MutableState<Boolean>,
         ) {
             isPopupShowing.value = false
-            isWindowDimming.value = false
             show.value = false
         }
 
@@ -125,7 +122,7 @@ class MiuixPopupUtil {
                 dimExitDuration = 150
             }
             AnimatedVisibility(
-                visible = (isDialogShowing.value || isPopupShowing.value) && isWindowDimming.value,
+                visible = isDialogShowing.value || (isPopupShowing.value && isWindowDimming.value),
                 modifier = Modifier.zIndex(1f).fillMaxSize(),
                 enter = fadeIn(animationSpec = tween(dimEnterDuration, easing = DecelerateEasing(1.5f))),
                 exit = fadeOut(animationSpec = tween(dimExitDuration, easing = DecelerateEasing(1.5f)))
