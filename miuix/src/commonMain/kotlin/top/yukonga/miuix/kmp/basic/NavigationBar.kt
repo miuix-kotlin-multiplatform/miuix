@@ -86,7 +86,7 @@ fun NavigationBar(
                 )
             }
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -107,7 +107,7 @@ fun NavigationBar(
                     )
                     val fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal
                     Column(
-                        modifier = modifier
+                        modifier = Modifier
                             .height(NavigationBarHeight)
                             .weight(1f / items.size)
                             .pointerInput(Unit) {
