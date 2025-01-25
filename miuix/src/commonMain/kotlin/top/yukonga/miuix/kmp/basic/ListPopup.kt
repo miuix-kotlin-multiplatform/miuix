@@ -150,10 +150,12 @@ fun ListPopup(
             Box(
                 modifier = popupModifier
                     .pointerInput(Unit) {
-                        detectTapGestures {
-                            dismissPopup(show)
-                            onDismissRequest?.let { it1 -> it1() }
-                        }
+                        detectTapGestures(
+                            onTap = {
+                                dismissPopup(show)
+                                onDismissRequest?.let { it1 -> it1() }
+                            }
+                        )
                     }
                     .layout { measurable, constraints ->
                         val placeable = measurable.measure(
