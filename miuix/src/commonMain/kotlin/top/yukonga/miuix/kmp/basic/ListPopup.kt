@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -150,12 +151,10 @@ fun ListPopup(
             Box(
                 modifier = popupModifier
                     .pointerInput(Unit) {
-                        detectTapGestures(
-                            onTap = {
-                                dismissPopup(show)
-                                onDismissRequest?.let { it1 -> it1() }
-                            }
-                        )
+                        detectTapGestures {
+                            dismissPopup(show)
+                            onDismissRequest?.let { it1 -> it1() }
+                        }
                     }
                     .layout { measurable, constraints ->
                         val placeable = measurable.measure(
@@ -179,12 +178,13 @@ fun ListPopup(
                         }
                     }
             ) {
+                val shape = remember { derivedStateOf { SmoothRoundedCornerShape(16.dp) } }
                 Box(
                     Modifier
                         .align(AbsoluteAlignment.TopLeft)
                         .graphicsLayer(
                             clip = true,
-                            shape = SmoothRoundedCornerShape(16.dp),
+                            shape = shape.value,
                             shadowElevation = dropdownElevation,
                             ambientShadowColor = MiuixTheme.colorScheme.windowDimming,
                             spotShadowColor = MiuixTheme.colorScheme.windowDimming
