@@ -57,8 +57,10 @@ import kotlin.math.min
  * @param popupPositionProvider The [PopupPositionProvider] of the [ListPopup].
  * @param alignment The alignment of the [ListPopup].
  * @param windowDimming Whether to dim the window when the [ListPopup] is shown.
+ * @param shadowElevation The elevation of the shadow of the [ListPopup].
  * @param onDismissRequest The callback when the [ListPopup] is dismissed.
  * @param maxHeight The maximum height of the [ListPopup]. If null, the height will be calculated automatically.
+ * @param minWidth The minimum width of the [ListPopup].
  * @param content The [Composable] content of the [ListPopup]. You should use the [ListPopupColumn] in general.
  */
 @Composable
@@ -68,8 +70,10 @@ fun ListPopup(
     popupPositionProvider: PopupPositionProvider = ListPopupDefaults.DropdownPositionProvider,
     alignment: PopupPositionProvider.Align = PopupPositionProvider.Align.Right,
     windowDimming: Boolean = true,
+    shadowElevation: Dp = 11.dp,
     onDismissRequest: (() -> Unit)? = null,
     maxHeight: Dp? = null,
+    minWidth: Dp = 200.dp,
     content: @Composable () -> Unit
 ) {
     var offset by remember { mutableStateOf(IntOffset.Zero) }
@@ -93,7 +97,6 @@ fun ListPopup(
     })
     var popupContentSize = IntSize.Zero
     var popupMargin by remember { mutableStateOf(IntRect.Zero) }
-
 
     var transformOrigin by remember { mutableStateOf(TransformOrigin.Center) }
 
@@ -141,9 +144,7 @@ fun ListPopup(
     }
 
     if (show.value) {
-        val dropdownElevation by rememberUpdatedState(with(density) {
-            11.dp.toPx()
-        })
+        val dropdownElevation by rememberUpdatedState(with(density) { shadowElevation.toPx() })
         showPopup(
             transformOrigin = { transformOrigin },
             windowDimming = windowDimming,
@@ -159,9 +160,10 @@ fun ListPopup(
                     .layout { measurable, constraints ->
                         val placeable = measurable.measure(
                             constraints.copy(
-                                minWidth = 200.dp.roundToPx(),
-                                minHeight = 50.dp.roundToPx(),
-                                maxHeight = maxHeight?.roundToPx() ?: (windowBounds.height - popupMargin.top - popupMargin.bottom)
+                                minWidth = if (minWidth.roundToPx() <= windowSize.width) minWidth.roundToPx() else windowSize.width,
+                                minHeight = if (50.dp.roundToPx() <= windowSize.height) 50.dp.roundToPx() else windowSize.height,
+                                maxHeight = maxHeight?.roundToPx()?.coerceAtLeast(50.dp.roundToPx()) ?: (windowBounds.height - popupMargin.top - popupMargin.bottom).coerceAtLeast(50.dp.roundToPx()),
+                                maxWidth = if (minWidth.roundToPx() <= windowSize.width) windowSize.width else minWidth.roundToPx()
                             )
                         )
                         popupContentSize = IntSize(placeable.width, placeable.height)
@@ -222,7 +224,7 @@ fun ListPopup(
                 else
                     parentBounds.left + popupMargin.left + 64.dp.roundToPx()
                 val yInWindow = parentBounds.top + parentBounds.height / 2 - 56.dp.roundToPx()
-                transformOrigin = TransformOrigin(
+                transformOrigin = safeTransformOrigin(
                     xInWindow / windowWidthPx.toFloat(),
                     yInWindow / windowHeightPx.toFloat()
                 )
@@ -329,8 +331,8 @@ object ListPopupDefaults {
                 anchorBounds.top + anchorBounds.height / 2 - popupContentSize.height / 2
             }
             return IntOffset(
-                x = offsetX.coerceIn(windowBounds.left, windowBounds.right - popupContentSize.width - popupMargin.right),
-                y = offsetY.coerceIn(windowBounds.top + popupMargin.top, windowBounds.bottom - popupContentSize.height - popupMargin.bottom)
+                x = offsetX.coerceIn(windowBounds.left, (windowBounds.right - popupContentSize.width - popupMargin.right).coerceAtLeast(windowBounds.left)),
+                y = offsetY.coerceIn((windowBounds.top + popupMargin.top).coerceAtMost(windowBounds.bottom - popupContentSize.height - popupMargin.bottom), windowBounds.bottom - popupContentSize.height - popupMargin.bottom)
             )
         }
 
@@ -390,8 +392,8 @@ object ListPopupDefaults {
                 }
             }
             return IntOffset(
-                x = offsetX.coerceIn(windowBounds.left, windowBounds.right - popupContentSize.width - popupMargin.right),
-                y = offsetY.coerceIn(windowBounds.top + popupMargin.top, windowBounds.bottom - popupContentSize.height - popupMargin.bottom)
+                x = offsetX.coerceIn(windowBounds.left, (windowBounds.right - popupContentSize.width - popupMargin.right).coerceAtLeast(windowBounds.left)),
+                y = offsetY.coerceIn((windowBounds.top + popupMargin.top).coerceAtMost(windowBounds.bottom - popupContentSize.height - popupMargin.bottom), windowBounds.bottom - popupContentSize.height - popupMargin.bottom)
             )
         }
 
@@ -402,3 +404,12 @@ object ListPopupDefaults {
 }
 
 val listPopupStates = mutableStateListOf<MutableState<Boolean>>()
+
+/**
+ * Ensure TransformOrigin is available.
+ */
+fun safeTransformOrigin(x: Float, y: Float): TransformOrigin {
+    val safeX = if (x.isNaN() || x < 0f) 0f else x
+    val safeY = if (y.isNaN() || y < 0f) 0f else y
+    return TransformOrigin(safeX, safeY)
+}

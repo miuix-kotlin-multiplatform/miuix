@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layoutId
@@ -54,6 +55,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFirst
+import top.yukonga.miuix.kmp.basic.TopAppBarState.Companion.Saver
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -241,7 +243,7 @@ fun rememberTopAppBarState(
     initialHeightOffset: Float = 0f,
     initialContentOffset: Float = 0f
 ): TopAppBarState {
-    return rememberSaveable(saver = TopAppBarState.Saver) {
+    return rememberSaveable(saver = Saver) {
         TopAppBarState(initialHeightOffsetLimit, initialHeightOffset, initialContentOffset)
     }
 }
@@ -625,11 +627,11 @@ private fun TopAppBarLayout(
 
 
         val layoutHeight =
-            if (constraints.maxHeight == Constraints.Infinity) {
+            (if (constraints.maxHeight == Constraints.Infinity) {
                 constraints.maxHeight
             } else {
                 constraints.maxHeight + heightOffset
-            }
+            }).coerceAtLeast(0)
 
         layout(constraints.maxWidth, layoutHeight) {
             val verticalCenter = 60.dp.roundToPx() / 2
