@@ -593,12 +593,12 @@ private fun TopAppBarLayout(
         val navigationIconPlaceable =
             measurables
                 .fastFirst { it.layoutId == "navigationIcon" }
-                .measure(constraints.copy(minWidth = 0))
+                .measure(constraints.copy(minWidth = 0, minHeight = 0))
 
         val actionIconsPlaceable =
             measurables
                 .fastFirst { it.layoutId == "actionIcons" }
-                .measure(constraints.copy(minWidth = 0))
+                .measure(constraints.copy(minWidth = 0, minHeight = 0))
 
         val maxTitleWidth =
             if (constraints.maxWidth == Constraints.Infinity) {
@@ -611,12 +611,12 @@ private fun TopAppBarLayout(
         val titlePlaceable =
             measurables
                 .fastFirst { it.layoutId == "title" }
-                .measure(constraints.copy(minWidth = 0, maxWidth = maxTitleWidth))
+                .measure(constraints.copy(minWidth = 0, maxWidth = maxTitleWidth, minHeight = 0))
 
         val largeTitlePlaceable =
             measurables
                 .fastFirst { it.layoutId == "largeTitle" }
-                .measure(constraints.copy(minWidth = 0))
+                .measure(constraints.copy(minWidth = 0, minHeight = 0))
 
         // Subtract the scrolledOffset from the maxHeight. The scrolledOffset is expected to be
         // equal or smaller than zero.
@@ -720,12 +720,12 @@ private fun SmallTopAppBarLayout(
         val navigationIconPlaceable =
             measurables
                 .fastFirst { it.layoutId == "navigationIcon" }
-                .measure(constraints.copy(minWidth = 0))
+                .measure(constraints.copy(minWidth = 0, minHeight = 0))
 
         val actionIconsPlaceable =
             measurables
                 .fastFirst { it.layoutId == "actionIcons" }
-                .measure(constraints.copy(minWidth = 0))
+                .measure(constraints.copy(minWidth = 0, minHeight = 0))
 
         val maxTitleWidth =
             if (constraints.maxWidth == Constraints.Infinity) {
@@ -738,7 +738,7 @@ private fun SmallTopAppBarLayout(
         val titlePlaceable =
             measurables
                 .fastFirst { it.layoutId == "title" }
-                .measure(constraints.copy(minWidth = 0, maxWidth = maxTitleWidth))
+                .measure(constraints.copy(minWidth = 0, maxWidth = maxTitleWidth, minHeight = 0))
 
 
         val layoutHeight =

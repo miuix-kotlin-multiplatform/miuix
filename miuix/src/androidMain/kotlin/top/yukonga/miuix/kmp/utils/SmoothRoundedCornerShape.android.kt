@@ -14,8 +14,10 @@ actual fun Path.Companion.smoothRoundedRectangle(
     topRight: Float,
     bottomLeft: Float,
     bottomRight: Float
-): Path =
-    RoundedPolygon(
+): Path {
+    if (size.width <= 0f || size.height <= 0f) return Path()
+
+    return RoundedPolygon(
         vertices = floatArrayOf(
             0f, 0f,
             size.width, 0f,
@@ -29,3 +31,4 @@ actual fun Path.Companion.smoothRoundedRectangle(
             CornerRounding(radius = bottomLeft, smoothing = smoothing),
         )
     ).toPath().asComposePath()
+}

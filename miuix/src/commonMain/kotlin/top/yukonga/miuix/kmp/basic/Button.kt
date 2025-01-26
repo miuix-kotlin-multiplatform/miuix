@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,13 +47,14 @@ fun Button(
     insideMargin: PaddingValues = ButtonDefaults.InsideMargin,
     content: @Composable RowScope.() -> Unit
 ) {
+    val shape = remember { derivedStateOf { SmoothRoundedCornerShape(cornerRadius) } }
     Surface(
         onClick = {
             onClick()
         },
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
-        shape = SmoothRoundedCornerShape(cornerRadius),
+        shape = shape.value,
         color = colors.color(enabled)
     ) {
         Row(

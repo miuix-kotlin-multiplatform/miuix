@@ -16,6 +16,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -161,11 +162,12 @@ fun InputField(
         interactionSource = interactionSource,
         decorationBox =
             @Composable { innerTextField ->
+                val shape = remember { derivedStateOf { SmoothRoundedCornerShape(50.dp) } }
                 Box(
                     modifier = Modifier
                         .background(
                             color = MiuixTheme.colorScheme.surfaceContainerHigh,
-                            shape = SmoothRoundedCornerShape(50.dp)
+                            shape = shape.value
                         )
                 ) {
                     Row(

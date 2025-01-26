@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,7 +62,7 @@ fun TabRow(
             ((windowSize.width.toDp() - (tabs.size - 1) * 9.dp) / tabs.size).coerceAtLeast(62.dp)
     }
 
-    val shape = remember { SmoothRoundedCornerShape(cornerRadius) }
+    val shape = remember { derivedStateOf { SmoothRoundedCornerShape(cornerRadius) } }
 
     LazyRow(
         state = listState,
@@ -72,7 +73,7 @@ fun TabRow(
     ) {
         itemsIndexed(tabs) { index, tabText ->
             Surface(
-                shape = shape,
+                shape = shape.value,
                 onClick = {
                     onSelect?.invoke(index)
                 },

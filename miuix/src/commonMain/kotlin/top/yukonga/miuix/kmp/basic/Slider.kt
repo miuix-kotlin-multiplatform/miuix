@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -142,10 +143,10 @@ fun SliderBackground(
         targetValue = if (isDragging) 0.044f else 0f,
         animationSpec = tween(150)
     ).value
-
+    val shape = remember { derivedStateOf { SmoothRoundedCornerShape(height) } }
     Canvas(
         modifier = modifier
-            .clip(SmoothRoundedCornerShape(height))
+            .clip(shape.value)
             .background(backgroundColor)
             .drawBehind { drawRect(Color.Black.copy(alpha = backgroundAlpha)) }
     ) {

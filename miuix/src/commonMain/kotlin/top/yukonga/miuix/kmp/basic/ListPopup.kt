@@ -161,7 +161,7 @@ fun ListPopup(
                             constraints.copy(
                                 minWidth = 200.dp.roundToPx(),
                                 minHeight = 50.dp.roundToPx(),
-                                maxHeight = if (maxHeight != null) maxHeight.roundToPx() else windowBounds.height - popupMargin.top - popupMargin.bottom
+                                maxHeight = maxHeight?.roundToPx() ?: (windowBounds.height - popupMargin.top - popupMargin.bottom)
                             )
                         )
                         popupContentSize = IntSize(placeable.width, placeable.height)
@@ -245,15 +245,11 @@ fun ListPopupColumn(
         modifier = Modifier.verticalScroll(rememberScrollState())
     ) { constraints ->
         var listHeight = 0
-        val tempConstraints = constraints.copy(
-            minWidth = 200.dp.roundToPx(), maxWidth = 288.dp.roundToPx()
-        )
+        val tempConstraints = constraints.copy(minWidth = 200.dp.roundToPx(), maxWidth = 288.dp.roundToPx(), minHeight = 0)
         val listWidth = subcompose("miuixPopupListFake", content).map {
             it.measure(tempConstraints)
         }.maxOf { it.width }.coerceIn(200.dp.roundToPx(), 288.dp.roundToPx())
-        val childConstraints = constraints.copy(
-            minWidth = listWidth, maxWidth = listWidth
-        )
+        val childConstraints = constraints.copy(minWidth = listWidth, maxWidth = listWidth, minHeight = 0)
         val placeables = subcompose("miuixPopupListReal", content).map {
             val placeable = it.measure(childConstraints)
             listHeight += placeable.height

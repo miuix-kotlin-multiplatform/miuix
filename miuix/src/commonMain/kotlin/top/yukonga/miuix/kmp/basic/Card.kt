@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -39,9 +41,10 @@ fun Card(
     color: Color = CardDefaults.DefaultColor(),
     content: @Composable ColumnScope.() -> Unit
 ) {
+    val shape = remember { derivedStateOf { SmoothRoundedCornerShape(cornerRadius) } }
     Box(
         modifier = modifier
-            .background(color = color, shape = SmoothRoundedCornerShape(cornerRadius))
+            .background(color = color, shape = shape.value)
             .clip(RoundedCornerShape(cornerRadius)) // For touch feedback, because there is a problem when using Smooth RoundedCornerShape.
             .semantics(mergeDescendants = false) {
                 isTraversalGroup = true
