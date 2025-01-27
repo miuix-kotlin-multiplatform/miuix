@@ -40,7 +40,7 @@ fun Button(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    cornerRadius: Dp = ButtonDefaults.ConorRadius,
+    cornerRadius: Dp = ButtonDefaults.CornerRadius,
     minWidth: Dp = ButtonDefaults.MinWidth,
     minHeight: Dp = ButtonDefaults.MinHeight,
     colors: ButtonColors = ButtonDefaults.buttonColors(),
@@ -88,7 +88,7 @@ fun TextButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     colors: TextButtonColors = ButtonDefaults.textButtonColors(),
-    cornerRadius: Dp = ButtonDefaults.ConorRadius,
+    cornerRadius: Dp = ButtonDefaults.CornerRadius,
     minWidth: Dp = ButtonDefaults.MinWidth,
     minHeight: Dp = ButtonDefaults.MinHeight,
     insideMargin: PaddingValues = ButtonDefaults.InsideMargin,
@@ -136,7 +136,7 @@ object ButtonDefaults {
     /**
      * The default corner radius applied for all buttons.
      */
-    val ConorRadius = 16.dp
+    val CornerRadius = 16.dp
 
     /**
      * The default inside margin applied for all buttons.

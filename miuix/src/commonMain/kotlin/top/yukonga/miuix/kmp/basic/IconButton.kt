@@ -37,7 +37,7 @@ fun IconButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     backgroundColor: Color = Color.Unspecified,
-    cornerRadius: Dp = IconButtonDefaults.ConorRadius,
+    cornerRadius: Dp = IconButtonDefaults.CornerRadius,
     minHeight: Dp = IconButtonDefaults.MinHeight,
     minWidth: Dp = IconButtonDefaults.MinWidth,
     content: @Composable () -> Unit
@@ -74,5 +74,5 @@ object IconButtonDefaults {
     /**
      * The default corner radius of the [IconButton].
      */
-    val ConorRadius = 40.dp
+    val CornerRadius = 40.dp
 }

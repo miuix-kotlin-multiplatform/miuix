@@ -36,7 +36,7 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 @Composable
 fun Card(
     modifier: Modifier = Modifier,
-    cornerRadius: Dp = CardDefaults.ConorRadius,
+    cornerRadius: Dp = CardDefaults.CornerRadius,
     insideMargin: PaddingValues = CardDefaults.InsideMargin,
     color: Color = CardDefaults.DefaultColor(),
     content: @Composable ColumnScope.() -> Unit
@@ -64,7 +64,7 @@ object CardDefaults {
     /**
      * The default corner radius of the [Card].
      */
-    val ConorRadius = 16.dp
+    val CornerRadius = 16.dp
 
     /**
      * The default margin inside the [Card].
