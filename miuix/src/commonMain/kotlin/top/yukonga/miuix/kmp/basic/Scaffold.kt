@@ -29,7 +29,6 @@ import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMapNotNull
 import androidx.compose.ui.util.fastMaxBy
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.MiuixPopupHost
 
 /**
@@ -100,7 +99,6 @@ fun Scaffold(
         )
     }
 }
-
 
 /**
  * Layout for a [Scaffold]'s content.
