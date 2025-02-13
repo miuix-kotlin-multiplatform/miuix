@@ -96,7 +96,7 @@ fun Slider(
                         currentValue = calculateProgress(dragOffset, size.width)
                         updatedOnProgressChange(currentValue)
                         if ((currentValue == minValue || currentValue == maxValue) && !hapticTriggered) {
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                            hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureEnd)
                             hapticTriggered = true
                         } else if (currentValue != minValue && currentValue != maxValue) {
                             hapticTriggered = false

@@ -78,7 +78,8 @@ fun Checkbox(
                 value = isChecked,
                 onValueChange = {
                     onCheckedChange(it)
-                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                    if (it) hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOn)
+                    else hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOff)
                 },
                 enabled = enabled,
                 role = Role.Checkbox,

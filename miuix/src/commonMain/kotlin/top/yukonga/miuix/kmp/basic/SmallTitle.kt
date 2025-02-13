@@ -32,7 +32,7 @@ fun SmallTitle(
         modifier = modifier.then(paddingModifier),
         text = text,
         fontSize = MiuixTheme.textStyles.subtitle.fontSize,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.Bold,
         color = textColor
     )
 }

@@ -26,6 +26,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.FlowPreview
@@ -107,6 +109,7 @@ fun UITest(
     val showBottomPopup = remember { mutableStateOf(false) }
 
     val uriHandler = LocalUriHandler.current
+    val hapticFeedback = LocalHapticFeedback.current
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -142,6 +145,7 @@ fun UITest(
                                                         coroutineScope.launch {
                                                             pagerState.animateScrollToPage(index)
                                                         }
+                                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)
                                                         dismissPopup(showTopPopup)
                                                         isTopPopupExpanded.value = false
                                                     },
@@ -190,6 +194,7 @@ fun UITest(
                                                         coroutineScope.launch {
                                                             pagerState.animateScrollToPage(index)
                                                         }
+                                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)
                                                         dismissPopup(showTopPopup)
                                                         isTopPopupExpanded.value = false
                                                     },
@@ -243,6 +248,7 @@ fun UITest(
                                         coroutineScope.launch {
                                             pagerState.animateScrollToPage(index)
                                         }
+                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)
                                         dismissPopup(showBottomPopup)
                                         isBottomPopupExpanded.value = false
                                     },

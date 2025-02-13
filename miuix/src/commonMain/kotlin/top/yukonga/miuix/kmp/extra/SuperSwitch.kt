@@ -9,8 +9,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
@@ -53,7 +51,6 @@ fun SuperSwitch(
 ) {
     var isChecked by remember { mutableStateOf(checked) }
     val updatedOnCheckedChange by rememberUpdatedState(onCheckedChange)
-    val localHapticFeedback = LocalHapticFeedback.current
 
     if (isChecked != checked) isChecked = checked
 
@@ -79,7 +76,6 @@ fun SuperSwitch(
                 onClick?.invoke()
                 isChecked = !isChecked
                 updatedOnCheckedChange?.invoke(isChecked)
-                localHapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
             }
         },
         enabled = enabled

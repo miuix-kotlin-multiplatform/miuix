@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
@@ -58,8 +59,7 @@ fun TabRow(
     val density = LocalDensity.current
     var tabWidth: Dp
     with(density) {
-        tabWidth =
-            ((windowSize.width.toDp() - (tabs.size - 1) * 9.dp) / tabs.size).coerceAtLeast(62.dp)
+        tabWidth = ((windowSize.width.toDp() - (tabs.size - 1) * 9.dp) / tabs.size).coerceAtLeast(62.dp)
     }
 
     val shape = remember { derivedStateOf { SmoothRoundedCornerShape(cornerRadius) } }
@@ -78,11 +78,11 @@ fun TabRow(
                     onSelect?.invoke(index)
                 },
                 enabled = onSelect != null,
-                color =
-                if (selectedTabIndex == index) selectedBackgroundColor
-                else backgroundColor,
-                modifier = Modifier.fillMaxHeight()
-                    .width(tabWidth).semantics { role = Role.Tab }
+                color = if (selectedTabIndex == index) selectedBackgroundColor else backgroundColor,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(tabWidth)
+                    .semantics { role = Role.Tab }
             ) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -91,11 +91,11 @@ fun TabRow(
                     Text(
                         text = tabText,
                         color = if (selectedTabIndex == index) selectedColor else contentColor,
+                        fontWeight = if (selectedTabIndex == index) FontWeight.Bold else FontWeight.Normal,
                         maxLines = 1
                     )
                 }
             }
         }
     }
-
 }
