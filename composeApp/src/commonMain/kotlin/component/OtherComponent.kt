@@ -40,6 +40,7 @@ fun OtherComponent(padding: PaddingValues) {
     val focusManager = LocalFocusManager.current
     var text1 by remember { mutableStateOf("") }
     var text2 by remember { mutableStateOf(TextFieldValue("")) }
+    var text3 by remember { mutableStateOf("") }
     var progress by remember { mutableStateOf(0.5f) }
     val progressDisable by remember { mutableStateOf(0.5f) }
     val tabTexts =
@@ -112,6 +113,19 @@ fun OtherComponent(padding: PaddingValues) {
         onValueChange = { text2 = it },
         backgroundColor = MiuixTheme.colorScheme.secondaryContainer,
         label = "Text Field",
+        modifier = Modifier
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 12.dp),
+        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
+    )
+
+    TextField(
+        value = text3,
+        onValueChange = { text3 = it },
+        backgroundColor = MiuixTheme.colorScheme.secondaryContainer,
+        label = "Use Label As Placeholder",
+        useLabelAsPlaceholder = true,
         modifier = Modifier
             .padding(horizontal = 12.dp)
             .padding(bottom = 12.dp),

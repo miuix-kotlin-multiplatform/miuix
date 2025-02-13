@@ -2,6 +2,9 @@ package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -48,6 +51,7 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
  * @param cornerRadius The corner radius of the [TextField].
  * @param label The label to be displayed when the [TextField] is empty.
  * @param labelColor The color of the label.
+ * @param useLabelAsPlaceholder Whether to use the label as a placeholder.
  * @param enabled Whether the [TextField] is enabled.
  * @param readOnly Whether the [TextField] is read-only.
  * @param textStyle The text style to be applied to the [TextField].
@@ -73,6 +77,7 @@ fun TextField(
     cornerRadius: Dp = 18.dp,
     label: String = "",
     labelColor: Color = MiuixTheme.colorScheme.onSecondaryContainer,
+    useLabelAsPlaceholder: Boolean = false,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     textStyle: TextStyle = MiuixTheme.textStyles.main,
@@ -98,12 +103,12 @@ fun TextField(
     val isFocused by interactionSource.collectIsFocusedAsState()
     val borderWidth by animateDpAsState(if (isFocused) 2.dp else 0.dp)
     val borderColor by animateColorAsState(if (isFocused) MiuixTheme.colorScheme.primary else backgroundColor)
-    val labelOffsetY by animateDpAsState(if (value.text.isNotEmpty()) -(insideMargin.height / 2) else 0.dp)
-    val innerTextOffsetY by animateDpAsState(if (value.text.isNotEmpty()) (insideMargin.height / 2) else 0.dp)
-    val labelFontSize by animateDpAsState(if (value.text.isNotEmpty()) 10.dp else 16.dp)
+    val labelOffsetY by animateDpAsState(if (value.text.isNotEmpty() && useLabelAsPlaceholder == false) -(insideMargin.height / 2) else 0.dp)
+    val innerTextOffsetY by animateDpAsState(if (value.text.isNotEmpty() && useLabelAsPlaceholder == false) (insideMargin.height / 2) else 0.dp)
+    val labelFontSize by animateDpAsState(if (value.text.isNotEmpty() && useLabelAsPlaceholder == false) 10.dp else 16.dp)
     val border = Modifier.border(borderWidth, borderColor, RoundedCornerShape(cornerRadius))
-    val labelOffset = if (label != "") Modifier.offset(y = labelOffsetY) else Modifier
-    val innerTextOffset = if (label != "") Modifier.offset(y = innerTextOffsetY) else Modifier
+    val labelOffset = if (label != "" && useLabelAsPlaceholder == false) Modifier.offset(y = labelOffsetY) else Modifier
+    val innerTextOffset = if (label != "" && useLabelAsPlaceholder == false) Modifier.offset(y = innerTextOffsetY) else Modifier
 
     BasicTextField(
         value = value,
@@ -144,14 +149,24 @@ fun TextField(
                             .weight(1f)
                             .then(paddingModifier)
                     ) {
-                        Text(
-                            text = label,
-                            textAlign = TextAlign.Start,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = labelFontSize.value.sp,
-                            modifier = Modifier.then(labelOffset),
-                            color = labelColor
-                        )
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = if (useLabelAsPlaceholder) value.text.isEmpty() else true,
+                            enter = fadeIn(
+                                spring(stiffness = 2500f)
+                            ),
+                            exit = fadeOut(
+                                spring(stiffness = 5000f)
+                            )
+                        ) {
+                            Text(
+                                text = label,
+                                textAlign = TextAlign.Start,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = labelFontSize.value.sp,
+                                modifier = Modifier.then(labelOffset),
+                                color = labelColor
+                            )
+                        }
                         Box(
                             modifier = Modifier.then(innerTextOffset),
                             contentAlignment = Alignment.BottomStart
@@ -179,6 +194,7 @@ fun TextField(
  * @param cornerRadius The corner radius of the [TextField].
  * @param label The label to be displayed when the [TextField] is empty.
  * @param labelColor The color of the label.
+ * @param useLabelAsPlaceholder Whether to use the label as a placeholder.
  * @param enabled Whether the [TextField] is enabled.
  * @param readOnly Whether the [TextField] is read-only.
  * @param textStyle The text style to be applied to the [TextField].
@@ -204,6 +220,7 @@ fun TextField(
     cornerRadius: Dp = 16.dp,
     label: String = "",
     labelColor: Color = MiuixTheme.colorScheme.onSecondaryContainer,
+    useLabelAsPlaceholder: Boolean = false,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     textStyle: TextStyle = MiuixTheme.textStyles.main,
@@ -229,12 +246,12 @@ fun TextField(
     val isFocused by interactionSource.collectIsFocusedAsState()
     val borderWidth by animateDpAsState(if (isFocused) 2.0.dp else 0.dp)
     val borderColor by animateColorAsState(if (isFocused) MiuixTheme.colorScheme.primary else backgroundColor)
-    val labelOffsetY by animateDpAsState(if (value.isNotEmpty()) -(insideMargin.height / 2) else 0.dp)
-    val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty()) (insideMargin.height / 2) else 0.dp)
-    val labelFontSize by animateDpAsState(if (value.isNotEmpty()) 10.dp else 16.dp)
+    val labelOffsetY by animateDpAsState(if (value.isNotEmpty() && useLabelAsPlaceholder == false) -(insideMargin.height / 2) else 0.dp)
+    val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty() && useLabelAsPlaceholder == false) (insideMargin.height / 2) else 0.dp)
+    val labelFontSize by animateDpAsState(if (value.isNotEmpty() && useLabelAsPlaceholder == false) 10.dp else 16.dp)
     val border = Modifier.border(borderWidth, borderColor, RoundedCornerShape(cornerRadius))
-    val labelOffset = if (label != "") Modifier.offset(y = labelOffsetY) else Modifier
-    val innerTextOffset = if (label != "") Modifier.offset(y = innerTextOffsetY) else Modifier
+    val labelOffset = if (label != "" && useLabelAsPlaceholder == false) Modifier.offset(y = labelOffsetY) else Modifier
+    val innerTextOffset = if (label != "" && useLabelAsPlaceholder == false) Modifier.offset(y = innerTextOffsetY) else Modifier
 
     BasicTextField(
         value = value,
@@ -274,14 +291,24 @@ fun TextField(
                             .weight(1f)
                             .then(paddingModifier)
                     ) {
-                        Text(
-                            text = label,
-                            textAlign = TextAlign.Start,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = labelFontSize.value.sp,
-                            modifier = Modifier.then(labelOffset),
-                            color = labelColor
-                        )
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = if (useLabelAsPlaceholder) value.isEmpty() else true,
+                            enter = fadeIn(
+                                spring(stiffness = 2500f)
+                            ),
+                            exit = fadeOut(
+                                spring(stiffness = 5000f)
+                            )
+                        ) {
+                            Text(
+                                text = label,
+                                textAlign = TextAlign.Start,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = labelFontSize.value.sp,
+                                modifier = Modifier.then(labelOffset),
+                                color = labelColor
+                            )
+                        }
                         Box(
                             modifier = Modifier.then(innerTextOffset),
                             contentAlignment = Alignment.BottomStart
