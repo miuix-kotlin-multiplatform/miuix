@@ -1,6 +1,7 @@
 package top.yukonga.miuix.kmp.utils
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -24,9 +25,11 @@ actual fun platform(): Platform = Platform.IOS
 @Composable
 actual fun getRoundedCorner(): Dp = 0.dp
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 actual fun BackHandler(
     enabled: Boolean,
     onBack: () -> Unit
 ) {
+    androidx.compose.ui.backhandler.BackHandler(enabled, onBack)
 }
