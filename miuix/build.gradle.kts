@@ -39,11 +39,8 @@ kotlin {
     }
 
     sourceSets {
-        val desktopMain by getting
-
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
-            implementation(libs.androidx.graphics.shapes)
             implementation(libs.androidx.window)
         }
         commonMain.dependencies {
@@ -51,19 +48,8 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.ui)
             implementation(compose.components.resources)
+            implementation(libs.androidx.graphics.shapes)
             implementation(libs.compose.window.size)
-        }
-        nativeMain.dependencies {
-            implementation(libs.androidx.graphics.shapes)
-        }
-        desktopMain.dependencies {
-            implementation(libs.androidx.graphics.shapes)
-        }
-        jsMain.dependencies {
-            implementation(libs.androidx.graphics.shapes.web)
-        }
-        wasmJsMain.dependencies {
-            implementation(libs.androidx.graphics.shapes.web)
         }
     }
 }
