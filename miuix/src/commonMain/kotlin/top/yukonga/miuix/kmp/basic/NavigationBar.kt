@@ -105,7 +105,7 @@ fun NavigationBar(
                             else -> MiuixTheme.colorScheme.onSurfaceContainerVariant
                         }
                     )
-                    val fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal
+                    val fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                     Column(
                         modifier = Modifier
                             .height(NavigationBarHeight)
