@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -80,6 +81,7 @@ fun SuperDropdown(
     maxHeight: Dp? = null,
     enabled: Boolean = true,
     showValue: Boolean = true,
+    dropdownColors: DropdownColors = DropdownDefaults.dropdownColors(),
     onClick: (() -> Unit)? = null,
     onSelectedIndexChange: ((Int) -> Unit)?,
 ) {
@@ -89,7 +91,8 @@ fun SuperDropdown(
     val coroutineScope = rememberCoroutineScope()
     val held = remember { mutableStateOf<HoldDownInteraction.Hold?>(null) }
     val hapticFeedback = LocalHapticFeedback.current
-    val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
+    val actionColor =
+        if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
 
     var alignLeft by rememberSaveable { mutableStateOf(true) }
 
@@ -149,6 +152,7 @@ fun SuperDropdown(
                                 text = string,
                                 optionSize = items.size,
                                 isSelected = selectedIndex == index,
+                                dropdownColors = dropdownColors,
                                 onSelectedIndexChange = {
                                     hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
                                     onSelectedIndexChange?.let { it1 -> it1(it) }
@@ -201,6 +205,32 @@ fun SuperDropdown(
     )
 }
 
+@Immutable
+class DropdownColors(
+    val contentColor: Color,
+    val containerColor: Color,
+    val selectedContentColor: Color,
+    val selectedContainerColor: Color
+)
+
+object DropdownDefaults {
+
+    @Composable
+    fun dropdownColors(
+        contentColor: Color = MiuixTheme.colorScheme.onSurface,
+        containerColor: Color = MiuixTheme.colorScheme.surface,
+        selectedContentColor: Color = MiuixTheme.colorScheme.onTertiaryContainer,
+        selectedContainerColor: Color = MiuixTheme.colorScheme.tertiaryContainer
+    ): DropdownColors {
+        return DropdownColors(
+            contentColor = contentColor,
+            containerColor = containerColor,
+            selectedContentColor = selectedContentColor,
+            selectedContainerColor = selectedContainerColor
+        )
+    }
+}
+
 /**
  * The implementation of the dropdown.
  *
@@ -216,24 +246,20 @@ fun DropdownImpl(
     optionSize: Int,
     isSelected: Boolean,
     index: Int,
+    dropdownColors: DropdownColors = DropdownDefaults.dropdownColors(),
     onSelectedIndexChange: (Int) -> Unit
 ) {
     val additionalTopPadding = if (index == 0) 20f.dp else 12f.dp
     val additionalBottomPadding = if (index == optionSize - 1) 20f.dp else 12f.dp
     val textColor = if (isSelected) {
-        MiuixTheme.colorScheme.onTertiaryContainer
+        dropdownColors.selectedContentColor
     } else {
-        MiuixTheme.colorScheme.onSurface
-    }
-    val selectColor = if (isSelected) {
-        MiuixTheme.colorScheme.onTertiaryContainer
-    } else {
-        Color.Transparent
+        dropdownColors.contentColor
     }
     val backgroundColor = if (isSelected) {
-        MiuixTheme.colorScheme.tertiaryContainer
+        dropdownColors.selectedContainerColor
     } else {
-        MiuixTheme.colorScheme.surface
+        dropdownColors.containerColor
     }
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -253,12 +279,17 @@ fun DropdownImpl(
             fontWeight = FontWeight.Medium,
             color = textColor,
         )
-        Image(
-            modifier = Modifier.padding(start = 12.dp).size(20.dp),
-            imageVector = MiuixIcons.Check,
-            colorFilter = BlendModeColorFilter(selectColor, BlendMode.SrcIn),
-            contentDescription = null,
-        )
+        if (isSelected) {
+            Image(
+                modifier = Modifier.padding(start = 12.dp).size(20.dp),
+                imageVector = MiuixIcons.Check,
+                colorFilter = BlendModeColorFilter(
+                    dropdownColors.selectedContentColor,
+                    BlendMode.SrcIn
+                ),
+                contentDescription = null,
+            )
+        }
     }
 }
 
