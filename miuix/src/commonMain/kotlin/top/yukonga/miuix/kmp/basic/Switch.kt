@@ -6,11 +6,19 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.awaitVerticalTouchSlopOrCancellation
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
@@ -58,57 +66,46 @@ fun Switch(
     enabled: Boolean = true
 ) {
     val isChecked by rememberUpdatedState(checked)
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val isDragged by interactionSource.collectIsDraggedAsState()
+    val isHovered by interactionSource.collectIsHoveredAsState()
+
     val hapticFeedback = LocalHapticFeedback.current
-    var hasVibrated by remember { mutableStateOf(false) }
+    var hasVibrated by remember { mutableStateOf(true) }
+    var hasVibratedOnce by remember { mutableStateOf(false) }
+
     val springSpec = remember {
         spring<Dp>(
             dampingRatio = Spring.DampingRatioLowBouncy,
             stiffness = Spring.StiffnessMedium
         )
     }
-    var isPressed by remember { mutableStateOf(false) }
+
     var dragOffset by remember { mutableStateOf(0f) }
     val thumbOffset by animateDpAsState(
         targetValue = if (isChecked) {
-            if (!enabled) 26.dp else if (isPressed) 24.dp else 26.dp
+            if (!enabled) 26.dp else if (isPressed || isDragged || isHovered) 24.dp else 26.dp
         } else {
-            if (!enabled) 4.dp else if (isPressed) 3.dp else 4.dp
+            if (!enabled) 4.dp else if (isPressed || isDragged || isHovered) 3.dp else 4.dp
         } + dragOffset.dp,
         animationSpec = springSpec
     )
 
     val thumbSize by animateDpAsState(
-        targetValue = if (!enabled) 20.dp else if (isPressed) 23.dp else 20.dp,
+        targetValue = if (!enabled) 20.dp else if (isPressed || isDragged || isHovered) 23.dp else 20.dp,
         animationSpec = springSpec
-    )
-
-    val backgroundColor by animateColorAsState(
-        if (isChecked) colors.checkedTrackColor(enabled) else colors.uncheckedTrackColor(enabled),
-        animationSpec = tween(durationMillis = 200)
     )
 
     val thumbColor by animateColorAsState(
         if (isChecked) colors.checkedThumbColor(enabled) else colors.uncheckedThumbColor(enabled)
     )
 
-    val toggleableModifier = remember(onCheckedChange, isChecked, enabled) {
-        if (onCheckedChange != null) {
-            Modifier.toggleable(
-                value = isChecked,
-                onValueChange = {
-                    onCheckedChange(it)
-                    if (it) hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOn)
-                    else hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOff)
-                },
-                enabled = enabled,
-                role = Role.Switch,
-                indication = null,
-                interactionSource = null
-            )
-        } else {
-            Modifier
-        }
-    }
+    val backgroundColor by animateColorAsState(
+        if (isChecked) colors.checkedTrackColor(enabled) else colors.uncheckedTrackColor(enabled),
+        animationSpec = tween(durationMillis = 200)
+    )
 
     Box(
         modifier = modifier
@@ -117,37 +114,54 @@ fun Switch(
             .requiredSize(50.dp, 28.5.dp)
             .clip(RoundedCornerShape(100.dp))
             .drawBehind { drawRect(backgroundColor) }
+            .hoverable(
+                interactionSource = interactionSource,
+                enabled = enabled
+            )
             .pointerInput(Unit) {
                 if (!enabled) return@pointerInput
-                detectHorizontalDragGestures(
-                    onDragStart = {
-                        isPressed = true
-                        hasVibrated = false
-                    },
-                    onDragEnd = {
-                        isPressed = false
-                        val switchWidth = 21f
-                        if (dragOffset.absoluteValue > switchWidth / 2) {
-                            onCheckedChange?.invoke(!isChecked)
+                val touchSlop = 16f
+                awaitEachGesture {
+                    val down = awaitFirstDown(requireUnconsumed = false)
+                    val initialOffset = down.position
+                    var validHorizontalDrag = false
+                    do {
+                        val event = awaitPointerEvent()
+                        val currentOffset = event.changes[0].position
+                        val dx = (currentOffset.x - initialOffset.x).absoluteValue
+                        val dy = (currentOffset.y - initialOffset.y).absoluteValue
+                        if (dy > touchSlop) {
+                            validHorizontalDrag = false
+                            break
+                        } else if (dx > touchSlop) {
+                            validHorizontalDrag = true
                         }
-                        dragOffset = 0f
-                    },
-                    onDragCancel = {
-                        isPressed = false
-                        dragOffset = 0f
-                    }
-                ) { _, dragAmount ->
-                    val newOffset = dragOffset + dragAmount / 2
-                    dragOffset = if (isChecked) newOffset.coerceIn(-21f, 0f) else newOffset.coerceIn(0f, 21f)
-                    if (dragOffset in -20f..-1f || dragOffset in 1f..20f) {
-                        hasVibrated = false
-                    } else if ((dragOffset == -21f || dragOffset == 0f || dragOffset == 21f) && !hasVibrated) {
-                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                        hasVibrated = true
+                    } while (event.changes.all { it.pressed })
+
+                    if (validHorizontalDrag && !isPressed && !isDragged) {
+                        onCheckedChange?.invoke(!isChecked)
+                        hapticFeedback.performHapticFeedback(
+                            if (isChecked) HapticFeedbackType.ToggleOff
+                            else HapticFeedbackType.ToggleOn
+                        )
                     }
                 }
             }
-            .then(toggleableModifier)
+            .toggleable(
+                value = isChecked,
+                onValueChange = {
+                    if (onCheckedChange == null) return@toggleable
+                    onCheckedChange.invoke(it)
+                    hapticFeedback.performHapticFeedback(
+                        if (it) HapticFeedbackType.ToggleOn
+                        else HapticFeedbackType.ToggleOff
+                    )
+                },
+                enabled = enabled,
+                role = Role.Switch,
+                indication = null,
+                interactionSource = null
+            )
     ) {
         Box(
             modifier = Modifier
@@ -161,28 +175,58 @@ fun Switch(
                 .pointerInput(Unit) {
                     if (!enabled) return@pointerInput
                     awaitEachGesture {
-                        awaitFirstDown().also {
-                            it.consume()
-                            isPressed = true
+                        val pressInteraction: PressInteraction.Press
+                        val down = awaitFirstDown().also {
+                            pressInteraction = PressInteraction.Press(it.position)
+                            interactionSource.tryEmit(pressInteraction)
                         }
-                        waitForUpOrCancellation()?.also {
-                            it.consume()
-                            isPressed = false
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                            onCheckedChange?.invoke(!isChecked)
+                        waitForUpOrCancellation().also {
+                            interactionSource.tryEmit(PressInteraction.Cancel(pressInteraction))
                         }
-                    }
-                }
-                .pointerInput(Unit) {
-                    if (!enabled) return@pointerInput
-                    awaitEachGesture {
-                        val down = awaitFirstDown(requireUnconsumed = false)
                         awaitVerticalTouchSlopOrCancellation(down.id) { _, _ ->
-                            isPressed = false
+                            interactionSource.tryEmit(PressInteraction.Cancel(pressInteraction))
                         }
                     }
                 }
-
+                .draggable(
+                    state = rememberDraggableState { delta ->
+                        if (onCheckedChange == null) return@rememberDraggableState
+                        dragOffset = (dragOffset + delta / 2).let {
+                            if (isChecked) it.coerceIn(-21f, 0f) else it.coerceIn(0f, 21f)
+                        }
+                        if (dragOffset in -11f..-10f || dragOffset in 10f..11f) {
+                            hasVibratedOnce = false
+                        } else if (dragOffset in -20f..-1f || dragOffset in 1f..20f) {
+                            hasVibrated = false
+                        } else if (!hasVibrated) {
+                            if ((isChecked && dragOffset == -21f) || (!isChecked && dragOffset == 0f)) {
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOff)
+                                hasVibrated = true
+                                hasVibratedOnce = true
+                            } else if ((isChecked && dragOffset == 0f) || (!isChecked && dragOffset == 21f)) {
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOn)
+                                hasVibrated = true
+                                hasVibratedOnce = true
+                            }
+                        }
+                    },
+                    orientation = Orientation.Horizontal,
+                    enabled = enabled,
+                    interactionSource = interactionSource,
+                    onDragStopped = {
+                        if (dragOffset.absoluteValue > 21f / 2) onCheckedChange?.invoke(!isChecked)
+                        if (!hasVibratedOnce && dragOffset.absoluteValue >= 1f) {
+                            if ((isChecked && dragOffset <= -11f) || (!isChecked && dragOffset <= 10f)) {
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOff)
+                            } else if ((isChecked && dragOffset >= -10f) || (!isChecked && dragOffset >= 11f)) {
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOn)
+                            }
+                        }
+                        hasVibrated = true
+                        hasVibratedOnce = false
+                        dragOffset = 0f
+                    }
+                )
         )
     }
 }
