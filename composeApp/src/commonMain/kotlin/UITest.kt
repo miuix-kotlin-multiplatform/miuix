@@ -145,7 +145,7 @@ fun UITest(
                                                         coroutineScope.launch {
                                                             pagerState.animateScrollToPage(index)
                                                         }
-                                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)
+                                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
                                                         dismissPopup(showTopPopup)
                                                         isTopPopupExpanded.value = false
                                                     },
@@ -194,7 +194,7 @@ fun UITest(
                                                         coroutineScope.launch {
                                                             pagerState.animateScrollToPage(index)
                                                         }
-                                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)
+                                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
                                                         dismissPopup(showTopPopup)
                                                         isTopPopupExpanded.value = false
                                                     },
@@ -248,7 +248,7 @@ fun UITest(
                                         coroutineScope.launch {
                                             pagerState.animateScrollToPage(index)
                                         }
-                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)
+                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
                                         dismissPopup(showBottomPopup)
                                         isBottomPopupExpanded.value = false
                                     },

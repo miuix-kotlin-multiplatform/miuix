@@ -72,7 +72,7 @@ fun Switch(
     val isHovered by interactionSource.collectIsHoveredAsState()
 
     val hapticFeedback = LocalHapticFeedback.current
-    var hasVibrated by remember { mutableStateOf(true) }
+    var hasVibrated by remember { mutableStateOf(false) }
     var hasVibratedOnce by remember { mutableStateOf(false) }
 
     val springSpec = remember {
@@ -193,7 +193,8 @@ fun Switch(
                     detectHorizontalDragGestures(
                         onDragStart = {
                             interactionSource.tryEmit(dragInteraction)
-                            hasVibrated = false
+                            hasVibrated = true
+                            hasVibratedOnce = false
                         },
                         onDragEnd = {
                             if (dragOffset.absoluteValue > 21f / 2) onCheckedChange?.invoke(!isChecked)
@@ -205,8 +206,6 @@ fun Switch(
                                 }
                             }
                             interactionSource.tryEmit(DragInteraction.Stop(dragInteraction))
-                            hasVibrated = true
-                            hasVibratedOnce = false
                             dragOffset = 0f
                         },
                         onDragCancel = {

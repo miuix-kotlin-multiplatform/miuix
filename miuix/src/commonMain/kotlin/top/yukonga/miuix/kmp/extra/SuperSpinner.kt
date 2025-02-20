@@ -166,7 +166,7 @@ fun SuperSpinner(
                                 index = index,
                                 dialogMode = false
                             ) {
-                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
                                 onSelectedIndexChange?.let { it1 -> it1(it) }
                                 dismissPopup(showPopup)
                                 isDropdownExpanded.value = false
@@ -204,7 +204,7 @@ fun SuperSpinner(
             if (enabled) {
                 onClick?.invoke()
                 isDropdownExpanded.value = enabled
-                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)
                 coroutineScope.launch {
                     interactionSource.emit(HoldDownInteraction.Hold().also {
                         held.value = it
