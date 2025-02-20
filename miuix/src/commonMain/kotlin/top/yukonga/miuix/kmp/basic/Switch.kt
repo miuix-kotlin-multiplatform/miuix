@@ -6,14 +6,13 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.awaitVerticalTouchSlopOrCancellation
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
@@ -188,10 +187,34 @@ fun Switch(
                         }
                     }
                 }
-                .draggable(
-                    state = rememberDraggableState { delta ->
-                        if (onCheckedChange == null) return@rememberDraggableState
-                        dragOffset = (dragOffset + delta / 2).let {
+                .pointerInput(Unit) {
+                    if (!enabled) return@pointerInput
+                    val dragInteraction: DragInteraction.Start = DragInteraction.Start()
+                    detectHorizontalDragGestures(
+                        onDragStart = {
+                            interactionSource.tryEmit(dragInteraction)
+                            hasVibrated = false
+                        },
+                        onDragEnd = {
+                            if (dragOffset.absoluteValue > 21f / 2) onCheckedChange?.invoke(!isChecked)
+                            if (!hasVibratedOnce && dragOffset.absoluteValue >= 1f) {
+                                if ((isChecked && dragOffset <= -11f) || (!isChecked && dragOffset <= 10f)) {
+                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOff)
+                                } else if ((isChecked && dragOffset >= -10f) || (!isChecked && dragOffset >= 11f)) {
+                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOn)
+                                }
+                            }
+                            interactionSource.tryEmit(DragInteraction.Stop(dragInteraction))
+                            hasVibrated = true
+                            hasVibratedOnce = false
+                            dragOffset = 0f
+                        },
+                        onDragCancel = {
+                            interactionSource.tryEmit(DragInteraction.Cancel(dragInteraction))
+                            dragOffset = 0f
+                        }
+                    ) { _, dragAmount ->
+                        dragOffset = (dragOffset + dragAmount / 2).let {
                             if (isChecked) it.coerceIn(-21f, 0f) else it.coerceIn(0f, 21f)
                         }
                         if (dragOffset in -11f..-10f || dragOffset in 10f..11f) {
@@ -209,24 +232,8 @@ fun Switch(
                                 hasVibratedOnce = true
                             }
                         }
-                    },
-                    orientation = Orientation.Horizontal,
-                    enabled = enabled,
-                    interactionSource = interactionSource,
-                    onDragStopped = {
-                        if (dragOffset.absoluteValue > 21f / 2) onCheckedChange?.invoke(!isChecked)
-                        if (!hasVibratedOnce && dragOffset.absoluteValue >= 1f) {
-                            if ((isChecked && dragOffset <= -11f) || (!isChecked && dragOffset <= 10f)) {
-                                hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOff)
-                            } else if ((isChecked && dragOffset >= -10f) || (!isChecked && dragOffset >= 11f)) {
-                                hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOn)
-                            }
-                        }
-                        hasVibrated = true
-                        hasVibratedOnce = false
-                        dragOffset = 0f
                     }
-                )
+                }
         )
     }
 }
