@@ -7,6 +7,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -41,11 +42,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -68,7 +71,8 @@ import kotlin.time.TimeSource
  * @param pullToRefreshState pullToRefreshState
  * @param color The color of the refresh indicator.
  * @param circleSize The size of the refresh indicator circle.
- * @param textStyle The style of the refresh text.
+ * @param refreshTexts The texts to show when refreshing.
+ * @param refreshTextStyle The style of the refresh text.
  * @param onRefresh The callback to be called when the refresh is triggered.
  * @param content the content to be shown when the [PullToRefresh] is expanded.
  *
@@ -79,7 +83,8 @@ fun PullToRefresh(
     pullToRefreshState: PullToRefreshState,
     color: Color = PullToRefreshDefaults.color,
     circleSize: Dp = PullToRefreshDefaults.circleSize,
-    textStyle: TextStyle = PullToRefreshDefaults.textStyle,
+    refreshTexts: List<String> = PullToRefreshDefaults.refreshTexts,
+    refreshTextStyle: TextStyle = PullToRefreshDefaults.refreshTextStyle,
     onRefresh: () -> Unit = {},
     content: @Composable () -> Unit
 ) {
@@ -98,6 +103,8 @@ fun PullToRefresh(
                 if (event.changes.all { !it.pressed }) {
                     pullToRefreshState.onPointerRelease()
                     continue
+                } else {
+                    pullToRefreshState.resetPointerReleased()
                 }
             }
         }
@@ -117,7 +124,8 @@ fun PullToRefresh(
                 pullToRefreshState = pullToRefreshState,
                 circleSize = circleSize,
                 color = color,
-                textStyle = textStyle
+                refreshTexts = refreshTexts,
+                refreshTextStyle = refreshTextStyle
             )
             content()
         }
@@ -125,13 +133,14 @@ fun PullToRefresh(
 }
 
 /**
- * 刷新头部
+ * Refresh header
  *
- * @param modifier 修饰符
- * @param pullToRefreshState 下拉刷新状态
- * @param circleSize 指示器圆圈大小
- * @param color 指示器颜色
- * @param textStyle 刷新文本样式
+ * @param modifier The modifier to be applied to the [RefreshHeader]
+ * @param pullToRefreshState The state of the pull-to-refresh
+ * @param circleSize The size of the refresh indicator circle
+ * @param color The color of the refresh indicator
+ * @param refreshTexts The texts to show when refreshing
+ * @param refreshTextStyle The style of the refresh text
  */
 @Composable
 fun RefreshHeader(
@@ -139,15 +148,40 @@ fun RefreshHeader(
     pullToRefreshState: PullToRefreshState,
     circleSize: Dp,
     color: Color,
-    textStyle: TextStyle
+    refreshTexts: List<String>,
+    refreshTextStyle: TextStyle
 ) {
+    val hapticFeedback = LocalHapticFeedback.current
+    val density = LocalDensity.current
+
     val dragOffset = pullToRefreshState.dragOffsetAnimatable.value
     val thresholdOffset = pullToRefreshState.refreshThresholdOffset
     val maxDrag = pullToRefreshState.maxDragDistancePx
-    val density = LocalDensity.current
     val pullProgress = pullToRefreshState.pullProgress
     val rotation by animateRotation()
     val refreshCompleteAnimProgress = pullToRefreshState.refreshCompleteAnimProgress
+
+    LaunchedEffect(pullToRefreshState.refreshState) {
+        if (pullToRefreshState.refreshState == RefreshState.ThresholdReached) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
+        }
+    }
+
+    val refreshText = when (pullToRefreshState.refreshState) {
+        RefreshState.Idle -> ""
+        RefreshState.Pulling -> if (pullToRefreshState.pullProgress > 0.5) refreshTexts[0] else ""
+        RefreshState.ThresholdReached -> refreshTexts[1]
+        RefreshState.Refreshing -> refreshTexts[2]
+        RefreshState.RefreshComplete -> refreshTexts[3]
+    }
+
+    val textAlpha = when (pullToRefreshState.refreshState) {
+        RefreshState.Pulling -> {
+            if (pullToRefreshState.pullProgress > 0.5f) (pullToRefreshState.pullProgress - 0.5f) * 2 else 0f
+        }
+
+        else -> 1f
+    }
 
     val headerHeight = with(density) {
         when (pullToRefreshState.refreshState) {
@@ -216,31 +250,15 @@ fun RefreshHeader(
             }
         }
 
-        val refreshText = when (pullToRefreshState.refreshState) {
-            RefreshState.Idle -> ""
-            RefreshState.Pulling -> if (pullToRefreshState.pullProgress > 0.5) "下拉刷新" else ""
-            RefreshState.ThresholdReached -> "松开刷新"
-            RefreshState.Refreshing -> "正在刷新"
-            RefreshState.RefreshComplete -> "刷新完成"
-        }
-
-        val textAlpha = when (pullToRefreshState.refreshState) {
-            RefreshState.Pulling -> {
-                if (pullToRefreshState.pullProgress > 0.5f) (pullToRefreshState.pullProgress - 0.5f) * 2 else 0f
-            }
-
-            else -> 1f
-        }
-
         AnimatedVisibility(
             visible = pullToRefreshState.refreshState != RefreshState.Idle
         ) {
             Text(
                 text = refreshText,
-                style = textStyle,
+                style = refreshTextStyle,
                 color = color,
                 modifier = Modifier
-                    .padding(vertical = 6.dp)
+                    .padding(top = 12.dp)
                     .alpha(textAlpha)
             )
         }
@@ -271,7 +289,7 @@ private fun RefreshContent(
 }
 
 /**
- * Create rotation animation state
+ * Animate the rotation angle
  *
  * @return rotation angle state
  */
@@ -395,7 +413,7 @@ private fun DrawScope.drawRefreshingState(
 }
 
 /**
- * Draw the circle that shrinks to the refresh complete state
+ * Draw the circle that expands to the refresh complete state
  */
 private fun DrawScope.drawRefreshCompleteState(
     center: Offset,
@@ -436,17 +454,15 @@ sealed class RefreshState {
 }
 
 /**
- * Remember the PullToRefreshState state object
+ * Remember the [PullToRefreshState] state object
  *
- * @return PullToRefreshState state object
+ * @return [PullToRefreshState] state object
  */
 @Composable
 fun rememberPullToRefreshState(): PullToRefreshState {
     val coroutineScope = rememberCoroutineScope()
-    val density = LocalDensity.current
-    val screenHeightDp = getWindowSize().height
-
-    val maxDragDistancePx = with(density) { (screenHeightDp.dp * maxDragRatio).toPx() }
+    val screenHeight = getWindowSize().height
+    val maxDragDistancePx = screenHeight * maxDragRatio
     val refreshThresholdOffset = maxDragDistancePx * thresholdRatio
 
     return remember {
@@ -459,9 +475,9 @@ fun rememberPullToRefreshState(): PullToRefreshState {
 }
 
 /**
- * PullToRefreshState
+ * The PullToRefreshState class
  *
- * @param coroutineScope CoroutineScope
+ * @param coroutineScope Coroutine scope
  * @param maxDragDistancePx Maximum drag distance
  * @param refreshThresholdOffset Refresh threshold offset
  */
@@ -523,7 +539,7 @@ class PullToRefreshState(
         )
     }
 
-    private fun resetPointerReleased() {
+    internal fun resetPointerReleased() {
         pointerReleased = false
     }
 
@@ -631,8 +647,8 @@ class PullToRefreshState(
                 animateDragOffset(
                     targetValue = refreshThresholdOffset,
                     animationSpec = tween(
-                        durationMillis = 100,
-                        easing = LinearEasing
+                        durationMillis = 200,
+                        easing = LinearOutSlowInEasing
                     )
                 )
                 rawDragOffset = refreshThresholdOffset
@@ -661,12 +677,13 @@ internal const val maxDragRatio = 1 / 5f
 internal const val thresholdRatio = 1 / 4f
 
 /**
- * PullToRefreshDefaults
+ * The default values of the [PullToRefresh] component.
  */
 object PullToRefreshDefaults {
     val color: Color = Color.Gray
-    val circleSize: Dp = 24.dp
-    val textStyle = TextStyle(
+    val circleSize: Dp = 20.dp
+    val refreshTexts = listOf("Pull down to refresh", "Release to refresh", "Refreshing...", "Refreshed successfully")
+    val refreshTextStyle = TextStyle(
         fontSize = 14.sp,
         fontWeight = FontWeight.Bold,
         color = color
