@@ -572,9 +572,9 @@ class PullToRefreshState(
 
     private suspend fun startManualRefreshCompleteAnimation() {
         _refreshCompleteAnimProgress.floatValue = 0f
-        val durationMillis = 100
+        val durationMillis = 200
         val startTime = TimeSource.Monotonic.markNow()
-        val easing: Easing = LinearEasing
+        val easing: Easing = LinearOutSlowInEasing
 
         while (true) {
             val elapsedTime = startTime.elapsedNow().inWholeMilliseconds
