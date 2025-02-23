@@ -124,8 +124,9 @@ fun OtherComponent(padding: PaddingValues) {
         value = text3,
         onValueChange = { text3 = it },
         backgroundColor = MiuixTheme.colorScheme.secondaryContainer,
-        label = "Use Label As Placeholder",
+        label = "Placeholder & SingleLine",
         useLabelAsPlaceholder = true,
+        singleLine = true,
         modifier = Modifier
             .padding(horizontal = 12.dp)
             .padding(bottom = 12.dp),
