@@ -177,7 +177,12 @@ fun RefreshHeader(
 
     val textAlpha = when (pullToRefreshState.refreshState) {
         RefreshState.Pulling -> {
-            if (pullToRefreshState.pullProgress > 0.5f) (pullToRefreshState.pullProgress - 0.5f) * 2 else 0f
+            if (pullToRefreshState.pullProgress > 0.5f) (pullToRefreshState.pullProgress - 0.5f) else 0f
+        }
+
+        RefreshState.RefreshComplete -> {
+            println(1f - refreshCompleteAnimProgress * 0.6f)
+            1f - refreshCompleteAnimProgress * 1.2f
         }
 
         else -> 1f
@@ -189,7 +194,7 @@ fun RefreshHeader(
             RefreshState.Pulling -> circleSize * pullProgress
             RefreshState.ThresholdReached -> circleSize + (dragOffset - thresholdOffset).toDp()
             RefreshState.Refreshing -> circleSize
-            RefreshState.RefreshComplete -> circleSize
+            RefreshState.RefreshComplete -> circleSize.coerceIn(0.dp, circleSize - circleSize * refreshCompleteAnimProgress)
         }.coerceAtMost(maxDrag.toDp())
     }
 
@@ -198,14 +203,12 @@ fun RefreshHeader(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         RefreshContent(
-            modifier = Modifier
-                .height(headerHeight)
-                .padding(top = 6.dp),
+            modifier = Modifier.height(headerHeight),
             circleSize = circleSize
         ) {
-            val ringStrokeWidthPx = circleSize.toPx() / 10
+            val ringStrokeWidthPx = circleSize.toPx() / 11
             val indicatorRadiusPx = size.minDimension / 2
-            val center = Offset(size.width / 2, size.height / 2)
+            val center = Offset(size.width / 2, size.height / 1.8f)
 
             when (pullToRefreshState.refreshState) {
                 RefreshState.Idle -> return@RefreshContent
@@ -251,15 +254,17 @@ fun RefreshHeader(
         }
 
         AnimatedVisibility(
-            visible = pullToRefreshState.refreshState != RefreshState.Idle
+            visible = pullProgress >= 0.5f
+                    && pullToRefreshState.refreshState != RefreshState.Idle
+                    && pullToRefreshState.refreshState != RefreshState.RefreshComplete
         ) {
             Text(
                 text = refreshText,
                 style = refreshTextStyle,
                 color = color,
                 modifier = Modifier
-                    .padding(top = 12.dp)
                     .alpha(textAlpha)
+                    .padding(top = 6.dp)
             )
         }
     }
@@ -423,9 +428,11 @@ private fun DrawScope.drawRefreshCompleteState(
     refreshCompleteProgress: Float
 ) {
     val animatedRadius = radius * (1f - refreshCompleteProgress)
+    val alphaColor = color.copy(alpha = 1f - refreshCompleteProgress)
+
     if (animatedRadius > 0) {
         drawCircle(
-            color = color,
+            color = alphaColor,
             radius = animatedRadius,
             center = center,
             style = Stroke(strokeWidth, cap = StrokeCap.Round)

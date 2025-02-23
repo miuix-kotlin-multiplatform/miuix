@@ -43,8 +43,7 @@ fun OtherComponent(padding: PaddingValues) {
     var text3 by remember { mutableStateOf("") }
     var progress by remember { mutableStateOf(0.5f) }
     val progressDisable by remember { mutableStateOf(0.5f) }
-    val tabTexts =
-        listOf("tab1", "tab2", "tab3", "tab4", "tab5", "tab6", "tab7", "tab8", "tab9", "tab10")
+    val tabTexts = listOf("tab1", "tab2", "tab3", "tab4", "tab5", "tab6")
     var selectedTabIndex1 by remember { mutableStateOf(0) }
 
     SmallTitle(text = "Button")
@@ -194,6 +193,4 @@ fun OtherComponent(padding: PaddingValues) {
             style = MiuixTheme.textStyles.paragraph
         )
     }
-
-
 }

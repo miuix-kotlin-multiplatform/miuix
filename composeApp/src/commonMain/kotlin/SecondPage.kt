@@ -34,7 +34,7 @@ fun SecondPage(
     LaunchedEffect(pullToRefreshState.isRefreshing) {
         if (pullToRefreshState.isRefreshing) {
             isRefreshing = true
-            delay(100)
+            delay(300)
             pullToRefreshState.completeRefreshing {
                 isRefreshing = false
             }
