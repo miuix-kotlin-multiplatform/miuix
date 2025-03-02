@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.times
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
+import top.yukonga.miuix.kmp.utils.overScrollHorizontal
 
 
 /**
@@ -67,7 +68,8 @@ fun TabRow(
     LazyRow(
         state = listState,
         modifier = modifier
-            .fillMaxWidth().height(42.dp),
+            .fillMaxWidth().height(42.dp)
+            .overScrollHorizontal(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(9.dp)
     ) {
