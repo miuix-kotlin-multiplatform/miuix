@@ -1,4 +1,4 @@
-package top.yukonga.miuix.kmp.icon.icons
+package top.yukonga.miuix.kmp.icon.icons.other
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType
@@ -11,7 +11,7 @@ import top.yukonga.miuix.kmp.icon.MiuixIcons
 /**
  * GitHub icon.
  */
-val MiuixIcons.GitHub: ImageVector
+val MiuixIcons.Other.GitHub: ImageVector
     get() {
         if (_github != null) return _github!!
         _github = ImageVector.Builder("GitHub", 24.dp, 24.dp, 1024f, 1024f).apply {

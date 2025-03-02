@@ -1,11 +1,13 @@
 package component
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -23,12 +25,54 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.ButtonDefaults
 import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.Slider
 import top.yukonga.miuix.kmp.basic.SmallTitle
 import top.yukonga.miuix.kmp.basic.TabRow
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TextButton
 import top.yukonga.miuix.kmp.basic.TextField
+import top.yukonga.miuix.kmp.icon.MiuixIcons
+import top.yukonga.miuix.kmp.icon.icons.useful.AddSecret
+import top.yukonga.miuix.kmp.icon.icons.useful.Back
+import top.yukonga.miuix.kmp.icon.icons.useful.Blocklist
+import top.yukonga.miuix.kmp.icon.icons.useful.Cancel
+import top.yukonga.miuix.kmp.icon.icons.useful.Confirm
+import top.yukonga.miuix.kmp.icon.icons.useful.Copy
+import top.yukonga.miuix.kmp.icon.icons.useful.Cut
+import top.yukonga.miuix.kmp.icon.icons.useful.Delete
+import top.yukonga.miuix.kmp.icon.icons.useful.DeselectAll
+import top.yukonga.miuix.kmp.icon.icons.useful.Edit
+import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionDelete
+import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
+import top.yukonga.miuix.kmp.icon.icons.useful.Info
+import top.yukonga.miuix.kmp.icon.icons.useful.More
+import top.yukonga.miuix.kmp.icon.icons.useful.Move
+import top.yukonga.miuix.kmp.icon.icons.useful.NavigatorSwitch
+import top.yukonga.miuix.kmp.icon.icons.useful.New
+import top.yukonga.miuix.kmp.icon.icons.useful.Order
+import top.yukonga.miuix.kmp.icon.icons.useful.Paste
+import top.yukonga.miuix.kmp.icon.icons.useful.Pause
+import top.yukonga.miuix.kmp.icon.icons.useful.Personal
+import top.yukonga.miuix.kmp.icon.icons.useful.Play
+import top.yukonga.miuix.kmp.icon.icons.useful.Reboot
+import top.yukonga.miuix.kmp.icon.icons.useful.Redo
+import top.yukonga.miuix.kmp.icon.icons.useful.Refresh
+import top.yukonga.miuix.kmp.icon.icons.useful.RemoveBlocklist
+import top.yukonga.miuix.kmp.icon.icons.useful.RemoveSecret
+import top.yukonga.miuix.kmp.icon.icons.useful.Rename
+import top.yukonga.miuix.kmp.icon.icons.useful.Restore
+import top.yukonga.miuix.kmp.icon.icons.useful.Save
+import top.yukonga.miuix.kmp.icon.icons.useful.Scan
+import top.yukonga.miuix.kmp.icon.icons.useful.Search
+import top.yukonga.miuix.kmp.icon.icons.useful.SelectAll
+import top.yukonga.miuix.kmp.icon.icons.useful.Send
+import top.yukonga.miuix.kmp.icon.icons.useful.Settings
+import top.yukonga.miuix.kmp.icon.icons.useful.Share
+import top.yukonga.miuix.kmp.icon.icons.useful.Stick
+import top.yukonga.miuix.kmp.icon.icons.useful.Undo
+import top.yukonga.miuix.kmp.icon.icons.useful.Unstick
+import top.yukonga.miuix.kmp.icon.icons.useful.Update
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
@@ -45,6 +89,48 @@ fun OtherComponent(padding: PaddingValues) {
     val progressDisable by remember { mutableStateOf(0.5f) }
     val tabTexts = listOf("tab1", "tab2", "tab3", "tab4", "tab5", "tab6")
     var selectedTabIndex1 by remember { mutableStateOf(0) }
+    val miuixIconsNormal = listOf(
+        MiuixIcons.Useful.AddSecret,
+        MiuixIcons.Useful.Back,
+        MiuixIcons.Useful.Blocklist,
+        MiuixIcons.Useful.Cancel,
+        MiuixIcons.Useful.Confirm,
+        MiuixIcons.Useful.Copy,
+        MiuixIcons.Useful.Cut,
+        MiuixIcons.Useful.Delete,
+        MiuixIcons.Useful.DeselectAll,
+        MiuixIcons.Useful.Edit,
+        MiuixIcons.Useful.ImmersionDelete,
+        MiuixIcons.Useful.ImmersionMore,
+        MiuixIcons.Useful.Info,
+        MiuixIcons.Useful.More,
+        MiuixIcons.Useful.Move,
+        MiuixIcons.Useful.NavigatorSwitch,
+        MiuixIcons.Useful.New,
+        MiuixIcons.Useful.Order,
+        MiuixIcons.Useful.Paste,
+        MiuixIcons.Useful.Pause,
+        MiuixIcons.Useful.Personal,
+        MiuixIcons.Useful.Play,
+        MiuixIcons.Useful.Reboot,
+        MiuixIcons.Useful.Redo,
+        MiuixIcons.Useful.Refresh,
+        MiuixIcons.Useful.RemoveBlocklist,
+        MiuixIcons.Useful.RemoveSecret,
+        MiuixIcons.Useful.Rename,
+        MiuixIcons.Useful.Restore,
+        MiuixIcons.Useful.Save,
+        MiuixIcons.Useful.Scan,
+        MiuixIcons.Useful.Search,
+        MiuixIcons.Useful.SelectAll,
+        MiuixIcons.Useful.Send,
+        MiuixIcons.Useful.Settings,
+        MiuixIcons.Useful.Share,
+        MiuixIcons.Useful.Stick,
+        MiuixIcons.Useful.Undo,
+        MiuixIcons.Useful.Unstick,
+        MiuixIcons.Useful.Update
+    )
 
     SmallTitle(text = "Button")
     Row(
@@ -162,6 +248,24 @@ fun OtherComponent(padding: PaddingValues) {
         selectedTabIndex1 = it
     }
 
+    SmallTitle(text = "Icon")
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 12.dp),
+        insideMargin = PaddingValues(16.dp)
+    ) {
+        FlowRow {
+            miuixIconsNormal.forEach { icon ->
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
+    }
 
     SmallTitle(text = "Card")
     Card(

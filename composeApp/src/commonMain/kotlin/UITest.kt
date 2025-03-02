@@ -52,12 +52,12 @@ import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.extra.DropdownImpl
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.GitHub
-import top.yukonga.miuix.kmp.icon.icons.ImmersionMore
-import top.yukonga.miuix.kmp.icon.icons.Info
-import top.yukonga.miuix.kmp.icon.icons.More
-import top.yukonga.miuix.kmp.icon.icons.NavigatorSwitch
-import top.yukonga.miuix.kmp.icon.icons.Settings
+import top.yukonga.miuix.kmp.icon.icons.other.GitHub
+import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
+import top.yukonga.miuix.kmp.icon.icons.useful.More
+import top.yukonga.miuix.kmp.icon.icons.useful.NavigatorSwitch
+import top.yukonga.miuix.kmp.icon.icons.useful.Order
+import top.yukonga.miuix.kmp.icon.icons.useful.Settings
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
 import utils.FPSMonitor
 
@@ -85,10 +85,10 @@ fun UITest(
     }
 
     val items = listOf(
-        NavigationItem("HomePage", MiuixIcons.NavigatorSwitch),
-        NavigationItem("DropDown", MiuixIcons.Info),
-        NavigationItem("Settings", MiuixIcons.Settings),
-        NavigationItem("More", MiuixIcons.More)
+        NavigationItem("HomePage", MiuixIcons.Useful.NavigatorSwitch),
+        NavigationItem("DropDown", MiuixIcons.Useful.Order),
+        NavigationItem("Settings", MiuixIcons.Useful.Settings),
+        NavigationItem("More", MiuixIcons.Useful.More)
     )
 
     LaunchedEffect(pagerState) {
@@ -163,7 +163,7 @@ fun UITest(
                                     }
                                 ) {
                                     Icon(
-                                        imageVector = MiuixIcons.ImmersionMore,
+                                        imageVector = MiuixIcons.Useful.ImmersionMore,
                                         contentDescription = "Menu"
                                     )
                                 }
@@ -212,7 +212,7 @@ fun UITest(
                                     }
                                 ) {
                                     Icon(
-                                        imageVector = MiuixIcons.ImmersionMore,
+                                        imageVector = MiuixIcons.Useful.ImmersionMore,
                                         contentDescription = "Menu"
                                     )
                                 }
@@ -283,7 +283,7 @@ fun UITest(
                     }
                 ) {
                     Icon(
-                        imageVector = MiuixIcons.GitHub,
+                        imageVector = MiuixIcons.Other.GitHub,
                         tint = Color.White,
                         contentDescription = "GitHub"
                     )

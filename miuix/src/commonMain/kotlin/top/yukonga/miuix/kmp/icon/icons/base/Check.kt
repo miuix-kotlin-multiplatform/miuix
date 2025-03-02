@@ -1,4 +1,4 @@
-package top.yukonga.miuix.kmp.icon.icons
+package top.yukonga.miuix.kmp.icon.icons.base
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType
@@ -11,7 +11,7 @@ import top.yukonga.miuix.kmp.icon.MiuixIcons
 /**
  * Check icon with Miuix style.
  */
-val MiuixIcons.Check: ImageVector
+val MiuixIcons.Base.Check: ImageVector
     get() {
         if (_check != null) return _check!!
         _check = ImageVector.Builder("Check", 26.dp, 26.dp, 56f, 56f).apply {

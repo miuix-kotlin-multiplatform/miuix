@@ -1,3 +1,7 @@
 package top.yukonga.miuix.kmp.icon
 
-object MiuixIcons
+object MiuixIcons {
+    object Base
+    object Useful
+    object Other
+}

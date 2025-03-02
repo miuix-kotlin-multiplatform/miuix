@@ -1,4 +1,4 @@
-package top.yukonga.miuix.kmp.icon.icons
+package top.yukonga.miuix.kmp.icon.icons.base
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType
@@ -11,7 +11,7 @@ import top.yukonga.miuix.kmp.icon.MiuixIcons
 /**
  * ArrowUpDownIntegrated icon with Miuix style.
  */
-val MiuixIcons.ArrowUpDownIntegrated: ImageVector
+val MiuixIcons.Base.ArrowUpDownIntegrated: ImageVector
     get() {
         if (_arrowUpDownIntegrated != null) return _arrowUpDownIntegrated!!
         _arrowUpDownIntegrated = ImageVector.Builder("ArrowUpDownIntegrated", 10.dp, 16.dp, 10f, 16f).apply {

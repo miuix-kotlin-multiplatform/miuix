@@ -43,8 +43,8 @@ import top.yukonga.miuix.kmp.basic.ListPopupColumn
 import top.yukonga.miuix.kmp.basic.PopupPositionProvider
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.ArrowUpDownIntegrated
-import top.yukonga.miuix.kmp.icon.icons.Check
+import top.yukonga.miuix.kmp.icon.icons.base.ArrowUpDownIntegrated
+import top.yukonga.miuix.kmp.icon.icons.base.Check
 import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
@@ -184,7 +184,7 @@ fun SuperDropdown(
                     .padding(start = 8.dp)
                     .size(10.dp, 16.dp)
                     .align(Alignment.CenterVertically),
-                imageVector = MiuixIcons.ArrowUpDownIntegrated,
+                imageVector = MiuixIcons.Base.ArrowUpDownIntegrated,
                 colorFilter = ColorFilter.tint(actionColor),
                 contentDescription = null
             )
@@ -282,7 +282,7 @@ fun DropdownImpl(
         if (isSelected) {
             Image(
                 modifier = Modifier.padding(start = 12.dp).size(20.dp),
-                imageVector = MiuixIcons.Check,
+                imageVector = MiuixIcons.Base.Check,
                 colorFilter = BlendModeColorFilter(
                     dropdownColors.selectedContentColor,
                     BlendMode.SrcIn

@@ -45,7 +45,7 @@ import top.yukonga.miuix.kmp.extra.SuperDropdown
 import top.yukonga.miuix.kmp.extra.SuperSpinner
 import top.yukonga.miuix.kmp.extra.SuperSwitch
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.Info
+import top.yukonga.miuix.kmp.icon.icons.useful.Personal
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 
@@ -152,7 +152,7 @@ fun TextComponent(
                     modifier = Modifier.padding(end = 16.dp)
                 ) {
                     Icon(
-                        imageVector = MiuixIcons.Info,
+                        imageVector = MiuixIcons.Useful.Personal,
                         contentDescription = "Account",
                     )
                 }
