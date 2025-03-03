@@ -8,6 +8,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,8 +16,10 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.ProgressIndicatorDefaults.ProgressIndicatorColors
@@ -36,7 +39,7 @@ fun LinearProgressIndicator(
     progress: Float? = null,
     modifier: Modifier = Modifier,
     colors: ProgressIndicatorColors = ProgressIndicatorDefaults.progressIndicatorColors(),
-    height: Dp = ProgressIndicatorDefaults.DefaultProgressIndicatorHeight,
+    height: Dp = ProgressIndicatorDefaults.DefaultLinearProgressIndicatorHeight,
     strokeCap: StrokeCap = StrokeCap.Round
 ) {
     val isIndeterminate = progress == null
@@ -135,9 +138,137 @@ fun LinearProgressIndicator(
     }
 }
 
+/**
+ * A [CircularProgressIndicator] with Miuix style.
+ *
+ * @param progress The current progress value between 0.0 and 1.0, or null for indeterminate state.
+ * @param modifier The modifier to be applied to the indicator.
+ * @param colors The colors used for the indicator.
+ * @param strokeWidth The width of the circular stroke.
+ * @param size The size (diameter) of the circular indicator.
+ * @param strokeCap The shape of the indicator ends.
+ */
+@Composable
+fun CircularProgressIndicator(
+    progress: Float? = null,
+    modifier: Modifier = Modifier,
+    colors: ProgressIndicatorColors = ProgressIndicatorDefaults.progressIndicatorColors(),
+    strokeWidth: Dp = ProgressIndicatorDefaults.DefaultCircularProgressIndicatorStrokeWidth,
+    size: Dp = ProgressIndicatorDefaults.DefaultCircularProgressIndicatorSize,
+    strokeCap: StrokeCap = StrokeCap.Round
+) {
+    val isIndeterminate = progress == null
+
+    if (isIndeterminate) {
+        val rotationAnim = remember { Animatable(0f) }
+        val sweepAnim = remember { Animatable(30f) }
+
+        LaunchedEffect(Unit) {
+            rotationAnim.animateTo(
+                targetValue = 360f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(1000, easing = LinearEasing),
+                    repeatMode = RepeatMode.Restart
+                )
+            )
+        }
+
+        LaunchedEffect(Unit) {
+            while (true) {
+                sweepAnim.animateTo(
+                    targetValue = 120f,
+                    animationSpec = tween(600, easing = LinearEasing)
+                )
+                sweepAnim.animateTo(
+                    targetValue = 30f,
+                    animationSpec = tween(600, easing = LinearEasing)
+                )
+            }
+        }
+
+        Canvas(
+            modifier = modifier.size(size)
+        ) {
+            val strokeWidthPx = strokeWidth.toPx()
+            val diameter = size.toPx() - strokeWidthPx
+            val topLeft = Offset(strokeWidthPx / 2, strokeWidthPx / 2)
+            val arcSize = Size(diameter, diameter)
+
+            drawArc(
+                color = colors.backgroundColor(),
+                startAngle = 0f,
+                sweepAngle = 360f,
+                useCenter = false,
+                topLeft = topLeft,
+                size = arcSize,
+                style = Stroke(
+                    width = strokeWidthPx,
+                    cap = strokeCap
+                )
+            )
+
+            drawArc(
+                color = colors.foregroundColor(true),
+                startAngle = rotationAnim.value,
+                sweepAngle = sweepAnim.value,
+                useCenter = false,
+                topLeft = topLeft,
+                size = arcSize,
+                style = Stroke(
+                    width = strokeWidthPx,
+                    cap = strokeCap
+                )
+            )
+        }
+    } else {
+        val progressValue = progress.coerceIn(0f, 1f)
+
+        Canvas(
+            modifier = modifier.size(size)
+        ) {
+            val strokeWidthPx = strokeWidth.toPx()
+            val diameter = size.toPx() - strokeWidthPx
+            val topLeft = Offset(strokeWidthPx / 2, strokeWidthPx / 2)
+            val arcSize = Size(diameter, diameter)
+
+            drawArc(
+                color = colors.backgroundColor(),
+                startAngle = 0f,
+                sweepAngle = 360f,
+                useCenter = false,
+                topLeft = topLeft,
+                size = arcSize,
+                style = Stroke(
+                    width = strokeWidthPx,
+                    cap = strokeCap
+                )
+            )
+
+            drawArc(
+                color = colors.foregroundColor(true),
+                startAngle = -90f, // Start from the top
+                sweepAngle = 360f * progressValue,
+                useCenter = false,
+                topLeft = topLeft,
+                size = arcSize,
+                style = Stroke(
+                    width = strokeWidthPx,
+                    cap = strokeCap
+                )
+            )
+        }
+    }
+}
+
 object ProgressIndicatorDefaults {
     /** The default height of [LinearProgressIndicator]. */
-    val DefaultProgressIndicatorHeight = 6.dp
+    val DefaultLinearProgressIndicatorHeight = 6.dp
+
+    /** The default stroke width of [CircularProgressIndicator]. */
+    val DefaultCircularProgressIndicatorStrokeWidth = 4.dp
+
+    /** The default size of [CircularProgressIndicator]. */
+    val DefaultCircularProgressIndicatorSize = 36.dp
 
     /**
      * The default [ProgressIndicatorColors] used in [LinearProgressIndicator].

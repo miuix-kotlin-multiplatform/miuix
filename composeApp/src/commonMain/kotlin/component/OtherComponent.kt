@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.ButtonDefaults
 import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.CircularProgressIndicator
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.LinearProgressIndicator
 import top.yukonga.miuix.kmp.basic.Slider
@@ -89,6 +90,7 @@ fun OtherComponent(padding: PaddingValues) {
     var text3 by remember { mutableStateOf("") }
     var progress by remember { mutableStateOf(0.5f) }
     var progressHaptic by remember { mutableStateOf(0.5f) }
+    val progressValues = remember { listOf(0.1f, 0.3f, progress, 0.7f, 0.9f, null) }
     val progressDisable by remember { mutableStateOf(0.5f) }
     val tabTexts = listOf("tab1", "tab2", "tab3", "tab4", "tab5", "tab6")
     var selectedTabIndex1 by remember { mutableStateOf(0) }
@@ -184,19 +186,29 @@ fun OtherComponent(padding: PaddingValues) {
         )
     }
 
-    SmallTitle(text = "ProgressIndicator")
-    LinearProgressIndicator(
-        progress = progress,
-        modifier = Modifier
-            .padding(horizontal = 15.dp) // Increased from 12.dp because of StrokeCap.Round.
-            .padding(bottom = 12.dp)
-    )
+    SmallTitle(text = "LinearProgressIndicator")
+    progressValues.forEach { progressValue ->
+        LinearProgressIndicator(
+            progress = progressValue,
+            modifier = Modifier
+                .padding(horizontal = 15.dp) // Increased from 12.dp because of StrokeCap.Round.
+                .padding(bottom = 12.dp)
+        )
+    }
 
-    LinearProgressIndicator(
+    FlowRow(
         modifier = Modifier
-            .padding(horizontal = 15.dp) // Increased from 12.dp because of StrokeCap.Round.
-            .padding(bottom = 6.dp)
-    )
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 6.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+    ) {
+        progressValues.forEach { progressValue ->
+            CircularProgressIndicator(
+                progress = progressValue
+            )
+        }
+    }
 
     SmallTitle(text = "TextField")
     TextField(
