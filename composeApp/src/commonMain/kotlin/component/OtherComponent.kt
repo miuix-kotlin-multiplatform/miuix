@@ -164,9 +164,8 @@ fun OtherComponent(padding: PaddingValues) {
 
     Row(
         modifier = Modifier
-            .fillMaxWidth()
             .padding(horizontal = 12.dp)
-            .padding(bottom = 12.dp),
+            .padding(bottom = 6.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         TextButton(
@@ -196,7 +195,7 @@ fun OtherComponent(padding: PaddingValues) {
     LinearProgressIndicator(
         modifier = Modifier
             .padding(horizontal = 15.dp) // Increased from 12.dp because of StrokeCap.Round.
-            .padding(bottom = 12.dp)
+            .padding(bottom = 6.dp)
     )
 
     SmallTitle(text = "TextField")
@@ -231,7 +230,7 @@ fun OtherComponent(padding: PaddingValues) {
         singleLine = true,
         modifier = Modifier
             .padding(horizontal = 12.dp)
-            .padding(bottom = 12.dp),
+            .padding(bottom = 6.dp),
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
     )
@@ -260,7 +259,7 @@ fun OtherComponent(padding: PaddingValues) {
         enabled = false,
         modifier = Modifier
             .padding(horizontal = 12.dp)
-            .padding(bottom = 12.dp)
+            .padding(bottom = 6.dp)
     )
 
     SmallTitle(text = "TabRow")
@@ -269,7 +268,7 @@ fun OtherComponent(padding: PaddingValues) {
         selectedTabIndex = selectedTabIndex1,
         modifier = Modifier
             .padding(horizontal = 12.dp)
-            .padding(bottom = 12.dp)
+            .padding(bottom = 6.dp)
     ) {
         selectedTabIndex1 = it
     }
@@ -279,7 +278,7 @@ fun OtherComponent(padding: PaddingValues) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
-            .padding(bottom = 12.dp),
+            .padding(bottom = 6.dp),
         insideMargin = PaddingValues(16.dp)
     ) {
         FlowRow {
