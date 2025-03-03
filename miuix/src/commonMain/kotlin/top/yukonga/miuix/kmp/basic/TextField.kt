@@ -215,7 +215,7 @@ fun TextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    insideMargin: DpSize = DpSize(16.dp, 15.dp),
+    insideMargin: DpSize = DpSize(16.dp, 16.dp),
     backgroundColor: Color = MiuixTheme.colorScheme.secondaryContainer,
     cornerRadius: Dp = 16.dp,
     label: String = "",

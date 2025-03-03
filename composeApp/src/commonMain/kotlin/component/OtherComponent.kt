@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.ButtonDefaults
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.LinearProgressIndicator
 import top.yukonga.miuix.kmp.basic.Slider
 import top.yukonga.miuix.kmp.basic.SliderDefaults.SliderHapticEffect
 import top.yukonga.miuix.kmp.basic.SmallTitle
@@ -183,6 +184,20 @@ fun OtherComponent(padding: PaddingValues) {
             colors = ButtonDefaults.textButtonColorsPrimary()
         )
     }
+
+    SmallTitle(text = "ProgressIndicator")
+    LinearProgressIndicator(
+        progress = progress,
+        modifier = Modifier
+            .padding(horizontal = 15.dp) // Increased from 12.dp because of StrokeCap.Round.
+            .padding(bottom = 12.dp)
+    )
+
+    LinearProgressIndicator(
+        modifier = Modifier
+            .padding(horizontal = 15.dp) // Increased from 12.dp because of StrokeCap.Round.
+            .padding(bottom = 12.dp)
+    )
 
     SmallTitle(text = "TextField")
     TextField(
