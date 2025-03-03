@@ -27,6 +27,7 @@ import top.yukonga.miuix.kmp.basic.ButtonDefaults
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.Slider
+import top.yukonga.miuix.kmp.basic.SliderDefaults.SliderHapticEffect
 import top.yukonga.miuix.kmp.basic.SmallTitle
 import top.yukonga.miuix.kmp.basic.TabRow
 import top.yukonga.miuix.kmp.basic.Text
@@ -86,6 +87,7 @@ fun OtherComponent(padding: PaddingValues) {
     var text2 by remember { mutableStateOf(TextFieldValue("")) }
     var text3 by remember { mutableStateOf("") }
     var progress by remember { mutableStateOf(0.5f) }
+    var progressHaptic by remember { mutableStateOf(0.5f) }
     val progressDisable by remember { mutableStateOf(0.5f) }
     val tabTexts = listOf("tab1", "tab2", "tab3", "tab4", "tab5", "tab6")
     var selectedTabIndex1 by remember { mutableStateOf(0) }
@@ -223,6 +225,15 @@ fun OtherComponent(padding: PaddingValues) {
     Slider(
         progress = progress,
         onProgressChange = { newProgress -> progress = newProgress },
+        modifier = Modifier
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 12.dp)
+    )
+
+    Slider(
+        progress = progressHaptic,
+        onProgressChange = { newProgress -> progressHaptic = newProgress },
+        hapticEffect = SliderHapticEffect.Step,
         modifier = Modifier
             .padding(horizontal = 12.dp)
             .padding(bottom = 12.dp)
