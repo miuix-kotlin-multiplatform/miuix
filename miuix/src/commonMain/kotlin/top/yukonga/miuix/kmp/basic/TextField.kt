@@ -103,12 +103,12 @@ fun TextField(
     val isFocused by interactionSource.collectIsFocusedAsState()
     val borderWidth by animateDpAsState(if (isFocused) 2.dp else 0.dp)
     val borderColor by animateColorAsState(if (isFocused) MiuixTheme.colorScheme.primary else backgroundColor)
-    val labelOffsetY by animateDpAsState(if (value.text.isNotEmpty() && useLabelAsPlaceholder == false) -(insideMargin.height / 2) else 0.dp)
-    val innerTextOffsetY by animateDpAsState(if (value.text.isNotEmpty() && useLabelAsPlaceholder == false) (insideMargin.height / 2) else 0.dp)
-    val labelFontSize by animateDpAsState(if (value.text.isNotEmpty() && useLabelAsPlaceholder == false) 10.dp else 16.dp)
+    val labelOffsetY by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) -(insideMargin.height / 2) else 0.dp)
+    val innerTextOffsetY by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) (insideMargin.height / 2) else 0.dp)
+    val labelFontSize by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) 10.dp else 16.dp)
     val border = Modifier.border(borderWidth, borderColor, RoundedCornerShape(cornerRadius))
-    val labelOffset = if (label != "" && useLabelAsPlaceholder == false) Modifier.offset(y = labelOffsetY) else Modifier
-    val innerTextOffset = if (label != "" && useLabelAsPlaceholder == false) Modifier.offset(y = innerTextOffsetY) else Modifier
+    val labelOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = labelOffsetY) else Modifier
+    val innerTextOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = innerTextOffsetY) else Modifier
 
     BasicTextField(
         value = value,
@@ -246,12 +246,12 @@ fun TextField(
     val isFocused by interactionSource.collectIsFocusedAsState()
     val borderWidth by animateDpAsState(if (isFocused) 2.0.dp else 0.dp)
     val borderColor by animateColorAsState(if (isFocused) MiuixTheme.colorScheme.primary else backgroundColor)
-    val labelOffsetY by animateDpAsState(if (value.isNotEmpty() && useLabelAsPlaceholder == false) -(insideMargin.height / 2) else 0.dp)
-    val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty() && useLabelAsPlaceholder == false) (insideMargin.height / 2) else 0.dp)
-    val labelFontSize by animateDpAsState(if (value.isNotEmpty() && useLabelAsPlaceholder == false) 10.dp else 16.dp)
+    val labelOffsetY by animateDpAsState(if (value.isNotEmpty() && !useLabelAsPlaceholder) -(insideMargin.height / 2) else 0.dp)
+    val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty() && !useLabelAsPlaceholder) (insideMargin.height / 2) else 0.dp)
+    val labelFontSize by animateDpAsState(if (value.isNotEmpty() && !useLabelAsPlaceholder) 10.dp else 16.dp)
     val border = Modifier.border(borderWidth, borderColor, RoundedCornerShape(cornerRadius))
-    val labelOffset = if (label != "" && useLabelAsPlaceholder == false) Modifier.offset(y = labelOffsetY) else Modifier
-    val innerTextOffset = if (label != "" && useLabelAsPlaceholder == false) Modifier.offset(y = innerTextOffsetY) else Modifier
+    val labelOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = labelOffsetY) else Modifier
+    val innerTextOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = innerTextOffsetY) else Modifier
 
     BasicTextField(
         value = value,

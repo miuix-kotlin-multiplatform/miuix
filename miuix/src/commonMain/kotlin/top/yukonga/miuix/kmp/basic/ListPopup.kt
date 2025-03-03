@@ -162,7 +162,8 @@ fun ListPopup(
                             constraints.copy(
                                 minWidth = if (minWidth.roundToPx() <= windowSize.width) minWidth.roundToPx() else windowSize.width,
                                 minHeight = if (50.dp.roundToPx() <= windowSize.height) 50.dp.roundToPx() else windowSize.height,
-                                maxHeight = maxHeight?.roundToPx()?.coerceAtLeast(50.dp.roundToPx()) ?: (windowBounds.height - popupMargin.top - popupMargin.bottom).coerceAtLeast(50.dp.roundToPx()),
+                                maxHeight = maxHeight?.roundToPx()?.coerceAtLeast(50.dp.roundToPx())
+                                    ?: (windowBounds.height - popupMargin.top - popupMargin.bottom).coerceAtLeast(50.dp.roundToPx()),
                                 maxWidth = if (minWidth.roundToPx() <= windowSize.width) windowSize.width else minWidth.roundToPx()
                             )
                         )
@@ -332,7 +333,10 @@ object ListPopupDefaults {
             }
             return IntOffset(
                 x = offsetX.coerceIn(windowBounds.left, (windowBounds.right - popupContentSize.width - popupMargin.right).coerceAtLeast(windowBounds.left)),
-                y = offsetY.coerceIn((windowBounds.top + popupMargin.top).coerceAtMost(windowBounds.bottom - popupContentSize.height - popupMargin.bottom), windowBounds.bottom - popupContentSize.height - popupMargin.bottom)
+                y = offsetY.coerceIn(
+                    (windowBounds.top + popupMargin.top).coerceAtMost(windowBounds.bottom - popupContentSize.height - popupMargin.bottom),
+                    windowBounds.bottom - popupContentSize.height - popupMargin.bottom
+                )
             )
         }
 
@@ -393,7 +397,10 @@ object ListPopupDefaults {
             }
             return IntOffset(
                 x = offsetX.coerceIn(windowBounds.left, (windowBounds.right - popupContentSize.width - popupMargin.right).coerceAtLeast(windowBounds.left)),
-                y = offsetY.coerceIn((windowBounds.top + popupMargin.top).coerceAtMost(windowBounds.bottom - popupContentSize.height - popupMargin.bottom), windowBounds.bottom - popupContentSize.height - popupMargin.bottom)
+                y = offsetY.coerceIn(
+                    (windowBounds.top + popupMargin.top).coerceAtMost(windowBounds.bottom - popupContentSize.height - popupMargin.bottom),
+                    windowBounds.bottom - popupContentSize.height - popupMargin.bottom
+                )
             )
         }
 

@@ -60,7 +60,7 @@ val MiuixIcons.Useful.More: ImageVector
                 close()
             }
         }
-        .build()
+            .build()
         return _more!!
     }
 

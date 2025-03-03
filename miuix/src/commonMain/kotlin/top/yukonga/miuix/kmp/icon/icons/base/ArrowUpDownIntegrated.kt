@@ -8,9 +8,6 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 
-/**
- * ArrowUpDownIntegrated icon with Miuix style.
- */
 val MiuixIcons.Base.ArrowUpDownIntegrated: ImageVector
     get() {
         if (_arrowUpDownIntegrated != null) return _arrowUpDownIntegrated!!

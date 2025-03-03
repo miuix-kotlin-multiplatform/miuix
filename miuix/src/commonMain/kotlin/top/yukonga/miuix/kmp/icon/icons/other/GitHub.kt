@@ -8,9 +8,6 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 
-/**
- * GitHub icon.
- */
 val MiuixIcons.Other.GitHub: ImageVector
     get() {
         if (_github != null) return _github!!

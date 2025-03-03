@@ -8,9 +8,6 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 
-/**
- * Check icon with Miuix style.
- */
 val MiuixIcons.Base.Check: ImageVector
     get() {
         if (_check != null) return _check!!

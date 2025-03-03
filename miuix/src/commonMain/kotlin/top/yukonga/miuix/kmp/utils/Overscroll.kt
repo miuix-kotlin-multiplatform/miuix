@@ -8,9 +8,12 @@ import androidx.compose.animation.core.Spring.StiffnessMediumLow
 import androidx.compose.animation.core.animateDecay
 import androidx.compose.animation.core.exponentialDecay
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.gestures.ScrollScope
 import androidx.compose.foundation.gestures.ScrollableState
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -30,12 +33,12 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Velocity
 import kotlinx.coroutines.launch
+import top.yukonga.miuix.kmp.basic.LazyColumn
 import kotlin.math.abs
 import kotlin.math.exp
 import kotlin.math.sign
 import kotlin.math.sqrt
 
-// form https://github.com/Cormor/ComposeOverscroll
 /**
  * A parabolic rolling easing curve.
  *
@@ -104,6 +107,7 @@ fun Modifier.overScrollHorizontal(
 /**
  * OverScroll effect for scrollable Composable.
  *
+ * form https://github.com/Cormor/ComposeOverscroll
  * @Author: cormor
  * @Email: cangtiansuo@gmail.com
  * @param isVertical is vertical, or horizontal?

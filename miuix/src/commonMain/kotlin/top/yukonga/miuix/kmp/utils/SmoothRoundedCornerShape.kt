@@ -49,7 +49,7 @@ fun SmoothRoundedCornerShape(
 )
 
 class SmoothRoundedCornerShape(
-    val smoothing: Float = DefaultSmoothing,
+    private val smoothing: Float = DefaultSmoothing,
     topStart: CornerSize,
     topEnd: CornerSize,
     bottomEnd: CornerSize,

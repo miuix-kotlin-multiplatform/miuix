@@ -92,7 +92,7 @@ val MiuixIcons.Useful.Delete: ImageVector
                 close()
             }
         }
-        .build()
+            .build()
         return _delete!!
     }
 

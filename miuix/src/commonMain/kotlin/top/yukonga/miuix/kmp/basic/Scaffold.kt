@@ -28,7 +28,10 @@ import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMapNotNull
 import androidx.compose.ui.util.fastMaxBy
+import top.yukonga.miuix.kmp.extra.SuperDialog
+import top.yukonga.miuix.kmp.extra.SuperDropdown
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtil
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.MiuixPopupHost
 
 /**
@@ -235,23 +238,23 @@ private fun ScaffoldLayout(
                 val innerPadding =
                     PaddingValues(
                         top =
-                        if (topBarPlaceables.isEmpty()) {
-                            insets.calculateTopPadding()
-                        } else {
-                            topBarHeight.toDp()
-                        },
+                            if (topBarPlaceables.isEmpty()) {
+                                insets.calculateTopPadding()
+                            } else {
+                                topBarHeight.toDp()
+                            },
                         bottom =
-                        if (bottomBarPlaceables.isEmpty() || bottomBarHeight == null) {
-                            insets.calculateBottomPadding()
-                        } else {
-                            bottomBarHeight.toDp()
-                        },
+                            if (bottomBarPlaceables.isEmpty() || bottomBarHeight == null) {
+                                insets.calculateBottomPadding()
+                            } else {
+                                bottomBarHeight.toDp()
+                            },
                         start =
-                        insets.calculateStartPadding(
-                            (this@SubcomposeLayout).layoutDirection
-                        ),
+                            insets.calculateStartPadding(
+                                (this@SubcomposeLayout).layoutDirection
+                            ),
                         end =
-                        insets.calculateEndPadding((this@SubcomposeLayout).layoutDirection)
+                            insets.calculateEndPadding((this@SubcomposeLayout).layoutDirection)
                     )
                 content(innerPadding)
             }

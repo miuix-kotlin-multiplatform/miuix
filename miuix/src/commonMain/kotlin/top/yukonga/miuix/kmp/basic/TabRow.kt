@@ -29,7 +29,6 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import top.yukonga.miuix.kmp.utils.overScrollHorizontal
 
-
 /**
  * A [TabRow] with Miuix style.
  *

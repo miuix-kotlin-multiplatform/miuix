@@ -37,13 +37,13 @@ fun HorizontalPager(
 ) {
     HorizontalPager(
         modifier =
-        if (defaultWindowInsetsPadding) {
-            modifier
-                .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
-                .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal))
-        } else {
-            modifier
-        },
+            if (defaultWindowInsetsPadding) {
+                modifier
+                    .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
+                    .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal))
+            } else {
+                modifier
+            },
         state = pagerState,
         beyondViewportPageCount = beyondViewportPageCount,
         verticalAlignment = Alignment.Top,

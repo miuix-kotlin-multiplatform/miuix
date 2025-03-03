@@ -1,7 +1,5 @@
 package top.yukonga.miuix.kmp.basic
 
-// This component is modified from the example provided by @sd086. Thanks for his work.
-
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
@@ -66,6 +64,7 @@ import kotlin.time.TimeSource
 
 /**
  * A [PullToRefresh] component with Miuix style.
+ * modified from the example provided by @sd086.
  *
  * @param modifier The modifier to be applied to the [PullToRefresh].
  * @param pullToRefreshState pullToRefreshState
@@ -75,7 +74,6 @@ import kotlin.time.TimeSource
  * @param refreshTextStyle The style of the refresh text.
  * @param onRefresh The callback to be called when the refresh is triggered.
  * @param content the content to be shown when the [PullToRefresh] is expanded.
- *
  */
 @Composable
 fun PullToRefresh(
@@ -181,7 +179,6 @@ fun RefreshHeader(
         }
 
         RefreshState.RefreshComplete -> {
-            println(1f - refreshCompleteAnimProgress * 0.6f)
             1f - refreshCompleteAnimProgress * 1.2f
         }
 
@@ -520,9 +517,9 @@ class PullToRefreshState(
         coroutineScope.launch {
             snapshotFlow { dragOffsetAnimatable.value }.collectLatest { offset ->
                 internalRefreshState = when {
-                    offset >= refreshThresholdOffset && !isRefreshing -> RefreshState.ThresholdReached
-                    offset > 0 && !isRefreshing -> RefreshState.Pulling
                     isRefreshing -> RefreshState.Refreshing
+                    offset >= refreshThresholdOffset -> RefreshState.ThresholdReached
+                    offset > 0 -> RefreshState.Pulling
                     else -> RefreshState.Idle
                 }
             }
@@ -687,12 +684,26 @@ internal const val thresholdRatio = 1 / 4f
  * The default values of the [PullToRefresh] component.
  */
 object PullToRefreshDefaults {
+
+    /** The default color of the refresh indicator */
     val color: Color = Color.Gray
+
+    /** The default size of the refresh indicator circle */
     val circleSize: Dp = 20.dp
-    val refreshTexts = listOf("Pull down to refresh", "Release to refresh", "Refreshing...", "Refreshed successfully")
+
+    /** The default texts to show when refreshing */
+    val refreshTexts = listOf(
+        "Pull down to refresh",
+        "Release to refresh",
+        "Refreshing...",
+        "Refreshed successfully"
+    )
+
+    /** The default style of the refresh text */
     val refreshTextStyle = TextStyle(
         fontSize = 14.sp,
         fontWeight = FontWeight.Bold,
         color = color
     )
+
 }
