@@ -24,6 +24,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.ProgressIndicatorDefaults.ProgressIndicatorColors
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
 
 /**
  * A [LinearProgressIndicator] with Miuix style.
@@ -260,6 +263,62 @@ fun CircularProgressIndicator(
     }
 }
 
+/**
+ * A [InfiniteProgressIndicator] with Miuix style.
+ * The indicator is a circular indicator with an orbiting dot.
+ *
+ * @param modifier The modifier to be applied to the indicator.
+ * @param color The color of the indicator.
+ * @param size The size (diameter) of the circular indicator.
+ * @param strokeWidth The width of the circular stroke.
+ * @param orbitingDotSize The size of the orbiting dot.
+ */
+@Composable
+fun InfiniteProgressIndicator(
+    modifier: Modifier = Modifier,
+    color: Color = Color.Gray,
+    size: Dp = ProgressIndicatorDefaults.DefaultInfiniteProgressIndicatorSize,
+    strokeWidth: Dp = ProgressIndicatorDefaults.DefaultInfiniteProgressIndicatorStrokeWidth,
+    orbitingDotSize: Dp = ProgressIndicatorDefaults.DefaultInfiniteProgressIndicatorOrbitingDotSize
+) {
+    val rotationAnim = remember { Animatable(0f) }
+
+    LaunchedEffect(Unit) {
+        rotationAnim.animateTo(
+            targetValue = 360f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(800, easing = LinearEasing),
+                repeatMode = RepeatMode.Restart
+            )
+        )
+    }
+
+    Canvas(modifier = modifier.size(size)) {
+        val center = Offset(this.size.width / 2, this.size.height / 2)
+        val radius = (size.toPx() - strokeWidth.toPx()) / 2
+
+        drawCircle(
+            color = color,
+            radius = radius,
+            center = center,
+            style = Stroke(strokeWidth.toPx(), cap = StrokeCap.Round)
+        )
+
+        val orbitRadius = radius - 2 * orbitingDotSize.toPx()
+        val angle = rotationAnim.value * PI.toFloat() / 180f
+        val dotCenter = center + Offset(
+            x = orbitRadius * cos(angle),
+            y = orbitRadius * sin(angle)
+        )
+
+        drawCircle(
+            color = color,
+            radius = orbitingDotSize.toPx(),
+            center = dotCenter
+        )
+    }
+}
+
 object ProgressIndicatorDefaults {
     /** The default height of [LinearProgressIndicator]. */
     val DefaultLinearProgressIndicatorHeight = 6.dp
@@ -270,8 +329,17 @@ object ProgressIndicatorDefaults {
     /** The default size of [CircularProgressIndicator]. */
     val DefaultCircularProgressIndicatorSize = 36.dp
 
+    /** The default stroke width of [InfiniteProgressIndicator]. */
+    val DefaultInfiniteProgressIndicatorStrokeWidth = 2.dp
+
+    /** The default radius width of the orbiting dot in [InfiniteProgressIndicator]. */
+    val DefaultInfiniteProgressIndicatorOrbitingDotSize = 2.dp
+
+    /** The default size of [InfiniteProgressIndicator]. */
+    val DefaultInfiniteProgressIndicatorSize = 20.dp
+
     /**
-     * The default [ProgressIndicatorColors] used in [LinearProgressIndicator].
+     * The default [ProgressIndicatorColors] used by [LinearProgressIndicator] and [CircularProgressIndicator].
      */
     @Composable
     fun progressIndicatorColors(

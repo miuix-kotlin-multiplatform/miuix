@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
@@ -27,6 +28,7 @@ import top.yukonga.miuix.kmp.basic.ButtonDefaults
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CircularProgressIndicator
 import top.yukonga.miuix.kmp.basic.Icon
+import top.yukonga.miuix.kmp.basic.InfiniteProgressIndicator
 import top.yukonga.miuix.kmp.basic.LinearProgressIndicator
 import top.yukonga.miuix.kmp.basic.Slider
 import top.yukonga.miuix.kmp.basic.SliderDefaults.SliderHapticEffect
@@ -186,7 +188,7 @@ fun OtherComponent(padding: PaddingValues) {
         )
     }
 
-    SmallTitle(text = "LinearProgressIndicator")
+    SmallTitle(text = "ProgressIndicator")
     progressValues.forEach { progressValue ->
         LinearProgressIndicator(
             progress = progressValue,
@@ -208,6 +210,10 @@ fun OtherComponent(padding: PaddingValues) {
                 progress = progressValue
             )
         }
+        InfiniteProgressIndicator(
+            modifier = Modifier
+                .align(alignment = Alignment.CenterVertically)
+        )
     }
 
     SmallTitle(text = "TextField")
