@@ -51,4 +51,4 @@ fun App() {
 
 ### Screenshot
 
-[![demo](https://github.com/miuix-kotlin-multiplatform/miuix/blob/main/screenshot/demo.png?raw=true)]()
+[![demo](https://github.com/miuix-kotlin-multiplatform/miuix/blob/main/screenshot/demo.webp?raw=true)]()
