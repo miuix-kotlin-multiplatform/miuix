@@ -21,9 +21,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -52,7 +56,10 @@ fun ColorPicker(
     var currentValue by remember { mutableStateOf(0f) }
     var currentAlpha by remember { mutableStateOf(1f) }
 
-    // Set initial HSV values only once
+    val selectedColor = remember(currentHue, currentSaturation, currentValue, currentAlpha) {
+        Color.hsv(currentHue, currentSaturation, currentValue, currentAlpha)
+    }
+
     LaunchedEffect(initialColor, initialSetup) {
         if (initialSetup) {
             val hsv = FloatArray(3)
@@ -70,14 +77,9 @@ fun ColorPicker(
         }
     }
 
-    // Current selected color
-    val selectedColor = Color.hsv(currentHue, currentSaturation, currentValue, currentAlpha)
-
-    // Track previous color to prevent recomposition loops
     var previousColor by remember { mutableStateOf(selectedColor) }
 
-    // Only trigger callback when colors actually change from user interaction
-    LaunchedEffect(currentHue, currentSaturation, currentValue, currentAlpha) {
+    LaunchedEffect(selectedColor) {
         if (!initialSetup && selectedColor != previousColor) {
             previousColor = selectedColor
             onColorChanged(selectedColor)
@@ -89,7 +91,7 @@ fun ColorPicker(
         modifier = Modifier
             .fillMaxWidth()
             .height(26.dp)
-            .clip(SmoothRoundedCornerShape(13.dp))
+            .clip(SmoothRoundedCornerShape(50.dp))
             .background(selectedColor)
     )
 
@@ -132,7 +134,6 @@ fun ColorPicker(
     )
 }
 
-
 /**
  * A [HueSlider] component for selecting the hue of a color.
  *
@@ -148,11 +149,10 @@ fun HueSlider(
         value = currentHue / 360f,
         onValueChanged = onHueChanged,
         drawBrush = {
-            val hueColors = List(36) { i ->
-                Color.hsv(i * 10f, 1f, 1f)
-            }
             drawRect(brush = Brush.horizontalGradient(hueColors))
         },
+        startEdgeColor = Color.hsv(0f, 1f, 1f, 1f),
+        endEdgeColor = Color.hsv(359f, 1f, 1f, 1f),
         modifier = Modifier.fillMaxWidth()
     )
 }
@@ -182,6 +182,8 @@ fun SaturationSlider(
             )
             drawRect(brush = brush)
         },
+        startEdgeColor = Color.hsv(currentHue, 0f, 1f, 1f),
+        endEdgeColor = Color.hsv(currentHue, 1f, 1f, 1f),
         modifier = Modifier.fillMaxWidth()
     )
 }
@@ -214,6 +216,8 @@ fun ValueSlider(
             )
             drawRect(brush = brush)
         },
+        startEdgeColor = Color.Black,
+        endEdgeColor = Color.hsv(currentHue, currentSaturation, 1f, 1f),
         modifier = Modifier.fillMaxWidth()
     )
 }
@@ -235,19 +239,54 @@ fun AlphaSlider(
     currentAlpha: Float,
     onAlphaChanged: (Float) -> Unit,
 ) {
+    val baseColor = Color.hsv(currentHue, currentSaturation, currentValue)
+    val startColor = remember(baseColor) { baseColor.copy(alpha = 0f) }
+    val endColor = remember(baseColor) { baseColor.copy(alpha = 1f) }
+
+    val checkerBrush = remember {
+        object {
+            // Pre-computed colors
+            val light = Color(0xFFCCCCCC)
+            val dark = Color(0xFFAAAAAA)
+            val checkerSize = 3.dp
+
+            fun draw(drawScope: DrawScope, width: Float, height: Float) {
+                with(drawScope) {
+                    val pixelSize = checkerSize.toPx()
+                    val horizontalCount = (width / pixelSize).toInt() + 1
+                    val verticalCount = (height / pixelSize).toInt() + 1
+
+                    drawRect(light)
+
+                    for (y in 0 until verticalCount) {
+                        val isEvenRow = y % 2 == 0
+                        val startX = if (isEvenRow) 0 else 1
+
+                        for (x in startX until horizontalCount step 2) {
+                            drawRect(
+                                color = dark,
+                                topLeft = Offset(x * pixelSize, y * pixelSize),
+                                size = Size(pixelSize, pixelSize)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     ColorSlider(
         value = currentAlpha,
         onValueChanged = onAlphaChanged,
         drawBrush = {
-            val brush = Brush.horizontalGradient(
-                colors = listOf(
-                    Color.hsv(currentHue, currentSaturation, currentValue, 0f),
-                    Color.hsv(currentHue, currentSaturation, currentValue, 1f)
-                )
+            drawRect(
+                brush = Brush.horizontalGradient(listOf(startColor, endColor))
             )
-            drawRect(brush = brush)
         },
-        modifier = Modifier.fillMaxWidth()
+        startEdgeColor = startColor,
+        endEdgeColor = endColor,
+        modifier = Modifier.fillMaxWidth(),
+        drawBackground = checkerBrush::draw
     )
 }
 
@@ -259,36 +298,76 @@ private fun ColorSlider(
     value: Float,
     onValueChanged: (Float) -> Unit,
     drawBrush: DrawScope.() -> Unit,
-    modifier: Modifier = Modifier
+    startEdgeColor: Color,
+    endEdgeColor: Color,
+    modifier: Modifier = Modifier,
+    drawBackground: (DrawScope.(width: Float, height: Float) -> Unit)? = null
 ) {
     val density = LocalDensity.current
     var sliderWidth by remember { mutableStateOf(0.dp) }
     val indicatorSizeDp = 20.dp
-    val sliderSizePx = with(density) { 26.dp.toPx() }
+    val sliderSizePx = with(density) { remember { 26.dp.toPx() } }
+    val halfSliderSizePx = remember(sliderSizePx) { sliderSizePx / 2f }
+    val borderShape = remember { SmoothRoundedCornerShape(50.dp) }
+    val borderStroke = remember { 0.5.dp }
+    val borderColor = remember { Color.Gray.copy(0.1f) }
+
+    val dragHandler = remember(onValueChanged, sliderSizePx) {
+        { posX: Float, width: Float ->
+            handleSliderInteraction(posX, width, sliderSizePx, onValueChanged)
+        }
+    }
 
     Box(
         modifier = modifier
             .height(26.dp)
-            .clip(SmoothRoundedCornerShape(13.dp))
+            .clip(borderShape)
+            .border(borderStroke, borderColor, borderShape)
     ) {
-        // Draw gradient
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
                 .onGloballyPositioned { coordinates ->
                     sliderWidth = with(density) { coordinates.size.width.toDp() }
                 }
-                .pointerInput(Unit) {
+                .pointerInput(dragHandler) {
                     detectHorizontalDragGestures { change, _ ->
                         change.consume()
-                        handleSliderInteraction(change.position.x, size.width.toFloat(), sliderSizePx, onValueChanged)
+                        dragHandler(change.position.x, size.width.toFloat())
                     }
                 }
         ) {
-            drawBrush()
+            val canvasWidth = size.width
+            val effectiveWidth = canvasWidth - sliderSizePx
+
+            // Background drawing
+            drawBackground?.invoke(this, canvasWidth, size.height)
+
+            // Gradient drawing with transformations
+            translate(left = halfSliderSizePx, top = 0f) {
+                scale(
+                    scaleX = effectiveWidth / canvasWidth,
+                    scaleY = 1f,
+                    pivot = Offset.Zero
+                ) {
+                    drawBrush()
+                }
+            }
+
+            // Edge color fills
+            drawRect(
+                color = startEdgeColor,
+                topLeft = Offset(0f, 0f),
+                size = Size(halfSliderSizePx, size.height)
+            )
+
+            drawRect(
+                color = endEdgeColor,
+                topLeft = Offset(canvasWidth - halfSliderSizePx, 0f),
+                size = Size(halfSliderSizePx, size.height)
+            )
         }
 
-        // Current value indicator
         SliderIndicator(
             modifier = Modifier.align(Alignment.CenterStart),
             value = value,
@@ -298,6 +377,7 @@ private fun ColorSlider(
         )
     }
 }
+
 
 @Composable
 private fun SliderIndicator(
@@ -338,3 +418,5 @@ private fun handleSliderInteraction(
     val newPosition = (constrainedX - sliderHalfSizePx) / effectiveWidth
     onValueChanged(newPosition.coerceIn(0f, 1f))
 }
+
+private val hueColors = List(36) { i -> Color.hsv(i * 10f, 1f, 1f) }
