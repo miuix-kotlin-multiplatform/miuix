@@ -21,13 +21,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.ColorUtils
@@ -148,18 +148,11 @@ fun HueSlider(
         value = currentHue / 360f,
         onValueChanged = onHueChanged,
         drawBrush = {
-            val width = size.width
-            for (i in 0 until width.toInt()) {
-                val hue = i / width * 360f
-                drawLine(
-                    color = Color.hsv(hue, 1f, 1f),
-                    start = Offset(i.toFloat(), 0f),
-                    end = Offset(i.toFloat(), size.height),
-                    strokeWidth = 1f
-                )
+            val hueColors = List(36) { i ->
+                Color.hsv(i * 10f, 1f, 1f)
             }
+            drawRect(brush = Brush.horizontalGradient(hueColors))
         },
-        indicatorColor = { Color.hsv(currentHue, 1f, 1f) },
         modifier = Modifier.fillMaxWidth()
     )
 }
@@ -189,7 +182,6 @@ fun SaturationSlider(
             )
             drawRect(brush = brush)
         },
-        indicatorColor = { Color.hsv(currentHue, currentSaturation, 1f) },
         modifier = Modifier.fillMaxWidth()
     )
 }
@@ -222,7 +214,6 @@ fun ValueSlider(
             )
             drawRect(brush = brush)
         },
-        indicatorColor = { Color.hsv(currentHue, currentSaturation, currentValue) },
         modifier = Modifier.fillMaxWidth()
     )
 }
@@ -256,7 +247,6 @@ fun AlphaSlider(
             )
             drawRect(brush = brush)
         },
-        indicatorColor = { Color.hsv(currentHue, currentSaturation, currentValue, currentAlpha) },
         modifier = Modifier.fillMaxWidth()
     )
 }
@@ -269,7 +259,6 @@ private fun ColorSlider(
     value: Float,
     onValueChanged: (Float) -> Unit,
     drawBrush: DrawScope.() -> Unit,
-    indicatorColor: () -> Color,
     modifier: Modifier = Modifier
 ) {
     val density = LocalDensity.current
@@ -305,8 +294,7 @@ private fun ColorSlider(
             value = value,
             sliderWidth = sliderWidth,
             sliderSizePx = sliderSizePx,
-            indicatorSize = indicatorSizeDp,
-            indicatorColor = indicatorColor()
+            indicatorSize = indicatorSizeDp
         )
     }
 }
@@ -315,10 +303,9 @@ private fun ColorSlider(
 private fun SliderIndicator(
     modifier: Modifier,
     value: Float,
-    sliderWidth: androidx.compose.ui.unit.Dp,
+    sliderWidth: Dp,
     sliderSizePx: Float,
-    indicatorSize: androidx.compose.ui.unit.Dp,
-    indicatorColor: Color
+    indicatorSize: Dp
 ) {
     val density = LocalDensity.current
     Box(
@@ -332,7 +319,7 @@ private fun SliderIndicator(
             .size(indicatorSize)
             .clip(RoundedCornerShape(50.dp))
             .border(6.dp, Color.White, RoundedCornerShape(50.dp))
-            .background(indicatorColor, RoundedCornerShape(50.dp))
+            .background(Color.Transparent, RoundedCornerShape(50.dp))
     )
 }
 
