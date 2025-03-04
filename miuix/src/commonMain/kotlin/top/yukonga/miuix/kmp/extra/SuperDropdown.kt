@@ -47,7 +47,7 @@ import top.yukonga.miuix.kmp.icon.icons.base.ArrowUpDownIntegrated
 import top.yukonga.miuix.kmp.icon.icons.base.Check
 import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup
 
 /**
  * A dropdown with a title and a summary.

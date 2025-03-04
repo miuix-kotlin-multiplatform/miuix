@@ -1,6 +1,7 @@
 package component
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.ButtonDefaults
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CircularProgressIndicator
+import top.yukonga.miuix.kmp.basic.ColorPicker
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.InfiniteProgressIndicator
 import top.yukonga.miuix.kmp.basic.LinearProgressIndicator
@@ -79,6 +81,7 @@ import top.yukonga.miuix.kmp.icon.icons.useful.Undo
 import top.yukonga.miuix.kmp.icon.icons.useful.Unstick
 import top.yukonga.miuix.kmp.icon.icons.useful.Update
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import kotlin.math.round
 
 @Composable
 fun OtherComponent(padding: PaddingValues) {
@@ -138,6 +141,8 @@ fun OtherComponent(padding: PaddingValues) {
         MiuixIcons.Useful.Unstick,
         MiuixIcons.Useful.Update
     )
+    val miuixColor = MiuixTheme.colorScheme.primary
+    var selectedColor by remember { mutableStateOf(miuixColor) }
 
     SmallTitle(text = "Button")
     Row(
@@ -310,6 +315,31 @@ fun OtherComponent(padding: PaddingValues) {
         }
     }
 
+    SmallTitle(text = "ColorPicker")
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 12.dp),
+        insideMargin = PaddingValues(16.dp)
+    ) {
+        Column {
+            Text(
+                text = "Color: RGBA(" +
+                        "${(selectedColor.red * 255).toInt()}," +
+                        "${(selectedColor.green * 255).toInt()}," +
+                        "${(selectedColor.blue * 255).toInt()}," +
+                        "${(round(selectedColor.alpha * 100) / 100.0)})",
+                modifier = Modifier.padding(bottom = 6.dp)
+            )
+
+            ColorPicker(
+                initialColor = selectedColor,
+                onColorChanged = { selectedColor = it }
+            )
+        }
+    }
+
     SmallTitle(text = "Card")
     Card(
         modifier = Modifier
@@ -340,4 +370,5 @@ fun OtherComponent(padding: PaddingValues) {
             style = MiuixTheme.textStyles.paragraph
         )
     }
+
 }

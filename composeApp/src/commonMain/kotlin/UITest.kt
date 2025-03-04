@@ -58,7 +58,7 @@ import top.yukonga.miuix.kmp.icon.icons.useful.More
 import top.yukonga.miuix.kmp.icon.icons.useful.NavigatorSwitch
 import top.yukonga.miuix.kmp.icon.icons.useful.Order
 import top.yukonga.miuix.kmp.icon.icons.useful.Settings
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup
 import utils.FPSMonitor
 
 @OptIn(FlowPreview::class)

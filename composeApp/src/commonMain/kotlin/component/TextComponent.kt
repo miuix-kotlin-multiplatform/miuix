@@ -47,7 +47,7 @@ import top.yukonga.miuix.kmp.extra.SuperSwitch
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.useful.Personal
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog
 
 @Composable
 fun TextComponent(

@@ -33,7 +33,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 /**
  * A util class for show popup and dialog.
  */
-class MiuixPopupUtil {
+class MiuixPopupUtils {
 
     companion object {
         private var isPopupShowing = mutableStateOf(false)

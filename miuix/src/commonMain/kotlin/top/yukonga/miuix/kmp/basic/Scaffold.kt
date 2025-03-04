@@ -31,8 +31,8 @@ import androidx.compose.ui.util.fastMaxBy
 import top.yukonga.miuix.kmp.extra.SuperDialog
 import top.yukonga.miuix.kmp.extra.SuperDropdown
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.MiuixPopupHost
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtils
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.MiuixPopupHost
 
 /**
  * A [Scaffold] component with Miuix style.
@@ -49,7 +49,7 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.MiuixPopupHost
  * @param snackbarHost component to host [Snackbar]s that are pushed to be shown via
  *   [SnackbarHostState.showSnackbar], typically a [SnackbarHost].
  * @param popupHost component to host [SuperDropdown]s & [SuperDialog]s that are pushed to be shown via
- *   [MiuixPopupUtil.showPopup] & [MiuixPopupUtil.showDialog], typically a [MiuixPopupHost].
+ *   [MiuixPopupUtils.showPopup] & [MiuixPopupUtils.showDialog], typically a [MiuixPopupHost].
  * @param containerColor the color used for the background of this scaffold. Use [Color.Transparent]
  *   to have no color.
  * @param contentWindowInsets window insets to be passed to [content] slot via [PaddingValues]
