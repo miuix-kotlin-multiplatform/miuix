@@ -320,7 +320,7 @@ fun OtherComponent(padding: PaddingValues) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
-            .padding(bottom = 12.dp),
+            .padding(bottom = 6.dp),
         insideMargin = PaddingValues(16.dp)
     ) {
         Column {
@@ -330,7 +330,7 @@ fun OtherComponent(padding: PaddingValues) {
                         "${(selectedColor.green * 255).toInt()}," +
                         "${(selectedColor.blue * 255).toInt()}," +
                         "${(round(selectedColor.alpha * 100) / 100.0)})",
-                modifier = Modifier.padding(bottom = 6.dp)
+                modifier = Modifier.padding(bottom = 12.dp)
             )
 
             ColorPicker(
@@ -370,5 +370,4 @@ fun OtherComponent(padding: PaddingValues) {
             style = MiuixTheme.textStyles.paragraph
         )
     }
-
 }

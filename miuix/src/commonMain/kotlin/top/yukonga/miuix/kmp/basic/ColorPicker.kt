@@ -3,8 +3,7 @@ package top.yukonga.miuix.kmp.basic
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,15 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.LinearGradientShader
-import androidx.compose.ui.graphics.Shader
-import androidx.compose.ui.graphics.ShaderBrush
-import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -92,86 +88,66 @@ fun ColorPicker(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(20.dp)
-            .clip(SmoothRoundedCornerShape(10.dp))
+            .height(26.dp)
+            .clip(SmoothRoundedCornerShape(13.dp))
             .background(selectedColor)
-            .border(1.dp, MiuixTheme.colorScheme.outline, SmoothRoundedCornerShape(10.dp))
     )
 
-    Spacer(modifier = Modifier.height(6.dp))
+    Spacer(modifier = Modifier.height(12.dp))
 
     // Hue selection
     HueSlider(
         currentHue = currentHue,
-        onHueChanged = { currentHue = it },
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(20.dp)
-            .clip(SmoothRoundedCornerShape(10.dp))
-            .border(1.dp, MiuixTheme.colorScheme.outline, SmoothRoundedCornerShape(10.dp))
+        onHueChanged = { newHue -> currentHue = newHue * 360f }
     )
 
-    Spacer(modifier = Modifier.height(6.dp))
+    Spacer(modifier = Modifier.height(12.dp))
 
-    // Saturation-Value picker
-    SaturationValuePicker(
+    // Saturation selection
+    SaturationSlider(
+        currentHue = currentHue,
+        currentSaturation = currentSaturation,
+        onSaturationChanged = { currentSaturation = it }
+    )
+
+    Spacer(modifier = Modifier.height(12.dp))
+
+    // Value selection
+    ValueSlider(
         currentHue = currentHue,
         currentSaturation = currentSaturation,
         currentValue = currentValue,
-        onSaturationValueChanged = { s, v ->
-            println("Saturation: $s, Value: $v")
-            currentSaturation = s
-            currentValue = v
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp)
-            .clip(SmoothRoundedCornerShape(10.dp))
-            .border(1.dp, MiuixTheme.colorScheme.outline, SmoothRoundedCornerShape(10.dp))
+        onValueChanged = { currentValue = it }
     )
 
-    Spacer(modifier = Modifier.height(6.dp))
+    Spacer(modifier = Modifier.height(12.dp))
 
-    Slider(
-        progress = currentAlpha,
-        onProgressChange = { currentAlpha = it },
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(20.dp)
+    // Alpha selection
+    AlphaSlider(
+        currentHue = currentHue,
+        currentSaturation = currentSaturation,
+        currentValue = currentValue,
+        currentAlpha = currentAlpha,
+        onAlphaChanged = { currentAlpha = it }
     )
 }
 
+
+/**
+ * A [HueSlider] component for selecting the hue of a color.
+ *
+ * @param currentHue The current hue value.
+ * @param onHueChanged The callback to be called when the hue changes.
+ */
 @Composable
-private fun HueSlider(
+fun HueSlider(
     currentHue: Float,
     onHueChanged: (Float) -> Unit,
-    modifier: Modifier = Modifier
 ) {
-    val density = LocalDensity.current
-    var sliderWidth by remember { mutableStateOf(0.dp) }
-    var sliderPosition by remember { mutableStateOf(Offset.Zero) }
-
-    Box(modifier = modifier.height(20.dp)) {
-        // Hue gradient
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .onGloballyPositioned { coordinates ->
-                    sliderWidth = with(density) { coordinates.size.width.toDp() }
-                    sliderPosition = coordinates.positionInParent()
-                }
-                .pointerInput(Unit) {
-                    detectTapGestures { offset ->
-                        onHueChanged((offset.x / size.width * 360f).coerceIn(0f, 360f))
-                    }
-                }
-                .pointerInput(Unit) {
-                    detectDragGestures { change, _ ->
-                        change.consume()
-                        onHueChanged((change.position.x / size.width * 360f).coerceIn(0f, 360f))
-                    }
-                }
-        ) {
+    ColorSlider(
+        value = currentHue / 360f,
+        onValueChanged = onHueChanged,
+        drawBrush = {
             val width = size.width
             for (i in 0 until width.toInt()) {
                 val hue = i / width * 360f
@@ -182,102 +158,196 @@ private fun HueSlider(
                     strokeWidth = 1f
                 )
             }
+        },
+        indicatorColor = { Color.hsv(currentHue, 1f, 1f) },
+        modifier = Modifier.fillMaxWidth()
+    )
+}
+
+/**
+ * A [SaturationSlider] component for selecting the saturation of a color.
+ *
+ * @param currentHue The current hue value.
+ * @param currentSaturation The current saturation value.
+ * @param onSaturationChanged The callback to be called when the saturation changes.
+ */
+@Composable
+fun SaturationSlider(
+    currentHue: Float,
+    currentSaturation: Float,
+    onSaturationChanged: (Float) -> Unit,
+) {
+    ColorSlider(
+        value = currentSaturation,
+        onValueChanged = onSaturationChanged,
+        drawBrush = {
+            val brush = Brush.horizontalGradient(
+                colors = listOf(
+                    Color.hsv(currentHue, 0f, 1f, 1f),
+                    Color.hsv(currentHue, 1f, 1f, 1f)
+                )
+            )
+            drawRect(brush = brush)
+        },
+        indicatorColor = { Color.hsv(currentHue, currentSaturation, 1f) },
+        modifier = Modifier.fillMaxWidth()
+    )
+}
+
+
+/**
+ * A [ValueSlider] component for selecting the value of a color.
+ *
+ * @param currentHue The current hue value.
+ * @param currentSaturation The current saturation value.
+ * @param currentValue The current value value.
+ * @param onValueChanged The callback to be called when the value changes.
+ */
+@Composable
+fun ValueSlider(
+    currentHue: Float,
+    currentSaturation: Float,
+    currentValue: Float,
+    onValueChanged: (Float) -> Unit,
+) {
+    ColorSlider(
+        value = currentValue,
+        onValueChanged = onValueChanged,
+        drawBrush = {
+            val brush = Brush.horizontalGradient(
+                colors = listOf(
+                    Color.Black,
+                    Color.hsv(currentHue, currentSaturation, 1f)
+                )
+            )
+            drawRect(brush = brush)
+        },
+        indicatorColor = { Color.hsv(currentHue, currentSaturation, currentValue) },
+        modifier = Modifier.fillMaxWidth()
+    )
+}
+
+/**
+ * A [AlphaSlider] component for selecting the alpha of a color.
+ *
+ * @param currentHue The current hue value.
+ * @param currentSaturation The current saturation value.
+ * @param currentValue The current value value.
+ * @param currentAlpha The current alpha value.
+ * @param onAlphaChanged The callback to be called when the alpha changes.
+ */
+@Composable
+fun AlphaSlider(
+    currentHue: Float,
+    currentSaturation: Float,
+    currentValue: Float,
+    currentAlpha: Float,
+    onAlphaChanged: (Float) -> Unit,
+) {
+    ColorSlider(
+        value = currentAlpha,
+        onValueChanged = onAlphaChanged,
+        drawBrush = {
+            val brush = Brush.horizontalGradient(
+                colors = listOf(
+                    Color.hsv(currentHue, currentSaturation, currentValue, 0f),
+                    Color.hsv(currentHue, currentSaturation, currentValue, 1f)
+                )
+            )
+            drawRect(brush = brush)
+        },
+        indicatorColor = { Color.hsv(currentHue, currentSaturation, currentValue, currentAlpha) },
+        modifier = Modifier.fillMaxWidth()
+    )
+}
+
+/**
+ * Generic slider component for color selection.
+ */
+@Composable
+private fun ColorSlider(
+    value: Float,
+    onValueChanged: (Float) -> Unit,
+    drawBrush: DrawScope.() -> Unit,
+    indicatorColor: () -> Color,
+    modifier: Modifier = Modifier
+) {
+    val density = LocalDensity.current
+    var sliderWidth by remember { mutableStateOf(0.dp) }
+    val indicatorSizeDp = 20.dp
+    val sliderSizePx = with(density) { 26.dp.toPx() }
+
+    Box(
+        modifier = modifier
+            .height(26.dp)
+            .clip(SmoothRoundedCornerShape(13.dp))
+    ) {
+        // Draw gradient
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .onGloballyPositioned { coordinates ->
+                    sliderWidth = with(density) { coordinates.size.width.toDp() }
+                }
+                .pointerInput(Unit) {
+                    detectHorizontalDragGestures { change, _ ->
+                        change.consume()
+                        handleSliderInteraction(change.position.x, size.width.toFloat(), sliderSizePx, onValueChanged)
+                    }
+                }
+        ) {
+            drawBrush()
         }
 
-        // Current hue indicator - position calculated in dp units
-        Box(
-            modifier = Modifier
-                .offset(
-                    x = with(density) { (currentHue / 360f * sliderWidth.toPx()).toDp() - 8.dp }
-                )
-                .align(Alignment.CenterStart)
-                .size(16.dp)
-                .clip(SmoothRoundedCornerShape(10.dp))
-                .border(1.dp, MiuixTheme.colorScheme.outline, SmoothRoundedCornerShape(10.dp))
-                .background(Color.hsv(currentHue, 1f, 1f), SmoothRoundedCornerShape(10.dp))
+        // Current value indicator
+        SliderIndicator(
+            modifier = Modifier.align(Alignment.CenterStart),
+            value = value,
+            sliderWidth = sliderWidth,
+            sliderSizePx = sliderSizePx,
+            indicatorSize = indicatorSizeDp,
+            indicatorColor = indicatorColor()
         )
     }
 }
 
 @Composable
-private fun SaturationValuePicker(
-    currentHue: Float,
-    currentSaturation: Float,
-    currentValue: Float,
-    onSaturationValueChanged: (Float, Float) -> Unit,
-    modifier: Modifier = Modifier
+private fun SliderIndicator(
+    modifier: Modifier,
+    value: Float,
+    sliderWidth: androidx.compose.ui.unit.Dp,
+    sliderSizePx: Float,
+    indicatorSize: androidx.compose.ui.unit.Dp,
+    indicatorColor: Color
 ) {
     val density = LocalDensity.current
-    var pickerWidth by remember { mutableStateOf(0.dp) }
-    var pickerHeight by remember { mutableStateOf(0.dp) }
-    var pickerPosition by remember { mutableStateOf(Offset.Zero) }
-
-    Box(modifier = modifier) {
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .onGloballyPositioned { coordinates ->
-                    pickerWidth = with(density) { coordinates.size.width.toDp() }
-                    pickerHeight = with(density) { coordinates.size.height.toDp() }
-                    pickerPosition = coordinates.positionInParent()
+    Box(
+        modifier = modifier
+            .offset(
+                x = with(density) {
+                    val effectiveWidth = sliderWidth.toPx() - sliderSizePx
+                    ((value * effectiveWidth) + sliderSizePx / 2).toDp() - (indicatorSize / 2)
                 }
-                .pointerInput(Unit) {
-                    detectTapGestures { offset ->
-                        val saturation = (1f - offset.x / size.width).coerceIn(0f, 1f)
-                        val value = (1f - offset.y / size.height).coerceIn(0f, 1f)
-                        onSaturationValueChanged(saturation, value)
-                    }
-                }
-                .pointerInput(Unit) {
-                    detectDragGestures { change, _ ->
-                        change.consume()
-                        val saturation = (1f - change.position.x / size.width).coerceIn(0f, 1f)
-                        val value = (1f - change.position.y / size.height).coerceIn(0f, 1f)
-                        onSaturationValueChanged(saturation, value)
-                    }
-                }
-        ) {
-            // Draw value (brightness) gradient from top to bottom
-            val shader = object : ShaderBrush() {
-                override fun createShader(size: Size): Shader {
-                    return LinearGradientShader(
-                        colors = listOf(Color.hsv(currentHue, 1f, 1f), Color.White),
-                        from = Offset.Zero,
-                        to = Offset(size.width, 0f),
-                        tileMode = TileMode.Clamp
-                    )
-                }
-            }
+            )
+            .size(indicatorSize)
+            .clip(RoundedCornerShape(50.dp))
+            .border(6.dp, Color.White, RoundedCornerShape(50.dp))
+            .background(indicatorColor, RoundedCornerShape(50.dp))
+    )
+}
 
-            // Draw base color
-            drawRect(shader)
-
-            // Draw overlay for darkness gradient
-            val overlayShader = object : ShaderBrush() {
-                override fun createShader(size: Size): Shader {
-                    return LinearGradientShader(
-                        colors = listOf(Color.Transparent, Color.Black),
-                        from = Offset(0f, 0f),
-                        to = Offset(0f, size.height),
-                        tileMode = TileMode.Clamp
-                    )
-                }
-            }
-
-            drawRect(overlayShader)
-        }
-
-        // Current saturation/value indicator - position calculated in dp units
-        Box(
-            modifier = Modifier
-                .offset(
-                    x = with(density) { ((1f - currentSaturation) * pickerWidth.toPx()).toDp() - 8.dp },
-                    y = with(density) { ((1f - currentValue) * pickerHeight.toPx()).toDp() - 8.dp }
-                )
-                .size(16.dp)
-                .clip(SmoothRoundedCornerShape(10.dp))
-                .border(1.dp, MiuixTheme.colorScheme.outline, SmoothRoundedCornerShape(10.dp))
-                .background(Color.hsv(currentHue, currentSaturation, currentValue), SmoothRoundedCornerShape(10.dp))
-        )
-    }
+/**
+ * Handle slider interaction and calculate new value.
+ */
+private fun handleSliderInteraction(
+    positionX: Float,
+    totalWidth: Float,
+    sliderSizePx: Float,
+    onValueChanged: (Float) -> Unit
+) {
+    val sliderHalfSizePx = sliderSizePx / 2
+    val effectiveWidth = totalWidth - sliderSizePx
+    val constrainedX = positionX.coerceIn(sliderHalfSizePx, totalWidth - sliderHalfSizePx)
+    val newPosition = (constrainedX - sliderHalfSizePx) / effectiveWidth
+    onValueChanged(newPosition.coerceIn(0f, 1f))
 }
