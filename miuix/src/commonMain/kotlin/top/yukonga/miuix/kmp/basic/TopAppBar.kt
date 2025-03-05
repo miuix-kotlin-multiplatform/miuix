@@ -109,7 +109,7 @@ fun TopAppBar(
                 content = actions
             )
         }
-    // Compose a MiuixSurface with a MiuixTopAppBarLayout content.
+    // Compose a Surface with a TopAppBarLayout content.
     // The surface's background color is animated as specified above.
     // The height of the app bar is determined by subtracting the bar's height offset from the
     // app bar's defined constant height value (i.e. the ContainerHeight token).
@@ -164,7 +164,7 @@ fun SmallTopAppBar(
                 content = actions
             )
         }
-    // Compose a MiuixSurface with a MiuixTopAppBarLayout content.
+    // Compose a Surface with a SmallTopAppBarLayout content.
     // The surface's background color is animated as specified above.
     // The height of the app bar is determined by subtracting the bar's height offset from the
     // app bar's defined constant height value (i.e. the ContainerHeight token).

@@ -1,5 +1,10 @@
 package component
 
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -95,7 +100,15 @@ fun OtherComponent(padding: PaddingValues) {
     var text3 by remember { mutableStateOf("") }
     var progress by remember { mutableStateOf(0.5f) }
     var progressHaptic by remember { mutableStateOf(0.5f) }
-    val progressValues = remember { listOf(0.1f, 0.3f, progress, 0.7f, 0.9f, null) }
+    val animatedProgressValue by rememberInfiniteTransition().animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+    val progressValues = remember { listOf(0.0f, 0.25f, 0.5f, 0.75f, 1.0f, null) }
     val progressDisable by remember { mutableStateOf(0.5f) }
     val tabTexts = listOf("tab1", "tab2", "tab3", "tab4", "tab5", "tab6")
     var selectedTabIndex1 by remember { mutableStateOf(0) }
@@ -194,11 +207,17 @@ fun OtherComponent(padding: PaddingValues) {
     }
 
     SmallTitle(text = "ProgressIndicator")
+    LinearProgressIndicator(
+        progress = animatedProgressValue,
+        modifier = Modifier
+            .padding(horizontal = 15.dp)
+            .padding(bottom = 12.dp)
+    )
     progressValues.forEach { progressValue ->
         LinearProgressIndicator(
             progress = progressValue,
             modifier = Modifier
-                .padding(horizontal = 15.dp) // Increased from 12.dp because of StrokeCap.Round.
+                .padding(horizontal = 15.dp) // Increased from 12.dp.
                 .padding(bottom = 12.dp)
         )
     }
@@ -210,6 +229,9 @@ fun OtherComponent(padding: PaddingValues) {
             .padding(bottom = 6.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
+        CircularProgressIndicator(
+            progress = animatedProgressValue
+        )
         progressValues.forEach { progressValue ->
             CircularProgressIndicator(
                 progress = progressValue
