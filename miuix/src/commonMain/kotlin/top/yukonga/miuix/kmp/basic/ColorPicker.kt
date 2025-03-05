@@ -25,9 +25,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.scale
-import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -42,12 +41,14 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
  *
  * @param initialColor The initial color of the picker.
  * @param onColorChanged The callback to be called when the color changes.
+ * @param showPreview Whether to show the color preview.
  * @param modifier The modifier to be applied to the color picker.
  */
 @Composable
 fun ColorPicker(
     initialColor: Color = MiuixTheme.colorScheme.primary,
     onColorChanged: (Color) -> Unit = {},
+    showPreview: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     var initialSetup by remember { mutableStateOf(true) }
@@ -87,15 +88,16 @@ fun ColorPicker(
     }
 
     // Color preview
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(26.dp)
-            .clip(SmoothRoundedCornerShape(50.dp))
-            .background(selectedColor)
-    )
-
-    Spacer(modifier = Modifier.height(12.dp))
+    if (showPreview) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(26.dp)
+                .clip(SmoothRoundedCornerShape(50.dp))
+                .background(selectedColor)
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+    }
 
     // Hue selection
     HueSlider(
@@ -145,14 +147,11 @@ fun HueSlider(
     currentHue: Float,
     onHueChanged: (Float) -> Unit,
 ) {
+    val hueColors = List(36) { i -> Color.hsv(i * 10f, 1f, 1f) }
     ColorSlider(
         value = currentHue / 360f,
         onValueChanged = onHueChanged,
-        drawBrush = {
-            drawRect(brush = Brush.horizontalGradient(hueColors))
-        },
-        startEdgeColor = Color.hsv(0f, 1f, 1f, 1f),
-        endEdgeColor = Color.hsv(359f, 1f, 1f, 1f),
+        drawBrushColors = hueColors,
         modifier = Modifier.fillMaxWidth()
     )
 }
@@ -173,17 +172,7 @@ fun SaturationSlider(
     ColorSlider(
         value = currentSaturation,
         onValueChanged = onSaturationChanged,
-        drawBrush = {
-            val brush = Brush.horizontalGradient(
-                colors = listOf(
-                    Color.hsv(currentHue, 0f, 1f, 1f),
-                    Color.hsv(currentHue, 1f, 1f, 1f)
-                )
-            )
-            drawRect(brush = brush)
-        },
-        startEdgeColor = Color.hsv(currentHue, 0f, 1f, 1f),
-        endEdgeColor = Color.hsv(currentHue, 1f, 1f, 1f),
+        drawBrushColors = listOf(Color.hsv(currentHue, 0f, 1f, 1f), Color.hsv(currentHue, 1f, 1f, 1f)),
         modifier = Modifier.fillMaxWidth()
     )
 }
@@ -207,17 +196,7 @@ fun ValueSlider(
     ColorSlider(
         value = currentValue,
         onValueChanged = onValueChanged,
-        drawBrush = {
-            val brush = Brush.horizontalGradient(
-                colors = listOf(
-                    Color.Black,
-                    Color.hsv(currentHue, currentSaturation, 1f)
-                )
-            )
-            drawRect(brush = brush)
-        },
-        startEdgeColor = Color.Black,
-        endEdgeColor = Color.hsv(currentHue, currentSaturation, 1f, 1f),
+        drawBrushColors = listOf(Color.Black, Color.hsv(currentHue, currentSaturation, 1f)),
         modifier = Modifier.fillMaxWidth()
     )
 }
@@ -245,7 +224,6 @@ fun AlphaSlider(
 
     val checkerBrush = remember {
         object {
-            // Pre-computed colors
             val light = Color(0xFFCCCCCC)
             val dark = Color(0xFFAAAAAA)
             val checkerSize = 3.dp
@@ -278,13 +256,7 @@ fun AlphaSlider(
     ColorSlider(
         value = currentAlpha,
         onValueChanged = onAlphaChanged,
-        drawBrush = {
-            drawRect(
-                brush = Brush.horizontalGradient(listOf(startColor, endColor))
-            )
-        },
-        startEdgeColor = startColor,
-        endEdgeColor = endColor,
+        drawBrushColors = listOf(startColor, endColor),
         modifier = Modifier.fillMaxWidth(),
         drawBackground = checkerBrush::draw
     )
@@ -297,9 +269,7 @@ fun AlphaSlider(
 private fun ColorSlider(
     value: Float,
     onValueChanged: (Float) -> Unit,
-    drawBrush: DrawScope.() -> Unit,
-    startEdgeColor: Color,
-    endEdgeColor: Color,
+    drawBrushColors: List<Color>,
     modifier: Modifier = Modifier,
     drawBackground: (DrawScope.(width: Float, height: Float) -> Unit)? = null
 ) {
@@ -337,35 +307,16 @@ private fun ColorSlider(
                     }
                 }
         ) {
-            val canvasWidth = size.width
-            val effectiveWidth = canvasWidth - sliderSizePx
+            drawBackground?.invoke(this, size.width, size.height)
 
-            // Background drawing
-            drawBackground?.invoke(this, canvasWidth, size.height)
-
-            // Gradient drawing with transformations
-            translate(left = halfSliderSizePx, top = 0f) {
-                scale(
-                    scaleX = effectiveWidth / canvasWidth,
-                    scaleY = 1f,
-                    pivot = Offset.Zero
-                ) {
-                    drawBrush()
-                }
+            Brush.horizontalGradient(
+                colors = drawBrushColors,
+                startX = halfSliderSizePx,
+                endX = size.width - halfSliderSizePx,
+                tileMode = TileMode.Clamp
+            ).let {
+                drawRect(it)
             }
-
-            // Edge color fills
-            drawRect(
-                color = startEdgeColor,
-                topLeft = Offset(0f, 0f),
-                size = Size(halfSliderSizePx, size.height)
-            )
-
-            drawRect(
-                color = endEdgeColor,
-                topLeft = Offset(canvasWidth - halfSliderSizePx, 0f),
-                size = Size(halfSliderSizePx, size.height)
-            )
         }
 
         SliderIndicator(
@@ -418,5 +369,3 @@ private fun handleSliderInteraction(
     val newPosition = (constrainedX - sliderHalfSizePx) / effectiveWidth
     onValueChanged(newPosition.coerceIn(0f, 1f))
 }
-
-private val hueColors = List(36) { i -> Color.hsv(i * 10f, 1f, 1f) }
