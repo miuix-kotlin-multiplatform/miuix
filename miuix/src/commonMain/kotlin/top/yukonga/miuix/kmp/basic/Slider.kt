@@ -28,12 +28,12 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import top.yukonga.miuix.kmp.basic.SliderDefaults.SliderHapticEffect
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import kotlin.math.pow
@@ -54,7 +54,6 @@ import kotlin.math.round
  * @param effect Whether to show the effect of the [Slider].
  * @param decimalPlaces The number of decimal places to be displayed in the drag indicator.
  * @param hapticEffect The haptic effect of the [Slider].
- * @param hapticEffectStep The step of the haptic effect when using [SliderHapticEffect.Step].
  */
 @Composable
 fun Slider(
@@ -68,17 +67,16 @@ fun Slider(
     colors: SliderColors = SliderDefaults.sliderColors(),
     effect: Boolean = false,
     decimalPlaces: Int = 2,
-    hapticEffect: SliderHapticEffect = SliderDefaults.DefaultHapticEffect,
-    hapticEffectStep: Float = 0.01f
+    hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
 ) {
     val hapticFeedback = LocalHapticFeedback.current
     var dragOffset by remember { mutableStateOf(0f) }
     var isDragging by remember { mutableStateOf(false) }
     var currentValue by remember { mutableStateOf(progress) }
-    var hapticTriggered by remember { mutableStateOf(false) }
-    var lastHapticStep by remember { mutableStateOf(0f) }
     val updatedOnProgressChange by rememberUpdatedState(onProgressChange)
     val factor = remember(decimalPlaces) { 10f.pow(decimalPlaces) }
+    val hapticState = remember { SliderHapticState() }
+
     val calculateProgress = remember(minValue, maxValue, factor) {
         { offset: Float, width: Int ->
             val newValue = (offset / width) * (maxValue - minValue) + minValue
@@ -95,30 +93,13 @@ fun Slider(
                         dragOffset = offset.x
                         currentValue = calculateProgress(dragOffset, size.width)
                         updatedOnProgressChange(currentValue)
-                        hapticTriggered = false
-                        lastHapticStep = (currentValue / hapticEffectStep).toInt() * hapticEffectStep
+                        hapticState.reset(currentValue)
                     },
                     onHorizontalDrag = { _, dragAmount ->
                         dragOffset = (dragOffset + dragAmount).coerceIn(0f, size.width.toFloat())
                         currentValue = calculateProgress(dragOffset, size.width)
                         updatedOnProgressChange(currentValue)
-
-                        if (hapticEffect != SliderHapticEffect.None) {
-                            if ((currentValue == minValue || currentValue == maxValue) && !hapticTriggered) {
-                                hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureEnd)
-                                hapticTriggered = true
-                            } else if (currentValue != minValue && currentValue != maxValue) {
-                                hapticTriggered = false
-                            }
-                        }
-
-                        if (hapticEffect == SliderHapticEffect.Step) {
-                            val currentStep = (currentValue / hapticEffectStep).toInt() * hapticEffectStep
-                            if (currentStep != lastHapticStep && currentValue != minValue && currentValue != maxValue) {
-                                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                lastHapticStep = currentStep
-                            }
-                        }
+                        hapticState.handleHapticFeedback(currentValue, hapticEffect, hapticFeedback)
                     },
                     onDragEnd = {
                         isDragging = false
@@ -142,6 +123,49 @@ fun Slider(
             maxValue = maxValue,
             isDragging = isDragging,
         )
+    }
+}
+
+/**
+ * Encapsulates the state for haptic feedback in the slider
+ */
+class SliderHapticState {
+    private var edgeFeedbackTriggered: Boolean = false
+    private var lastStep: Float = 0f
+
+    fun reset(currentValue: Float) {
+        edgeFeedbackTriggered = false
+        lastStep = currentValue
+    }
+
+    fun handleHapticFeedback(
+        currentValue: Float,
+        hapticEffect: SliderDefaults.SliderHapticEffect,
+        hapticFeedback: HapticFeedback
+    ) {
+        println("currentValue: $currentValue")
+        if (hapticEffect == SliderDefaults.SliderHapticEffect.None) return
+
+        // Handle edge feedback
+        if (hapticEffect != SliderDefaults.SliderHapticEffect.None) {
+            val isAtEdge = currentValue == 0f || currentValue == 1f
+            if (isAtEdge && !edgeFeedbackTriggered) {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
+                edgeFeedbackTriggered = true
+            } else if (!isAtEdge) {
+                edgeFeedbackTriggered = false
+            }
+        }
+
+        // Handle step feedback
+        if (hapticEffect == SliderDefaults.SliderHapticEffect.Step) {
+            val isNotAtEdge = currentValue != 0f && currentValue != 1f
+
+            if (currentValue != lastStep && isNotAtEdge) {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                lastStep = currentValue
+            }
+        }
     }
 }
 
@@ -190,7 +214,7 @@ object SliderDefaults {
     val MinHeight = 30.dp
 
     /**
-     * The default haptic effect of the [Slider].
+     * The haptic effect of the [Slider].
      */
     enum class SliderHapticEffect {
         None, // No haptic effect

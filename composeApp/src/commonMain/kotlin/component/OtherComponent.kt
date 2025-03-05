@@ -33,7 +33,7 @@ import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.InfiniteProgressIndicator
 import top.yukonga.miuix.kmp.basic.LinearProgressIndicator
 import top.yukonga.miuix.kmp.basic.Slider
-import top.yukonga.miuix.kmp.basic.SliderDefaults.SliderHapticEffect
+import top.yukonga.miuix.kmp.basic.SliderDefaults
 import top.yukonga.miuix.kmp.basic.SmallTitle
 import top.yukonga.miuix.kmp.basic.TabRow
 import top.yukonga.miuix.kmp.basic.Text
@@ -270,7 +270,7 @@ fun OtherComponent(padding: PaddingValues) {
     Slider(
         progress = progressHaptic,
         onProgressChange = { newProgress -> progressHaptic = newProgress },
-        hapticEffect = SliderHapticEffect.Step,
+        hapticEffect = SliderDefaults.SliderHapticEffect.Step,
         modifier = Modifier
             .padding(horizontal = 12.dp)
             .padding(bottom = 12.dp)
@@ -335,7 +335,8 @@ fun OtherComponent(padding: PaddingValues) {
 
             ColorPicker(
                 initialColor = selectedColor,
-                onColorChanged = { selectedColor = it }
+                onColorChanged = { selectedColor = it },
+                hapticEffect = SliderDefaults.SliderHapticEffect.Step
             )
         }
     }

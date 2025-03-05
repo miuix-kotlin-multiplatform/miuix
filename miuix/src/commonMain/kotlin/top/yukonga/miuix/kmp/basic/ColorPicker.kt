@@ -27,14 +27,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.ColorUtils
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
@@ -44,15 +42,15 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
  * @param initialColor The initial color of the picker.
  * @param onColorChanged The callback to be called when the color changes.
  * @param showPreview Whether to show the color preview.
- * @param enableHapticEffect Whether to enable haptic feedback.
+ * @param hapticEffect The haptic effect of the [ColorSlider].
  * @param modifier The modifier to be applied to the color picker.
  */
 @Composable
 fun ColorPicker(
-    initialColor: Color = MiuixTheme.colorScheme.primary,
-    onColorChanged: (Color) -> Unit = {},
+    initialColor: Color,
+    onColorChanged: (Color) -> Unit,
     showPreview: Boolean = true,
-    enableHapticEffect: Boolean = true,
+    hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect,
     modifier: Modifier = Modifier
 ) {
     var initialSetup by remember { mutableStateOf(true) }
@@ -107,7 +105,7 @@ fun ColorPicker(
     HueSlider(
         currentHue = currentHue,
         onHueChanged = { newHue -> currentHue = newHue * 360f },
-        enableHapticEffect = enableHapticEffect
+        hapticEffect = hapticEffect
     )
 
     Spacer(modifier = Modifier.height(12.dp))
@@ -117,7 +115,7 @@ fun ColorPicker(
         currentHue = currentHue,
         currentSaturation = currentSaturation,
         onSaturationChanged = { currentSaturation = it },
-        enableHapticEffect = enableHapticEffect
+        hapticEffect = hapticEffect
     )
 
     Spacer(modifier = Modifier.height(12.dp))
@@ -128,7 +126,7 @@ fun ColorPicker(
         currentSaturation = currentSaturation,
         currentValue = currentValue,
         onValueChanged = { currentValue = it },
-        enableHapticEffect = enableHapticEffect
+        hapticEffect = hapticEffect
     )
 
     Spacer(modifier = Modifier.height(12.dp))
@@ -140,7 +138,7 @@ fun ColorPicker(
         currentValue = currentValue,
         currentAlpha = currentAlpha,
         onAlphaChanged = { currentAlpha = it },
-        enableHapticEffect = enableHapticEffect
+        hapticEffect = hapticEffect
     )
 }
 
@@ -149,13 +147,13 @@ fun ColorPicker(
  *
  * @param currentHue The current hue value.
  * @param onHueChanged The callback to be called when the hue changes.
- * @param enableHapticEffect Whether to enable haptic feedback.
+ * @param hapticEffect The haptic effect of the [HueSlider].
  */
 @Composable
 fun HueSlider(
     currentHue: Float,
     onHueChanged: (Float) -> Unit,
-    enableHapticEffect: Boolean = true
+    hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
 ) {
     val hueColors = List(36) { i -> Color.hsv(i * 10f, 1f, 1f) }
     ColorSlider(
@@ -163,7 +161,7 @@ fun HueSlider(
         onValueChanged = onHueChanged,
         drawBrushColors = hueColors,
         modifier = Modifier.fillMaxWidth(),
-        enableHapticEffect = enableHapticEffect
+        hapticEffect = hapticEffect
     )
 }
 
@@ -173,21 +171,21 @@ fun HueSlider(
  * @param currentHue The current hue value.
  * @param currentSaturation The current saturation value.
  * @param onSaturationChanged The callback to be called when the saturation changes.
- * @param enableHapticEffect Whether to enable haptic feedback.
+ * @param hapticEffect The haptic effect of the [SaturationSlider].
  */
 @Composable
 fun SaturationSlider(
     currentHue: Float,
     currentSaturation: Float,
     onSaturationChanged: (Float) -> Unit,
-    enableHapticEffect: Boolean = true
+    hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
 ) {
     ColorSlider(
         value = currentSaturation,
         onValueChanged = onSaturationChanged,
         drawBrushColors = listOf(Color.hsv(currentHue, 0f, 1f, 1f), Color.hsv(currentHue, 1f, 1f, 1f)),
         modifier = Modifier.fillMaxWidth(),
-        enableHapticEffect = enableHapticEffect
+        hapticEffect = hapticEffect
     )
 }
 
@@ -199,7 +197,7 @@ fun SaturationSlider(
  * @param currentSaturation The current saturation value.
  * @param currentValue The current value value.
  * @param onValueChanged The callback to be called when the value changes.
- * @param enableHapticEffect Whether to enable haptic feedback.
+ * @param hapticEffect The haptic effect of the [ValueSlider].
  */
 @Composable
 fun ValueSlider(
@@ -207,14 +205,14 @@ fun ValueSlider(
     currentSaturation: Float,
     currentValue: Float,
     onValueChanged: (Float) -> Unit,
-    enableHapticEffect: Boolean = true
+    hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
 ) {
     ColorSlider(
         value = currentValue,
         onValueChanged = onValueChanged,
         drawBrushColors = listOf(Color.Black, Color.hsv(currentHue, currentSaturation, 1f)),
         modifier = Modifier.fillMaxWidth(),
-        enableHapticEffect = enableHapticEffect
+        hapticEffect = hapticEffect
     )
 }
 
@@ -226,7 +224,7 @@ fun ValueSlider(
  * @param currentValue The current value value.
  * @param currentAlpha The current alpha value.
  * @param onAlphaChanged The callback to be called when the alpha changes.
- * @param enableHapticEffect Whether to enable haptic feedback.
+ * @param hapticEffect The haptic effect of the [AlphaSlider].
  */
 @Composable
 fun AlphaSlider(
@@ -235,7 +233,7 @@ fun AlphaSlider(
     currentValue: Float,
     currentAlpha: Float,
     onAlphaChanged: (Float) -> Unit,
-    enableHapticEffect: Boolean = true
+    hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
 ) {
     val baseColor = Color.hsv(currentHue, currentSaturation, currentValue)
     val startColor = remember(baseColor) { baseColor.copy(alpha = 0f) }
@@ -277,7 +275,7 @@ fun AlphaSlider(
         onValueChanged = onAlphaChanged,
         drawBrushColors = listOf(startColor, endColor),
         modifier = Modifier.fillMaxWidth(),
-        enableHapticEffect = enableHapticEffect,
+        hapticEffect = hapticEffect,
         drawBackground = checkerBrush::draw
     )
 }
@@ -291,7 +289,7 @@ private fun ColorSlider(
     onValueChanged: (Float) -> Unit,
     drawBrushColors: List<Color>,
     modifier: Modifier = Modifier,
-    enableHapticEffect: Boolean = true,
+    hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect,
     drawBackground: (DrawScope.(width: Float, height: Float) -> Unit)? = null
 ) {
     val density = LocalDensity.current
@@ -303,18 +301,11 @@ private fun ColorSlider(
     val borderStroke = remember { 0.5.dp }
     val borderColor = remember { Color.Gray.copy(0.1f) }
     val hapticFeedback = LocalHapticFeedback.current
-    var lastHapticStep by remember { mutableStateOf(0f) }
+    val hapticState = remember { SliderHapticState() }
 
     val dragHandler = remember(onValueChanged, sliderSizePx) {
         { posX: Float, width: Float ->
             handleSliderInteraction(posX, width, sliderSizePx).coerceIn(0f, 1f)
-        }
-    }
-
-    fun performHapticFeedbackIfNeeded(valueChanged: Float) {
-        if (enableHapticEffect && valueChanged != lastHapticStep) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-            lastHapticStep = valueChanged
         }
     }
 
@@ -331,12 +322,19 @@ private fun ColorSlider(
                     sliderWidth = with(density) { coordinates.size.width.toDp() }
                 }
                 .pointerInput(dragHandler) {
-                    detectHorizontalDragGestures { change, _ ->
-                        change.consume()
-                        val currentValue = dragHandler(change.position.x, size.width.toFloat())
-                        onValueChanged(currentValue)
-                        performHapticFeedbackIfNeeded(currentValue)
-                    }
+                    detectHorizontalDragGestures(
+                        onDragStart = { offset ->
+                            val currentValue = dragHandler(offset.x, size.width.toFloat())
+                            onValueChanged(currentValue)
+                            hapticState.reset(currentValue)
+                        },
+                        onHorizontalDrag = { change, _ ->
+                            change.consume()
+                            val currentValue = dragHandler(change.position.x, size.width.toFloat())
+                            onValueChanged(currentValue)
+                            hapticState.handleHapticFeedback(currentValue, hapticEffect, hapticFeedback)
+                        }
+                    )
                 }
         ) {
             drawBackground?.invoke(this, size.width, size.height)
