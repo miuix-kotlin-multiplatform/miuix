@@ -27,9 +27,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -42,6 +44,7 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
  * @param initialColor The initial color of the picker.
  * @param onColorChanged The callback to be called when the color changes.
  * @param showPreview Whether to show the color preview.
+ * @param enableHapticEffect Whether to enable haptic feedback.
  * @param modifier The modifier to be applied to the color picker.
  */
 @Composable
@@ -49,6 +52,7 @@ fun ColorPicker(
     initialColor: Color = MiuixTheme.colorScheme.primary,
     onColorChanged: (Color) -> Unit = {},
     showPreview: Boolean = true,
+    enableHapticEffect: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     var initialSetup by remember { mutableStateOf(true) }
@@ -102,7 +106,8 @@ fun ColorPicker(
     // Hue selection
     HueSlider(
         currentHue = currentHue,
-        onHueChanged = { newHue -> currentHue = newHue * 360f }
+        onHueChanged = { newHue -> currentHue = newHue * 360f },
+        enableHapticEffect = enableHapticEffect
     )
 
     Spacer(modifier = Modifier.height(12.dp))
@@ -111,7 +116,8 @@ fun ColorPicker(
     SaturationSlider(
         currentHue = currentHue,
         currentSaturation = currentSaturation,
-        onSaturationChanged = { currentSaturation = it }
+        onSaturationChanged = { currentSaturation = it },
+        enableHapticEffect = enableHapticEffect
     )
 
     Spacer(modifier = Modifier.height(12.dp))
@@ -121,7 +127,8 @@ fun ColorPicker(
         currentHue = currentHue,
         currentSaturation = currentSaturation,
         currentValue = currentValue,
-        onValueChanged = { currentValue = it }
+        onValueChanged = { currentValue = it },
+        enableHapticEffect = enableHapticEffect
     )
 
     Spacer(modifier = Modifier.height(12.dp))
@@ -132,7 +139,8 @@ fun ColorPicker(
         currentSaturation = currentSaturation,
         currentValue = currentValue,
         currentAlpha = currentAlpha,
-        onAlphaChanged = { currentAlpha = it }
+        onAlphaChanged = { currentAlpha = it },
+        enableHapticEffect = enableHapticEffect
     )
 }
 
@@ -141,18 +149,21 @@ fun ColorPicker(
  *
  * @param currentHue The current hue value.
  * @param onHueChanged The callback to be called when the hue changes.
+ * @param enableHapticEffect Whether to enable haptic feedback.
  */
 @Composable
 fun HueSlider(
     currentHue: Float,
     onHueChanged: (Float) -> Unit,
+    enableHapticEffect: Boolean = true
 ) {
     val hueColors = List(36) { i -> Color.hsv(i * 10f, 1f, 1f) }
     ColorSlider(
         value = currentHue / 360f,
         onValueChanged = onHueChanged,
         drawBrushColors = hueColors,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        enableHapticEffect = enableHapticEffect
     )
 }
 
@@ -162,18 +173,21 @@ fun HueSlider(
  * @param currentHue The current hue value.
  * @param currentSaturation The current saturation value.
  * @param onSaturationChanged The callback to be called when the saturation changes.
+ * @param enableHapticEffect Whether to enable haptic feedback.
  */
 @Composable
 fun SaturationSlider(
     currentHue: Float,
     currentSaturation: Float,
     onSaturationChanged: (Float) -> Unit,
+    enableHapticEffect: Boolean = true
 ) {
     ColorSlider(
         value = currentSaturation,
         onValueChanged = onSaturationChanged,
         drawBrushColors = listOf(Color.hsv(currentHue, 0f, 1f, 1f), Color.hsv(currentHue, 1f, 1f, 1f)),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        enableHapticEffect = enableHapticEffect
     )
 }
 
@@ -185,6 +199,7 @@ fun SaturationSlider(
  * @param currentSaturation The current saturation value.
  * @param currentValue The current value value.
  * @param onValueChanged The callback to be called when the value changes.
+ * @param enableHapticEffect Whether to enable haptic feedback.
  */
 @Composable
 fun ValueSlider(
@@ -192,12 +207,14 @@ fun ValueSlider(
     currentSaturation: Float,
     currentValue: Float,
     onValueChanged: (Float) -> Unit,
+    enableHapticEffect: Boolean = true
 ) {
     ColorSlider(
         value = currentValue,
         onValueChanged = onValueChanged,
         drawBrushColors = listOf(Color.Black, Color.hsv(currentHue, currentSaturation, 1f)),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        enableHapticEffect = enableHapticEffect
     )
 }
 
@@ -209,6 +226,7 @@ fun ValueSlider(
  * @param currentValue The current value value.
  * @param currentAlpha The current alpha value.
  * @param onAlphaChanged The callback to be called when the alpha changes.
+ * @param enableHapticEffect Whether to enable haptic feedback.
  */
 @Composable
 fun AlphaSlider(
@@ -217,6 +235,7 @@ fun AlphaSlider(
     currentValue: Float,
     currentAlpha: Float,
     onAlphaChanged: (Float) -> Unit,
+    enableHapticEffect: Boolean = true
 ) {
     val baseColor = Color.hsv(currentHue, currentSaturation, currentValue)
     val startColor = remember(baseColor) { baseColor.copy(alpha = 0f) }
@@ -258,6 +277,7 @@ fun AlphaSlider(
         onValueChanged = onAlphaChanged,
         drawBrushColors = listOf(startColor, endColor),
         modifier = Modifier.fillMaxWidth(),
+        enableHapticEffect = enableHapticEffect,
         drawBackground = checkerBrush::draw
     )
 }
@@ -271,6 +291,7 @@ private fun ColorSlider(
     onValueChanged: (Float) -> Unit,
     drawBrushColors: List<Color>,
     modifier: Modifier = Modifier,
+    enableHapticEffect: Boolean = true,
     drawBackground: (DrawScope.(width: Float, height: Float) -> Unit)? = null
 ) {
     val density = LocalDensity.current
@@ -281,10 +302,19 @@ private fun ColorSlider(
     val borderShape = remember { SmoothRoundedCornerShape(50.dp) }
     val borderStroke = remember { 0.5.dp }
     val borderColor = remember { Color.Gray.copy(0.1f) }
+    val hapticFeedback = LocalHapticFeedback.current
+    var lastHapticStep by remember { mutableStateOf(0f) }
 
     val dragHandler = remember(onValueChanged, sliderSizePx) {
         { posX: Float, width: Float ->
-            handleSliderInteraction(posX, width, sliderSizePx, onValueChanged)
+            handleSliderInteraction(posX, width, sliderSizePx).coerceIn(0f, 1f)
+        }
+    }
+
+    fun performHapticFeedbackIfNeeded(valueChanged: Float) {
+        if (enableHapticEffect && valueChanged != lastHapticStep) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            lastHapticStep = valueChanged
         }
     }
 
@@ -303,7 +333,9 @@ private fun ColorSlider(
                 .pointerInput(dragHandler) {
                     detectHorizontalDragGestures { change, _ ->
                         change.consume()
-                        dragHandler(change.position.x, size.width.toFloat())
+                        val currentValue = dragHandler(change.position.x, size.width.toFloat())
+                        onValueChanged(currentValue)
+                        performHapticFeedbackIfNeeded(currentValue)
                     }
                 }
         ) {
@@ -328,7 +360,6 @@ private fun ColorSlider(
         )
     }
 }
-
 
 @Composable
 private fun SliderIndicator(
@@ -360,12 +391,11 @@ private fun SliderIndicator(
 private fun handleSliderInteraction(
     positionX: Float,
     totalWidth: Float,
-    sliderSizePx: Float,
-    onValueChanged: (Float) -> Unit
-) {
+    sliderSizePx: Float
+): Float {
     val sliderHalfSizePx = sliderSizePx / 2
     val effectiveWidth = totalWidth - sliderSizePx
     val constrainedX = positionX.coerceIn(sliderHalfSizePx, totalWidth - sliderHalfSizePx)
     val newPosition = (constrainedX - sliderHalfSizePx) / effectiveWidth
-    onValueChanged(newPosition.coerceIn(0f, 1f))
+    return newPosition.coerceIn(0f, 1f)
 }
