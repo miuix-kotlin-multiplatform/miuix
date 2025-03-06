@@ -41,6 +41,7 @@ import top.yukonga.miuix.kmp.basic.Slider
 import top.yukonga.miuix.kmp.basic.SliderDefaults
 import top.yukonga.miuix.kmp.basic.SmallTitle
 import top.yukonga.miuix.kmp.basic.TabRow
+import top.yukonga.miuix.kmp.basic.TabRowWithContour
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TextButton
 import top.yukonga.miuix.kmp.basic.TextField
@@ -111,6 +112,7 @@ fun OtherComponent(padding: PaddingValues) {
     val progressValues = remember { listOf(0.0f, 0.25f, 0.5f, 0.75f, 1.0f, null) }
     val progressDisable by remember { mutableStateOf(0.5f) }
     val tabTexts = listOf("tab1", "tab2", "tab3", "tab4", "tab5", "tab6")
+    var selectedTabIndex by remember { mutableStateOf(0) }
     var selectedTabIndex1 by remember { mutableStateOf(0) }
     val miuixIconsNormal = listOf(
         MiuixIcons.Useful.AddSecret,
@@ -310,12 +312,30 @@ fun OtherComponent(padding: PaddingValues) {
     SmallTitle(text = "TabRow")
     TabRow(
         tabs = tabTexts,
-        selectedTabIndex = selectedTabIndex1,
+        selectedTabIndex = selectedTabIndex,
         modifier = Modifier
             .padding(horizontal = 12.dp)
-            .padding(bottom = 6.dp)
+            .padding(bottom = 12.dp)
     ) {
-        selectedTabIndex1 = it
+        selectedTabIndex = it
+    }
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 6.dp),
+        insideMargin = PaddingValues(16.dp)
+    ) {
+        TabRowWithContour(
+            tabs = tabTexts,
+            selectedTabIndex = selectedTabIndex1,
+        ) {
+            selectedTabIndex1 = it
+        }
+        Text(
+            text = "Selected Tab: ${tabTexts[selectedTabIndex1]}",
+            modifier = Modifier.padding(top = 12.dp)
+        )
     }
 
     SmallTitle(text = "Icon")
