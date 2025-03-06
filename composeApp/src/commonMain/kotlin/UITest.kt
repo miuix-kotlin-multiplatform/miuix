@@ -97,7 +97,7 @@ fun UITest(
         }
     }
 
-    val showFPSMonitor = remember { mutableStateOf(true) }
+    val showFPSMonitor = remember { mutableStateOf(false) }
     val showTopAppBar = remember { mutableStateOf(true) }
     val showBottomBar = remember { mutableStateOf(true) }
     val showFloatingActionButton = remember { mutableStateOf(true) }
