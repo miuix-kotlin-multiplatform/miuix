@@ -132,12 +132,10 @@ object BasicComponentDefaults {
     fun summaryColor(
         color: Color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
         disabledColor: Color = MiuixTheme.colorScheme.disabledOnSecondaryVariant
-    ): BasicComponentColors {
-        return BasicComponentColors(
-            color = color,
-            disabledColor = disabledColor
-        )
-    }
+    ): BasicComponentColors = BasicComponentColors(
+        color = color,
+        disabledColor = disabledColor
+    )
 }
 
 @Immutable

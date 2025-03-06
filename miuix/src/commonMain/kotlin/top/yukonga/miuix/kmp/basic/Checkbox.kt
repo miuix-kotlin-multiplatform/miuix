@@ -12,18 +12,22 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +43,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
@@ -60,16 +65,33 @@ fun Checkbox(
     enabled: Boolean = true,
 ) {
     val isChecked by rememberUpdatedState(checked)
+    var onCheck by remember { mutableStateOf(false) }
     val hapticFeedback = LocalHapticFeedback.current
     val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
+
+    val isInteracted = interactionSource.let { source ->
+        val isPressed by source.collectIsPressedAsState()
+        val isDragged by source.collectIsDraggedAsState()
+        val isHovered by source.collectIsHoveredAsState()
+        isPressed || isDragged || isHovered
+    }
+
+    LaunchedEffect(onCheck == true) {
+        delay(80)
+        onCheck = false
+    }
+
+    val springSpec = spring<Float>(
+        dampingRatio = Spring.DampingRatioLowBouncy,
+        stiffness = if (onCheck) Spring.StiffnessHigh else Spring.StiffnessMedium
+    )
 
     val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.85f else 1f,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
-        )
+        targetValue = when {
+            isInteracted || onCheck -> 0.95f
+            else -> 1f
+        },
+        animationSpec = springSpec
     )
 
     val backgroundColor by animateColorAsState(
@@ -120,7 +142,10 @@ fun Checkbox(
             launch {
                 checkAlpha.animateTo(
                     targetValue = 0f,
-                    animationSpec = tween(durationMillis = 150, easing = FastOutSlowInEasing)
+                    animationSpec = tween(
+                        durationMillis = 150,
+                        easing = FastOutSlowInEasing
+                    )
                 )
             }
             launch {
@@ -137,7 +162,7 @@ fun Checkbox(
                     targetValue = 0.1f,
                     animationSpec = keyframes {
                         durationMillis = 300
-                        0.0f at 300
+                        0.1f at 300
                     }
                 )
             }
@@ -149,9 +174,9 @@ fun Checkbox(
             value = isChecked,
             onValueChange = {
                 onCheckedChange(it)
+                onCheck = true
                 hapticFeedback.performHapticFeedback(
-                    if (it) HapticFeedbackType.ToggleOn
-                    else HapticFeedbackType.ToggleOff
+                    if (it) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff
                 )
             },
             enabled = enabled,
@@ -167,7 +192,7 @@ fun Checkbox(
         modifier = modifier
             .size(24.5.dp)
             .scale(scale)
-            .clip(RoundedCornerShape(100.dp))
+            .clip(CircleShape)
             .background(backgroundColor)
             .then(toggleableModifier),
         contentAlignment = Alignment.Center
@@ -190,6 +215,7 @@ private fun DrawScope.drawTrimmedCheckmark(
     trimEnd: Float
 ) {
     val viewportSize = 25.5f
+    val strokeWidth = size.width * 0.09f
 
     val centerX = size.width / 2
     val centerY = size.height / 2
@@ -215,8 +241,6 @@ private fun DrawScope.drawTrimmedCheckmark(
 
     val startDistance = totalLength * trimStart
     val endDistance = totalLength * trimEnd
-
-    val strokeWidth = size.width * 0.09f
 
     val path = Path()
 
@@ -283,7 +307,6 @@ private fun DrawScope.drawTrimmedCheckmark(
 }
 
 object CheckboxDefaults {
-
     @Composable
     fun checkboxColors(
         checkedForegroundColor: Color = MiuixTheme.colorScheme.onPrimary,
@@ -294,18 +317,16 @@ object CheckboxDefaults {
         uncheckedBackgroundColor: Color = MiuixTheme.colorScheme.secondary,
         disabledCheckedBackgroundColor: Color = MiuixTheme.colorScheme.disabledPrimary,
         disabledUncheckedBackgroundColor: Color = MiuixTheme.colorScheme.disabledSecondary
-    ): CheckboxColors {
-        return CheckboxColors(
-            checkedForegroundColor = checkedForegroundColor,
-            uncheckedForegroundColor = uncheckedForegroundColor,
-            disabledCheckedForegroundColor = disabledCheckedForegroundColor,
-            disabledUncheckedForegroundColor = disabledUncheckedForegroundColor,
-            checkedBackgroundColor = checkedBackgroundColor,
-            uncheckedBackgroundColor = uncheckedBackgroundColor,
-            disabledCheckedBackgroundColor = disabledCheckedBackgroundColor,
-            disabledUncheckedBackgroundColor = disabledUncheckedBackgroundColor
-        )
-    }
+    ): CheckboxColors = CheckboxColors(
+        checkedForegroundColor = checkedForegroundColor,
+        uncheckedForegroundColor = uncheckedForegroundColor,
+        disabledCheckedForegroundColor = disabledCheckedForegroundColor,
+        disabledUncheckedForegroundColor = disabledUncheckedForegroundColor,
+        checkedBackgroundColor = checkedBackgroundColor,
+        uncheckedBackgroundColor = uncheckedBackgroundColor,
+        disabledCheckedBackgroundColor = disabledCheckedBackgroundColor,
+        disabledUncheckedBackgroundColor = disabledUncheckedBackgroundColor
+    )
 }
 
 @Immutable

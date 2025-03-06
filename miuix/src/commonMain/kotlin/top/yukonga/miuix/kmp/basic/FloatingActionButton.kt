@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +38,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 fun FloatingActionButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(60.dp),
+    shape: Shape = CircleShape,
     containerColor: Color = MiuixTheme.colorScheme.primary,
     shadowElevation: Dp = 4.dp,
     minWidth: Dp = 60.dp,

@@ -175,14 +175,12 @@ object ButtonDefaults {
         disabledColor: Color = MiuixTheme.colorScheme.disabledSecondaryVariant,
         textColor: Color = MiuixTheme.colorScheme.onSecondaryVariant,
         disabledTextColor: Color = MiuixTheme.colorScheme.disabledOnSecondaryVariant
-    ): TextButtonColors {
-        return TextButtonColors(
-            color = color,
-            disabledColor = disabledColor,
-            textColor = textColor,
-            disabledTextColor = disabledTextColor
-        )
-    }
+    ): TextButtonColors = TextButtonColors(
+        color = color,
+        disabledColor = disabledColor,
+        textColor = textColor,
+        disabledTextColor = disabledTextColor
+    )
 
     /**
      * The [TextButtonColors] for primary text buttons.

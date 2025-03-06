@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -76,6 +75,8 @@ fun Slider(
     val updatedOnProgressChange by rememberUpdatedState(onProgressChange)
     val factor = remember(decimalPlaces) { 10f.pow(decimalPlaces) }
     val hapticState = remember { SliderHapticState() }
+    val interactionSource = remember { MutableInteractionSource() }
+    val shape = remember { SmoothRoundedCornerShape(height) }
 
     val calculateProgress = remember(minValue, maxValue, factor) {
         { offset: Float, width: Int ->
@@ -105,16 +106,15 @@ fun Slider(
                         isDragging = false
                     }
                 )
-            }
-                .indication(remember { MutableInteractionSource() }, LocalIndication.current)
+            }.indication(interactionSource, LocalIndication.current)
         } else {
             modifier
         },
         contentAlignment = Alignment.CenterStart
     ) {
-        SliderBackground(
+        SliderTrack(
             modifier = Modifier.fillMaxWidth().height(height),
-            height = height,
+            shape = shape,
             backgroundColor = colors.backgroundColor(),
             foregroundColor = colors.foregroundColor(enabled),
             effect = effect,
@@ -127,52 +127,12 @@ fun Slider(
 }
 
 /**
- * Encapsulates the state for haptic feedback in the slider
+ * Internal slider track renderer
  */
-class SliderHapticState {
-    private var edgeFeedbackTriggered: Boolean = false
-    private var lastStep: Float = 0f
-
-    fun reset(currentValue: Float) {
-        edgeFeedbackTriggered = false
-        lastStep = currentValue
-    }
-
-    fun handleHapticFeedback(
-        currentValue: Float,
-        hapticEffect: SliderDefaults.SliderHapticEffect,
-        hapticFeedback: HapticFeedback
-    ) {
-        println("currentValue: $currentValue")
-        if (hapticEffect == SliderDefaults.SliderHapticEffect.None) return
-
-        // Handle edge feedback
-        if (hapticEffect != SliderDefaults.SliderHapticEffect.None) {
-            val isAtEdge = currentValue == 0f || currentValue == 1f
-            if (isAtEdge && !edgeFeedbackTriggered) {
-                hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
-                edgeFeedbackTriggered = true
-            } else if (!isAtEdge) {
-                edgeFeedbackTriggered = false
-            }
-        }
-
-        // Handle step feedback
-        if (hapticEffect == SliderDefaults.SliderHapticEffect.Step) {
-            val isNotAtEdge = currentValue != 0f && currentValue != 1f
-
-            if (currentValue != lastStep && isNotAtEdge) {
-                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                lastStep = currentValue
-            }
-        }
-    }
-}
-
 @Composable
-fun SliderBackground(
+private fun SliderTrack(
     modifier: Modifier,
-    height: Dp = 30.dp,
+    shape: SmoothRoundedCornerShape,
     backgroundColor: Color,
     foregroundColor: Color,
     effect: Boolean,
@@ -181,14 +141,15 @@ fun SliderBackground(
     maxValue: Float,
     isDragging: Boolean,
 ) {
-    val backgroundAlpha = animateFloatAsState(
+    val animationSpec = remember { tween<Float>(150) }
+    val backgroundAlpha by animateFloatAsState(
         targetValue = if (isDragging) 0.044f else 0f,
-        animationSpec = tween(150)
-    ).value
-    val shape = remember { derivedStateOf { SmoothRoundedCornerShape(height) } }
+        animationSpec = animationSpec
+    )
+
     Canvas(
         modifier = modifier
-            .clip(shape.value)
+            .clip(shape)
             .background(backgroundColor)
             .drawBehind { drawRect(Color.Black.copy(alpha = backgroundAlpha)) }
     ) {
@@ -206,43 +167,69 @@ fun SliderBackground(
     }
 }
 
-object SliderDefaults {
+/**
+ * Manages haptic feedback state for the slider.
+ */
+internal class SliderHapticState {
+    private var edgeFeedbackTriggered: Boolean = false
+    private var lastStep: Float = 0f
 
-    /**
-     * The default minimum height of the [Slider].
-     */
-    val MinHeight = 30.dp
-
-    /**
-     * The haptic effect of the [Slider].
-     */
-    enum class SliderHapticEffect {
-        None, // No haptic effect
-        Edge, // Haptic effect when reaching the edge
-        Step  // Haptic effect when reaching a step
+    fun reset(currentValue: Float) {
+        edgeFeedbackTriggered = false
+        lastStep = currentValue
     }
 
-    /**
-     * The default haptic effect of the [Slider].
-     */
+    fun handleHapticFeedback(
+        currentValue: Float,
+        hapticEffect: SliderDefaults.SliderHapticEffect,
+        hapticFeedback: HapticFeedback
+    ) {
+        if (hapticEffect == SliderDefaults.SliderHapticEffect.None) return
+
+        val isAtEdge = currentValue == 0f || currentValue == 1f
+        if (isAtEdge && !edgeFeedbackTriggered) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
+            edgeFeedbackTriggered = true
+        } else if (!isAtEdge) {
+            edgeFeedbackTriggered = false
+        }
+
+        if (hapticEffect == SliderDefaults.SliderHapticEffect.Step) {
+            val isNotAtEdge = currentValue != 0f && currentValue != 1f
+            if (currentValue != lastStep && isNotAtEdge) {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                lastStep = currentValue
+            }
+        }
+    }
+}
+
+object SliderDefaults {
+    val MinHeight = 30.dp
+
+    enum class SliderHapticEffect {
+        /** No haptic feedback */
+        None,
+
+        /** Haptic feedback at 0% and 100% */
+        Edge,
+
+        /** Haptic feedback at steps */
+        Step
+    }
+
     val DefaultHapticEffect = SliderHapticEffect.Edge
 
-    /**
-     * The default [SliderColors] of the [Slider].
-     */
     @Composable
     fun sliderColors(
         foregroundColor: Color = MiuixTheme.colorScheme.primary,
         disabledForegroundColor: Color = MiuixTheme.colorScheme.disabledPrimarySlider,
         backgroundColor: Color = MiuixTheme.colorScheme.tertiaryContainerVariant
-    ): SliderColors {
-        return SliderColors(
-            foregroundColor = foregroundColor,
-            disabledForegroundColor = disabledForegroundColor,
-            backgroundColor = backgroundColor
-        )
-    }
-
+    ): SliderColors = SliderColors(
+        foregroundColor = foregroundColor,
+        disabledForegroundColor = disabledForegroundColor,
+        backgroundColor = backgroundColor
+    )
 }
 
 @Immutable

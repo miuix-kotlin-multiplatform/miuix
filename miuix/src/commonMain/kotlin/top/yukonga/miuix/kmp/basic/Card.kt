@@ -45,7 +45,7 @@ fun Card(
     Box(
         modifier = modifier
             .background(color = color, shape = shape.value)
-            .clip(RoundedCornerShape(cornerRadius)) // For touch feedback, because there is a problem when using Smooth RoundedCornerShape.
+            .clip(RoundedCornerShape(cornerRadius)) // For touch feedback, because there is a problem when using SmoothRoundedCornerShape.
             .semantics(mergeDescendants = false) {
                 isTraversalGroup = true
             }

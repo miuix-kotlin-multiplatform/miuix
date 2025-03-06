@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.HorizontalDivider
 import top.yukonga.miuix.kmp.utils.Platform
 import top.yukonga.miuix.kmp.utils.platform
 
@@ -80,10 +79,7 @@ fun NavigationBar(
                 .background(Color.Transparent)
         ) {
             if (showDivider) {
-                HorizontalDivider(
-                    thickness = 0.75.dp,
-                    color = MiuixTheme.colorScheme.dividerLine
-                )
+                HorizontalDivider()
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),

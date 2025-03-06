@@ -225,14 +225,12 @@ object TabRowDefaults {
         contentColor: Color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
         selectedBackgroundColor: Color = MiuixTheme.colorScheme.surface,
         selectedContentColor: Color = MiuixTheme.colorScheme.onSurface
-    ): TabRowColors {
-        return TabRowColors(
-            backgroundColor = backgroundColor,
-            contentColor = contentColor,
-            selectedBackgroundColor = selectedBackgroundColor,
-            selectedContentColor = selectedContentColor
-        )
-    }
+    ): TabRowColors = TabRowColors(
+        backgroundColor = backgroundColor,
+        contentColor = contentColor,
+        selectedBackgroundColor = selectedBackgroundColor,
+        selectedContentColor = selectedContentColor
+    )
 }
 
 @Immutable

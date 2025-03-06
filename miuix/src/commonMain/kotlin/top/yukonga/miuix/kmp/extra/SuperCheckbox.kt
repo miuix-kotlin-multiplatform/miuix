@@ -5,11 +5,9 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
@@ -30,7 +28,8 @@ import top.yukonga.miuix.kmp.basic.CheckboxDefaults
  * @param summaryColor The color of the summary.
  * @param checkboxColors The [CheckboxColors] of the [SuperCheckbox].
  * @param rightActions The [Composable] content that on the right side of the [SuperCheckbox].
- * @param onClick The callback when the [SuperCheckbox] is clicked.
+ * @param checkboxLocation The location of checkbox, [CheckboxLocation.Left] or [CheckboxLocation.Right].
+ * @param onClick Optional callback when the component is clicked before checkbox is toggled.
  * @param insideMargin The margin inside the [SuperCheckbox].
  * @param enabled Whether the [SuperCheckbox] is clickable.
  */
@@ -50,10 +49,24 @@ fun SuperCheckbox(
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     enabled: Boolean = true
 ) {
-    var isChecked by remember { mutableStateOf(checked) }
     val updatedOnCheckedChange by rememberUpdatedState(onCheckedChange)
+    val updatedOnClick by rememberUpdatedState(onClick)
 
-    if (isChecked != checked) isChecked = checked
+    val checkbox: @Composable () -> Unit = {
+        Checkbox(
+            modifier = Modifier.padding(
+                start = if (checkboxLocation == CheckboxLocation.Right) {
+                    insideMargin.calculateLeftPadding(LayoutDirection.Ltr)
+                } else 0.dp, end = if (checkboxLocation == CheckboxLocation.Left) {
+                    insideMargin.calculateLeftPadding(LayoutDirection.Ltr)
+                } else 0.dp
+            ),
+            checked = checked,
+            onCheckedChange = updatedOnCheckedChange,
+            enabled = enabled,
+            colors = checkboxColors
+        )
+    }
 
     BasicComponent(
         modifier = modifier,
@@ -65,8 +78,8 @@ fun SuperCheckbox(
         leftAction = if (checkboxLocation == CheckboxLocation.Left) {
             {
                 Checkbox(
-                    modifier = Modifier.padding(end = 16.dp),
-                    checked = isChecked,
+                    modifier = Modifier.padding(end = insideMargin.calculateLeftPadding(LayoutDirection.Ltr)),
+                    checked = checked,
                     onCheckedChange = updatedOnCheckedChange,
                     enabled = enabled,
                     colors = checkboxColors
@@ -76,21 +89,15 @@ fun SuperCheckbox(
         rightActions = {
             rightActions()
             if (checkboxLocation == CheckboxLocation.Right) {
-                Checkbox(
-                    checked = isChecked,
-                    onCheckedChange = updatedOnCheckedChange,
-                    enabled = enabled,
-                    colors = checkboxColors
-                )
+                checkbox()
             }
         },
-        onClick = {
-            if (enabled) {
-                onClick?.invoke()
-                isChecked = !isChecked
-                updatedOnCheckedChange?.invoke(isChecked)
+        onClick = if (enabled && onCheckedChange != null) {
+            {
+                updatedOnClick?.invoke()
+                updatedOnCheckedChange?.invoke(!checked)
             }
-        },
+        } else null,
         enabled = enabled
     )
 }

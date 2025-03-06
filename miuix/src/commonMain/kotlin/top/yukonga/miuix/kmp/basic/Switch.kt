@@ -24,7 +24,7 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
@@ -45,6 +45,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import kotlin.math.absoluteValue
 
 /**
@@ -111,7 +112,7 @@ fun Switch(
             .wrapContentSize(Alignment.Center)
             .size(50.dp, 28.5.dp)
             .requiredSize(50.dp, 28.5.dp)
-            .clip(RoundedCornerShape(100.dp))
+            .clip(SmoothRoundedCornerShape(50.dp))
             .drawBehind { drawRect(backgroundColor) }
             .hoverable(
                 interactionSource = interactionSource,
@@ -169,7 +170,7 @@ fun Switch(
                 .size(thumbSize)
                 .background(
                     color = thumbColor,
-                    shape = RoundedCornerShape(100.dp)
+                    shape = CircleShape
                 )
                 .pointerInput(Unit) {
                     if (!enabled) return@pointerInput
@@ -252,18 +253,16 @@ object SwitchDefaults {
         uncheckedTrackColor: Color = MiuixTheme.colorScheme.secondary,
         disabledCheckedTrackColor: Color = MiuixTheme.colorScheme.disabledPrimary,
         disabledUncheckedTrackColor: Color = MiuixTheme.colorScheme.disabledSecondary
-    ): SwitchColors {
-        return SwitchColors(
-            checkedThumbColor = checkedThumbColor,
-            uncheckedThumbColor = uncheckedThumbColor,
-            disabledCheckedThumbColor = disabledCheckedThumbColor,
-            disabledUncheckedThumbColor = disabledUncheckedThumbColor,
-            checkedTrackColor = checkedTrackColor,
-            uncheckedTrackColor = uncheckedTrackColor,
-            disabledCheckedTrackColor = disabledCheckedTrackColor,
-            disabledUncheckedTrackColor = disabledUncheckedTrackColor
-        )
-    }
+    ): SwitchColors = SwitchColors(
+        checkedThumbColor = checkedThumbColor,
+        uncheckedThumbColor = uncheckedThumbColor,
+        disabledCheckedThumbColor = disabledCheckedThumbColor,
+        disabledUncheckedThumbColor = disabledUncheckedThumbColor,
+        checkedTrackColor = checkedTrackColor,
+        uncheckedTrackColor = uncheckedTrackColor,
+        disabledCheckedTrackColor = disabledCheckedTrackColor,
+        disabledUncheckedTrackColor = disabledUncheckedTrackColor
+    )
 }
 
 @Immutable
