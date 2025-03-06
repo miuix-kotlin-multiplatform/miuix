@@ -1,41 +1,45 @@
 package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathMeasure
-import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.graphics.vector.PathParser
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**
@@ -56,101 +60,246 @@ fun Checkbox(
     enabled: Boolean = true,
 ) {
     val isChecked by rememberUpdatedState(checked)
-    var isPressed by remember { mutableStateOf(false) }
     val hapticFeedback = LocalHapticFeedback.current
-    val checkboxSize by animateDpAsState(
-        if (!enabled) 22.dp else if (isPressed) 20.dp else 22.dp
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.85f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        )
     )
+
     val backgroundColor by animateColorAsState(
-        if (isChecked) colors.checkedBackgroundColor(enabled) else colors.uncheckedBackgroundColor(enabled)
+        targetValue = if (isChecked) colors.checkedBackgroundColor(enabled) else colors.uncheckedBackgroundColor(enabled),
+        animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
     )
-    val rotationAngle by animateFloatAsState(
-        if (checked) 0f else 25f,
-        animationSpec = tween(durationMillis = 200)
+
+    val foregroundColor by animateColorAsState(
+        targetValue = if (isChecked) colors.checkedForegroundColor(enabled) else colors.uncheckedForegroundColor(enabled),
+        animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
     )
-    val pathProgress by animateFloatAsState(
-        if (checked) 1f else 0f,
-        animationSpec = tween(durationMillis = 400)
-    )
-    val toggleableModifier = remember(onCheckedChange, isChecked, enabled) {
-        if (onCheckedChange != null) {
-            Modifier.toggleable(
-                value = isChecked,
-                onValueChange = {
-                    onCheckedChange(it)
-                    if (it) hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOn)
-                    else hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOff)
-                },
-                enabled = enabled,
-                role = Role.Checkbox,
-                indication = null,
-                interactionSource = null
-            )
+
+    val checkAlpha = remember { Animatable(if (isChecked) 1f else 0f) }
+    val checkStartTrim = remember { Animatable(0.0f) }
+    val checkEndTrim = remember { Animatable(if (isChecked) 0.845f else 0.1f) }
+
+    LaunchedEffect(isChecked) {
+        if (isChecked) {
+            launch {
+                checkAlpha.animateTo(
+                    targetValue = 1f,
+                    animationSpec = tween(
+                        durationMillis = 10,
+                        easing = FastOutSlowInEasing
+                    )
+                )
+            }
+            launch {
+                checkStartTrim.animateTo(
+                    targetValue = 0.128f,
+                    animationSpec = keyframes {
+                        durationMillis = 100
+                        0.128f at 100
+                    }
+                )
+            }
+            launch {
+                checkEndTrim.animateTo(
+                    targetValue = 0.845f,
+                    animationSpec = keyframes {
+                        durationMillis = 300
+                        0.885f at 200
+                        0.845f at 300
+                    }
+                )
+            }
         } else {
-            Modifier
+            launch {
+                checkAlpha.animateTo(
+                    targetValue = 0f,
+                    animationSpec = tween(durationMillis = 150, easing = FastOutSlowInEasing)
+                )
+            }
+            launch {
+                checkStartTrim.animateTo(
+                    targetValue = 0.0f,
+                    animationSpec = keyframes {
+                        durationMillis = 300
+                        0.0f at 300
+                    }
+                )
+            }
+            launch {
+                checkEndTrim.animateTo(
+                    targetValue = 0.1f,
+                    animationSpec = keyframes {
+                        durationMillis = 300
+                        0.0f at 300
+                    }
+                )
+            }
         }
+    }
+
+    val toggleableModifier = if (onCheckedChange != null) {
+        Modifier.toggleable(
+            value = isChecked,
+            onValueChange = {
+                onCheckedChange(it)
+                hapticFeedback.performHapticFeedback(
+                    if (it) HapticFeedbackType.ToggleOn
+                    else HapticFeedbackType.ToggleOff
+                )
+            },
+            enabled = enabled,
+            role = Role.Checkbox,
+            interactionSource = interactionSource,
+            indication = LocalIndication.current
+        )
+    } else {
+        Modifier
     }
 
     Box(
         modifier = modifier
-            .wrapContentSize(Alignment.Center)
-            .size(22.dp)
+            .size(24.5.dp)
+            .scale(scale)
             .clip(RoundedCornerShape(100.dp))
-            .requiredSize(checkboxSize)
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onPress = {
-                        isPressed = true
-                    },
-                    onTap = {
-                        isPressed = false
-                        if (enabled) {
-                            onCheckedChange?.invoke(!isChecked)
-                        }
-                    }
-                )
-            }
-            .then(toggleableModifier)
+            .background(backgroundColor)
+            .then(toggleableModifier),
+        contentAlignment = Alignment.Center
     ) {
-        Canvas(
-            modifier = Modifier
-                .requiredSize(checkboxSize)
-                .drawBehind { drawRect(backgroundColor) }
-        ) {
-            val svgPath =
-                "m400-416 236-236q11-11 28-11t28 11q11 11 11 28t-11 28L428-332q-12 12-28 12t-28-12L268-436q-11-11-11-28t11-28q11-11 28-11t28 11l76 76Z"
-            val path = PathParser().parsePathString(svgPath).toPath()
-            val scaleFactor = size.minDimension / 960f
-            path.transform(Matrix().apply {
-                scale(scaleFactor, scaleFactor)
-                translate(0f, 960f)
-            })
-            rotate(rotationAngle, pivot = Offset(size.width / 2, size.height / 2)) {
-                val pathMeasure = PathMeasure()
-                pathMeasure.setPath(path, false)
-                val length = pathMeasure.length
-                val animatedPath = Path()
-                pathMeasure.getSegment(length * (1 - pathProgress), length, animatedPath, true)
-                drawPath(animatedPath, colors.foregroundColor(enabled))
-            }
+        Canvas(modifier = Modifier.size(25.5.dp)) {
+            drawTrimmedCheckmark(
+                color = foregroundColor,
+                alpha = checkAlpha.value,
+                trimStart = checkStartTrim.value,
+                trimEnd = checkEndTrim.value
+            )
         }
     }
+}
+
+private fun DrawScope.drawTrimmedCheckmark(
+    color: Color,
+    alpha: Float = 1f,
+    trimStart: Float,
+    trimEnd: Float
+) {
+    val viewportSize = 25.5f
+
+    val centerX = size.width / 2
+    val centerY = size.height / 2
+    val viewportCenterX = viewportSize / 2
+    val viewportCenterY = viewportSize / 2
+
+    val leftPoint = Offset(
+        centerX + ((6.8f - viewportCenterX) / viewportSize * size.width),
+        centerY + ((11.6f - viewportCenterY) / viewportSize * size.height)
+    )
+    val middlePoint = Offset(
+        centerX + ((11.4f - viewportCenterX) / viewportSize * size.width),
+        centerY + ((16.4f - viewportCenterY) / viewportSize * size.height)
+    )
+    val rightPoint = Offset(
+        centerX + ((19f - viewportCenterX) / viewportSize * size.width),
+        centerY + ((6.7f - viewportCenterY) / viewportSize * size.height)
+    )
+
+    val firstSegmentLength = (middlePoint - leftPoint).getDistance()
+    val secondSegmentLength = (rightPoint - middlePoint).getDistance()
+    val totalLength = firstSegmentLength + secondSegmentLength
+
+    val startDistance = totalLength * trimStart
+    val endDistance = totalLength * trimEnd
+
+    val strokeWidth = size.width * 0.09f
+
+    val path = Path()
+
+    if (startDistance < firstSegmentLength && endDistance > 0) {
+        val segStartRatio = (startDistance / firstSegmentLength).coerceIn(0f, 1f)
+        val segEndRatio = (endDistance / firstSegmentLength).coerceIn(0f, 1f)
+
+        val start = Offset(
+            leftPoint.x + (middlePoint.x - leftPoint.x) * segStartRatio,
+            leftPoint.y + (middlePoint.y - leftPoint.y) * segStartRatio
+        )
+        val end = Offset(
+            leftPoint.x + (middlePoint.x - leftPoint.x) * segEndRatio,
+            leftPoint.y + (middlePoint.y - leftPoint.y) * segEndRatio
+        )
+
+        path.moveTo(start.x, start.y)
+        val controlPoint = Offset(
+            (start.x + end.x) / 2,
+            (start.y + end.y) / 2 + (end.y - start.y) * 0.05f
+        )
+        path.quadraticTo(controlPoint.x, controlPoint.y, end.x, end.y)
+    }
+
+    if (endDistance > firstSegmentLength) {
+        val segStartRatio = ((startDistance - firstSegmentLength) / secondSegmentLength).coerceIn(0f, 1f)
+        val segEndRatio = ((endDistance - firstSegmentLength) / secondSegmentLength).coerceIn(0f, 1f)
+
+        val start = Offset(
+            middlePoint.x + (rightPoint.x - middlePoint.x) * segStartRatio,
+            middlePoint.y + (rightPoint.y - middlePoint.y) * segStartRatio
+        )
+        val end = Offset(
+            middlePoint.x + (rightPoint.x - middlePoint.x) * segEndRatio,
+            middlePoint.y + (rightPoint.y - middlePoint.y) * segEndRatio
+        )
+
+        if (startDistance < firstSegmentLength) {
+            val controlPoint = Offset(
+                (middlePoint.x + start.x) / 2,
+                (middlePoint.y + start.y) / 2
+            )
+            path.quadraticTo(controlPoint.x, controlPoint.y, start.x, start.y)
+        } else {
+            path.moveTo(start.x, start.y)
+        }
+
+        val controlPoint = Offset(
+            (start.x + end.x) / 2,
+            (start.y + end.y) / 2 - (end.y - start.y) * 0.05f
+        )
+        path.quadraticTo(controlPoint.x, controlPoint.y, end.x, end.y)
+    }
+
+    drawPath(
+        path = path,
+        color = color.copy(alpha = alpha),
+        style = Stroke(
+            width = strokeWidth,
+            cap = StrokeCap.Round,
+            join = StrokeJoin.Round
+        )
+    )
 }
 
 object CheckboxDefaults {
 
     @Composable
     fun checkboxColors(
-        foregroundColor: Color = MiuixTheme.colorScheme.onPrimary,
-        disabledForegroundColor: Color = MiuixTheme.colorScheme.disabledOnPrimary,
+        checkedForegroundColor: Color = MiuixTheme.colorScheme.onPrimary,
+        uncheckedForegroundColor: Color = MiuixTheme.colorScheme.secondary,
+        disabledCheckedForegroundColor: Color = MiuixTheme.colorScheme.disabledOnPrimary,
+        disabledUncheckedForegroundColor: Color = MiuixTheme.colorScheme.disabledOnPrimary,
         checkedBackgroundColor: Color = MiuixTheme.colorScheme.primary,
         uncheckedBackgroundColor: Color = MiuixTheme.colorScheme.secondary,
         disabledCheckedBackgroundColor: Color = MiuixTheme.colorScheme.disabledPrimary,
         disabledUncheckedBackgroundColor: Color = MiuixTheme.colorScheme.disabledSecondary
     ): CheckboxColors {
         return CheckboxColors(
-            foregroundColor = foregroundColor,
-            disabledForegroundColor = disabledForegroundColor,
+            checkedForegroundColor = checkedForegroundColor,
+            uncheckedForegroundColor = uncheckedForegroundColor,
+            disabledCheckedForegroundColor = disabledCheckedForegroundColor,
+            disabledUncheckedForegroundColor = disabledUncheckedForegroundColor,
             checkedBackgroundColor = checkedBackgroundColor,
             uncheckedBackgroundColor = uncheckedBackgroundColor,
             disabledCheckedBackgroundColor = disabledCheckedBackgroundColor,
@@ -161,19 +310,28 @@ object CheckboxDefaults {
 
 @Immutable
 class CheckboxColors(
-    private val foregroundColor: Color,
-    private val disabledForegroundColor: Color,
+    private val checkedForegroundColor: Color,
+    private val uncheckedForegroundColor: Color,
+    private val disabledCheckedForegroundColor: Color,
+    private val disabledUncheckedForegroundColor: Color,
     private val checkedBackgroundColor: Color,
     private val uncheckedBackgroundColor: Color,
     private val disabledCheckedBackgroundColor: Color,
     private val disabledUncheckedBackgroundColor: Color
 ) {
     @Stable
-    internal fun foregroundColor(enabled: Boolean): Color = if (enabled) foregroundColor else disabledForegroundColor
+    internal fun checkedForegroundColor(enabled: Boolean): Color =
+        if (enabled) checkedForegroundColor else disabledCheckedForegroundColor
 
     @Stable
-    internal fun checkedBackgroundColor(enabled: Boolean): Color = if (enabled) checkedBackgroundColor else disabledCheckedBackgroundColor
+    internal fun uncheckedForegroundColor(enabled: Boolean): Color =
+        if (enabled) uncheckedForegroundColor else disabledUncheckedForegroundColor
 
     @Stable
-    internal fun uncheckedBackgroundColor(enabled: Boolean): Color = if (enabled) uncheckedBackgroundColor else disabledUncheckedBackgroundColor
+    internal fun checkedBackgroundColor(enabled: Boolean): Color =
+        if (enabled) checkedBackgroundColor else disabledCheckedBackgroundColor
+
+    @Stable
+    internal fun uncheckedBackgroundColor(enabled: Boolean): Color =
+        if (enabled) uncheckedBackgroundColor else disabledUncheckedBackgroundColor
 }

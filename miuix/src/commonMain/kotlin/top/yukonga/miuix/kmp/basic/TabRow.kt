@@ -134,7 +134,8 @@ fun TabRowWithContour(
             .padding(5.dp)
             .clip(SmoothRoundedCornerShape(cornerRadius))
             .overScrollHorizontal(),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         itemsIndexed(tabs) { index, tabText ->
             val isSelected = index == selectedTabIndex
