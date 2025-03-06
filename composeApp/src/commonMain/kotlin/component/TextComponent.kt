@@ -220,6 +220,7 @@ fun TextComponent(
             checked = miuixSuperRightCheckboxState.value,
             rightActions = {
                 Text(
+                    modifier = Modifier.padding(end = 6.dp),
                     text = miuixSuperRightCheckbox.value,
                     color = MiuixTheme.colorScheme.onSurfaceVariantActions
                 )

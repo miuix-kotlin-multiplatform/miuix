@@ -55,9 +55,7 @@ fun SuperCheckbox(
     val checkbox: @Composable () -> Unit = {
         Checkbox(
             modifier = Modifier.padding(
-                start = if (checkboxLocation == CheckboxLocation.Right) {
-                    insideMargin.calculateLeftPadding(LayoutDirection.Ltr)
-                } else 0.dp, end = if (checkboxLocation == CheckboxLocation.Left) {
+                end = if (checkboxLocation == CheckboxLocation.Left) {
                     insideMargin.calculateLeftPadding(LayoutDirection.Ltr)
                 } else 0.dp
             ),

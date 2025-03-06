@@ -5,13 +5,15 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -24,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -87,6 +90,7 @@ import top.yukonga.miuix.kmp.icon.icons.useful.Undo
 import top.yukonga.miuix.kmp.icon.icons.useful.Unstick
 import top.yukonga.miuix.kmp.icon.icons.useful.Update
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import kotlin.math.round
 
 @Composable
@@ -111,7 +115,7 @@ fun OtherComponent(padding: PaddingValues) {
     )
     val progressValues = remember { listOf(0.0f, 0.25f, 0.5f, 0.75f, 1.0f, null) }
     val progressDisable by remember { mutableStateOf(0.5f) }
-    val tabTexts = listOf("tab1", "tab2", "tab3", "tab4", "tab5", "tab6")
+    val tabTexts = listOf("Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6")
     var selectedTabIndex by remember { mutableStateOf(0) }
     var selectedTabIndex1 by remember { mutableStateOf(0) }
     val miuixIconsNormal = listOf(
@@ -366,22 +370,40 @@ fun OtherComponent(padding: PaddingValues) {
             .padding(bottom = 6.dp),
         insideMargin = PaddingValues(16.dp)
     ) {
-        Column {
+        Row(
+            modifier = Modifier.padding(bottom = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
-                text = "Color: RGBA(" +
+                text = "Selected Color:\nRGBA: " +
                         "${(selectedColor.red * 255).toInt()}," +
                         "${(selectedColor.green * 255).toInt()}," +
                         "${(selectedColor.blue * 255).toInt()}," +
-                        "${(round(selectedColor.alpha * 100) / 100.0)})",
-                modifier = Modifier.padding(bottom = 12.dp)
+                        "${(round(selectedColor.alpha * 100) / 100.0)}" +
+                        "\nHEX: #" +
+                        (selectedColor.alpha * 255).toInt().toString(16).padStart(2, '0').uppercase() +
+                        (selectedColor.red * 255).toInt().toString(16).padStart(2, '0').uppercase() +
+                        (selectedColor.green * 255).toInt().toString(16).padStart(2, '0').uppercase() +
+                        (selectedColor.blue * 255).toInt().toString(16).padStart(2, '0').uppercase(),
+                modifier = Modifier.weight(1f)
             )
-
-            ColorPicker(
-                initialColor = selectedColor,
-                onColorChanged = { selectedColor = it },
-                hapticEffect = SliderDefaults.SliderHapticEffect.Step
+            Spacer(Modifier.width(12.dp))
+            Box(
+                modifier = Modifier
+                    .height(60.dp)
+                    .width(120.dp)
+                    .align(Alignment.CenterVertically)
+                    .clip(SmoothRoundedCornerShape(12.dp))
+                    .background(selectedColor)
             )
         }
+
+        ColorPicker(
+            initialColor = selectedColor,
+            onColorChanged = { selectedColor = it },
+            showPreview = false,
+            hapticEffect = SliderDefaults.SliderHapticEffect.Step
+        )
     }
 
     SmallTitle(text = "Card")
