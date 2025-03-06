@@ -89,7 +89,7 @@ fun SuperDropdown(
     val isDropdownExpanded = remember { mutableStateOf(false) }
     val showPopup = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
-    val held = remember { mutableStateOf<HoldDownInteraction.Hold?>(null) }
+    val isHoldDown = remember { mutableStateOf<HoldDownInteraction.HoldDown?>(null) }
     val hapticFeedback = LocalHapticFeedback.current
     val actionColor =
         if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
@@ -104,11 +104,11 @@ fun SuperDropdown(
     }
 
     if (!isDropdownExpanded.value) {
-        held.value?.let { oldValue ->
+        isHoldDown.value?.let { oldValue ->
             coroutineScope.launch {
                 interactionSource.emit(HoldDownInteraction.Release(oldValue))
             }
-            held.value = null
+            isHoldDown.value = null
         }
     }
 
@@ -195,8 +195,8 @@ fun SuperDropdown(
                 isDropdownExpanded.value = enabled
                 hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)
                 coroutineScope.launch {
-                    interactionSource.emit(HoldDownInteraction.Hold().also {
-                        held.value = it
+                    interactionSource.emit(HoldDownInteraction.HoldDown().also {
+                        isHoldDown.value = it
                     })
                 }
             }

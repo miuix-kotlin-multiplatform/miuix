@@ -343,7 +343,7 @@ fun lightColorScheme(
     onSurfaceContainerHigh: Color = Color(0xFFA2A2A2),
     surfaceContainerHighest: Color = Color(0xFFE8E8E8),
     onSurfaceContainerHighest: Color = Color.Black,
-    windowDimming: Color = Color.Black.copy(alpha = 0.3f),
+    windowDimming: Color = Color.Black.copy(alpha = 0.3F),
 ): Colors = Colors(
     primary,
     onPrimary,
@@ -394,7 +394,7 @@ fun lightColorScheme(
 )
 
 fun darkColorScheme(
-    primary: Color = Color(0xFF277Af7),
+    primary: Color = Color(0xFF277AF7),
     onPrimary: Color = Color.White,
     primaryVariant: Color = Color(0xFF0073DD),
     onPrimaryVariant: Color = Color(0xFF99C7F1),
@@ -439,7 +439,7 @@ fun darkColorScheme(
     onSurfaceContainerHigh: Color = Color(0xFF666666),
     surfaceContainerHighest: Color = Color(0xFF2D2D2D),
     onSurfaceContainerHighest: Color = Color(0xFFE9E9E9),
-    windowDimming: Color = Color.Black.copy(alpha = 0.6f),
+    windowDimming: Color = Color.Black.copy(alpha = 0.6F),
 ): Colors = Colors(
     primary,
     onPrimary,

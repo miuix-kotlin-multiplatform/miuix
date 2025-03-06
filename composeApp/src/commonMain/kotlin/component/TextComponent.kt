@@ -161,7 +161,8 @@ fun TextComponent(
             summary = "Click to show Dialog 1",
             onClick = {
                 showDialog.value = true
-            }
+            },
+            holdDownState = showDialog.value
         )
 
         SuperArrow(
@@ -169,7 +170,8 @@ fun TextComponent(
             summary = "Click to show Dialog 2",
             onClick = {
                 showDialog2.value = true
-            }
+            },
+            holdDownState = showDialog2.value
         )
 
         SuperArrow(

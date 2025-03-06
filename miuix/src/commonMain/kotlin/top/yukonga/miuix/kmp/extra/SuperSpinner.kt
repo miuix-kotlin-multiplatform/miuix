@@ -101,7 +101,7 @@ fun SuperSpinner(
     val isDropdownExpanded = remember { mutableStateOf(false) }
     val showPopup = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
-    val held = remember { mutableStateOf<HoldDownInteraction.Hold?>(null) }
+    val isHoldDown = remember { mutableStateOf<HoldDownInteraction.HoldDown?>(null) }
     val hapticFeedback = LocalHapticFeedback.current
     val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
 
@@ -115,11 +115,11 @@ fun SuperSpinner(
     }
 
     if (!isDropdownExpanded.value) {
-        held.value?.let { oldValue ->
+        isHoldDown.value?.let { oldValue ->
             coroutineScope.launch {
                 interactionSource.emit(HoldDownInteraction.Release(oldValue))
             }
-            held.value = null
+            isHoldDown.value = null
         }
     }
 
@@ -206,8 +206,8 @@ fun SuperSpinner(
                 isDropdownExpanded.value = enabled
                 hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)
                 coroutineScope.launch {
-                    interactionSource.emit(HoldDownInteraction.Hold().also {
-                        held.value = it
+                    interactionSource.emit(HoldDownInteraction.HoldDown().also {
+                        isHoldDown.value = it
                     })
                 }
             }
@@ -256,7 +256,7 @@ fun SuperSpinner(
     val interactionSource = remember { MutableInteractionSource() }
     val isDropdownExpanded = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
-    val held = remember { mutableStateOf<HoldDownInteraction.Hold?>(null) }
+    val isHoldDown = remember { mutableStateOf<HoldDownInteraction.HoldDown?>(null) }
     val hapticFeedback = LocalHapticFeedback.current
     val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     var alignLeft by rememberSaveable { mutableStateOf(true) }
@@ -272,11 +272,11 @@ fun SuperSpinner(
     }
 
     if (!isDropdownExpanded.value) {
-        held.value?.let { oldValue ->
+        isHoldDown.value?.let { oldValue ->
             coroutineScope.launch {
                 interactionSource.emit(HoldDownInteraction.Release(oldValue))
             }
-            held.value = null
+            isHoldDown.value = null
         }
     }
 
@@ -337,8 +337,8 @@ fun SuperSpinner(
                 isDropdownExpanded.value = true
                 hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)
                 coroutineScope.launch {
-                    interactionSource.emit(HoldDownInteraction.Hold().also {
-                        held.value = it
+                    interactionSource.emit(HoldDownInteraction.HoldDown().also {
+                        isHoldDown.value = it
                     })
                 }
             }

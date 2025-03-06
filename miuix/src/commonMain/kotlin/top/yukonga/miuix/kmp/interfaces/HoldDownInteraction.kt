@@ -8,13 +8,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction.Hold
+import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction.HoldDown
 import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction.Release
 
 /**
  * An interaction related to hold down events.
  *
- * @see Hold
+ * @see HoldDown
  * @see Release
  */
 interface HoldDownInteraction : Interaction {
@@ -23,16 +23,16 @@ interface HoldDownInteraction : Interaction {
      *
      * @see Release
      */
-    class Hold : HoldDownInteraction
+    class HoldDown : HoldDownInteraction
 
     /**
-     * An interaction representing a [Hold] event being released on a component.
+     * An interaction representing a [HoldDown] event being released on a component.
      *
-     * @property hold the source [Hold] interaction that is being released
+     * @property holdDown the source [HoldDown] interaction that is being released
      *
-     * @see Hold
+     * @see HoldDown
      */
-    class Release(val hold: Hold) : HoldDownInteraction
+    class Release(val holdDown: HoldDown) : HoldDownInteraction
 }
 
 /**
@@ -45,11 +45,11 @@ interface HoldDownInteraction : Interaction {
 fun InteractionSource.collectIsHeldDownAsState(): State<Boolean> {
     val isHeldDown = remember { mutableStateOf(false) }
     LaunchedEffect(this) {
-        val holdInteraction = mutableListOf<Hold>()
+        val holdInteraction = mutableListOf<HoldDown>()
         interactions.collect { interaction ->
             when (interaction) {
-                is Hold -> holdInteraction.add(interaction)
-                is Release -> holdInteraction.remove(interaction.hold)
+                is HoldDown -> holdInteraction.add(interaction)
+                is Release -> holdInteraction.remove(interaction.holdDown)
             }
             isHeldDown.value = holdInteraction.isNotEmpty()
         }

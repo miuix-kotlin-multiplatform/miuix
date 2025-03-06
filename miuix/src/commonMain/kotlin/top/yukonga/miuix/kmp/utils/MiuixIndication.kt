@@ -21,10 +21,10 @@ import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction
  * Miuix default [Indication] that draws a rectangular overlay when pressed.
  */
 class MiuixIndication(
-    private val backgroundColor: Color = Color.Black
+    private val color: Color = Color.Black
 ) : IndicationNodeFactory {
     override fun create(interactionSource: InteractionSource): DelegatableNode =
-        MiuixIndicationInstance(interactionSource, backgroundColor)
+        MiuixIndicationInstance(interactionSource, color)
 
     override fun hashCode(): Int = -1
 
@@ -32,11 +32,12 @@ class MiuixIndication(
 
     private class MiuixIndicationInstance(
         private val interactionSource: InteractionSource,
-        private val backgroundColor: Color
+        private val color: Color
     ) : Modifier.Node(), DrawModifierNode {
         private var isPressed = false
         private var isHovered = false
         private var isFocused = false
+        private var isHoldDown = false
         private val animatedAlpha = Animatable(0f)
         private var pressedAnimation: Job? = null
         private var restingAnimation: Job? = null
@@ -46,6 +47,7 @@ class MiuixIndication(
             if (isHovered) targetAlpha += 0.06f
             if (isFocused) targetAlpha += 0.08f
             if (isPressed) targetAlpha += 0.1f
+            if (isHoldDown) targetAlpha += 0.1f
             if (targetAlpha == 0.0f) {
                 restingAnimation = coroutineScope.launch {
                     pressedAnimation?.join()
@@ -65,7 +67,7 @@ class MiuixIndication(
                 var pressed = false
                 var hovered = false
                 var focused = false
-                var held = false
+                var hold = false
                 interactionSource.interactions.collect { interaction ->
                     when (interaction) {
                         is PressInteraction.Press -> pressed = true
@@ -74,13 +76,13 @@ class MiuixIndication(
                         is HoverInteraction.Exit -> hovered = false
                         is FocusInteraction.Focus -> focused = true
                         is FocusInteraction.Unfocus -> focused = false
-                        is HoldDownInteraction.Hold -> held = true
-                        is HoldDownInteraction.Release -> held = false
+                        is HoldDownInteraction.HoldDown -> hold = true
+                        is HoldDownInteraction.Release -> hold = false
                         else -> return@collect
                     }
                     var invalidateNeeded = false
-                    if (isPressed != (pressed || held)) {
-                        isPressed = (pressed || held)
+                    if (isPressed != pressed) {
+                        isPressed = pressed
                         invalidateNeeded = true
                     }
                     if (isHovered != hovered) {
@@ -89,6 +91,10 @@ class MiuixIndication(
                     }
                     if (isFocused != focused) {
                         isFocused = focused
+                        invalidateNeeded = true
+                    }
+                    if (isHoldDown != hold) {
+                        isHoldDown = hold
                         invalidateNeeded = true
                     }
                     if (invalidateNeeded) {
@@ -102,7 +108,7 @@ class MiuixIndication(
             // Draw content
             drawContent()
             // Draw foreground
-            drawRect(color = backgroundColor.copy(alpha = animatedAlpha.value), size = size)
+            drawRect(color = color.copy(alpha = animatedAlpha.value), size = size)
         }
     }
 }

@@ -27,7 +27,7 @@ fun MiuixTheme(
         updateColorsFrom(colors)
     }
     val miuixIndication = remember(colors.onBackground) {
-        MiuixIndication(backgroundColor = colors.onBackground)
+        MiuixIndication(color = colors.onBackground)
     }
     CompositionLocalProvider(
         LocalColors provides miuixColors,

@@ -160,7 +160,8 @@ fun UITest(
                                     modifier = Modifier.padding(end = 21.dp).size(40.dp),
                                     onClick = {
                                         isTopPopupExpanded.value = true
-                                    }
+                                    },
+                                    holdDownState = showTopPopup.value
                                 ) {
                                     Icon(
                                         imageVector = MiuixIcons.Useful.ImmersionMore,
@@ -209,7 +210,8 @@ fun UITest(
                                     modifier = Modifier.padding(end = 21.dp).size(40.dp),
                                     onClick = {
                                         isTopPopupExpanded.value = true
-                                    }
+                                    },
+                                    holdDownState = isTopPopupExpanded.value
                                 ) {
                                     Icon(
                                         imageVector = MiuixIcons.Useful.ImmersionMore,
