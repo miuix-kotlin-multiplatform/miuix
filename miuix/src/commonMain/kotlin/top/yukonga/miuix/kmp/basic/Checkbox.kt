@@ -106,7 +106,7 @@ fun Checkbox(
 
     val checkAlpha = remember { Animatable(if (isChecked) 1f else 0f) }
     val checkStartTrim = remember { Animatable(0.0f) }
-    val checkEndTrim = remember { Animatable(if (isChecked) 0.845f else 0.1f) }
+    val checkEndTrim = remember { Animatable(if (isChecked) 0.803f else 0.1f) }
 
     LaunchedEffect(isChecked) {
         if (isChecked) {
@@ -121,20 +121,20 @@ fun Checkbox(
             }
             launch {
                 checkStartTrim.animateTo(
-                    targetValue = 0.128f,
+                    targetValue = 0.186f,
                     animationSpec = keyframes {
                         durationMillis = 100
-                        0.128f at 100
+                        0.186f at 100
                     }
                 )
             }
             launch {
                 checkEndTrim.animateTo(
-                    targetValue = 0.845f,
+                    targetValue = 0.803f,
                     animationSpec = keyframes {
                         durationMillis = 300
-                        0.885f at 200
-                        0.845f at 300
+                        0.845f at 200
+                        0.803f at 300
                     }
                 )
             }
@@ -190,7 +190,7 @@ fun Checkbox(
 
     Box(
         modifier = modifier
-            .size(24.5.dp)
+            .size(25.5.dp)
             .scale(scale)
             .clip(CircleShape)
             .background(backgroundColor)
@@ -214,7 +214,7 @@ private fun DrawScope.drawTrimmedCheckmark(
     trimStart: Float,
     trimEnd: Float
 ) {
-    val viewportSize = 25.5f
+    val viewportSize = 23f
     val strokeWidth = size.width * 0.09f
 
     val centerX = size.width / 2
@@ -223,16 +223,16 @@ private fun DrawScope.drawTrimmedCheckmark(
     val viewportCenterY = viewportSize / 2
 
     val leftPoint = Offset(
-        centerX + ((6.8f - viewportCenterX) / viewportSize * size.width),
-        centerY + ((11.6f - viewportCenterY) / viewportSize * size.height)
+        centerX + ((5f - viewportCenterX) / viewportSize * size.width),
+        centerY + ((9.4f - viewportCenterY) / viewportSize * size.height)
     )
     val middlePoint = Offset(
-        centerX + ((11.4f - viewportCenterX) / viewportSize * size.width),
-        centerY + ((16.4f - viewportCenterY) / viewportSize * size.height)
+        centerX + ((10.3f - viewportCenterX) / viewportSize * size.width),
+        centerY + ((14.9f - viewportCenterY) / viewportSize * size.height)
     )
     val rightPoint = Offset(
-        centerX + ((19f - viewportCenterX) / viewportSize * size.width),
-        centerY + ((6.7f - viewportCenterY) / viewportSize * size.height)
+        centerX + ((17.9f - viewportCenterX) / viewportSize * size.width),
+        centerY + ((5.1f - viewportCenterY) / viewportSize * size.height)
     )
 
     val firstSegmentLength = (middlePoint - leftPoint).getDistance()
@@ -258,11 +258,7 @@ private fun DrawScope.drawTrimmedCheckmark(
         )
 
         path.moveTo(start.x, start.y)
-        val controlPoint = Offset(
-            (start.x + end.x) / 2,
-            (start.y + end.y) / 2 + (end.y - start.y) * 0.05f
-        )
-        path.quadraticTo(controlPoint.x, controlPoint.y, end.x, end.y)
+        path.lineTo(end.x, end.y)
     }
 
     if (endDistance > firstSegmentLength) {
@@ -279,20 +275,11 @@ private fun DrawScope.drawTrimmedCheckmark(
         )
 
         if (startDistance < firstSegmentLength) {
-            val controlPoint = Offset(
-                (middlePoint.x + start.x) / 2,
-                (middlePoint.y + start.y) / 2
-            )
-            path.quadraticTo(controlPoint.x, controlPoint.y, start.x, start.y)
+            path.lineTo(end.x, end.y)
         } else {
             path.moveTo(start.x, start.y)
         }
-
-        val controlPoint = Offset(
-            (start.x + end.x) / 2,
-            (start.y + end.y) / 2 - (end.y - start.y) * 0.05f
-        )
-        path.quadraticTo(controlPoint.x, controlPoint.y, end.x, end.y)
+        path.lineTo(end.x, end.y)
     }
 
     drawPath(
@@ -301,7 +288,8 @@ private fun DrawScope.drawTrimmedCheckmark(
         style = Stroke(
             width = strokeWidth,
             cap = StrokeCap.Round,
-            join = StrokeJoin.Round
+            join = StrokeJoin.Round,
+            miter = 10.0f,
         )
     )
 }
