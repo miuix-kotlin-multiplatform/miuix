@@ -8,9 +8,6 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 
-/**
- * Back icon with Miuix style.
- */
 val MiuixIcons.Useful.Back: ImageVector
     get() {
         if (_back != null) return _back!!

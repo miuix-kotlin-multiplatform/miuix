@@ -25,7 +25,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 fun HorizontalDivider(
     modifier: Modifier = Modifier,
     thickness: Dp = DividerDefaults.Thickness,
-    color: Color = DividerDefaults.Color
+    color: Color = DividerDefaults.DividerColor
 ) =
     Canvas(modifier.fillMaxWidth().height(thickness)) {
         drawLine(
@@ -48,7 +48,7 @@ fun HorizontalDivider(
 fun VerticalDivider(
     modifier: Modifier = Modifier,
     thickness: Dp = DividerDefaults.Thickness,
-    color: Color = DividerDefaults.Color
+    color: Color = DividerDefaults.DividerColor
 ) =
     Canvas(modifier.fillMaxHeight().width(thickness)) {
         drawLine(
@@ -69,6 +69,6 @@ object DividerDefaults {
     /**
      * Default color of the divider line.
      */
-    val Color @Composable get() = MiuixTheme.colorScheme.dividerLine
+    val DividerColor @Composable get() = MiuixTheme.colorScheme.dividerLine
 
 }

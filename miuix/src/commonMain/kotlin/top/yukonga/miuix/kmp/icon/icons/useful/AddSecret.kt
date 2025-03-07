@@ -8,9 +8,6 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 
-/**
- * AddSecret icon with Miuix style.
- */
 val MiuixIcons.Useful.AddSecret: ImageVector
     get() {
         if (_addSecret != null) return _addSecret!!

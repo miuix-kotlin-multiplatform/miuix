@@ -22,7 +22,6 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
-import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**
  * A [Icon] component that draws [imageVector] using [tint], with a default value.
@@ -137,5 +136,5 @@ object IconDefaults {
      * The default tint of the [Icon].
      */
     @Composable
-    fun DefaultTint() = MiuixTheme.colorScheme.onBackground
+    fun DefaultTint() = Color.Unspecified
 }

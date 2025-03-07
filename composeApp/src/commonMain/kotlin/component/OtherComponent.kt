@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -57,11 +58,10 @@ import top.yukonga.miuix.kmp.icon.icons.useful.Confirm
 import top.yukonga.miuix.kmp.icon.icons.useful.Copy
 import top.yukonga.miuix.kmp.icon.icons.useful.Cut
 import top.yukonga.miuix.kmp.icon.icons.useful.Delete
-import top.yukonga.miuix.kmp.icon.icons.useful.DeselectAll
 import top.yukonga.miuix.kmp.icon.icons.useful.Edit
-import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionDelete
 import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
 import top.yukonga.miuix.kmp.icon.icons.useful.Info
+import top.yukonga.miuix.kmp.icon.icons.useful.Like
 import top.yukonga.miuix.kmp.icon.icons.useful.More
 import top.yukonga.miuix.kmp.icon.icons.useful.Move
 import top.yukonga.miuix.kmp.icon.icons.useful.NavigatorSwitch
@@ -74,6 +74,7 @@ import top.yukonga.miuix.kmp.icon.icons.useful.Play
 import top.yukonga.miuix.kmp.icon.icons.useful.Reboot
 import top.yukonga.miuix.kmp.icon.icons.useful.Redo
 import top.yukonga.miuix.kmp.icon.icons.useful.Refresh
+import top.yukonga.miuix.kmp.icon.icons.useful.Remove
 import top.yukonga.miuix.kmp.icon.icons.useful.RemoveBlocklist
 import top.yukonga.miuix.kmp.icon.icons.useful.RemoveSecret
 import top.yukonga.miuix.kmp.icon.icons.useful.Rename
@@ -82,11 +83,11 @@ import top.yukonga.miuix.kmp.icon.icons.useful.Save
 import top.yukonga.miuix.kmp.icon.icons.useful.Scan
 import top.yukonga.miuix.kmp.icon.icons.useful.Search
 import top.yukonga.miuix.kmp.icon.icons.useful.SelectAll
-import top.yukonga.miuix.kmp.icon.icons.useful.Send
 import top.yukonga.miuix.kmp.icon.icons.useful.Settings
 import top.yukonga.miuix.kmp.icon.icons.useful.Share
 import top.yukonga.miuix.kmp.icon.icons.useful.Stick
 import top.yukonga.miuix.kmp.icon.icons.useful.Undo
+import top.yukonga.miuix.kmp.icon.icons.useful.Unlike
 import top.yukonga.miuix.kmp.icon.icons.useful.Unstick
 import top.yukonga.miuix.kmp.icon.icons.useful.Update
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -127,11 +128,10 @@ fun OtherComponent(padding: PaddingValues) {
         MiuixIcons.Useful.Copy,
         MiuixIcons.Useful.Cut,
         MiuixIcons.Useful.Delete,
-        MiuixIcons.Useful.DeselectAll,
         MiuixIcons.Useful.Edit,
-        MiuixIcons.Useful.ImmersionDelete,
         MiuixIcons.Useful.ImmersionMore,
         MiuixIcons.Useful.Info,
+        MiuixIcons.Useful.Like,
         MiuixIcons.Useful.More,
         MiuixIcons.Useful.Move,
         MiuixIcons.Useful.NavigatorSwitch,
@@ -144,6 +144,7 @@ fun OtherComponent(padding: PaddingValues) {
         MiuixIcons.Useful.Reboot,
         MiuixIcons.Useful.Redo,
         MiuixIcons.Useful.Refresh,
+        MiuixIcons.Useful.Remove,
         MiuixIcons.Useful.RemoveBlocklist,
         MiuixIcons.Useful.RemoveSecret,
         MiuixIcons.Useful.Rename,
@@ -152,11 +153,11 @@ fun OtherComponent(padding: PaddingValues) {
         MiuixIcons.Useful.Scan,
         MiuixIcons.Useful.Search,
         MiuixIcons.Useful.SelectAll,
-        MiuixIcons.Useful.Send,
         MiuixIcons.Useful.Settings,
         MiuixIcons.Useful.Share,
         MiuixIcons.Useful.Stick,
         MiuixIcons.Useful.Undo,
+        MiuixIcons.Useful.Unlike,
         MiuixIcons.Useful.Unstick,
         MiuixIcons.Useful.Update
     )
@@ -356,6 +357,7 @@ fun OtherComponent(padding: PaddingValues) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
+                    tint = if (icon != MiuixIcons.Useful.Like) MiuixTheme.colorScheme.onBackground else Color.Unspecified,
                     modifier = Modifier.size(24.dp)
                 )
             }
