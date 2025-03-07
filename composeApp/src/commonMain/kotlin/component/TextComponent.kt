@@ -153,7 +153,8 @@ fun TextComponent(
                 ) {
                     Icon(
                         imageVector = MiuixIcons.Useful.Personal,
-                        contentDescription = "Account",
+                        contentDescription = "Personal",
+                        tint = MiuixTheme.colorScheme.onBackground
                     )
                 }
             },
