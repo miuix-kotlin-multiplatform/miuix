@@ -393,7 +393,7 @@ fun OtherComponent(padding: PaddingValues) {
             Box(
                 modifier = Modifier
                     .height(60.dp)
-                    .width(120.dp)
+                    .width(100.dp)
                     .align(Alignment.CenterVertically)
                     .clip(SmoothRoundedCornerShape(12.dp))
                     .background(selectedColor)
