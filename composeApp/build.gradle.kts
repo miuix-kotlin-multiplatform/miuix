@@ -90,6 +90,8 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
 
+            implementation(libs.haze)
+
             implementation(project(":miuix"))
         }
         desktopMain.dependencies {

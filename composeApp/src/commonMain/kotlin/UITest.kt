@@ -30,6 +30,12 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.lerp
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.HazeTint
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -58,6 +64,7 @@ import top.yukonga.miuix.kmp.icon.icons.useful.More
 import top.yukonga.miuix.kmp.icon.icons.useful.NavigatorSwitch
 import top.yukonga.miuix.kmp.icon.icons.useful.Order
 import top.yukonga.miuix.kmp.icon.icons.useful.Settings
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup
 import utils.FPSMonitor
 
@@ -97,6 +104,23 @@ fun UITest(
         }
     }
 
+    val hazeState = remember { HazeState() }
+
+    val hazeStyleTopBar = HazeStyle(
+        backgroundColor = if (currentScrollBehavior.state.heightOffset > -1) Color.Transparent else MiuixTheme.colorScheme.background,
+        tint = HazeTint(
+            MiuixTheme.colorScheme.background.copy(
+                if (currentScrollBehavior.state.heightOffset > -1) 1f
+                else lerp(1f, 0.67f, (currentScrollBehavior.state.heightOffset + 1) / -143f)
+            )
+        )
+    )
+
+    val hazeStyleBottomBar = HazeStyle(
+        backgroundColor = MiuixTheme.colorScheme.background,
+        tint = HazeTint(MiuixTheme.colorScheme.background.copy(0.67f))
+    )
+
     val showFPSMonitor = remember { mutableStateOf(false) }
     val showTopAppBar = remember { mutableStateOf(true) }
     val showBottomBar = remember { mutableStateOf(true) }
@@ -119,11 +143,19 @@ fun UITest(
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
-                BoxWithConstraints {
+                BoxWithConstraints(
+                    modifier = Modifier
+                        .hazeEffect(hazeState) {
+                            style = hazeStyleTopBar
+                            blurRadius = 25.dp
+                            noiseFactor = 0f
+                        }
+                ) {
                     if (maxWidth > 840.dp) {
                         SmallTopAppBar(
                             title = "Miuix",
                             scrollBehavior = currentScrollBehavior,
+                            color = Color.Transparent,
                             actions = {
                                 if (isTopPopupExpanded.value) {
                                     ListPopup(
@@ -174,6 +206,7 @@ fun UITest(
                         TopAppBar(
                             title = "Miuix",
                             scrollBehavior = currentScrollBehavior,
+                            color = Color.Transparent,
                             actions = {
                                 if (isTopPopupExpanded.value) {
                                     ListPopup(
@@ -262,6 +295,12 @@ fun UITest(
                     showBottomPopup.value = true
                 }
                 NavigationBar(
+                    modifier = Modifier
+                        .hazeEffect(hazeState) {
+                            style = hazeStyleBottomBar
+                            blurRadius = 25.dp
+                            noiseFactor = 0f
+                        },
                     items = items,
                     selected = targetPage,
                     onClick = { index ->
@@ -294,7 +333,7 @@ fun UITest(
         }
     ) { padding ->
         AppHorizontalPager(
-            modifier = Modifier.imePadding(),
+            modifier = Modifier.imePadding().hazeSource(state = hazeState),
             pagerState = pagerState,
             topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
             padding = padding,

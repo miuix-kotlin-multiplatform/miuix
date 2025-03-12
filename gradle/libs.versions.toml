@@ -9,6 +9,7 @@ androidx-window = "1.3.0"
 androidx-graphics-shapes = "1.0.0-alpha04"
 compose-plugin = "1.8.0-alpha04"
 dokka = "2.0.0"
+haze = "1.6.0-SNAPSHOT"
 kotlin = "2.1.10"
 
 [libraries]
@@ -16,6 +17,7 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 androidx-graphics-shapes = { module = "org.jetbrains.androidx.graphics:graphics-shapes", version.ref = "androidx-graphics-shapes" }
 androidx-window = { group = "androidx.window", name = "window", version.ref = "androidx-window" }
 compose-window-size = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "compose-plugin" }
+haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
