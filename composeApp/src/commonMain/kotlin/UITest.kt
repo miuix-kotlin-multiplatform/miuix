@@ -252,7 +252,8 @@ fun UITest(
                                 ) {
                                     Icon(
                                         imageVector = MiuixIcons.Useful.ImmersionMore,
-                                        contentDescription = "Menu"
+                                        tint = MiuixTheme.colorScheme.onBackground,
+                                        contentDescription = "More"
                                     )
                                 }
                             }
