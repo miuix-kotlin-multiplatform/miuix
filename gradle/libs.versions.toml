@@ -3,7 +3,7 @@ android-minSdk = "26"
 android-compileSdk = "35"
 android-targetSdk = "35"
 
-androidGradlePlugin = "8.8.1"
+android-gradle-plugin = "8.9.0"
 androidx-activity-compose = "1.10.0"
 androidx-window = "1.3.0"
 androidx-graphics-shapes = "1.0.0-alpha04"
@@ -20,8 +20,8 @@ compose-window-size = { module = "org.jetbrains.compose.material3:material3-wind
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 
 [plugins]
-android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
-android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
+android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
