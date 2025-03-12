@@ -107,16 +107,16 @@ fun UITest(
     val hazeState = remember { HazeState() }
 
     val hazeStyleTopBar = HazeStyle(
-        backgroundColor = if (currentScrollBehavior.state.heightOffset > -1) Color.Transparent else MiuixTheme.colorScheme.background,
+        backgroundColor = MiuixTheme.colorScheme.background,
         tint = HazeTint(
             MiuixTheme.colorScheme.background.copy(
-                if (currentScrollBehavior.state.heightOffset > -1) 1f
-                else lerp(1f, 0.67f, (currentScrollBehavior.state.heightOffset + 1) / -143f)
+                if (currentScrollBehavior.state.collapsedFraction <= 0f) 1f
+                else lerp(1f, 0.67f, (currentScrollBehavior.state.collapsedFraction))
             )
         )
     )
 
-    val hazeStyleBottomBar = HazeStyle(
+    val hazeStyle = HazeStyle(
         backgroundColor = MiuixTheme.colorScheme.background,
         tint = HazeTint(MiuixTheme.colorScheme.background.copy(0.67f))
     )
@@ -143,17 +143,15 @@ fun UITest(
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
-                BoxWithConstraints(
-                    modifier = Modifier
-                        .hazeEffect(hazeState) {
-                            style = hazeStyleTopBar
-                            blurRadius = 25.dp
-                            noiseFactor = 0f
-                        }
-                ) {
+                BoxWithConstraints {
                     if (maxWidth > 840.dp) {
                         SmallTopAppBar(
                             title = "Miuix",
+                            modifier = Modifier.hazeEffect(state = hazeState) {
+                                style = hazeStyle
+                                blurRadius = 25.dp
+                                noiseFactor = 0f
+                            },
                             scrollBehavior = currentScrollBehavior,
                             color = Color.Transparent,
                             actions = {
@@ -205,6 +203,12 @@ fun UITest(
                     } else {
                         TopAppBar(
                             title = "Miuix",
+                            modifier = Modifier
+                                .hazeEffect(state = hazeState) {
+                                    style = hazeStyleTopBar
+                                    blurRadius = 25.dp
+                                    noiseFactor = 0f
+                                },
                             scrollBehavior = currentScrollBehavior,
                             color = Color.Transparent,
                             actions = {
@@ -297,7 +301,7 @@ fun UITest(
                 NavigationBar(
                     modifier = Modifier
                         .hazeEffect(hazeState) {
-                            style = hazeStyleBottomBar
+                            style = hazeStyle
                             blurRadius = 25.dp
                             noiseFactor = 0f
                         },
