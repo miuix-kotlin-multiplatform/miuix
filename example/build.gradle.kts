@@ -166,7 +166,7 @@ android {
 
 compose.desktop {
     application {
-        mainClass = "MainKt"
+        mainClass = "Main_desktopKt"
 
         buildTypes.release.proguard {
             configurationFiles.from("proguard-rules-jvm.pro")
@@ -213,16 +213,16 @@ tasks.withType<KotlinCompile>().configureEach {
     dependsOn(generateVersionInfo)
 }
 
-tasks.register<Exec>("assembleMiuixMacosArm64ReleaseBinary") {
-    dependsOn(":composeApp:desktopTest", ":composeApp:linkReleaseExecutableMacosArm64")
+tasks.register<Exec>("assembleMacosArm64ReleaseBinary") {
+    dependsOn(":example:desktopTest", ":example:linkReleaseExecutableMacosArm64")
     commandLine("lipo", "-create", "-output", "Miuix_macOSArm64", "bin/macosArm64/releaseExecutable/Miuix.kexe")
     workingDir = layout.buildDirectory.get().asFile
     group = "macos native"
     description = "Build macOS Arm64 Binary"
 }
 
-tasks.register<Exec>("assembleMiuixMacosX64ReleaseBinary") {
-    dependsOn(":composeApp:desktopTest", ":composeApp:linkReleaseExecutableMacosX64")
+tasks.register<Exec>("assembleMacosX64ReleaseBinary") {
+    dependsOn(":example:desktopTest", ":example:linkReleaseExecutableMacosX64")
     commandLine("lipo", "-create", "-output", "Miuix_macOSX64", "bin/macosX64/releaseExecutable/Miuix.kexe")
     workingDir = layout.buildDirectory.get().asFile
     group = "macos native"

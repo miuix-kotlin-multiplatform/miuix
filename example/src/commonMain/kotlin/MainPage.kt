@@ -31,6 +31,7 @@ import top.yukonga.miuix.kmp.basic.InputField
 import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.SearchBar
+import top.yukonga.miuix.kmp.basic.SmallTitle
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.useful.Search
@@ -85,9 +86,10 @@ fun MainPage(
                 topAppBarScrollBehavior = topAppBarScrollBehavior,
             ) {
                 item {
+                    SmallTitle(text = "SearchBar")
                     SearchBar(
                         modifier = Modifier
-                            .padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 6.dp),
+                            .padding(start = 12.dp, end = 12.dp, bottom = 6.dp),
                         inputField = {
                             InputField(
                                 query = miuixSearchValue,
@@ -172,9 +174,10 @@ fun MainPage(
                     topAppBarScrollBehavior = topAppBarScrollBehavior,
                 ) {
                     item {
+                        SmallTitle(text = "SearchBar")
                         SearchBar(
                             modifier = Modifier
-                                .padding(horizontal = 12.dp, vertical = 10.dp),
+                                .padding(start = 12.dp, end = 12.dp, bottom = 6.dp),
                             inputField = {
                                 InputField(
                                     query = miuixSearchValue,

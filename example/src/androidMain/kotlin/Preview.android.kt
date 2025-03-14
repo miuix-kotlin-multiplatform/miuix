@@ -15,7 +15,7 @@ import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import ui.AppTheme
 
 @Composable
-@Preview(device = "spec:width=1080px,height=2340px,dpi=480")
+@Preview(device = "spec:width=1200px,height=2670px,dpi=480")
 fun UITestPreview() {
     AppTheme {
         Scaffold {
@@ -25,7 +25,7 @@ fun UITestPreview() {
 }
 
 @Composable
-@Preview
+@Preview(device = "spec:width=1200px,height=2670px,dpi=480")
 fun MainPagePreview() {
     AppTheme {
         Scaffold {
@@ -35,7 +35,7 @@ fun MainPagePreview() {
 }
 
 @Composable
-@Preview
+@Preview(device = "spec:width=1200px,height=2670px,dpi=480")
 fun SecondPagePreview() {
     AppTheme {
         Scaffold {
@@ -45,7 +45,7 @@ fun SecondPagePreview() {
 }
 
 @Composable
-@Preview
+@Preview(device = "spec:width=1200px,height=2670px,dpi=480")
 fun ThirdPagePreview() {
     AppTheme {
         Scaffold {

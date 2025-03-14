@@ -34,4 +34,4 @@ plugins {
 }
 
 rootProject.name = "miuix"
-include(":miuix", ":composeApp")
+include(":miuix", ":example")

@@ -10,4 +10,4 @@ local.properties
 xcuserdata
 .kotlin
 *.lock
-composeApp/src/commonMain/kotlin/utils/VersionInfo.kt
+example/src/commonMain/kotlin/utils/VersionInfo.kt

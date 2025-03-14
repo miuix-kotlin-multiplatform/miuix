@@ -60,7 +60,6 @@ import top.yukonga.miuix.kmp.extra.DropdownImpl
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.other.GitHub
 import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
-import top.yukonga.miuix.kmp.icon.icons.useful.More
 import top.yukonga.miuix.kmp.icon.icons.useful.NavigatorSwitch
 import top.yukonga.miuix.kmp.icon.icons.useful.Order
 import top.yukonga.miuix.kmp.icon.icons.useful.Settings
@@ -94,8 +93,7 @@ fun UITest(
     val items = listOf(
         NavigationItem("HomePage", MiuixIcons.Useful.NavigatorSwitch),
         NavigationItem("DropDown", MiuixIcons.Useful.Order),
-        NavigationItem("Settings", MiuixIcons.Useful.Settings),
-        NavigationItem("More", MiuixIcons.Useful.More)
+        NavigationItem("Settings", MiuixIcons.Useful.Settings)
     )
 
     LaunchedEffect(pagerState) {
@@ -129,8 +127,6 @@ fun UITest(
 
     val isTopPopupExpanded = remember { mutableStateOf(false) }
     val showTopPopup = remember { mutableStateOf(false) }
-    val isBottomPopupExpanded = remember { mutableStateOf(false) }
-    val showBottomPopup = remember { mutableStateOf(false) }
 
     val uriHandler = LocalUriHandler.current
     val hapticFeedback = LocalHapticFeedback.current
@@ -268,37 +264,6 @@ fun UITest(
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
-                if (isBottomPopupExpanded.value) {
-                    ListPopup(
-                        show = showBottomPopup,
-                        popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
-                        alignment = PopupPositionProvider.Align.BottomRight,
-                        onDismissRequest = {
-                            isBottomPopupExpanded.value = false
-                        }
-                    ) {
-                        ListPopupColumn {
-                            items.take(3).forEachIndexed { index, navigationItem ->
-                                DropdownImpl(
-                                    text = navigationItem.label,
-                                    optionSize = items.take(3).size,
-                                    isSelected = items[index] == items[targetPage],
-                                    onSelectedIndexChange = {
-                                        targetPage = index
-                                        coroutineScope.launch {
-                                            pagerState.animateScrollToPage(index)
-                                        }
-                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
-                                        dismissPopup(showBottomPopup)
-                                        isBottomPopupExpanded.value = false
-                                    },
-                                    index = index
-                                )
-                            }
-                        }
-                    }
-                    showBottomPopup.value = true
-                }
                 NavigationBar(
                     modifier = Modifier
                         .hazeEffect(hazeState) {
@@ -309,13 +274,11 @@ fun UITest(
                     items = items,
                     selected = targetPage,
                     onClick = { index ->
-                        if (index in 0..2) {
+                        if (index in 0..items.lastIndex) {
                             targetPage = index
                             coroutineScope.launch {
                                 pagerState.animateScrollToPage(index)
                             }
-                        } else {
-                            isBottomPopupExpanded.value = true
                         }
                     }
                 )
