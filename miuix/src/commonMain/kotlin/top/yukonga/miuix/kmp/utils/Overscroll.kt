@@ -1,19 +1,9 @@
 package top.yukonga.miuix.kmp.utils
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationState
 import androidx.compose.animation.core.AnimationVector1D
-import androidx.compose.animation.core.DecayAnimationSpec
 import androidx.compose.animation.core.Spring.StiffnessMediumLow
-import androidx.compose.animation.core.animateDecay
-import androidx.compose.animation.core.exponentialDecay
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.rememberSplineBasedDecay
-import androidx.compose.foundation.gestures.FlingBehavior
-import androidx.compose.foundation.gestures.ScrollScope
-import androidx.compose.foundation.gestures.ScrollableState
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -33,7 +23,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Velocity
 import kotlinx.coroutines.launch
-import top.yukonga.miuix.kmp.basic.LazyColumn
 import kotlin.math.abs
 import kotlin.math.exp
 import kotlin.math.sign
@@ -87,9 +76,8 @@ fun Modifier.overScrollVertical(
     scrollEasing: ((currentOffset: Float, newOffset: Float) -> Float)? = null,
     springStiff: Float = OutBoundSpringStiff,
     springDamp: Float = OutBoundSpringDamp,
-    onOverscroll: ((Boolean) -> Unit)? = null,
     isEnabled: () -> Boolean = { platform() == Platform.Android }
-): Modifier = overScrollOutOfBound(isVertical = true, nestedScrollToParent, scrollEasing, springStiff, springDamp, onOverscroll, isEnabled)
+): Modifier = overScrollOutOfBound(isVertical = true, nestedScrollToParent, scrollEasing, springStiff, springDamp, isEnabled)
 
 /**
  * @see overScrollOutOfBound
@@ -100,9 +88,8 @@ fun Modifier.overScrollHorizontal(
     scrollEasing: ((currentOffset: Float, newOffset: Float) -> Float)? = null,
     springStiff: Float = OutBoundSpringStiff,
     springDamp: Float = OutBoundSpringDamp,
-    onOverscroll: ((Boolean) -> Unit)? = null,
     isEnabled: () -> Boolean = { platform() == Platform.Android }
-): Modifier = overScrollOutOfBound(isVertical = false, nestedScrollToParent, scrollEasing, springStiff, springDamp, onOverscroll, isEnabled)
+): Modifier = overScrollOutOfBound(isVertical = false, nestedScrollToParent, scrollEasing, springStiff, springDamp, isEnabled)
 
 /**
  * OverScroll effect for scrollable Composable.
@@ -118,7 +105,6 @@ fun Modifier.overScrollHorizontal(
  * The current default easing comes from iOS, you don't need to modify it!
  * @param springStiff springStiff for overscroll effect，For better user experience, the new value is not recommended to be higher than[StiffnessMediumLow]
  * @param springDamp springDamp for overscroll effect，generally do not need to set。
- * @param onOverscroll Callback when the overscroll state changes, the parameter is whether the current state is Overscrolling.
  * @param isEnabled Whether to enable Overscroll effect, default is true.
  */
 @Stable
@@ -129,11 +115,9 @@ fun Modifier.overScrollOutOfBound(
     scrollEasing: ((currentOffset: Float, newOffset: Float) -> Float)?,
     springStiff: Float = OutBoundSpringStiff,
     springDamp: Float = OutBoundSpringDamp,
-    onOverscroll: ((Boolean) -> Unit)? = null,
     isEnabled: () -> Boolean = { platform() == Platform.Android }
 ): Modifier = composed {
     if (!isEnabled()) return@composed this
-    val onOverscroll by rememberUpdatedState(onOverscroll)
     val nestedScrollToParent by rememberUpdatedState(nestedScrollToParent)
     val scrollEasing by rememberUpdatedState(scrollEasing ?: DefaultParabolaScrollEasing)
     val springStiff by rememberUpdatedState(springStiff)
@@ -174,7 +158,6 @@ fun Modifier.overScrollOutOfBound(
                 // sign changed, coerce to start scrolling and exit
                 return if (sign(offset) != sign(offsetAtLast)) {
                     offset = 0f
-                    onOverscroll?.invoke(false)
                     if (isVertical) {
                         Offset(x = available.x - realAvailable.x, y = available.y - realAvailable.y + realOffset)
                     } else {
@@ -182,7 +165,6 @@ fun Modifier.overScrollOutOfBound(
                     }
                 } else {
                     offset = offsetAtLast
-                    onOverscroll?.invoke(true)
                     if (isVertical) {
                         Offset(x = available.x - realAvailable.x, y = available.y)
                     } else {
@@ -194,14 +176,13 @@ fun Modifier.overScrollOutOfBound(
             override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
                 // Found fling behavior in the wrong direction.
                 if (source != NestedScrollSource.UserInput) {
-                    return dispatcher.dispatchPreScroll(available, source)
+                    return dispatcher.dispatchPostScroll(consumed, available, source)
                 }
                 val realAvailable = when {
                     nestedScrollToParent -> available - dispatcher.dispatchPostScroll(consumed, available, source)
                     else -> available
                 }
                 offset = scrollEasing(offset, if (isVertical) realAvailable.y else realAvailable.x)
-                onOverscroll?.invoke(abs(offset) > visibilityThreshold)
                 return if (isVertical) {
                     Offset(x = available.x - realAvailable.x, y = available.y)
                 } else {
@@ -210,7 +191,6 @@ fun Modifier.overScrollOutOfBound(
             }
 
             override suspend fun onPreFling(available: Velocity): Velocity {
-                onOverscroll?.invoke(false)
                 if (::lastFlingAnimator.isInitialized && lastFlingAnimator.isRunning) {
                     lastFlingAnimator.stop()
                 }
@@ -240,7 +220,6 @@ fun Modifier.overScrollOutOfBound(
             }
 
             override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
-                onOverscroll?.invoke(false)
                 val realAvailable = when {
                     nestedScrollToParent -> available - dispatcher.dispatchPostFling(consumed, available)
                     else -> available
@@ -264,56 +243,4 @@ fun Modifier.overScrollOutOfBound(
         .graphicsLayer {
             if (isVertical) translationY = offset else translationX = offset
         }
-}
-
-
-/**
- * You should use it with [overScrollVertical]
- * @param decaySpec You can use instead [rememberSplineBasedDecay]
- * @param getScrollState Pass in your [ScrollableState], for [LazyColumn]/[LazyRow] , it's [LazyListState]
- */
-@Composable
-fun rememberOverscrollFlingBehavior(
-    decaySpec: DecayAnimationSpec<Float> = exponentialDecay(),
-    getScrollState: () -> ScrollableState,
-): FlingBehavior = remember(decaySpec, getScrollState) {
-    object : FlingBehavior {
-        /**
-         * - We should check it every frame of fling
-         * - Should stop fling when returning true and return the remaining speed immediately.
-         * - Without this detection, scrollBy() will continue to consume velocity,
-         * which will cause a velocity error in nestedScroll.
-         */
-        private val Float.canNotBeConsumed: Boolean // this is Velocity
-            get() {
-                val state = getScrollState()
-                return !(this < 0 && state.canScrollBackward || this > 0 && state.canScrollForward)
-            }
-
-        override suspend fun ScrollScope.performFling(initialVelocity: Float): Float {
-            if (initialVelocity.canNotBeConsumed) {
-                return initialVelocity
-            }
-            return if (abs(initialVelocity) > 1f) {
-                var velocityLeft = initialVelocity
-                var lastValue = 0f
-                AnimationState(
-                    initialValue = 0f,
-                    initialVelocity = initialVelocity,
-                ).animateDecay(decaySpec) {
-                    val delta = value - lastValue
-                    val consumed = scrollBy(delta)
-                    lastValue = value
-                    velocityLeft = this.velocity
-                    // avoid rounding errors and stop if anything is unconsumed
-                    if (abs(delta - consumed) > 0.5f || velocityLeft.canNotBeConsumed) {
-                        cancelAnimation()
-                    }
-                }
-                velocityLeft
-            } else {
-                initialVelocity
-            }
-        }
-    }
 }
