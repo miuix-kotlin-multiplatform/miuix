@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.captionBarPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -183,7 +182,7 @@ fun UITest(
                                     showTopPopup.value = true
                                 }
                                 IconButton(
-                                    modifier = Modifier.padding(end = 21.dp).size(40.dp),
+                                    modifier = Modifier.padding(end = 20.dp),
                                     onClick = {
                                         isTopPopupExpanded.value = true
                                     },
@@ -240,7 +239,7 @@ fun UITest(
                                     showTopPopup.value = true
                                 }
                                 IconButton(
-                                    modifier = Modifier.padding(end = 21.dp).size(40.dp),
+                                    modifier = Modifier.padding(end = 20.dp),
                                     onClick = {
                                         isTopPopupExpanded.value = true
                                     },

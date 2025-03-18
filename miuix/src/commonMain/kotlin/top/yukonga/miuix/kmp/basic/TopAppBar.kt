@@ -3,7 +3,6 @@ package top.yukonga.miuix.kmp.basic
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.AnimationState
 import androidx.compose.animation.core.DecayAnimationSpec
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDecay
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateTo
@@ -87,7 +86,7 @@ fun TopAppBar(
     actions: @Composable RowScope.() -> Unit = {},
     scrollBehavior: ScrollBehavior? = null,
     defaultWindowInsetsPadding: Boolean = true,
-    horizontalPadding: Dp = 28.dp
+    horizontalPadding: Dp = 26.dp
 ) {
     val density = LocalDensity.current
     val expandedHeightPx by rememberUpdatedState(
@@ -148,7 +147,7 @@ fun SmallTopAppBar(
     actions: @Composable RowScope.() -> Unit = {},
     scrollBehavior: ScrollBehavior? = null,
     defaultWindowInsetsPadding: Boolean = true,
-    horizontalPadding: Dp = 28.dp
+    horizontalPadding: Dp = 26.dp
 ) {
     SideEffect {
         // Sets the height offset limit of the SmallTopAppBar to 0f
@@ -213,7 +212,7 @@ fun SmallTopAppBar(
 fun MiuixScrollBehavior(
     state: TopAppBarState = rememberTopAppBarState(),
     canScroll: () -> Boolean = { true },
-    snapAnimationSpec: AnimationSpec<Float>? = spring(stiffness = Spring.StiffnessMedium),
+    snapAnimationSpec: AnimationSpec<Float>? = spring(stiffness = 3000f),
     flingAnimationSpec: DecayAnimationSpec<Float>? = rememberSplineBasedDecay()
 ): ScrollBehavior =
     remember(state, canScroll, snapAnimationSpec, flingAnimationSpec) {
