@@ -4,9 +4,9 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.jetbrains.dokka)
     alias(libs.plugins.kotlin.multiplatform)
     id("module.publication")
-    id("org.jetbrains.dokka")
 }
 
 java {

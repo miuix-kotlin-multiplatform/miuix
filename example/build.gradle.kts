@@ -59,8 +59,8 @@ kotlin {
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        moduleName = "uitest"
         browser {
+            outputModuleName = "uitest"
             commonWebpackConfig {
                 outputFileName = "uitest.js"
             }
@@ -69,8 +69,8 @@ kotlin {
     }
 
     js(IR) {
-        moduleName = "uitest"
         browser {
+            outputModuleName = "uitest"
             commonWebpackConfig {
                 outputFileName = "uitest.js"
             }

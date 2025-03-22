@@ -119,6 +119,8 @@ fun TopAppBar(
             modifier
                 .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
                 .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal))
+                .windowInsetsPadding(WindowInsets.statusBars.only(WindowInsetsSides.Top))
+                .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
         } else {
             modifier
         }
@@ -174,6 +176,8 @@ fun SmallTopAppBar(
             modifier
                 .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
                 .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal))
+                .windowInsetsPadding(WindowInsets.statusBars.only(WindowInsetsSides.Top))
+                .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
         } else {
             modifier
         }
@@ -601,8 +605,6 @@ private fun TopAppBarLayout(
             }
         },
         modifier = Modifier
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
             .heightIn(max = 56.dp + TopAppBarExpandedHeight)
             .clipToBounds()
     ) { measurables, constraints ->
@@ -729,8 +731,6 @@ private fun SmallTopAppBarLayout(
             }
         },
         modifier = Modifier
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
             .heightIn(max = 56.dp)
     ) { measurables, constraints ->
         val navigationIconPlaceable =
