@@ -516,9 +516,9 @@ private suspend fun settleAppBar(
             ) {
                 state.heightOffset = value
             }
+            return Velocity(0f, velocity)
         }
     }
-
     return Velocity(0f, velocity - remainingVelocity)
 }
 
