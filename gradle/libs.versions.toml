@@ -3,7 +3,7 @@ android-minSdk = "26"
 android-compileSdk = "36"
 android-targetSdk = "36"
 
-android-gradle-plugin = "8.9.0"
+android-gradle-plugin = "8.9.1"
 androidx-activity-compose = "1.10.0"
 androidx-window = "1.3.0"
 androidx-graphics-shapes = "1.0.0-alpha05"
