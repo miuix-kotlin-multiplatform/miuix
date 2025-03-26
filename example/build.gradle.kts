@@ -37,7 +37,12 @@ kotlin {
         it.binaries.framework {
             baseName = appName + "Framework"
             isStatic = true
-            freeCompilerArgs += "-Xbinary=bundleId=$pkgName.framework"
+            freeCompilerArgs += listOf(
+                "-Xbinary=bundleId=$pkgName.framework",
+                "-linker-option", "-framework", "-linker-option", "Metal",
+                "-linker-option", "-framework", "-linker-option", "CoreText",
+                "-linker-option", "-framework", "-linker-option", "CoreGraphics"
+            )
             xcf.add(this)
         }
     }
@@ -167,16 +172,30 @@ android {
 compose.desktop {
     application {
         mainClass = "Main_desktopKt"
-
         buildTypes.release.proguard {
             configurationFiles.from("proguard-rules-jvm.pro")
             version.set("7.6.1")
             optimize.set(false)
         }
-
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = appName
+            packageVersion = verName
+        }
+    }
+    nativeApplication {
+        targets(kotlin.targets.getByName("macosArm64"))
+        distributions {
+            targetFormats(TargetFormat.Dmg)
+            packageName = "$appName-MacosArm64-Native"
+            packageVersion = verName
+        }
+    }
+    nativeApplication {
+        targets(kotlin.targets.getByName("macosX64"))
+        distributions {
+            targetFormats(TargetFormat.Dmg)
+            packageName = "$appName-MacosX64-Native"
             packageVersion = verName
         }
     }
@@ -211,20 +230,4 @@ val generateVersionInfo by tasks.registering {
 
 tasks.withType<KotlinCompile>().configureEach {
     dependsOn(generateVersionInfo)
-}
-
-tasks.register<Exec>("assembleMacosArm64ReleaseBinary") {
-    dependsOn(":example:desktopTest", ":example:linkReleaseExecutableMacosArm64")
-    commandLine("lipo", "-create", "-output", "Miuix_macOSArm64", "bin/macosArm64/releaseExecutable/Miuix.kexe")
-    workingDir = layout.buildDirectory.get().asFile
-    group = "macos native"
-    description = "Build macOS Arm64 Binary"
-}
-
-tasks.register<Exec>("assembleMacosX64ReleaseBinary") {
-    dependsOn(":example:desktopTest", ":example:linkReleaseExecutableMacosX64")
-    commandLine("lipo", "-create", "-output", "Miuix_macOSX64", "bin/macosX64/releaseExecutable/Miuix.kexe")
-    workingDir = layout.buildDirectory.get().asFile
-    group = "macos native"
-    description = "Build macOS X64 Binary"
 }
