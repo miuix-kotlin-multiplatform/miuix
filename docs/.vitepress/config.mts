@@ -1,17 +1,16 @@
 import { defineConfig } from 'vitepress'
 
-// https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "Miuix",
   description: "A UI library for Compose MultiPlatform",
+  lastUpdated: true,
   themeConfig: {
-    // https://vitepress.dev/reference/default-theme-config
-    logo: 'public/Icon.webp',
-    
+    logo: '/Icon.webp',
+
     nav: [
       { text: '首页', link: '/' },
-      { text: '指南', link: '/guide/getting-started' },
-      { text: '组件', link: '/components/' },
+      { text: '快速开始', link: '/guide/getting-started' },
+      { text: '组件库', link: '/components/' },
     ],
 
     sidebar: {
@@ -32,36 +31,61 @@ export default defineConfig({
       ],
       '/components/': [
         {
+          text: '脚手架',
+          items: [
+            { text: 'Scaffold', link: '/components/scaffold' },
+          ]
+        },
+        {
           text: '基础组件',
           items: [
-            { text: 'Button 按钮', link: '/components/button' },
-            { text: 'Text 文本', link: '/components/text' },
-            { text: 'TextField 输入框', link: '/components/textfield' },
-            { text: 'Switch 开关', link: '/components/switch' },
-            { text: 'Checkbox 复选框', link: '/components/checkbox' },
+            { text: 'Surface', link: '/components/surface' },
+            { text: 'BasicComponent', link: '/components/component' },
+            { text: 'Button', link: '/components/button' },
+            { text: 'Text', link: '/components/text' },
+            { text: 'SmallTitle', link: '/components/smalltitle' },
+            { text: 'TextField', link: '/components/textfield' },
+            { text: 'Switch', link: '/components/switch' },
+            { text: 'Checkbox', link: '/components/checkbox' },
+            { text: 'Icon', link: '/components/icon' },
+            { text: 'FloatingActionButton', link: '/components/floatingactionbutton' },
+            { text: 'Divider', link: '/components/divider' },
           ]
         },
         {
           text: '容器组件',
           items: [
-            { text: 'Card 卡片', link: '/components/card' },
-            { text: 'Dialog 对话框', link: '/components/dialog' },
-            { text: 'BottomSheet 底部表单', link: '/components/bottomsheet' },
+            { text: 'Card', link: '/components/card' },
+            { text: 'Dialog', link: '/components/dialog' },
+            { text: 'ListPopup', link: '/components/listpopup' },
           ]
         },
         {
           text: '导航组件',
           items: [
-            { text: 'TopAppBar 顶栏', link: '/components/topappbar' },
-            { text: 'NavigationBar 导航栏', link: '/components/navigationbar' },
-            { text: 'TabRow 标签栏', link: '/components/tabrow' },
+            { text: 'TopAppBar', link: '/components/topappbar' },
+            { text: 'NavigationBar', link: '/components/navigationbar' },
+            { text: 'TabRow', link: '/components/tabrow' },
           ]
         },
         {
           text: '反馈组件',
           items: [
-            { text: 'ProgressIndicator 进度指示器', link: '/components/progress' },
-            { text: 'Snackbar 提示条', link: '/components/snackbar' },
+            { text: 'Slider', link: '/components/slider' },
+            { text: 'ProgressIndicator', link: '/components/progress' },
+          ]
+        },
+        {
+          text: '刷新组件',
+          items: [
+            { text: 'PullToRefresh', link: '/components/pulltorefresh' },
+          ]
+        },
+        {
+          text: '其他组件',
+          items: [
+            { text: 'ColorPicker', link: '/components/colorpicker' },
+            { text: 'SearchBar', link: '/components/searchbar' },
           ]
         }
       ]

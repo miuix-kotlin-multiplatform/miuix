@@ -5,9 +5,9 @@ layout: home
 hero:
   name: "Miuix"
   text: "A UI library for Compose MultiPlatform"
-  tagline: "为多平台应用提供小米 HyperOS 设计风格的组件库"
+  tagline: "提供小米 HyperOS 设计风格的组件库"
   image:
-    src: /public/Icon.webp
+    src: /Icon.webp
     alt: Logo
   actions:
     - theme: brand
