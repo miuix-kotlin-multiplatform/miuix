@@ -10,7 +10,7 @@ import top.yukonga.miuix.kmp.basic.BasicComponent
 
 ## 基本用法
 
-创建一个基础组件，包含标题和摘要：
+BasicComponent 组件可以用于展示标题和摘要信息：
 
 ```kotlin
 BasicComponent(
@@ -78,19 +78,19 @@ BasicComponent(
 
 ### BasicComponent 属性
 
-| 属性名            | 类型                            | 默认值                                    | 说明                 |
-| ----------------- | ------------------------------- | ----------------------------------------- | -------------------- |
-| modifier          | Modifier                        | Modifier                                  | 应用于组件的修饰符   |
-| insideMargin      | PaddingValues                   | BasicComponentDefaults.InsideMargin       | 组件内部边距         |
-| title             | String?                         | null                                      | 组件标题             |
-| titleColor        | BasicComponentColors            | BasicComponentDefaults.titleColor()       | 标题颜色配置         |
-| summary           | String?                         | null                                      | 组件摘要             |
-| summaryColor      | BasicComponentColors            | BasicComponentDefaults.summaryColor()     | 摘要颜色配置         |
-| leftAction        | @Composable (() -> Unit?)?      | null                                      | 组件左侧的可组合内容 |
-| rightActions      | @Composable RowScope.() -> Unit | {}                                        | 组件右侧的可组合内容 |
-| onClick           | (() -> Unit)?                   | null                                      | 点击组件时触发的回调 |
-| enabled           | Boolean                         | true                                      | 组件是否可用         |
-| interactionSource | MutableInteractionSource        | `remember { MutableInteractionSource() }` | 组件的交互源         |
+| 属性名            | 类型                            | 默认值                                   | 说明                 |
+| ----------------- | ------------------------------- | ---------------------------------------- | -------------------- |
+| modifier          | Modifier                        | Modifier                                 | 应用于组件的修饰符   |
+| insideMargin      | PaddingValues                   | BasicComponentDefaults.InsideMargin      | 组件内部边距         |
+| title             | String?                         | null                                     | 组件标题             |
+| titleColor        | BasicComponentColors            | BasicComponentDefaults.titleColor()      | 标题颜色配置         |
+| summary           | String?                         | null                                     | 组件摘要             |
+| summaryColor      | BasicComponentColors            | BasicComponentDefaults.summaryColor()    | 摘要颜色配置         |
+| leftAction        | @Composable (() -> Unit?)?      | null                                     | 组件左侧的可组合内容 |
+| rightActions      | @Composable RowScope.() -> Unit | {}                                       | 组件右侧的可组合内容 |
+| onClick           | (() -> Unit)?                   | null                                     | 点击组件时触发的回调 |
+| enabled           | Boolean                         | true                                     | 组件是否可用         |
+| interactionSource | MutableInteractionSource        | remember { \MutableInteractionSource() } | 组件的交互源         |
 
 ### BasicComponentDefaults 对象
 

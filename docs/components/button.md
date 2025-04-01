@@ -10,7 +10,7 @@ import top.yukonga.miuix.kmp.basic.Button
 
 ## 基本用法
 
-基础按钮组件，用于触发操作：
+Button 组件可以用于触发操作或事件：
 
 ```kotlin
 Button(
