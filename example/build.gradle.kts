@@ -3,7 +3,6 @@
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
 
@@ -18,7 +17,6 @@ val appName = "Miuix"
 val pkgName = "top.yukonga.miuix.uitest"
 val verName = "1.0.3"
 val verCode = getVersionCode()
-val xcf = XCFramework(appName + "Framework")
 
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(21)
@@ -35,15 +33,13 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = appName + "Framework"
+            baseName = "shared"
             isStatic = true
             freeCompilerArgs += listOf(
-                "-Xbinary=bundleId=$pkgName.framework",
                 "-linker-option", "-framework", "-linker-option", "Metal",
                 "-linker-option", "-framework", "-linker-option", "CoreText",
                 "-linker-option", "-framework", "-linker-option", "CoreGraphics"
             )
-            xcf.add(this)
         }
     }
 
@@ -52,7 +48,6 @@ kotlin {
         macosArm64()
     ).forEach { macosTarget ->
         macosTarget.binaries.executable {
-            baseName = appName
             entryPoint = "main"
             freeCompilerArgs += listOf(
                 "-linker-option", "-framework", "-linker-option", "Metal"
@@ -184,18 +179,10 @@ compose.desktop {
         }
     }
     nativeApplication {
-        targets(kotlin.targets.getByName("macosArm64"))
+        targets(kotlin.targets.getByName("macosArm64"), kotlin.targets.getByName("macosX64"))
         distributions {
             targetFormats(TargetFormat.Dmg)
-            packageName = "$appName-MacosArm64-Native"
-            packageVersion = verName
-        }
-    }
-    nativeApplication {
-        targets(kotlin.targets.getByName("macosX64"))
-        distributions {
-            targetFormats(TargetFormat.Dmg)
-            packageName = "$appName-MacosX64-Native"
+            packageName = appName
             packageVersion = verName
         }
     }
