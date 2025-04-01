@@ -40,7 +40,7 @@ export default defineConfig({
           text: '基础组件',
           items: [
             { text: 'Surface', link: '/components/surface' },
-            { text: 'BasicComponent', link: '/components/component' },
+            { text: 'BasicComponent', link: '/components/basiccomponent' },
             { text: 'Button', link: '/components/button' },
             { text: 'Text', link: '/components/text' },
             { text: 'SmallTitle', link: '/components/smalltitle' },
