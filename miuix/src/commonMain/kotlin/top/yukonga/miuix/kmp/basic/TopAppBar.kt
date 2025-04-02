@@ -115,18 +115,18 @@ fun TopAppBar(
     // app bar's defined constant height value (i.e. the ContainerHeight token).
     Surface(
         color = color,
-        modifier = if (defaultWindowInsetsPadding) {
+        modifier =
             modifier
-                .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
-                .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal))
-                .windowInsetsPadding(WindowInsets.statusBars.only(WindowInsetsSides.Top))
-                .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
-        } else {
-            modifier
-        }
-            .pointerInput(Unit) {
-                detectVerticalDragGestures { _, _ -> }
-            }
+                .pointerInput(Unit) {
+                    detectVerticalDragGestures { _, _ -> }
+                }
+                .then(
+                    if (defaultWindowInsetsPadding) {
+                        Modifier
+                            .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
+                            .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal))
+                    } else Modifier
+                )
     ) {
         TopAppBarLayout(
             title = title,
@@ -135,7 +135,8 @@ fun TopAppBar(
             actions = actionsRow,
             scrolledOffset = { scrollBehavior?.state?.heightOffset ?: 0f },
             expandedHeightPx = expandedHeightPx,
-            horizontalPadding = horizontalPadding
+            horizontalPadding = horizontalPadding,
+            defaultWindowInsetsPadding = defaultWindowInsetsPadding
         )
     }
 }
@@ -172,24 +173,25 @@ fun SmallTopAppBar(
     // app bar's defined constant height value (i.e. the ContainerHeight token).
     Surface(
         color = color,
-        modifier = if (defaultWindowInsetsPadding) {
+        modifier =
             modifier
-                .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
-                .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal))
-                .windowInsetsPadding(WindowInsets.statusBars.only(WindowInsetsSides.Top))
-                .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
-        } else {
-            modifier
-        }
-            .pointerInput(Unit) {
-                detectVerticalDragGestures { _, _ -> }
-            }
+                .pointerInput(Unit) {
+                    detectVerticalDragGestures { _, _ -> }
+                }
+                .then(
+                    if (defaultWindowInsetsPadding) {
+                        Modifier
+                            .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
+                            .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal))
+                    } else Modifier
+                )
     ) {
         SmallTopAppBarLayout(
             title = title,
             navigationIcon = navigationIcon,
             actions = actionsRow,
-            horizontalPadding = horizontalPadding
+            horizontalPadding = horizontalPadding,
+            defaultWindowInsetsPadding = defaultWindowInsetsPadding
         )
     }
 }
@@ -547,7 +549,8 @@ private fun TopAppBarLayout(
     actions: @Composable () -> Unit,
     scrolledOffset: ScrolledOffset,
     expandedHeightPx: Float,
-    horizontalPadding: Dp
+    horizontalPadding: Dp,
+    defaultWindowInsetsPadding: Boolean
 ) {
     val extOffset = abs(scrolledOffset.offset()) / expandedHeightPx * 2
     val alpha by animateFloatAsState(
@@ -605,6 +608,13 @@ private fun TopAppBarLayout(
             }
         },
         modifier = Modifier
+            .then(
+                if (defaultWindowInsetsPadding) {
+                    Modifier
+                        .windowInsetsPadding(WindowInsets.statusBars.only(WindowInsetsSides.Top))
+                        .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
+                } else Modifier
+            )
             .heightIn(max = 56.dp + TopAppBarExpandedHeight)
             .clipToBounds()
     ) { measurables, constraints ->
@@ -701,7 +711,8 @@ private fun SmallTopAppBarLayout(
     title: String,
     navigationIcon: @Composable () -> Unit,
     actions: @Composable () -> Unit,
-    horizontalPadding: Dp
+    horizontalPadding: Dp,
+    defaultWindowInsetsPadding: Boolean
 ) {
     Layout(
         {
@@ -730,8 +741,16 @@ private fun SmallTopAppBarLayout(
                 actions()
             }
         },
-        modifier = Modifier
-            .heightIn(max = 56.dp)
+        modifier =
+            Modifier
+                .then(
+                    if (defaultWindowInsetsPadding) {
+                        Modifier
+                            .windowInsetsPadding(WindowInsets.statusBars.only(WindowInsetsSides.Top))
+                            .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
+                    } else Modifier
+                )
+                .heightIn(max = 56.dp)
     ) { measurables, constraints ->
         val navigationIconPlaceable =
             measurables
