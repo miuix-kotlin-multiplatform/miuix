@@ -180,7 +180,7 @@ TopAppBar(
 
 ### 大标题和小标题结合使用
 
-你可以使用 foundation 提供的 BoxWithConstraints 方法或者 Miuix 提供的 `getWindowSize()` 方法来获取当前窗口的尺寸，并根据窗口的宽度来决定使用大标题还是小标题。
+你可以使用 foundation 提供的 BoxWithConstraints 方法或者 Miuix 提供的 [getWindowSize()](../guide/multiplatform.md#窗口尺寸管理) 方法来获取当前窗口的尺寸，并根据窗口的宽度来决定使用大标题还是小标题。
 
 ```kotlin
 var useSmallTopBar by remember { mutableStateOf(false) }

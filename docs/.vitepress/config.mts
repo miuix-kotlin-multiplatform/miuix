@@ -134,7 +134,7 @@ export default defineConfig({
             { text: 'FloatingActionButton', link: '/components/floatingactionbutton' },
             { text: 'Divider', link: '/components/divider' },
             { text: 'PullToRefresh', link: '/components/pulltorefresh' },
-            { text: 'SearchBar', link: '/components/searchview' },
+            { text: 'SearchBar', link: '/components/searchbar' },
             { text: 'ColorPicker', link: '/components/colorpicker' },
           ]
         },
