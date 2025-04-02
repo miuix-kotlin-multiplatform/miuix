@@ -2,8 +2,6 @@
 
 # 快速开始
 
-## 使用须知
-
 当前支持的平台: **Android** / **Desktop(JVM)** / **iOS** / **WasmJs** / **Js** / **macOS(Native)**
 
 ::: warning 注意

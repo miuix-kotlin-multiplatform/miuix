@@ -1,23 +1,36 @@
 :root {
+
+    /* 亮色模式主题色 */
+    --miuix-color-primary: #3482FF;
+
     /* 主要字体 */
     --vp-font-family-base: 'MiSans VF', 'Inter', ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
     /* 主要主题色 */
-    --vp-c-brand-1: #3482FF;
+    --vp-c-brand-1: var(--miuix-color-primary);
+
+    /* 快速开始按钮颜色 */
+    --vp-button-brand-bg: var(--miuix-color-primary);
 
     /* hero 标题颜色 */
     --vp-home-hero-name-color: transparent;
-    --vp-home-hero-name-background: #3482FF;
+    --vp-home-hero-name-background: var(--miuix-color-primary);
 
     /* hero logo 背景颜色 */
-    --vp-home-hero-image-background-image: linear-gradient(#3482FF, #3482FF);
+    --vp-home-hero-image-background-image: linear-gradient(var(--miuix-color-primary), var(--miuix-color-primary));
     --vp-home-hero-image-filter: blur(40px);
+
+}
+
+/* 深色模式主题色 */
+.dark {
+    --miuix-color-primary: #277AF7;
 }
 
 /* 标题颜色 */
 .VPDoc h1 {
-    background: #3482FF;
+    background: var(--miuix-color-primary);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
