@@ -2,11 +2,37 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   title: "Miuix",
+  head: [
+    ['link', { rel: 'icon', href: '/Icon.webp' }],
+    ['link', { rel: 'preconnect', href: 'https://cdn-font.hyperos.mi.com/font/css?family=MiSans_VF:VF:Chinese_Simplify,Latin&display=swap' }],
+  ],
+
   description: "A UI library for Compose MultiPlatform",
   lastUpdated: true,
   lang: 'zh-Hans',
   themeConfig: {
     logo: '/Icon.webp',
+
+    search: {
+      provider: 'local',
+      options: {
+        translations: {
+          button: {
+            buttonText: '搜索文档',
+            buttonAriaLabel: '搜索文档'
+          },
+          modal: {
+            noResultsText: '无法找到相关结果',
+            resetButtonTitle: '清除查询条件',
+            footer: {
+              selectText: '选择',
+              navigateText: '切换',
+              closeText: '关闭',
+            },
+          },
+        },
+      },
+    },
 
     docFooter: {
       prev: '上一页',
