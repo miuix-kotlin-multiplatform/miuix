@@ -1,6 +1,6 @@
 # Button
 
-`Button` 是 Miuix 中的交互基础组件，用于触发操作或事件。提供了多种风格选择，包括主要按钮、次要按钮和文本按钮。
+`Button` 是 Miuix 中的基础交互组件，用于触发操作或事件。提供了多种风格选择，包括主要按钮、次要按钮和文本按钮。
 
 ## 引入
 
@@ -154,7 +154,6 @@ Button(
 ```kotlin
 var isLoading by remember { mutableStateOf(false) }
 val scope = rememberCoroutineScope()
-
 Button(
     onClick = {
         isLoading = true
