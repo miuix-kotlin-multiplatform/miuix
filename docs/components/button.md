@@ -46,6 +46,17 @@ Button(
 }
 ```
 
+### 文本按钮（Text Button）
+
+```kotlin
+TextButton(
+    text = "文本按钮",
+    onClick = { /* 处理点击事件 */ }
+)
+```
+
+## 组件状态
+
 ### 禁用状态
 
 ```kotlin
@@ -55,15 +66,6 @@ Button(
 ) {
     Text("禁用按钮")
 }
-```
-
-### 文本按钮（Text Button）
-
-```kotlin
-TextButton(
-    text = "文本按钮",
-    onClick = { /* 处理点击事件 */ }
-)
 ```
 
 ## 属性
