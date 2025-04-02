@@ -2,7 +2,7 @@
 
 `FloatingActionButton` 是 Miuix 中的悬浮按钮组件，通常用于展示页面中最重要或最常用的操作。它通常悬浮在界面上方，具有突出的视觉效果，便于用户快速访问。
 
-此组件常常与 `Scaffold` 组件结合使用，以便在应用程序的不同页面中保持一致的布局和行为。
+此组件通常与 `Scaffold` 组件结合使用，以便在应用程序的不同页面中保持一致的布局和行为。
 
 ## 引入
 
@@ -101,10 +101,14 @@ Scaffold(
         }
     },
     floatingActionButtonPosition = MiuixFabPosition.End
-) { innerPadding ->
-    // 页面内容
-    Box(modifier = Modifier.padding(innerPadding)) {
-        // ...
+) { paddingValues ->
+    // 内容区域需要考虑 padding
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+        ) {
+            // ...
     }
 }
 ```

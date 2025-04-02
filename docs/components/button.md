@@ -171,8 +171,7 @@ Button(
         visible = isLoading
     ) {
         CircularProgressIndicator(
-            modifier = Modifier
-                .padding(end = 8.dp),
+            modifier = Modifier.padding(end = 8.dp),
             size = 20.dp,
             strokeWidth = 4.dp
         )

@@ -2,7 +2,7 @@
 
 `TopAppBar` 是 Miuix 中的顶部应用栏组件，用于在界面顶部提供导航、标题和操作按钮。支持大标题模式和普通模式，以及滚动时的动态效果。
 
-此组件常常与 `Scaffold` 组件结合使用，以便在应用程序的不同页面中保持一致的布局和行为。
+此组件通常与 `Scaffold` 组件结合使用，以便在应用程序的不同页面中保持一致的布局和行为。
 
 ## 引入
 
@@ -52,7 +52,7 @@ TopAppBar(
 )
 ```
 
-## 滚动行为
+## 滚动行为（使用脚手架）
 
 TopAppBar 支持随内容滚动时改变其显示状态：
 
@@ -67,10 +67,9 @@ Scaffold(
         )
     }
 ) { paddingValues ->
+    // 内容区域需要考虑 padding
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues),
+        modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(top = paddingValues.calculateTopPadding()),
         topAppBarScrollBehavior = scrollBehavior
     ) {
@@ -150,3 +149,69 @@ val scrollBehavior = MiuixScrollBehavior(
 | canScroll          | () -> Boolean               | { true }                   | 控制是否允许滚动的回调     |
 | snapAnimationSpec  | AnimationSpec\<Float>?      | spring(stiffness = 3000f)  | 定义顶部栏滚动后的吸附动画 |
 | flingAnimationSpec | DecayAnimationSpec\<Float>? | rememberSplineBasedDecay() | 定义顶部栏滑动的衰减动画   |
+
+## 进阶用法
+
+### 处理窗口边距
+
+```kotlin
+TopAppBar(
+    title = "标题",
+    largeTitle = "大标题",
+    defaultWindowInsetsPadding = false // 自行处理窗口嵌入边距
+)
+```
+
+### 自定义滚动行为动画
+
+```kotlin
+var isScrollingEnabled by remember { mutableStateOf(true) }
+val scrollBehavior = MiuixScrollBehavior(
+    snapAnimationSpec = tween(durationMillis = 100),
+    flingAnimationSpec = rememberSplineBasedDecay(),
+    canScroll = { isScrollingEnabled } // 可以动态控制是否允许滚动
+)
+TopAppBar(
+    title = "标题",
+    largeTitle = "大标题",
+    scrollBehavior = scrollBehavior
+)
+```
+
+### 大标题和小标题结合使用
+
+你可以使用 foundation 提供的 BoxWithConstraints 方法或者 Miuix 提供的 `getWindowSize()` 方法来获取当前窗口的尺寸，并根据窗口的宽度来决定使用大标题还是小标题。
+
+```kotlin
+var useSmallTopBar by remember { mutableStateOf(false) }
+Box(modifier = Modifier.fillMaxSize()) {
+    if (useSmallTopBar) {
+        SmallTopAppBar(
+            title = "精简模式",
+            navigationIcon = {
+                IconButton(onClick = { useSmallTopBar = false }) {
+                    Icon(
+                        imageVector = MiuixIcons.Useful.Back,
+                        contentDescription = "切换到大标题",
+                        tint = MiuixTheme.colorScheme.onBackground
+                    )
+                }
+            }
+        )
+    } else {
+        TopAppBar(
+            title = "标题",
+            largeTitle = "展开模式",
+            navigationIcon = {
+                IconButton(onClick = { useSmallTopBar = true }) {
+                    Icon(
+                            imageVector = MiuixIcons.Useful.Back,
+                        contentDescription = "切换到小标题",
+                        tint = MiuixTheme.colorScheme.onBackground
+                    )
+                }
+            }
+        )
+    }
+}
+```

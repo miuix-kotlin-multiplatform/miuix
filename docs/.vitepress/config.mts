@@ -99,6 +99,13 @@ export default defineConfig({
       ],
       '/components/': [
         {
+          text: '组件库',
+          collapsed: false,
+          items: [
+            { text: '总览', link: '/components/' },
+          ]
+        },
+        {
           text: '脚手架',
           collapsed: false,
           items: [
@@ -110,6 +117,10 @@ export default defineConfig({
           collapsed: false,
           items: [
             { text: 'Surface', link: '/components/surface' },
+            { text: 'TopAppBar', link: '/components/topappbar' },
+            { text: 'NavigationBar', link: '/components/navigationbar' },
+            { text: 'TabRow', link: '/components/tabrow' },
+            { text: 'Card', link: '/components/card' },
             { text: 'BasicComponent', link: '/components/basiccomponent' },
             { text: 'Button', link: '/components/button' },
             { text: 'Text', link: '/components/text' },
@@ -117,53 +128,13 @@ export default defineConfig({
             { text: 'TextField', link: '/components/textfield' },
             { text: 'Switch', link: '/components/switch' },
             { text: 'Checkbox', link: '/components/checkbox' },
+            { text: 'Slider', link: '/components/slider' },
+            { text: 'ProgressIndicator', link: '/components/progressindicator' },
             { text: 'Icon', link: '/components/icon' },
             { text: 'FloatingActionButton', link: '/components/floatingactionbutton' },
             { text: 'Divider', link: '/components/divider' },
-          ]
-        },
-        {
-          text: '容器组件',
-          collapsed: false,
-          items: [
-            { text: 'Card', link: '/components/card' },
-          ]
-        },
-        {
-          text: '导航组件',
-          collapsed: false,
-          items: [
-            { text: 'TopAppBar', link: '/components/topappbar' },
-            { text: 'NavigationBar', link: '/components/navigationbar' },
-            { text: 'TabRow', link: '/components/tabrow' },
-          ]
-        },
-        {
-          text: '反馈组件',
-          collapsed: false,
-          items: [
-            { text: 'Slider', link: '/components/slider' },
-            { text: 'ProgressIndicator', link: '/components/progress' },
-          ]
-        },
-        {
-          text: '刷新组件',
-          collapsed: false,
-          items: [
             { text: 'PullToRefresh', link: '/components/pulltorefresh' },
-          ]
-        },
-        {
-          text: '搜索组件',
-          collapsed: false,
-          items: [
             { text: 'SearchBar', link: '/components/searchview' },
-          ]
-        },
-        {
-          text: '取色组件',
-          collapsed: false,
-          items: [
             { text: 'ColorPicker', link: '/components/colorpicker' },
           ]
         },
