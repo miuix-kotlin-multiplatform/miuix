@@ -6,8 +6,12 @@ export default defineConfig({
     ['link', { rel: 'icon', href: '/Icon.webp' }],
     ['link', { rel: 'preconnect', href: 'https://cdn-font.hyperos.mi.com/font/css?family=MiSans_VF:VF:Chinese_Simplify,Latin&display=swap' }],
   ],
-
   description: "A UI library for Compose MultiPlatform",
+  markdown: {
+    image: {
+      lazyLoading: true
+    },
+  },
   lastUpdated: true,
   lang: 'zh-Hans',
   themeConfig: {
@@ -79,12 +83,14 @@ export default defineConfig({
       '/guide/': [
         {
           text: '入门',
+          collapsed: false,
           items: [
             { text: '快速开始', link: '/guide/getting-started' },
           ]
         },
         {
           text: '进阶',
+          collapsed: false,
           items: [
             { text: '多平台支持', link: '/guide/multiplatform' },
             { text: '最佳实践', link: '/guide/best-practices' },
@@ -94,12 +100,14 @@ export default defineConfig({
       '/components/': [
         {
           text: '脚手架',
+          collapsed: false,
           items: [
             { text: 'Scaffold', link: '/components/scaffold' },
           ]
         },
         {
           text: '基础组件',
+          collapsed: false,
           items: [
             { text: 'Surface', link: '/components/surface' },
             { text: 'BasicComponent', link: '/components/basiccomponent' },
@@ -116,12 +124,14 @@ export default defineConfig({
         },
         {
           text: '容器组件',
+          collapsed: false,
           items: [
             { text: 'Card', link: '/components/card' },
           ]
         },
         {
           text: '导航组件',
+          collapsed: false,
           items: [
             { text: 'TopAppBar', link: '/components/topappbar' },
             { text: 'NavigationBar', link: '/components/navigationbar' },
@@ -130,6 +140,7 @@ export default defineConfig({
         },
         {
           text: '反馈组件',
+          collapsed: false,
           items: [
             { text: 'Slider', link: '/components/slider' },
             { text: 'ProgressIndicator', link: '/components/progress' },
@@ -137,24 +148,28 @@ export default defineConfig({
         },
         {
           text: '刷新组件',
+          collapsed: false,
           items: [
             { text: 'PullToRefresh', link: '/components/pulltorefresh' },
           ]
         },
         {
           text: '搜索组件',
+          collapsed: false,
           items: [
             { text: 'SearchBar', link: '/components/searchview' },
           ]
         },
         {
           text: '取色组件',
+          collapsed: false,
           items: [
             { text: 'ColorPicker', link: '/components/colorpicker' },
           ]
         },
         {
           text: '扩展组件',
+          collapsed: false,
           items: [
             { text: 'SuperArrow', link: '/components/superarrow' },
             { text: 'SuperSwitch', link: '/components/superswitch' },
