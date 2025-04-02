@@ -20,7 +20,6 @@
     /* hero logo 背景颜色 */
     --vp-home-hero-image-background-image: linear-gradient(var(--miuix-color-primary), var(--miuix-color-primary));
     --vp-home-hero-image-filter: blur(40px);
-
 }
 
 /* 深色模式主题色 */
@@ -35,3 +34,12 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
+
+/* mediumZoom 样式 */
+.medium-zoom-overlay {
+    z-index: 30;
+  }
+  
+  .medium-zoom-image {
+    z-index: 9999 !important;
+  }
