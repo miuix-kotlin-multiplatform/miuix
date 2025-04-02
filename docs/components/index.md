@@ -20,11 +20,9 @@ Miuix 提供了丰富的 UI 组件，严格遵循 Xiaomi HyperOS 设计规范。
 
 ## 容器组件
 
-| 组件                               | 描述               | 常见用途           |
-| ---------------------------------- | ------------------ | ------------------ |
-| [Card](/components/card)           | 包含相关信息的容器 | 信息展示、内容分组 |
-| [Dialog](/components/dialog)       | 模态弹窗           | 重要提示、操作确认 |
-| [ListPopup](/components/listpopup) | 弹出的列表选择框   | 选项选择、快捷操作 |
+| 组件                     | 描述               | 常见用途           |
+| ------------------------ | ------------------ | ------------------ |
+| [Card](/components/card) | 包含相关信息的容器 | 信息展示、内容分组 |
 
 ## 导航组件
 
@@ -47,9 +45,25 @@ Miuix 提供了丰富的 UI 组件，严格遵循 Xiaomi HyperOS 设计规范。
 | ------------------------------------------ | ---------------- | ------------------ |
 | [PullToRefresh](/components/pulltorefresh) | 下拉触发刷新操作 | 数据更新、页面刷新 |
 
-## 其他组件
+## 搜索组件
+
+| 组件                               | 描述             | 常见用途           |
+| ---------------------------------- | ---------------- | ------------------ |
+| [SearchBar](/components/searchbar) | 执行搜索的输入框 | 内容搜索、快速查找 |
+
+## 取色组件
 
 | 组件                                   | 描述           | 常见用途           |
 | -------------------------------------- | -------------- | ------------------ |
 | [ColorPicker](/components/colorpicker) | 选择颜色的控件 | 主题设置、颜色选择 |
-| [SearchBar](/components/searchbar)     | 搜索输入框     | 内容搜索、快速查找 |
+
+## 扩展组件
+
+| 组件                                       | 描述                               | 常见用途                   |
+| ------------------------------------------ | ---------------------------------- | -------------------------- |
+| [SuperArrow](/components/superarrow)       | 基于 BasicComponent 的带箭头组件   | 指示可点击、导航提示       |
+| [SuperSwitch](/components/superswitch)     | 基于 BasicComponent 的开关组件     | 设置项开关、功能启用/禁用  |
+| [SuperCheckBox](/components/supercheckbox) | 基于 BasicComponent 的复选框组件   | 多项选择、条款同意         |
+| [SuperDropdown](/components/superdropdown) | 基于 BasicComponent 的下拉菜单组件 | 选项选择、功能列表         |
+| [SuperSpinner](/components/superspinner)   | 基于 BasicComponent 的高级菜单组件 | 复杂选项选择、复杂功能列表 |
+| [SuperDialog](/components/superdialog)     | 基于 BasicComponent 的对话弹窗组件 | 提示、确认操作             |

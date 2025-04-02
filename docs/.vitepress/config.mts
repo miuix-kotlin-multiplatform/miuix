@@ -92,8 +92,6 @@ export default defineConfig({
           text: '容器组件',
           items: [
             { text: 'Card', link: '/components/card' },
-            { text: 'Dialog', link: '/components/dialog' },
-            { text: 'ListPopup', link: '/components/listpopup' },
           ]
         },
         {
@@ -118,10 +116,26 @@ export default defineConfig({
           ]
         },
         {
-          text: '其他组件',
+          text: '搜索组件',
+          items: [
+            { text: 'SearchBar', link: '/components/searchview' },
+          ]
+        },
+        {
+          text: '取色组件',
           items: [
             { text: 'ColorPicker', link: '/components/colorpicker' },
-            { text: 'SearchBar', link: '/components/searchbar' },
+          ]
+        },
+        {
+          text: '扩展组件',
+          items: [
+            { text: 'SuperArrow', link: '/components/superarrow' },
+            { text: 'SuperSwitch', link: '/components/superswitch' },
+            { text: 'SuperCheckBox', link: '/components/supercheckbox' },
+            { text: 'SuperDropdown', link: '/components/superdropdown' },
+            { text: 'SuperSpinner', link: '/components/superspinner' },
+            { text: 'SuperDialog', link: '/components/superdialog' },
           ]
         }
       ]
