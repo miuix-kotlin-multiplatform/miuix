@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import top.yukonga.miuix.kmp.basic.Card
@@ -50,8 +51,8 @@ fun SecondPage(
     ) {
         LazyColumn(
             modifier = Modifier
+                .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
                 .fillMaxSize(),
-            topAppBarScrollBehavior = topAppBarScrollBehavior,
         ) {
             item {
                 Card(

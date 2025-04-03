@@ -88,7 +88,7 @@ Card(
         Spacer(modifier = Modifier.width(8.dp))
         TextButton(
             text = "确定",
-            colors = textButtonColorsPrimary(),
+            colors = ButtonDefaults.textButtonColorsPrimary(), // 使用主题颜色
             onClick = { /* 处理取消事件 */ }
         )
     }

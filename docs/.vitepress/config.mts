@@ -63,6 +63,10 @@ export default defineConfig({
     darkModeSwitchTitle: '切换到深色模式',
     skipToContentLabel: '跳转到内容',
 
+    socialLinks: [
+      { icon: 'github', link: 'https://github.com/YuKongA/miuix-kotlin-multiplatform' }
+    ],
+
     editLink: {
       pattern: 'https://github.com/miuix-kotlin-multiplatform/miuix/edit/main/docs/:path',
       text: '在 GitHub 上编辑此页面'
@@ -123,6 +127,7 @@ export default defineConfig({
             { text: 'Card', link: '/components/card' },
             { text: 'BasicComponent', link: '/components/basiccomponent' },
             { text: 'Button', link: '/components/button' },
+            { text: 'IconButton', link: '/components/iconbutton' },
             { text: 'Text', link: '/components/text' },
             { text: 'SmallTitle', link: '/components/smalltitle' },
             { text: 'TextField', link: '/components/textfield' },
@@ -136,6 +141,14 @@ export default defineConfig({
             { text: 'PullToRefresh', link: '/components/pulltorefresh' },
             { text: 'SearchBar', link: '/components/searchbar' },
             { text: 'ColorPicker', link: '/components/colorpicker' },
+            { text: 'ListPopup', link: '/components/listpopup' },
+          ]
+        },
+        {
+          text: '特殊组件',
+          collapsed: false,
+          items: [
+            { text: 'LazyColumn', link: '/components/lazycolumn' },
           ]
         },
         {
@@ -149,12 +162,9 @@ export default defineConfig({
             { text: 'SuperSpinner', link: '/components/superspinner' },
             { text: 'SuperDialog', link: '/components/superdialog' },
           ]
-        }
+        },
       ]
     },
 
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/YuKongA/miuix-kotlin-multiplatform' }
-    ]
   }
 })

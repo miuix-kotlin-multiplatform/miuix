@@ -7,11 +7,18 @@ import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.captionBarPadding
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
@@ -40,7 +47,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.FloatingActionButton
-import top.yukonga.miuix.kmp.basic.HorizontalPager
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.ListPopup
@@ -300,7 +306,11 @@ fun UITest(
         }
     ) { padding ->
         AppHorizontalPager(
-            modifier = Modifier.imePadding().hazeSource(state = hazeState),
+            modifier = Modifier
+                .imePadding()
+                .hazeSource(state = hazeState)
+                .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
+                .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)),
             pagerState = pagerState,
             topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
             padding = padding,
@@ -351,8 +361,8 @@ fun AppHorizontalPager(
     colorMode: MutableState<Int>
 ) {
     HorizontalPager(
+        state = pagerState,
         modifier = modifier,
-        pagerState = pagerState,
         userScrollEnabled = enablePageUserScroll,
         pageContent = { page ->
             when (page) {

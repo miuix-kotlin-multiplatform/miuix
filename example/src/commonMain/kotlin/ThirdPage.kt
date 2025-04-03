@@ -6,6 +6,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import misc.VersionInfo
@@ -39,9 +40,10 @@ fun ThirdPage(
 ) {
     val showDialog = remember { mutableStateOf(false) }
     LazyColumn(
-        modifier = Modifier.height(getWindowSize().height.dp),
+        modifier = Modifier
+            .height(getWindowSize().height.dp)
+            .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
         contentPadding = PaddingValues(top = padding.calculateTopPadding()),
-        topAppBarScrollBehavior = topAppBarScrollBehavior
     ) {
         item {
             Card(

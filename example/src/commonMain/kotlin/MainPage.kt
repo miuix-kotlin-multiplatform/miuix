@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import component.OtherComponent
 import component.TextComponent
@@ -82,8 +83,8 @@ fun MainPage(
     ) {
         if (maxWidth < 840.dp) {
             LazyColumn(
-                contentPadding = PaddingValues(top = padding.calculateTopPadding()),
-                topAppBarScrollBehavior = topAppBarScrollBehavior,
+                modifier = Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+                contentPadding = PaddingValues(top = padding.calculateTopPadding())
             ) {
                 item {
                     SmallTitle(text = "SearchBar")
@@ -168,10 +169,10 @@ fun MainPage(
             ) {
                 LazyColumn(
                     modifier = Modifier
+                        .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
                         .padding(start = 12.dp)
                         .weight(1f),
-                    contentPadding = PaddingValues(top = padding.calculateTopPadding()),
-                    topAppBarScrollBehavior = topAppBarScrollBehavior,
+                    contentPadding = PaddingValues(top = padding.calculateTopPadding())
                 ) {
                     item {
                         SmallTitle(text = "SearchBar")
@@ -243,10 +244,10 @@ fun MainPage(
                 }
                 LazyColumn(
                     modifier = Modifier
+                        .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
                         .padding(end = 12.dp)
                         .weight(1f),
-                    contentPadding = PaddingValues(top = padding.calculateTopPadding()),
-                    topAppBarScrollBehavior = topAppBarScrollBehavior
+                    contentPadding = PaddingValues(top = padding.calculateTopPadding())
                 ) {
                     item(
                         key = "text"

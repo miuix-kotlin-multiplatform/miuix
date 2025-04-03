@@ -8,7 +8,11 @@ Miuix 提供了丰富的 UI 组件，严格遵循 Xiaomi HyperOS 设计规范。
 | -------------------------------- | -------------- | ------------------ |
 | [Scaffold](/components/scaffold) | 应用的基础布局 | 页面结构、内容展示 |
 
-## 导航组件
+::: warning 注意
+Scaffold 组件为跨平台提供了一个合适的弹出窗口的容器。`SuperDialog`、`SuperDropdown`、`SuperSpinner`、`ListPopup` 等组件都基于此实现弹出窗口，因此都需要被该组件包裹。
+:::
+
+## 基础组件
 
 | 组件                                                     | 描述                   | 常见用途             |
 | -------------------------------------------------------- | ---------------------- | -------------------- |
@@ -32,6 +36,14 @@ Miuix 提供了丰富的 UI 组件，严格遵循 Xiaomi HyperOS 设计规范。
 | [PullToRefresh](/components/pulltorefresh)               | 下拉触发刷新操作       | 数据更新、页面刷新   |
 | [SearchBar](/components/searchbar)                       | 执行搜索的输入框       | 内容搜索、快速查找   |
 | [ColorPicker](/components/colorpicker)                   | 选择颜色的控件         | 主题设置、颜色选择   |
+| [ListPopup](/components/listpopup)                       | 列表弹出窗口组件       | 选项选择、功能列表   |
+
+
+## 特殊组件
+
+| 组件                                 | 描述                 | 常见用途             |
+| ------------------------------------ | -------------------- | -------------------- |
+| [LazyColumn](/components/lazycolumn) | 懒加载的垂直列表组件 | 长列表展示、数据加载 |
 
 ## 扩展组件
 

@@ -3,7 +3,7 @@
 `Scaffold` 是 Miuix 中的脚手架组件，用于实现基本设计视觉布局结构。它提供了应用程序界面的基本框架，包括顶部栏、底部栏、悬浮按钮等元素的容器。
 
 ::: warning 注意
-Scaffold 组件通过 `popupHost` 属性为跨平台提供了一个合适的弹出窗口的容器。`SuperDialog`、`SuperDropdown`、`SuperSpinner` 等组件基于此实现弹出窗口，因此都需要被该组件包裹。
+Scaffold 组件为跨平台提供了一个合适的弹出窗口的容器。`SuperDialog`、`SuperDropdown`、`SuperSpinner`、`ListPopup` 等组件都基于此实现弹出窗口，因此都需要被该组件包裹。
 :::
 
 ::: info 信息
@@ -98,11 +98,12 @@ Scaffold(
     },
     content = { paddingValues ->
         // 内容区域需要考虑 padding
-        // 绑定顶部栏的滚动行为
         LazyColumn(
             contentPadding = paddingValues,
-            topAppBarScrollBehavior = topAppBarScrollBehavior,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                // 绑定顶部栏的滚动行为
+                .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
         ) {
             items(20) { index ->
                 SuperArrow(

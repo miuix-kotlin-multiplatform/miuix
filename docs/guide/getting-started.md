@@ -97,7 +97,7 @@ Scaffold(
 ```
 
 ::: warning 注意
-Scaffold 组件通过 `popupHost` 属性为跨平台提供了一个合适的弹出窗口的容器。`SuperDialog`、`SuperDropdown`、`SuperSpinner` 等组件基于此实现弹出窗口，因此都需要被该组件包裹。
+Scaffold 组件为跨平台提供了一个合适的弹出窗口的容器。`SuperDialog`、`SuperDropdown`、`SuperSpinner`、`ListPopup` 等组件都基于此实现弹出窗口，因此都需要被该组件包裹。
 :::
 
 ## 下一步

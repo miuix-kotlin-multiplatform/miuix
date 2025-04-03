@@ -69,9 +69,11 @@ Scaffold(
 ) { paddingValues ->
     // 内容区域需要考虑 padding
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(top = paddingValues.calculateTopPadding()),
-        topAppBarScrollBehavior = scrollBehavior
+        modifier = Modifier
+            .fillMaxSize()
+            // 绑定顶部栏的滚动行为
+            .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+        contentPadding = PaddingValues(top = paddingValues.calculateTopPadding())
     ) {
         // 列表内容
     }
