@@ -31,6 +31,19 @@ Slider(
 )
 ```
 
+## 触觉反馈
+
+Slider 支持触觉反馈，可以通过 `hapticEffect` 参数自定义反馈效果，详见 [SliderHapticEffect](/components/slider#sliderhapticeffect)。
+
+```kotlin
+var progress by remember { mutableStateOf(0.5f) }
+Slider(
+    progress = progress,
+    onProgressChange = { progress = it },
+    hapticEffect = SliderHapticEffect.Step
+)
+```
+
 ## 属性
 
 ### Slider 属性
@@ -60,9 +73,7 @@ SliderDefaults 对象提供了 Slider 组件的默认配置。
 | MinHeight           | Dp                 | 30.dp                   | 滑块的默认高度     |
 | DefaultHapticEffect | SliderHapticEffect | SliderHapticEffect.Edge | 默认的触感反馈类型 |
 
-#### 枚举
-
-**SliderHapticEffect**
+### SliderHapticEffect
 
 | 值   | 说明                       |
 | ---- | -------------------------- |

@@ -1,6 +1,14 @@
 # Scaffold
 
-`Scaffold` 是 Miuix 中的脚手架组件，用于实现基本的 MIUIX 设计视觉布局结构。它提供了应用程序界面的基本框架，包括顶部栏、底部栏、悬浮按钮等元素的容器。
+`Scaffold` 是 Miuix 中的脚手架组件，用于实现基本设计视觉布局结构。它提供了应用程序界面的基本框架，包括顶部栏、底部栏、悬浮按钮等元素的容器。
+
+::: warning 注意
+Scaffold 组件通过 `popupHost` 属性为跨平台提供了一个合适的弹出窗口的容器。`SuperDialog`、`SuperDropdown`、`SuperSpinner` 等组件基于此实现弹出窗口，因此都需要被该组件包裹。
+:::
+
+::: info 信息
+为什么不用官方的 `Popup` 和 `Dialog` 而选择自行创建弹出窗口的容器？因为它们目前在跨平台支持中实现不完整，有些参数无法更改。
+:::
 
 ## 引入
 
@@ -10,7 +18,7 @@ import top.yukonga.miuix.kmp.basic.Scaffold
 
 ## 基本用法
 
-Scaffold 组件可以构建带有顶栏的页面布局：
+Scaffold 组件可以构建带有顶部栏的页面布局：
 
 ```kotlin
 Scaffold(
@@ -49,16 +57,16 @@ Scaffold(
 
 ### MiuixFabPosition 选项
 
-| 选项名     | 说明                                       |
-| ---------- | ------------------------------------------ |
-| Start      | 将悬浮按钮放置在屏幕底部左侧，在底栏上方   |
-| Center     | 将悬浮按钮放置在屏幕底部中央，在底栏上方   |
-| End        | 将悬浮按钮放置在屏幕底部右侧，在底栏上方   |
-| EndOverlay | 将悬浮按钮放置在屏幕底部右侧，覆盖在底栏上 |
+| 选项名     | 说明                                         |
+| ---------- | -------------------------------------------- |
+| Start      | 将悬浮按钮放置在屏幕底部左侧，在底部栏上方   |
+| Center     | 将悬浮按钮放置在屏幕底部中央，在底部栏上方   |
+| End        | 将悬浮按钮放置在屏幕底部右侧，在底部栏上方   |
+| EndOverlay | 将悬浮按钮放置在屏幕底部右侧，覆盖在底部栏上 |
 
 ## 进阶用法
 
-### 带有顶栏和底栏的页面布局
+### 带有顶部栏和底部栏的页面布局
 
 ```kotlin
 val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
@@ -90,7 +98,7 @@ Scaffold(
     },
     content = { paddingValues ->
         // 内容区域需要考虑 padding
-        // 绑定顶栏的滚动行为
+        // 绑定顶部栏的滚动行为
         LazyColumn(
             contentPadding = paddingValues,
             topAppBarScrollBehavior = topAppBarScrollBehavior,

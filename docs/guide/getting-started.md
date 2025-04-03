@@ -60,7 +60,7 @@ implementation("top.yukonga.miuix.kmp:miuix-js:<version>")
 
 ## 基本用法
 
-### 1. 应用 Miuix 主题
+### 应用 Miuix 主题
 
 ```kotlin
 @Composable
@@ -78,7 +78,7 @@ fun App() {
 }
 ```
 
-### 2. 使用 Miuix 脚手架
+### 使用 Miuix 脚手架
 
 ```kotlin
 Scaffold(
@@ -95,6 +95,10 @@ Scaffold(
     // Content...
 }
 ```
+
+::: warning 注意
+Scaffold 组件通过 `popupHost` 属性为跨平台提供了一个合适的弹出窗口的容器。`SuperDialog`、`SuperDropdown`、`SuperSpinner` 等组件基于此实现弹出窗口，因此都需要被该组件包裹。
+:::
 
 ## 下一步
 
