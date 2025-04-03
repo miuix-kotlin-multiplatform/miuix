@@ -32,21 +32,21 @@ Surface(
 
 ### 基础 Surface 属性
 
-| 属性名          | 类型                   | 默认值                            | 说明                         |
-| --------------- | ---------------------- | --------------------------------- | ---------------------------- |
-| modifier        | Modifier               | Modifier                          | 应用于 Surface 的修饰符      |
-| shape           | Shape                  | RectangleShape                    | Surface 的形状               |
-| color           | Color                  | MiuixTheme.colorScheme.background | Surface 的背景颜色           |
-| border          | BorderStroke?          | null                              | Surface 的边框样式           |
-| shadowElevation | Dp                     | 0.dp                              | Surface 的阴影高度           |
-| content         | @Composable () -> Unit | -                                 | Surface 内容区域的可组合函数 |
+| 属性名          | 类型                   | 说明                         | 默认值                            | 是否必须 |
+| --------------- | ---------------------- | ---------------------------- | --------------------------------- | -------- |
+| modifier        | Modifier               | 应用于 Surface 的修饰符      | Modifier                          | 否       |
+| shape           | Shape                  | Surface 的形状               | RectangleShape                    | 否       |
+| color           | Color                  | Surface 的背景颜色           | MiuixTheme.colorScheme.background | 否       |
+| border          | BorderStroke?          | Surface 的边框样式           | null                              | 否       |
+| shadowElevation | Dp                     | Surface 的阴影高度           | 0.dp                              | 否       |
+| content         | @Composable () -> Unit | Surface 内容区域的可组合函数 | -                                 | 是       |
 
 ### 可点击 Surface 额外属性
 
-| 属性名  | 类型       | 默认值 | 说明                      |
-| ------- | ---------- | ------ | ------------------------- |
-| onClick | () -> Unit | -      | 点击 Surface 时触发的回调 |
-| enabled | Boolean    | true   | Surface 是否可点击        |
+| 属性名  | 类型       | 说明                      | 默认值 | 是否必须 |
+| ------- | ---------- | ------------------------- | ------ | -------- |
+| onClick | () -> Unit | 点击 Surface 时触发的回调 | -      | 是       |
+| enabled | Boolean    | Surface 是否可点击        | true   | 否       |
 
 ## 进阶用法
 

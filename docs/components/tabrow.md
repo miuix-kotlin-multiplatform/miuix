@@ -39,29 +39,29 @@ TabRowWithContour(
 
 ### TabRow 属性
 
-| 属性名           | 类型             | 默认值                            | 说明                 |
-| ---------------- | ---------------- | --------------------------------- | -------------------- |
-| tabs             | List\<String>    | -                                 | 标签文本列表         |
-| selectedTabIndex | Int              | -                                 | 当前选中的标签索引   |
-| modifier         | Modifier         | Modifier                          | 应用于标签行的修饰符 |
-| colors           | TabRowColors     | TabRowDefaults.tabRowColors()     | 标签行的颜色配置     |
-| minWidth         | Dp               | TabRowDefaults.TabRowMinWidth     | 每个标签的最小宽度   |
-| height           | Dp               | TabRowDefaults.TabRowHeight       | 标签行的高度         |
-| cornerRadius     | Dp               | TabRowDefaults.TabRowCornerRadius | 标签的圆角半径       |
-| onTabSelected    | ((Int) -> Unit)? | null                              | 标签选中时的回调函数 |
+| 属性名           | 类型             | 说明                 | 默认值                            | 是否必须 |
+| ---------------- | ---------------- | -------------------- | --------------------------------- | -------- |
+| tabs             | List\<String>    | 标签文本列表         | -                                 | 是       |
+| selectedTabIndex | Int              | 当前选中的标签索引   | -                                 | 是       |
+| modifier         | Modifier         | 应用于标签行的修饰符 | Modifier                          | 否       |
+| colors           | TabRowColors     | 标签行的颜色配置     | TabRowDefaults.tabRowColors()     | 否       |
+| minWidth         | Dp               | 每个标签的最小宽度   | TabRowDefaults.TabRowMinWidth     | 否       |
+| height           | Dp               | 标签行的高度         | TabRowDefaults.TabRowHeight       | 否       |
+| cornerRadius     | Dp               | 标签的圆角半径       | TabRowDefaults.TabRowCornerRadius | 否       |
+| onTabSelected    | ((Int) -> Unit)? | 标签选中时的回调函数 | null                              | 否       |
 
 ### TabRowWithContour 属性
 
-| 属性名           | 类型             | 默认值                                       | 说明                 |
-| ---------------- | ---------------- | -------------------------------------------- | -------------------- |
-| tabs             | List\<String>    | -                                            | 标签文本列表         |
-| selectedTabIndex | Int              | -                                            | 当前选中的标签索引   |
-| modifier         | Modifier         | Modifier                                     | 应用于标签行的修饰符 |
-| colors           | TabRowColors     | TabRowDefaults.tabRowColors()                | 标签行的颜色配置     |
-| minWidth         | Dp               | TabRowDefaults.TabRowWithContourMinWidth     | 每个标签的最小宽度   |
-| height           | Dp               | TabRowDefaults.TabRowHeight                  | 标签行的高度         |
-| cornerRadius     | Dp               | TabRowDefaults.TabRowWithContourCornerRadius | 标签的圆角半径       |
-| onTabSelected    | ((Int) -> Unit)? | null                                         | 标签选中时的回调函数 |
+| 属性名           | 类型             | 说明                 | 默认值                                       | 是否必须 |
+| ---------------- | ---------------- | -------------------- | -------------------------------------------- | -------- |
+| tabs             | List\<String>    | 标签文本列表         | -                                            | 是       |
+| selectedTabIndex | Int              | 当前选中的标签索引   | -                                            | 是       |
+| modifier         | Modifier         | 应用于标签行的修饰符 | Modifier                                     | 否       |
+| colors           | TabRowColors     | 标签行的颜色配置     | TabRowDefaults.tabRowColors()                | 否       |
+| minWidth         | Dp               | 每个标签的最小宽度   | TabRowDefaults.TabRowWithContourMinWidth     | 否       |
+| height           | Dp               | 标签行的高度         | TabRowDefaults.TabRowHeight                  | 否       |
+| cornerRadius     | Dp               | 标签的圆角半径       | TabRowDefaults.TabRowWithContourCornerRadius | 否       |
+| onTabSelected    | ((Int) -> Unit)? | 标签选中时的回调函数 | null                                         | 否       |
 
 ### TabRowDefaults 对象
 
@@ -79,7 +79,7 @@ TabRowDefaults 对象提供了 TabRow 组件的默认配置。
 
 #### 方法
 
-| 方法名         | 返回类型     | 说明                     |
+| 方法名         | 类型         | 说明                     |
 | -------------- | ------------ | ------------------------ |
 | tabRowColors() | TabRowColors | 创建标签行的默认颜色配置 |
 

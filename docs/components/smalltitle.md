@@ -42,12 +42,12 @@ SmallTitle(
 
 ### SmallTitle 属性
 
-| 属性名       | 类型          | 默认值                                     | 说明               |
-| ------------ | ------------- | ------------------------------------------ | ------------------ |
-| text         | String        | -                                          | 要显示的文本内容   |
-| modifier     | Modifier      | Modifier                                   | 应用于组件的修饰符 |
-| textColor    | Color         | MiuixTheme.colorScheme.onBackgroundVariant | 标题文本颜色       |
-| insideMargin | PaddingValues | PaddingValues(28.dp, 8.dp)                 | 组件内部边距       |
+| 属性名       | 类型          | 说明               | 默认值                                     | 是否必须 |
+| ------------ | ------------- | ------------------ | ------------------------------------------ | -------- |
+| text         | String        | 要显示的文本内容   | -                                          | 是       |
+| modifier     | Modifier      | 应用于组件的修饰符 | Modifier                                   | 否       |
+| textColor    | Color         | 标题文本颜色       | MiuixTheme.colorScheme.onBackgroundVariant | 否       |
+| insideMargin | PaddingValues | 组件内部边距       | PaddingValues(28.dp, 8.dp)                 | 否       |
 
 ## 进阶用法
 

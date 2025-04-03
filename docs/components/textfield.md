@@ -78,30 +78,30 @@ TextField(
 
 ### TextField 属性
 
-| 属性名                | 类型                                         | 默认值                                               | 说明                   |
-| --------------------- | -------------------------------------------- | ---------------------------------------------------- | ---------------------- |
-| value                 | String 或 TextFieldValue                     | -                                                    | 输入框的文本值         |
-| onValueChange         | (String) -> Unit 或 (TextFieldValue) -> Unit | -                                                    | 文本变化时的回调函数   |
-| modifier              | Modifier                                     | Modifier                                             | 应用于输入框的修饰符   |
-| insideMargin          | DpSize                                       | DpSize(16.dp, 16.dp)                                 | 输入框内部边距         |
-| backgroundColor       | Color                                        | MiuixTheme.colorScheme.secondaryContainer            | 输入框背景颜色         |
-| cornerRadius          | Dp                                           | 16.dp                                                | 输入框圆角半径         |
-| label                 | String                                       | ""                                                   | 输入框标签文本         |
-| labelColor            | Color                                        | MiuixTheme.colorScheme.onSecondaryContainer          | 标签文本颜色           |
-| useLabelAsPlaceholder | Boolean                                      | false                                                | 是否使用标签作为占位符 |
-| enabled               | Boolean                                      | true                                                 | 输入框是否可用         |
-| readOnly              | Boolean                                      | false                                                | 输入框是否只读         |
-| textStyle             | TextStyle                                    | MiuixTheme.textStyles.main                           | 输入文本样式           |
-| keyboardOptions       | KeyboardOptions                              | KeyboardOptions.Default                              | 键盘选项配置           |
-| keyboardActions       | KeyboardActions                              | KeyboardActions.Default                              | 键盘操作配置           |
-| leadingIcon           | @Composable (() -> Unit)?                    | null                                                 | 前置图标               |
-| trailingIcon          | @Composable (() -> Unit)?                    | null                                                 | 后置图标               |
-| singleLine            | Boolean                                      | false                                                | 是否为单行输入         |
-| maxLines              | Int                                          | 如果 singleLine 为 true 则为 1，否则为 Int.MAX_VALUE | 最大行数               |
-| minLines              | Int                                          | 1                                                    | 最小行数               |
-| visualTransformation  | VisualTransformation                         | VisualTransformation.None                            | 视觉转换器             |
-| onTextLayout          | (TextLayoutResult) -> Unit                   | {}                                                   | 文本布局变化回调       |
-| interactionSource     | MutableInteractionSource?                    | null                                                 | 交互源                 |
+| 属性名                | 类型                                         | 说明                   | 默认值                                               | 是否必须 |
+| --------------------- | -------------------------------------------- | ---------------------- | ---------------------------------------------------- | -------- |
+| value                 | String 或 TextFieldValue                     | 输入框的文本值         | -                                                    | 是       |
+| onValueChange         | (String) -> Unit 或 (TextFieldValue) -> Unit | 文本变化时的回调函数   | -                                                    | 是       |
+| modifier              | Modifier                                     | 应用于输入框的修饰符   | Modifier                                             | 否       |
+| insideMargin          | DpSize                                       | 输入框内部边距         | DpSize(16.dp, 16.dp)                                 | 否       |
+| backgroundColor       | Color                                        | 输入框背景颜色         | MiuixTheme.colorScheme.secondaryContainer            | 否       |
+| cornerRadius          | Dp                                           | 输入框圆角半径         | 16.dp                                                | 否       |
+| label                 | String                                       | 输入框标签文本         | ""                                                   | 否       |
+| labelColor            | Color                                        | 标签文本颜色           | MiuixTheme.colorScheme.onSecondaryContainer          | 否       |
+| useLabelAsPlaceholder | Boolean                                      | 是否使用标签作为占位符 | false                                                | 否       |
+| enabled               | Boolean                                      | 输入框是否可用         | true                                                 | 否       |
+| readOnly              | Boolean                                      | 输入框是否只读         | false                                                | 否       |
+| textStyle             | TextStyle                                    | 输入文本样式           | MiuixTheme.textStyles.main                           | 否       |
+| keyboardOptions       | KeyboardOptions                              | 键盘选项配置           | KeyboardOptions.Default                              | 否       |
+| keyboardActions       | KeyboardActions                              | 键盘操作配置           | KeyboardActions.Default                              | 否       |
+| leadingIcon           | @Composable (() -> Unit)?                    | 前置图标               | null                                                 | 否       |
+| trailingIcon          | @Composable (() -> Unit)?                    | 后置图标               | null                                                 | 否       |
+| singleLine            | Boolean                                      | 是否为单行输入         | false                                                | 否       |
+| maxLines              | Int                                          | 最大行数               | 如果 singleLine 为 true 则为 1，否则为 Int.MAX_VALUE | 否       |
+| minLines              | Int                                          | 最小行数               | 1                                                    | 否       |
+| visualTransformation  | VisualTransformation                         | 视觉转换器             | VisualTransformation.None                            | 否       |
+| onTextLayout          | (TextLayoutResult) -> Unit                   | 文本布局变化回调       | {}                                                   | 否       |
+| interactionSource     | MutableInteractionSource?                    | 交互源                 | null                                                 | 否       |
 
 ## 进阶用法
 

@@ -80,30 +80,30 @@ Icon(
 
 ### Icon 属性（ImageVector 版本）
 
-| 属性名             | 类型        | 默认值                     | 说明                 |
-| ------------------ | ----------- | -------------------------- | -------------------- |
-| imageVector        | ImageVector | -                          | 要绘制的矢量图标     |
-| contentDescription | String?     | -                          | 图标的无障碍描述文本 |
-| modifier           | Modifier    | Modifier                   | 应用于图标的修饰符   |
-| tint               | Color       | IconDefaults.DefaultTint() | 应用于图标的着色颜色 |
+| 属性名             | 类型        | 说明                 | 默认值                     | 是否必须 |
+| ------------------ | ----------- | -------------------- | -------------------------- | -------- |
+| imageVector        | ImageVector | 要绘制的矢量图标     | -                          | 是       |
+| contentDescription | String?     | 图标的无障碍描述文本 | -                          | 否       |
+| modifier           | Modifier    | 应用于图标的修饰符   | Modifier                   | 否       |
+| tint               | Color       | 应用于图标的着色颜色 | IconDefaults.DefaultTint() | 否       |
 
 ### Icon 属性（ImageBitmap 版本）
 
-| 属性名             | 类型        | 默认值                     | 说明                 |
-| ------------------ | ----------- | -------------------------- | -------------------- |
-| bitmap             | ImageBitmap | -                          | 要绘制的位图图标     |
-| contentDescription | String?     | -                          | 图标的无障碍描述文本 |
-| modifier           | Modifier    | Modifier                   | 应用于图标的修饰符   |
-| tint               | Color       | IconDefaults.DefaultTint() | 应用于图标的着色颜色 |
+| 属性名             | 类型        | 说明                 | 默认值                     | 是否必须 |
+| ------------------ | ----------- | -------------------- | -------------------------- | -------- |
+| bitmap             | ImageBitmap | 要绘制的位图图标     | -                          | 是       |
+| contentDescription | String?     | 图标的无障碍描述文本 | -                          | 否       |
+| modifier           | Modifier    | 应用于图标的修饰符   | Modifier                   | 否       |
+| tint               | Color       | 应用于图标的着色颜色 | IconDefaults.DefaultTint() | 否       |
 
 ### Icon 属性（Painter 版本）
 
-| 属性名             | 类型     | 默认值                     | 说明                 |
-| ------------------ | -------- | -------------------------- | -------------------- |
-| painter            | Painter  | -                          | 要使用的绘制器       |
-| contentDescription | String?  | -                          | 图标的无障碍描述文本 |
-| modifier           | Modifier | Modifier                   | 应用于图标的修饰符   |
-| tint               | Color    | IconDefaults.DefaultTint() | 应用于图标的着色颜色 |
+| 属性名             | 类型     | 说明                 | 默认值                     | 是否必须 |
+| ------------------ | -------- | -------------------- | -------------------------- | -------- |
+| painter            | Painter  | 要使用的绘制器       | -                          | 是       |
+| contentDescription | String?  | 图标的无障碍描述文本 | -                          | 否       |
+| modifier           | Modifier | 应用于图标的修饰符   | Modifier                   | 否       |
+| tint               | Color    | 应用于图标的着色颜色 | IconDefaults.DefaultTint() | 否       |
 
 ### IconDefaults 对象
 

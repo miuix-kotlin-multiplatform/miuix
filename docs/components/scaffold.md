@@ -34,18 +34,18 @@ Scaffold(
 
 ### Scaffold 属性
 
-| 属性名                       | 类型                                | 默认值                            | 说明                                         |
-| ---------------------------- | ----------------------------------- | --------------------------------- | -------------------------------------------- |
-| modifier                     | Modifier                            | Modifier                          | 应用于脚手架的修饰符                         |
-| topBar                       | @Composable () -> Unit              | {}                                | 顶部栏，通常是 TopAppBar                     |
-| bottomBar                    | @Composable () -> Unit              | {}                                | 底部栏，通常是 NavigationBar                 |
-| floatingActionButton         | @Composable () -> Unit              | {}                                | 悬浮按钮                                     |
-| floatingActionButtonPosition | MiuixFabPosition                    | MiuixFabPosition.End              | 显示悬浮按钮的位置                           |
-| snackbarHost                 | @Composable () -> Unit              | {}                                | 用于显示 Snackbar 的容器，Miuix 不提供此组件 |
-| popupHost                    | @Composable () -> Unit              | \{ MiuixPopupHost() }             | 用于显示弹出窗口的容器                       |
-| containerColor               | Color                               | MiuixTheme.colorScheme.background | 脚手架的背景颜色                             |
-| contentWindowInsets          | WindowInsets                        | WindowInsets.statusBars           | 传递给内容的窗口插入边距                     |
-| content                      | @Composable (PaddingValues) -> Unit | -                                 | 脚手架的主要内容区域                         |
+| 属性名                       | 类型                                | 说明                                         | 默认值                            | 是否必须 |
+| ---------------------------- | ----------------------------------- | -------------------------------------------- | --------------------------------- | -------- |
+| modifier                     | Modifier                            | 应用于脚手架的修饰符                         | Modifier                          | 否       |
+| topBar                       | @Composable () -> Unit              | 顶部栏，通常是 TopAppBar                     | {}                                | 否       |
+| bottomBar                    | @Composable () -> Unit              | 底部栏，通常是 NavigationBar                 | {}                                | 否       |
+| floatingActionButton         | @Composable () -> Unit              | 悬浮按钮                                     | {}                                | 否       |
+| floatingActionButtonPosition | MiuixFabPosition                    | 显示悬浮按钮的位置                           | MiuixFabPosition.End              | 否       |
+| snackbarHost                 | @Composable () -> Unit              | 用于显示 Snackbar 的容器，Miuix 不提供此组件 | {}                                | 否       |
+| popupHost                    | @Composable () -> Unit              | 用于显示弹出窗口的容器                       | \{ MiuixPopupHost() }             | 否       |
+| containerColor               | Color                               | 脚手架的背景颜色                             | MiuixTheme.colorScheme.background | 否       |
+| contentWindowInsets          | WindowInsets                        | 传递给内容的窗口插入边距                     | WindowInsets.statusBars           | 否       |
+| content                      | @Composable (PaddingValues) -> Unit | 脚手架的主要内容区域                         | -                                 | 是       |
 
 ### MiuixFabPosition 选项
 

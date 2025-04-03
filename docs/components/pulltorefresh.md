@@ -73,16 +73,16 @@ if (pullToRefreshState.isRefreshing) {
 
 ### PullToRefresh 属性
 
-| 属性名             | 类型                   | 默认值                                 | 说明                     |
-| ------------------ | ---------------------- | -------------------------------------- | ------------------------ |
-| pullToRefreshState | PullToRefreshState     | -                                      | 下拉刷新状态控制器       |
-| onRefresh          | () -> Unit             | {}                                     | 刷新触发时的回调函数     |
-| modifier           | Modifier               | Modifier                               | 应用于容器的修饰符       |
-| color              | Color                  | PullToRefreshDefaults.color            | 刷新指示器的颜色         |
-| circleSize         | Dp                     | PullToRefreshDefaults.circleSize       | 刷新指示器圆圈的大小     |
-| refreshTexts       | List\<String>          | PullToRefreshDefaults.refreshTexts     | 不同状态下显示的文本列表 |
-| refreshTextStyle   | TextStyle              | PullToRefreshDefaults.refreshTextStyle | 刷新文本的样式           |
-| content            | @Composable () -> Unit | -                                      | 可滚动内容的可组合函数   |
+| 属性名             | 类型                   | 说明                     | 默认值                                 | 是否必须 |
+| ------------------ | ---------------------- | ------------------------ | -------------------------------------- | -------- |
+| pullToRefreshState | PullToRefreshState     | 下拉刷新状态控制器       | -                                      | 是       |
+| onRefresh          | () -> Unit             | 刷新触发时的回调函数     | {}                                     | 是       |
+| modifier           | Modifier               | 应用于容器的修饰符       | Modifier                               | 否       |
+| color              | Color                  | 刷新指示器的颜色         | PullToRefreshDefaults.color            | 否       |
+| circleSize         | Dp                     | 刷新指示器圆圈的大小     | PullToRefreshDefaults.circleSize       | 否       |
+| refreshTexts       | List\<String>          | 不同状态下显示的文本列表 | PullToRefreshDefaults.refreshTexts     | 否       |
+| refreshTextStyle   | TextStyle              | 刷新文本的样式           | PullToRefreshDefaults.refreshTextStyle | 否       |
+| content            | @Composable () -> Unit | 可滚动内容的可组合函数   | -                                      | 是       |
 
 ### PullToRefreshState 类
 
@@ -90,29 +90,29 @@ PullToRefreshState 是控制下拉刷新状态的类，可以通过 `rememberPul
 
 #### 属性
 
-| 属性名                      | 类型         | 说明                |
-| --------------------------- | ------------ | ------------------- |
-| refreshState                | RefreshState | 当前刷新状态        |
-| isRefreshing                | Boolean      | 是否正在刷新        |
-| pullProgress                | Float        | 下拉进度（0-1之间） |
-| refreshCompleteAnimProgress | Float        | 刷新完成动画进度    |
+| 属性名                      | 类型         | 说明                | 默认值 | 是否必须 |
+| --------------------------- | ------------ | ------------------- | ------ | -------- |
+| refreshState                | RefreshState | 当前刷新状态        | -      | 是       |
+| isRefreshing                | Boolean      | 是否正在刷新        | -      | 是       |
+| pullProgress                | Float        | 下拉进度（0-1之间） | -      | 是       |
+| refreshCompleteAnimProgress | Float        | 刷新完成动画进度    | -      | 是       |
 
 #### 方法
 
-| 方法名             | 参数                 | 返回类型 | 说明                     |
-| ------------------ | -------------------- | -------- | ------------------------ |
-| completeRefreshing | (suspend () -> Unit) | -        | 完成刷新并执行提供的操作 |
+| 方法名             | 参数                 | 类型 | 说明                     | 默认值 | 是否必须 |
+| ------------------ | -------------------- | ---- | ------------------------ | ------ | -------- |
+| completeRefreshing | (suspend () -> Unit) | -    | 完成刷新并执行提供的操作 | -      | 是       |
 
 ### PullToRefreshDefaults 对象
 
 PullToRefreshDefaults 对象提供了下拉刷新组件的默认值。
 
-| 属性名           | 类型          | 默认值                                              | 说明                 |
-| ---------------- | ------------- | --------------------------------------------------- | -------------------- |
-| color            | Color         | Color.Gray                                          | 刷新指示器的默认颜色 |
-| circleSize       | Dp            | 20.dp                                               | 指示器圆圈的默认大小 |
-| refreshTexts     | List\<String> | ["Pull down to refresh", "Release to refresh", ...] | 默认的刷新文本列表   |
-| refreshTextStyle | TextStyle     | TextStyle(fontSize = 14.sp, fontWeight = Bold, ...) | 默认的文本样式       |
+| 属性名           | 类型          | 说明                 | 默认值                                              |
+| ---------------- | ------------- | -------------------- | --------------------------------------------------- |
+| color            | Color         | 刷新指示器的默认颜色 | Color.Gray                                          |
+| circleSize       | Dp            | 指示器圆圈的默认大小 | 20.dp                                               |
+| refreshTexts     | List\<String> | 默认的刷新文本列表   | ["Pull down to refresh", "Release to refresh", ...] |
+| refreshTextStyle | TextStyle     | 默认的文本样式       | TextStyle(fontSize = 14.sp, fontWeight = Bold, ...) |
 
 ## 进阶用法
 

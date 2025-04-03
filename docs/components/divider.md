@@ -39,19 +39,19 @@ Row {
 
 ### HorizontalDivider 属性
 
-| 属性名    | 类型     | 默认值                       | 说明                 |
-| --------- | -------- | ---------------------------- | -------------------- |
-| modifier  | Modifier | Modifier                     | 应用于分割线的修饰符 |
-| thickness | Dp       | DividerDefaults.Thickness    | 分割线的厚度         |
-| color     | Color    | DividerDefaults.DividerColor | 分割线的颜色         |
+| 属性名    | 类型     | 说明                 | 默认值                       | 是否必须 |
+| --------- | -------- | -------------------- | ---------------------------- | -------- |
+| modifier  | Modifier | 应用于分割线的修饰符 | Modifier                     | 否       |
+| thickness | Dp       | 分割线的厚度         | DividerDefaults.Thickness    | 否       |
+| color     | Color    | 分割线的颜色         | DividerDefaults.DividerColor | 否       |
 
 ### VerticalDivider 属性
 
-| 属性名    | 类型     | 默认值                       | 说明                 |
-| --------- | -------- | ---------------------------- | -------------------- |
-| modifier  | Modifier | Modifier                     | 应用于分割线的修饰符 |
-| thickness | Dp       | DividerDefaults.Thickness    | 分割线的厚度         |
-| color     | Color    | DividerDefaults.DividerColor | 分割线的颜色         |
+| 属性名    | 类型     | 说明                 | 默认值                       | 是否必须 |
+| --------- | -------- | -------------------- | ---------------------------- | -------- |
+| modifier  | Modifier | 应用于分割线的修饰符 | Modifier                     | 否       |
+| thickness | Dp       | 分割线的厚度         | DividerDefaults.Thickness    | 否       |
+| color     | Color    | 分割线的颜色         | DividerDefaults.DividerColor | 否       |
 
 ### DividerDefaults 对象
 
@@ -59,10 +59,10 @@ DividerDefaults 对象提供了分割线组件的默认值。
 
 #### 常量
 
-| 常量名       | 类型  | 值                                 | 说明             |
-| ------------ | ----- | ---------------------------------- | ---------------- |
-| Thickness    | Dp    | 0.75.dp                            | 分割线的默认厚度 |
-| DividerColor | Color | MiuixTheme.colorScheme.dividerLine | 分割线的默认颜色 |
+| 常量名       | 类型  | 说明             | 默认值                             |
+| ------------ | ----- | ---------------- | ---------------------------------- |
+| Thickness    | Dp    | 分割线的默认厚度 | 0.75.dp                            |
+| DividerColor | Color | 分割线的默认颜色 | MiuixTheme.colorScheme.dividerLine |
 
 ## 进阶用法
 

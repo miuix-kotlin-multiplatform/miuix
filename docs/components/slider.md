@@ -35,19 +35,19 @@ Slider(
 
 ### Slider 属性
 
-| 属性名           | 类型                              | 默认值                             | 说明                     |
-| ---------------- | --------------------------------- | ---------------------------------- | ------------------------ |
-| progress         | Float                             | -                                  | 当前滑块的进度值         |
-| onProgressChange | (Float) -> Unit                   | -                                  | 进度值变化时的回调函数   |
-| modifier         | Modifier                          | Modifier                           | 应用于滑块的修饰符       |
-| enabled          | Boolean                           | true                               | 是否启用滑块             |
-| minValue         | Float                             | 0f                                 | 滑块的最小值             |
-| maxValue         | Float                             | 1f                                 | 滑块的最大值             |
-| height           | Dp                                | SliderDefaults.MinHeight           | 滑块的高度               |
-| colors           | SliderColors                      | SliderDefaults.sliderColors()      | 滑块的颜色配置           |
-| effect           | Boolean                           | false                              | 是否显示特殊效果         |
-| decimalPlaces    | Int                               | 2                                  | 拖动指示器中显示的小数位 |
-| hapticEffect     | SliderDefaults.SliderHapticEffect | SliderDefaults.DefaultHapticEffect | 滑块的触感反馈类型       |
+| 属性名           | 类型                              | 说明                     | 默认值                             | 是否必须 |
+| ---------------- | --------------------------------- | ------------------------ | ---------------------------------- | -------- |
+| progress         | Float                             | 当前滑块的进度值         | -                                  | 是       |
+| onProgressChange | (Float) -> Unit                   | 进度值变化时的回调函数   | -                                  | 是       |
+| modifier         | Modifier                          | 应用于滑块的修饰符       | Modifier                           | 否       |
+| enabled          | Boolean                           | 是否启用滑块             | true                               | 否       |
+| minValue         | Float                             | 滑块的最小值             | 0f                                 | 否       |
+| maxValue         | Float                             | 滑块的最大值             | 1f                                 | 否       |
+| height           | Dp                                | 滑块的高度               | SliderDefaults.MinHeight           | 否       |
+| colors           | SliderColors                      | 滑块的颜色配置           | SliderDefaults.sliderColors()      | 否       |
+| effect           | Boolean                           | 是否显示特殊效果         | false                              | 否       |
+| decimalPlaces    | Int                               | 拖动指示器中显示的小数位 | 2                                  | 否       |
+| hapticEffect     | SliderDefaults.SliderHapticEffect | 滑块的触感反馈类型       | SliderDefaults.DefaultHapticEffect | 否       |
 
 ### SliderDefaults 对象
 
@@ -55,7 +55,7 @@ SliderDefaults 对象提供了 Slider 组件的默认配置。
 
 #### 常量
 
-| 常量名              | 类型               | 值                      | 说明               |
+| 常量名              | 类型               | 默认值                  | 说明               |
 | ------------------- | ------------------ | ----------------------- | ------------------ |
 | MinHeight           | Dp                 | 30.dp                   | 滑块的默认高度     |
 | DefaultHapticEffect | SliderHapticEffect | SliderHapticEffect.Edge | 默认的触感反馈类型 |

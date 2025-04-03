@@ -38,13 +38,13 @@ Switch(
 
 ### Switch 属性
 
-| 属性名          | 类型                 | 默认值                        | 说明                     |
-| --------------- | -------------------- | ----------------------------- | ------------------------ |
-| checked         | Boolean              | -                             | 开关是否处于选中状态     |
-| onCheckedChange | ((Boolean) -> Unit)? | -                             | 开关状态变化时的回调函数 |
-| modifier        | Modifier             | Modifier                      | 应用于开关的修饰符       |
-| colors          | SwitchColors         | SwitchDefaults.switchColors() | 开关的颜色配置           |
-| enabled         | Boolean              | true                          | 开关是否可交互           |
+| 属性名          | 类型                 | 说明                     | 默认值                        | 是否必须 |
+| --------------- | -------------------- | ------------------------ | ----------------------------- | -------- |
+| checked         | Boolean              | 开关是否处于选中状态     | -                             | 是       |
+| onCheckedChange | ((Boolean) -> Unit)? | 开关状态变化时的回调函数 | -                             | 否       |
+| modifier        | Modifier             | 应用于开关的修饰符       | Modifier                      | 否       |
+| colors          | SwitchColors         | 开关的颜色配置           | SwitchDefaults.switchColors() | 否       |
+| enabled         | Boolean              | 开关是否可交互           | true                          | 否       |
 
 ### SwitchDefaults 对象
 
@@ -52,22 +52,22 @@ SwitchDefaults 对象提供了 Switch 组件的默认颜色配置。
 
 #### 方法
 
-| 方法名         | 返回类型     | 说明                   |
+| 方法名         | 类型         | 说明                   |
 | -------------- | ------------ | ---------------------- |
 | switchColors() | SwitchColors | 创建开关的默认颜色配置 |
 
 ### SwitchColors 类
 
-| 属性名                      | 类型  | 说明                         |
-| --------------------------- | ----- | ---------------------------- |
-| checkedThumbColor           | Color | 选中状态时滑块的颜色         |
-| uncheckedThumbColor         | Color | 未选中状态时滑块的颜色       |
-| disabledCheckedThumbColor   | Color | 禁用且选中状态时滑块的颜色   |
-| disabledUncheckedThumbColor | Color | 禁用且未选中状态时滑块的颜色 |
-| checkedTrackColor           | Color | 选中状态时轨道的颜色         |
-| uncheckedTrackColor         | Color | 未选中状态时轨道的颜色       |
-| disabledCheckedTrackColor   | Color | 禁用且选中状态时轨道的颜色   |
-| disabledUncheckedTrackColor | Color | 禁用且未选中状态时轨道的颜色 |
+| 属性名                      | 类型  | 说明                         | 默认值 | 是否必须 |
+| --------------------------- | ----- | ---------------------------- | ------ | -------- |
+| checkedThumbColor           | Color | 选中状态时滑块的颜色         | -      | 是       |
+| uncheckedThumbColor         | Color | 未选中状态时滑块的颜色       | -      | 是       |
+| disabledCheckedThumbColor   | Color | 禁用且选中状态时滑块的颜色   | -      | 是       |
+| disabledUncheckedThumbColor | Color | 禁用且未选中状态时滑块的颜色 | -      | 是       |
+| checkedTrackColor           | Color | 选中状态时轨道的颜色         | -      | 是       |
+| uncheckedTrackColor         | Color | 未选中状态时轨道的颜色       | -      | 是       |
+| disabledCheckedTrackColor   | Color | 禁用且选中状态时轨道的颜色   | -      | 是       |
+| disabledUncheckedTrackColor | Color | 禁用且未选中状态时轨道的颜色 | -      | 是       |
 
 ## 进阶用法
 
@@ -161,4 +161,4 @@ LazyColumn {
         }
     }
 }
-```
+````

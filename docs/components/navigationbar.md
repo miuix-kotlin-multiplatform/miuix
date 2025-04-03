@@ -39,28 +39,28 @@ NavigationBar 会自动处理选中项的视觉样式，选中项将显示粗体
 
 ### NavigationBar 属性
 
-| 属性名                     | 类型                  | 默认值                                  | 说明                     |
-| -------------------------- | --------------------- | --------------------------------------- | ------------------------ |
-| items                      | List\<NavigationItem> | -                                       | 导航项列表               |
-| selected                   | Int                   | -                                       | 当前选中项的索引         |
-| onClick                    | (Int) -> Unit         | -                                       | 点击导航项时的回调       |
-| modifier                   | Modifier              | Modifier                                | 应用于导航栏的修饰符     |
-| color                      | Color                 | MiuixTheme.colorScheme.surfaceContainer | 导航栏背景颜色           |
-| showDivider                | Boolean               | true                                    | 是否显示顶部分割线       |
-| defaultWindowInsetsPadding | Boolean               | true                                    | 是否应用默认窗口嵌入边距 |
+| 属性名                     | 类型                  | 说明                     | 默认值                                  | 是否必须 |
+| -------------------------- | --------------------- | ------------------------ | --------------------------------------- | -------- |
+| items                      | List\<NavigationItem> | 导航项列表               | -                                       | 是       |
+| selected                   | Int                   | 当前选中项的索引         | -                                       | 是       |
+| onClick                    | (Int) -> Unit         | 点击导航项时的回调       | -                                       | 是       |
+| modifier                   | Modifier              | 应用于导航栏的修饰符     | Modifier                                | 否       |
+| color                      | Color                 | 导航栏背景颜色           | MiuixTheme.colorScheme.surfaceContainer | 否       |
+| showDivider                | Boolean               | 是否显示顶部分割线       | true                                    | 否       |
+| defaultWindowInsetsPadding | Boolean               | 是否应用默认窗口嵌入边距 | true                                    | 否       |
 
 ### NavigationItem 属性
 
-| 属性名 | 类型        | 说明             |
-| ------ | ----------- | ---------------- |
-| label  | String      | 导航项的文本标签 |
-| icon   | ImageVector | 导航项的图标     |
+| 属性名 | 类型        | 说明             | 默认值 | 是否必须 |
+| ------ | ----------- | ---------------- | ------ | -------- |
+| label  | String      | 导航项的文本标签 | -      | 是       |
+| icon   | ImageVector | 导航项的图标     | -      | 是       |
 
 ### 常量
 
-| 常量名              | 类型 | 值                                         | 说明             |
-| ------------------- | ---- | ------------------------------------------ | ---------------- |
-| NavigationBarHeight | Dp   | 在非 iOS 平台为 64.dp，在 iOS 平台为 48.dp | 导航栏的默认高度 |
+| 常量名              | 类型 | 说明             | 值                                         | 是否必须 |
+| ------------------- | ---- | ---------------- | ------------------------------------------ | -------- |
+| NavigationBarHeight | Dp   | 导航栏的默认高度 | 在非 iOS 平台为 64.dp，在 iOS 平台为 48.dp | 是       |
 
 ## 进阶用法
 

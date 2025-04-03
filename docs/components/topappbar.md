@@ -102,30 +102,30 @@ TopAppBar(
 
 ### TopAppBar 属性
 
-| 属性名                     | 类型                            | 默认值                            | 说明                           |
-| -------------------------- | ------------------------------- | --------------------------------- | ------------------------------ |
-| title                      | String                          | -                                 | 顶部栏标题                     |
-| modifier                   | Modifier                        | Modifier                          | 应用于顶部栏的修饰符           |
-| color                      | Color                           | MiuixTheme.colorScheme.background | 顶部栏背景颜色                 |
-| largeTitle                 | String?                         | null                              | 大标题文本，不指定时使用 title |
-| navigationIcon             | @Composable () -> Unit          | {}                                | 导航图标区域的可组合函数       |
-| actions                    | @Composable RowScope.() -> Unit | {}                                | 操作按钮区域的可组合函数       |
-| scrollBehavior             | ScrollBehavior?                 | null                              | 控制顶部栏滚动行为             |
-| defaultWindowInsetsPadding | Boolean                         | true                              | 是否应用默认窗口边距           |
-| horizontalPadding          | Dp                              | 26.dp                             | 水平内容边距                   |
+| 属性名                     | 类型                            | 说明                           | 默认值                            | 是否必须 |
+| -------------------------- | ------------------------------- | ------------------------------ | --------------------------------- | -------- |
+| title                      | String                          | 顶部栏标题                     | -                                 | 是       |
+| modifier                   | Modifier                        | 应用于顶部栏的修饰符           | Modifier                          | 否       |
+| color                      | Color                           | 顶部栏背景颜色                 | MiuixTheme.colorScheme.background | 否       |
+| largeTitle                 | String?                         | 大标题文本，不指定时使用 title | null                              | 否       |
+| navigationIcon             | @Composable () -> Unit          | 导航图标区域的可组合函数       | {}                                | 否       |
+| actions                    | @Composable RowScope.() -> Unit | 操作按钮区域的可组合函数       | {}                                | 否       |
+| scrollBehavior             | ScrollBehavior?                 | 控制顶部栏滚动行为             | null                              | 否       |
+| defaultWindowInsetsPadding | Boolean                         | 是否应用默认窗口边距           | true                              | 否       |
+| horizontalPadding          | Dp                              | 水平内容边距                   | 26.dp                             | 否       |
 
 ### SmallTopAppBar 属性
 
-| 属性名                     | 类型                            | 默认值                            | 说明                     |
-| -------------------------- | ------------------------------- | --------------------------------- | ------------------------ |
-| title                      | String                          | -                                 | 顶部栏标题               |
-| modifier                   | Modifier                        | Modifier                          | 应用于顶部栏的修饰符     |
-| color                      | Color                           | MiuixTheme.colorScheme.background | 顶部栏背景颜色           |
-| navigationIcon             | @Composable () -> Unit          | {}                                | 导航图标区域的可组合函数 |
-| actions                    | @Composable RowScope.() -> Unit | {}                                | 操作按钮区域的可组合函数 |
-| scrollBehavior             | ScrollBehavior?                 | null                              | 控制顶部栏滚动行为       |
-| defaultWindowInsetsPadding | Boolean                         | true                              | 是否应用默认窗口边距     |
-| horizontalPadding          | Dp                              | 26.dp                             | 水平内容边距             |
+| 属性名                     | 类型                            | 说明                     | 默认值                            | 是否必须 |
+| -------------------------- | ------------------------------- | ------------------------ | --------------------------------- | -------- |
+| title                      | String                          | 顶部栏标题               | -                                 | 是       |
+| modifier                   | Modifier                        | 应用于顶部栏的修饰符     | Modifier                          | 否       |
+| color                      | Color                           | 顶部栏背景颜色           | MiuixTheme.colorScheme.background | 否       |
+| navigationIcon             | @Composable () -> Unit          | 导航图标区域的可组合函数 | {}                                | 否       |
+| actions                    | @Composable RowScope.() -> Unit | 操作按钮区域的可组合函数 | {}                                | 否       |
+| scrollBehavior             | ScrollBehavior?                 | 控制顶部栏滚动行为       | null                              | 否       |
+| defaultWindowInsetsPadding | Boolean                         | 是否应用默认窗口边距     | true                              | 否       |
+| horizontalPadding          | Dp                              | 水平内容边距             | 26.dp                             | 否       |
 
 ### ScrollBehavior
 

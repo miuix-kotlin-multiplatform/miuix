@@ -73,32 +73,32 @@ CircularProgressIndicator(progress = null)
 
 ### LinearProgressIndicator 属性
 
-| 属性名   | 类型                    | 默认值                                                         | 说明                           |
-| -------- | ----------------------- | -------------------------------------------------------------- | ------------------------------ |
-| progress | Float?                  | null                                                           | 当前进度值，null表示不确定状态 |
-| modifier | Modifier                | Modifier                                                       | 应用于进度条的修饰符           |
-| colors   | ProgressIndicatorColors | ProgressIndicatorDefaults.progressIndicatorColors()            | 进度条的颜色配置               |
-| height   | Dp                      | ProgressIndicatorDefaults.DefaultLinearProgressIndicatorHeight | 进度条的高度                   |
+| 属性名   | 类型                    | 说明                           | 默认值                                                         | 是否必须 |
+| -------- | ----------------------- | ------------------------------ | -------------------------------------------------------------- | -------- |
+| progress | Float?                  | 当前进度值，null表示不确定状态 | null                                                           | 否       |
+| modifier | Modifier                | 应用于进度条的修饰符           | Modifier                                                       | 否       |
+| colors   | ProgressIndicatorColors | 进度条的颜色配置               | ProgressIndicatorDefaults.progressIndicatorColors()            | 否       |
+| height   | Dp                      | 进度条的高度                   | ProgressIndicatorDefaults.DefaultLinearProgressIndicatorHeight | 否       |
 
 ### CircularProgressIndicator 属性
 
-| 属性名      | 类型                    | 默认值                                                                | 说明                           |
-| ----------- | ----------------------- | --------------------------------------------------------------------- | ------------------------------ |
-| progress    | Float?                  | null                                                                  | 当前进度值，null表示不确定状态 |
-| modifier    | Modifier                | Modifier                                                              | 应用于进度条的修饰符           |
-| colors      | ProgressIndicatorColors | ProgressIndicatorDefaults.progressIndicatorColors()                   | 进度条的颜色配置               |
-| strokeWidth | Dp                      | ProgressIndicatorDefaults.DefaultCircularProgressIndicatorStrokeWidth | 环形进度条的描边宽度           |
-| size        | Dp                      | ProgressIndicatorDefaults.DefaultCircularProgressIndicatorSize        | 环形进度条的大小               |
+| 属性名      | 类型                    | 说明                           | 默认值                                                                | 是否必须 |
+| ----------- | ----------------------- | ------------------------------ | --------------------------------------------------------------------- | -------- |
+| progress    | Float?                  | 当前进度值，null表示不确定状态 | null                                                                  | 否       |
+| modifier    | Modifier                | 应用于进度条的修饰符           | Modifier                                                              | 否       |
+| colors      | ProgressIndicatorColors | 进度条的颜色配置               | ProgressIndicatorDefaults.progressIndicatorColors()                   | 否       |
+| strokeWidth | Dp                      | 环形进度条的描边宽度           | ProgressIndicatorDefaults.DefaultCircularProgressIndicatorStrokeWidth | 否       |
+| size        | Dp                      | 环形进度条的大小               | ProgressIndicatorDefaults.DefaultCircularProgressIndicatorSize        | 否       |
 
 ### InfiniteProgressIndicator 属性
 
-| 属性名          | 类型     | 默认值                                                                    | 说明                 |
-| --------------- | -------- | ------------------------------------------------------------------------- | -------------------- |
-| modifier        | Modifier | Modifier                                                                  | 应用于进度条的修饰符 |
-| color           | Color    | Color.Gray                                                                | 进度指示器的颜色     |
-| size            | Dp       | ProgressIndicatorDefaults.DefaultInfiniteProgressIndicatorSize            | 进度指示器的大小     |
-| strokeWidth     | Dp       | ProgressIndicatorDefaults.DefaultInfiniteProgressIndicatorStrokeWidth     | 环形轨道的描边宽度   |
-| orbitingDotSize | Dp       | ProgressIndicatorDefaults.DefaultInfiniteProgressIndicatorOrbitingDotSize | 环绕点的大小         |
+| 属性名          | 类型     | 说明                 | 默认值                                                                    | 是否必须 |
+| --------------- | -------- | -------------------- | ------------------------------------------------------------------------- | -------- |
+| modifier        | Modifier | 应用于进度条的修饰符 | Modifier                                                                  | 否       |
+| color           | Color    | 进度指示器的颜色     | Color.Gray                                                                | 否       |
+| size            | Dp       | 进度指示器的大小     | ProgressIndicatorDefaults.DefaultInfiniteProgressIndicatorSize            | 否       |
+| strokeWidth     | Dp       | 环形轨道的描边宽度   | ProgressIndicatorDefaults.DefaultInfiniteProgressIndicatorStrokeWidth     | 否       |
+| orbitingDotSize | Dp       | 环绕点的大小         | ProgressIndicatorDefaults.DefaultInfiniteProgressIndicatorOrbitingDotSize | 否       |
 
 ### ProgressIndicatorDefaults 对象
 
@@ -106,18 +106,18 @@ ProgressIndicatorDefaults 对象提供了进度指示器组件的默认值和颜
 
 #### 常量
 
-| 常量名                                          | 类型 | 值    | 说明                     |
-| ----------------------------------------------- | ---- | ----- | ------------------------ |
-| DefaultLinearProgressIndicatorHeight            | Dp   | 6.dp  | 线性进度条的默认高度     |
-| DefaultCircularProgressIndicatorStrokeWidth     | Dp   | 4.dp  | 环形进度条的默认描边宽度 |
-| DefaultCircularProgressIndicatorSize            | Dp   | 30.dp | 环形进度条的默认大小     |
-| DefaultInfiniteProgressIndicatorStrokeWidth     | Dp   | 2.dp  | 无限指示器的默认描边宽度 |
-| DefaultInfiniteProgressIndicatorOrbitingDotSize | Dp   | 2.dp  | 无限指示器默认环绕点大小 |
-| DefaultInfiniteProgressIndicatorSize            | Dp   | 20.dp | 无限指示器的默认大小     |
+| 常量名                                          | 类型 | 默认值 | 说明                     |
+| ----------------------------------------------- | ---- | ------ | ------------------------ |
+| DefaultLinearProgressIndicatorHeight            | Dp   | 6.dp   | 线性进度条的默认高度     |
+| DefaultCircularProgressIndicatorStrokeWidth     | Dp   | 4.dp   | 环形进度条的默认描边宽度 |
+| DefaultCircularProgressIndicatorSize            | Dp   | 30.dp  | 环形进度条的默认大小     |
+| DefaultInfiniteProgressIndicatorStrokeWidth     | Dp   | 2.dp   | 无限指示器的默认描边宽度 |
+| DefaultInfiniteProgressIndicatorOrbitingDotSize | Dp   | 2.dp   | 无限指示器默认环绕点大小 |
+| DefaultInfiniteProgressIndicatorSize            | Dp   | 20.dp  | 无限指示器的默认大小     |
 
 #### 方法
 
-| 方法名                    | 返回类型                | 说明                         |
+| 方法名                    | 类型                    | 说明                         |
 | ------------------------- | ----------------------- | ---------------------------- |
 | progressIndicatorColors() | ProgressIndicatorColors | 创建进度指示器的默认颜色配置 |
 

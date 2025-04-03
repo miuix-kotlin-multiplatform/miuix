@@ -22,13 +22,13 @@ Card {
 
 ### Card 属性
 
-| 属性名       | 类型                               | 默认值                      | 说明                     |
-| ------------ | ---------------------------------- | --------------------------- | ------------------------ |
-| modifier     | Modifier                           | Modifier                    | 应用于卡片的修饰符       |
-| cornerRadius | Dp                                 | CardDefaults.CornerRadius   | 卡片圆角半径             |
-| insideMargin | PaddingValues                      | CardDefaults.InsideMargin   | 卡片内部边距             |
-| color        | Color                              | CardDefaults.DefaultColor() | 卡片背景颜色             |
-| content      | @Composable ColumnScope.() -> Unit | -                           | 卡片内容区域的可组合函数 |
+| 属性名       | 类型                               | 说明                     | 默认值                      | 是否必须 |
+| ------------ | ---------------------------------- | ------------------------ | --------------------------- | -------- |
+| modifier     | Modifier                           | 应用于卡片的修饰符       | Modifier                    | 否       |
+| cornerRadius | Dp                                 | 卡片圆角半径             | CardDefaults.CornerRadius   | 否       |
+| insideMargin | PaddingValues                      | 卡片内部边距             | CardDefaults.InsideMargin   | 否       |
+| color        | Color                              | 卡片背景颜色             | CardDefaults.DefaultColor() | 否       |
+| content      | @Composable ColumnScope.() -> Unit | 卡片内容区域的可组合函数 | -                           | 是       |
 
 ### CardDefaults 对象
 
@@ -36,16 +36,16 @@ CardDefaults 对象提供了卡片组件的默认值和颜色配置。
 
 #### 常量
 
-| 常量名       | 类型          | 值                  | 说明           |
-| ------------ | ------------- | ------------------- | -------------- |
-| CornerRadius | Dp            | 16.dp               | 卡片的圆角半径 |
-| InsideMargin | PaddingValues | PaddingValues(0.dp) | 卡片的内部边距 |
+| 常量名       | 类型          | 说明           | 默认值              |
+| ------------ | ------------- | -------------- | ------------------- |
+| CornerRadius | Dp            | 卡片的圆角半径 | 16.dp               |
+| InsideMargin | PaddingValues | 卡片的内部边距 | PaddingValues(0.dp) |
 
 #### 方法
 
-| 方法名         | 返回类型 | 说明               |
-| -------------- | -------- | ------------------ |
-| DefaultColor() | Color    | 创建卡片的默认颜色 |
+| 方法名         | 类型  | 说明               |
+| -------------- | ----- | ------------------ |
+| DefaultColor() | Color | 创建卡片的默认颜色 |
 
 ## 进阶用法
 

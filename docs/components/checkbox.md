@@ -37,13 +37,13 @@ Checkbox(
 
 ### Checkbox 属性
 
-| 属性名          | 类型                 | 默认值                           | 说明                     |
-| --------------- | -------------------- | -------------------------------- | ------------------------ |
-| checked         | Boolean              | -                                | 复选框是否处于选中状态   |
-| onCheckedChange | ((Boolean) -> Unit)? | -                                | 选中状态变化时的回调函数 |
-| modifier        | Modifier             | Modifier                         | 应用于复选框的修饰符     |
-| colors          | CheckboxColors       | CheckboxDefaults.checkboxColors() | 复选框的颜色配置         |
-| enabled         | Boolean              | true                             | 复选框是否可交互         |
+| 属性名          | 类型                 | 说明                     | 默认值                            | 是否必须 |
+| --------------- | -------------------- | ------------------------ | --------------------------------- | -------- |
+| checked         | Boolean              | 复选框是否处于选中状态   | -                                 | 是       |
+| onCheckedChange | ((Boolean) -> Unit)? | 选中状态变化时的回调函数 | -                                 | 是       |
+| modifier        | Modifier             | 应用于复选框的修饰符     | Modifier                          | 否       |
+| colors          | CheckboxColors       | 复选框的颜色配置         | CheckboxDefaults.checkboxColors() | 否       |
+| enabled         | Boolean              | 复选框是否可交互         | true                              | 否       |
 
 ### CheckboxDefaults 对象
 
@@ -51,22 +51,22 @@ CheckboxDefaults 对象提供了 Checkbox 组件的默认颜色配置。
 
 #### 方法
 
-| 方法名          | 返回类型      | 说明                     |
-| --------------- | ------------- | ------------------------ |
+| 方法名           | 类型           | 说明                     |
+| ---------------- | -------------- | ------------------------ |
 | checkboxColors() | CheckboxColors | 创建复选框的默认颜色配置 |
 
 ### CheckboxColors 类
 
-| 属性名                        | 类型  | 说明                           |
-| ----------------------------- | ----- | ------------------------------ |
-| checkedForegroundColor        | Color | 选中状态时前景色（对勾颜色）   |
-| uncheckedForegroundColor      | Color | 未选中状态时前景色             |
-| disabledCheckedForegroundColor| Color | 禁用且选中状态时前景色         |
-| disabledUncheckedForegroundColor| Color | 禁用且未选中状态时前景色     |
-| checkedBackgroundColor        | Color | 选中状态时背景色               |
-| uncheckedBackgroundColor      | Color | 未选中状态时背景色             |
-| disabledCheckedBackgroundColor| Color | 禁用且选中状态时背景色         |
-| disabledUncheckedBackgroundColor| Color | 禁用且未选中状态时背景色     |
+| 属性名                           | 类型  | 说明                         |
+| -------------------------------- | ----- | ---------------------------- |
+| checkedForegroundColor           | Color | 选中状态时前景色（对勾颜色） |
+| uncheckedForegroundColor         | Color | 未选中状态时前景色           |
+| disabledCheckedForegroundColor   | Color | 禁用且选中状态时前景色       |
+| disabledUncheckedForegroundColor | Color | 禁用且未选中状态时前景色     |
+| checkedBackgroundColor           | Color | 选中状态时背景色             |
+| uncheckedBackgroundColor         | Color | 未选中状态时背景色           |
+| disabledCheckedBackgroundColor   | Color | 禁用且选中状态时背景色       |
+| disabledUncheckedBackgroundColor | Color | 禁用且未选中状态时背景色     |
 
 ## 进阶用法
 
