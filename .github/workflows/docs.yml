@@ -1,5 +1,5 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: Build Dokka Page
+name: Build Docs Page
 
 on:
   # Only run this workflow manually from the Actions tab
@@ -30,15 +30,19 @@ jobs:
           java-version: '21'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-      - name: Build Dokka
+      - name: Build Docs
         run: |
           ./gradlew :miuix:dokkaGenerate
+          mv ./miuix/build/dokka/html/* ./miuix/docs/public/dokka
+          cd ./docs
+          yarn install
+          yarn docs:build
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./miuix/build/dokka/html
+          path: ./miuix/docs/.vitepress/dist
 
   deploy:
     environment:

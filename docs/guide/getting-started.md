@@ -100,7 +100,5 @@ Scaffold(
 Scaffold 组件为跨平台提供了一个合适的弹出窗口的容器。`SuperDialog`、`SuperDropdown`、`SuperSpinner`、`ListPopup` 等组件都基于此实现弹出窗口，因此都需要被该组件包裹。
 :::
 
-## 下一步
-
-- 查看[组件库](/components/index)了解所有可用组件
-- 浏览[示例应用](https://github.com/YuKongA/miuix-kotlin-multiplatform/tree/main/example)获取实际使用案例
+## API 文档
+- 查看 [API 文档](/dokka/index.html){target="_blank"}，此文档使用 Dokka 生成，包含了所有 API 的详细信息。
