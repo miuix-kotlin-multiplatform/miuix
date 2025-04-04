@@ -14,7 +14,7 @@ publishing {
         // Provide artifacts information required by Maven Central
         pom {
             name.set("miuix")
-            description.set("A UI Library for Kotlin MultiPlatform")
+            description.set("A UI library for Compose MultiPlatform")
             url.set("https://github.com/miuix-kotlin-multiplatform/miuix")
 
             licenses {

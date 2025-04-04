@@ -4,7 +4,9 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -88,58 +90,54 @@ fun ColorPicker(
             onColorChanged(selectedColor)
         }
     }
+    Column(
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        // Color preview
+        if (showPreview) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(26.dp)
+                    .clip(SmoothRoundedCornerShape(50.dp))
+                    .background(selectedColor)
+            )
+        }
 
-    // Color preview
-    if (showPreview) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(26.dp)
-                .clip(SmoothRoundedCornerShape(50.dp))
-                .background(selectedColor)
+        // Hue selection
+        HueSlider(
+            currentHue = currentHue,
+            onHueChanged = { newHue -> currentHue = newHue * 360f },
+            hapticEffect = hapticEffect
         )
-        Spacer(modifier = Modifier.height(12.dp))
+
+        // Saturation selection
+        SaturationSlider(
+            currentHue = currentHue,
+            currentSaturation = currentSaturation,
+            onSaturationChanged = { currentSaturation = it },
+            hapticEffect = hapticEffect
+        )
+
+        // Value selection
+        ValueSlider(
+            currentHue = currentHue,
+            currentSaturation = currentSaturation,
+            currentValue = currentValue,
+            onValueChanged = { currentValue = it },
+            hapticEffect = hapticEffect
+        )
+
+        // Alpha selection
+        AlphaSlider(
+            currentHue = currentHue,
+            currentSaturation = currentSaturation,
+            currentValue = currentValue,
+            currentAlpha = currentAlpha,
+            onAlphaChanged = { currentAlpha = it },
+            hapticEffect = hapticEffect
+        )
     }
-
-    // Hue selection
-    HueSlider(
-        currentHue = currentHue,
-        onHueChanged = { newHue -> currentHue = newHue * 360f },
-        hapticEffect = hapticEffect
-    )
-
-    Spacer(modifier = Modifier.height(12.dp))
-
-    // Saturation selection
-    SaturationSlider(
-        currentHue = currentHue,
-        currentSaturation = currentSaturation,
-        onSaturationChanged = { currentSaturation = it },
-        hapticEffect = hapticEffect
-    )
-
-    Spacer(modifier = Modifier.height(12.dp))
-
-    // Value selection
-    ValueSlider(
-        currentHue = currentHue,
-        currentSaturation = currentSaturation,
-        currentValue = currentValue,
-        onValueChanged = { currentValue = it },
-        hapticEffect = hapticEffect
-    )
-
-    Spacer(modifier = Modifier.height(12.dp))
-
-    // Alpha selection
-    AlphaSlider(
-        currentHue = currentHue,
-        currentSaturation = currentSaturation,
-        currentValue = currentValue,
-        currentAlpha = currentAlpha,
-        onAlphaChanged = { currentAlpha = it },
-        hapticEffect = hapticEffect
-    )
 }
 
 /**

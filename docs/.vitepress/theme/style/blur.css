@@ -1,0 +1,51 @@
+:root {
+
+    /* 亮色模式搜索框颜色 */
+    --miuix-color-search-button: rgba(255, 255, 255, 0.5);
+
+    /* 首页下滑后导航透明 */
+    .VPNavBar:not(.has-sidebar):not(.home.top) {
+        background-color: rgba(255, 255, 255, 0);
+        backdrop-filter: blur(15px)
+    }
+
+    /* 搜索框透明 */
+    .DocSearch-Button {
+        background-color: var(--miuix-color-search-button);
+        backdrop-filter: blur(15px)
+    }
+
+    /* Feature 透明 */
+    .VPFeature {
+        border: none;
+        box-shadow: 0 10px 30px 0 rgb(0 0 0 / 15%);
+        background-color: transparent;
+    }
+
+    /* 文档页侧边栏顶部透明 */
+    .curtain {
+        background-color: rgba(255, 255, 255, 0);
+        backdrop-filter: blur(15px)
+    }
+
+    @media (min-width: 960px) {
+
+        /* 文档页导航中间透明 */
+        .VPNavBar:not(.home.top) .content-body {
+            background-color: rgba(255, 255, 255, 0);
+            backdrop-filter: blur(15px)
+        }
+    }
+
+    /* 移动端大纲栏透明 */
+    .VPLocalNav {
+        background-color: rgba(255, 255, 255, 0);
+        backdrop-filter: blur(15px)
+    }
+}
+
+
+.dark {
+    /* 深色模式搜索框颜色 */
+    --miuix-color-search-button: rgba(0, 0, 0, 0.2);
+}

@@ -10,4 +10,8 @@ local.properties
 xcuserdata
 .kotlin
 *.lock
-example/src/commonMain/kotlin/utils/VersionInfo.kt
+convention-plugins/bin
+docs/node_modules
+docs/.vitepress/dist
+docs/.vitepress/cache
+docs/public/dokka

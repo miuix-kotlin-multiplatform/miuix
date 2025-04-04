@@ -3,7 +3,6 @@
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
 
 plugins {
@@ -17,6 +16,7 @@ val appName = "Miuix"
 val pkgName = "top.yukonga.miuix.uitest"
 val verName = "1.0.3"
 val verCode = getVersionCode()
+val generatedSrcDir = layout.buildDirectory.dir("generated").get().asFile.resolve("miuix-example")
 
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(21)
@@ -80,7 +80,9 @@ kotlin {
 
     sourceSets {
         val desktopMain by getting
-
+        val commonMain by getting {
+            kotlin.srcDir(generatedSrcDir.resolve("kotlin").absolutePath)
+        }
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
         }
@@ -199,22 +201,26 @@ fun getVersionCode(): Int {
 
 val generateVersionInfo by tasks.registering {
     doLast {
-        val jdkVersion = System.getProperty("java.version")
-        val file = file("src/commonMain/kotlin/utils/VersionInfo.kt")
+        val file = generatedSrcDir.resolve("kotlin/misc/VersionInfo.kt")
+        if (!file.exists()) {
+            file.parentFile.mkdirs()
+            file.createNewFile()
+        }
         file.writeText(
             """
-            package utils
-            
+            package misc
+
             object VersionInfo {
                 const val VERSION_NAME = "$verName"
                 const val VERSION_CODE = $verCode
-                const val JDK_VERSION = "$jdkVersion"
+                const val JDK_VERSION = "${System.getProperty("java.version")}"
+
             }
             """.trimIndent()
         )
     }
 }
 
-tasks.withType<KotlinCompile>().configureEach {
+tasks.named("generateComposeResClass").configure {
     dependsOn(generateVersionInfo)
 }
