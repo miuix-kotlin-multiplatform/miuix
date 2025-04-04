@@ -1,14 +1,14 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  base: '/',
+  base: '/miuix/',
 
   title: "Miuix",
 
   description: "A UI library for Compose MultiPlatform",
 
   head: [
-    ['link', { rel: 'icon', href: '/Icon.webp' }],
+    ['link', { rel: 'icon', href: '/miuix/Icon.webp' }],
     ['link', { rel: 'preconnect', href: 'https://cdn-font.hyperos.mi.com/font/css?family=MiSans_VF:VF:Chinese_Simplify,Latin&display=swap' }],
   ],
 
