@@ -17,6 +17,7 @@ PullToRefresh 组件可以包裹任何可滚动的内容：
 val pullToRefreshState = rememberPullToRefreshState()
 var items by remember { mutableStateOf(1) }
 val scope = rememberCoroutineScope()
+
 Surface{
     PullToRefresh(
         pullToRefreshState = pullToRefreshState,
@@ -120,6 +121,7 @@ PullToRefreshDefaults 对象提供了下拉刷新组件的默认值。
 
 ```kotlin
 val pullToRefreshState = rememberPullToRefreshState()
+
 PullToRefresh(
     pullToRefreshState = pullToRefreshState,
     color = Color.Blue,
@@ -135,6 +137,7 @@ PullToRefresh(
 
 ```kotlin
 val pullToRefreshState = rememberPullToRefreshState()
+
 PullToRefresh(
     pullToRefreshState = pullToRefreshState,
     refreshTexts = listOf(
@@ -157,6 +160,7 @@ PullToRefresh(
 val pullToRefreshState = rememberPullToRefreshState()
 var items by remember { mutableStateOf(List(5) { "Item $it" }) }
 val scope = rememberCoroutineScope()
+
 PullToRefresh(
     pullToRefreshState = pullToRefreshState,
     onRefresh = {

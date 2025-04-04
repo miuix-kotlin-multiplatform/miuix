@@ -44,8 +44,9 @@ IconButton(
 IconButton 支持通过 `holdDownState` 参数控制按下状态，通常用于显示弹出对话框时的视觉反馈：
 
 ```kotlin
+var showDialog = remember { mutableStateOf(false) }
+
 Scaffold {
-    var showDialog = remember { mutableStateOf(false) }
     IconButton(
         onClick = { showDialog.value = true },
         holdDownState = showDialog.value
@@ -151,6 +152,7 @@ Surface {
 
 ```kotlin
 var isLiked by remember { mutableStateOf(false) }
+
 IconButton(
     onClick = { isLiked = !isLiked }
 ) {

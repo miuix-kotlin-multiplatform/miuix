@@ -47,8 +47,9 @@ SuperArrow(
 SuperArrow 支持通过 `holdDownState` 参数控制按下状态，通常用于显示弹出对话框时的视觉反馈：
 
 ```kotlin
+var showDialog = remember { mutableStateOf(false) }
+
 Scaffold {
-    var showDialog = remember { mutableStateOf(false) }
     SuperArrow(
         title = "打开对话框",
         summary = "点击显示对话框",
@@ -138,6 +139,7 @@ SuperArrow(
 ```kotlin
 var showDialog = remember { mutableStateOf(false) }
 var language by remember { mutableStateOf("简体中文") }
+
 Scaffold {
     SuperArrow(
         title = "语言设置",

@@ -16,14 +16,20 @@ import top.yukonga.miuix.kmp.basic.InfiniteProgressIndicator // 无限旋转指�
 
 线性进度条可用于展示操作的进度：
 
+
+
 ```kotlin
 // 确定进度的线性进度条
 var progress by remember { mutableStateOf(0.3f) }
-LinearProgressIndicator(progress = progress)
 
+LinearProgressIndicator(progress = progress)
+```
+
+```kotlin
 // 不确定进度的线性进度条
 LinearProgressIndicator()
 ```
+
 
 ### 环形进度条
 
@@ -32,8 +38,11 @@ LinearProgressIndicator()
 ```kotlin
 // 确定进度的环形进度条
 var progress by remember { mutableStateOf(0.7f) }
-CircularProgressIndicator(progress = progress)
 
+CircularProgressIndicator(progress = progress)
+```
+
+```kotlin
 // 不确定进度的环形进度条
 CircularProgressIndicator()
 ```
@@ -56,6 +65,7 @@ InfiniteProgressIndicator()
 
 ```kotlin
 var progress by remember { mutableStateOf(0.6f) }
+
 LinearProgressIndicator(progress = progress)
 CircularProgressIndicator(progress = progress)
 ```
@@ -135,6 +145,7 @@ ProgressIndicatorDefaults 对象提供了进度指示器组件的默认值和颜
 
 ```kotlin
 var progress by remember { mutableStateOf(0.4f) }
+
 LinearProgressIndicator(
     progress = progress,
     colors = ProgressIndicatorDefaults.progressIndicatorColors(
@@ -148,6 +159,7 @@ LinearProgressIndicator(
 
 ```kotlin
 var progress by remember { mutableStateOf(0.75f) }
+
 CircularProgressIndicator(
     progress = progress,
     size = 50.dp,
@@ -160,6 +172,7 @@ CircularProgressIndicator(
 ```kotlin
 var isLoading by remember { mutableStateOf(false) }
 val scope = rememberCoroutineScope()
+
 Button(
     onClick = {
         isLoading = true
@@ -200,6 +213,7 @@ InfiniteProgressIndicator(
 
 ```kotlin
 var isLoading by remember { mutableStateOf(true) }
+
 Card(
     modifier = Modifier
         .fillMaxWidth()

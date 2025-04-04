@@ -70,6 +70,7 @@ Scaffold(
 
 ```kotlin
 val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
+
 Scaffold(
     topBar = {
         TopAppBar(
@@ -150,6 +151,7 @@ Scaffold(
 ```kotlin
 val snackbarHostState = remember { SnackbarHostState() }
 val scope = rememberCoroutineScope()
+
 Scaffold(
     snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     topBar = {

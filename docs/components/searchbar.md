@@ -14,6 +14,7 @@ import top.yukonga.miuix.kmp.basic.InputField
 ```kotlin
 var searchText by remember { mutableStateOf("") }
 var expanded by remember { mutableStateOf(false) }
+
 SearchBar(
     inputField = {
         InputField(
@@ -70,6 +71,7 @@ SearchBar(
 ```kotlin
 var searchText by remember { mutableStateOf("") }
 var expanded by remember { mutableStateOf(false) }
+
 SearchBar(
     inputField = {
         InputField(
@@ -100,6 +102,7 @@ SearchBar(
 var searchText by remember { mutableStateOf("") }
 var expanded by remember { mutableStateOf(false) }
 val suggestions = listOf("建议 1", "建议 2", "建议 3")
+
 SearchBar(
     inputField = {
         InputField(
@@ -132,6 +135,7 @@ SearchBar(
 ```kotlin
 var searchText by remember { mutableStateOf("") }
 var expanded by remember { mutableStateOf(false) }
+
 SearchBar(
     modifier = Modifier.padding(horizontal = 12.dp),
     inputField = {

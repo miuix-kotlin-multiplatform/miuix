@@ -14,6 +14,7 @@ SuperSwitch 组件提供了基本的开关功能：
 
 ```kotlin
 var isChecked by remember { mutableStateOf(false) }
+
 SuperSwitch(
     title = "开关选项",
     checked = isChecked,
@@ -25,6 +26,7 @@ SuperSwitch(
 
 ```kotlin
 var wifiEnabled by remember { mutableStateOf(false) }
+
 SuperSwitch(
     title = "WiFi",
     summary = "打开以连接到无线网络",
@@ -73,6 +75,7 @@ SuperSwitch(
 
 ```kotlin
 var enabled by remember { mutableStateOf(false) }
+
 SuperSwitch(
     title = "测试",
     summary = "启用以允许测试",
@@ -93,6 +96,7 @@ SuperSwitch(
 
 ```kotlin
 var locationEnabled by remember { mutableStateOf(false) }
+
 SuperSwitch(
     title = "位置服务",
     summary = "允许应用获取位置信息",
@@ -138,6 +142,7 @@ Column {
 
 ```kotlin
 var customEnabled by remember { mutableStateOf(false) }
+
 SuperSwitch(
     title = "自定义颜色",
     titleColor = BasicComponentDefaults.titleColor(
@@ -161,6 +166,7 @@ SuperSwitch(
 ```kotlin
 var showDialog = remember { mutableStateOf(false) }
 var option by remember { mutableStateOf(false) }
+
 Scaffold {
     SuperArrow(
         title = "高级设置",

@@ -14,6 +14,7 @@ ColorPicker 组件可以让用户选择自定义颜色：
 
 ```kotlin
 var selectedColor by remember { mutableStateOf(Color.Red) }
+
 ColorPicker(
     initialColor = selectedColor,
     onColorChanged = { newColor ->
@@ -68,6 +69,7 @@ ColorPicker 提供了四种不同的滑块组件，可以单独使用：
 
 ```kotlin
 var hue by remember { mutableStateOf(0f) }
+
 HueSlider(
     currentHue = hue,
     onHueChanged = { newHue -> 
@@ -80,6 +82,7 @@ HueSlider(
 
 ```kotlin
 var saturation by remember { mutableStateOf(0.5f) }
+
 SaturationSlider(
     currentHue = 180f, // 当前色相
     currentSaturation = saturation,
@@ -93,6 +96,7 @@ SaturationSlider(
 
 ```kotlin
 var value by remember { mutableStateOf(0.5f) }
+
 ValueSlider(
     currentHue = 180f, // 当前色相
     currentSaturation = 0.5f, // 当前饱和度
@@ -107,6 +111,7 @@ ValueSlider(
 
 ```kotlin
 var alpha by remember { mutableStateOf(1f) }
+
 AlphaSlider(
     currentHue = 180f, // 当前色相
     currentSaturation = 0.5f, // 当前饱和度
@@ -133,13 +138,17 @@ var hexValue by remember(currentColor) {
                 (currentColor.blue * 255).toInt().toString(16).padStart(2, '0').uppercase()
     )
 }
+
 Surface {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Text("选择颜色", style = MiuixTheme.textStyles.title2)
+        Text(
+            text = "选择颜色",
+            style = MiuixTheme.textStyles.title2
+        )
         Spacer(modifier = Modifier.height(16.dp))
         ColorPicker(
             initialColor = currentColor,
@@ -168,6 +177,7 @@ Surface {
 ```kotlin
 var showColorDialog = remember { mutableStateOf(false) }
 var selectedColor by remember { mutableStateOf(Color.Red) }
+
 Scaffold { 
     TextButton(
         text = "选择颜色",

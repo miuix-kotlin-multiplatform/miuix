@@ -9,9 +9,9 @@ Miuix 是一个支持多种平台的 Compose Multiplatform UI 框架，允许您
 - **Android**：适用于 Android 移动设备
 - **iOS**：适用于 iPhone 和 iPad 设备
 - **Desktop(JVM)**：适用于基于 JVM 的桌面应用
-- **WasmJs**：适用于 WebAssembly 环境
+- **WasmJs**：适用于 WebAssembly(Web) 环境
 - **MacOS**：适用于 macOS 原生应用
-- **Js**：适用于 JavaScript 环境
+- **Js**：适用于 JavaScript(Web) 环境
 
 ## 平台检测与适配
 

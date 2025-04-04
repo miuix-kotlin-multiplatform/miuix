@@ -55,6 +55,7 @@ BasicComponent(
 
 ```kotlin
 var isFlightMode by remember { mutableStateOf(false) }
+
 BasicComponent(
     title = "飞行模式",
     rightActions = {
@@ -181,6 +182,7 @@ BasicComponent(
 
 ```kotlin
 val options = listOf("选项1", "选项2", "选项3", "选项4")
+
 Column {
     options.forEach { option ->
         BasicComponent(

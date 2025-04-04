@@ -14,6 +14,7 @@ Switch 组件可以用于在两种状态间切换：
 
 ```kotlin
 var checked by remember { mutableStateOf(false) }
+
 Switch(
     checked = checked,
     onCheckedChange = { checked = it }
@@ -26,6 +27,7 @@ Switch(
 
 ```kotlin
 var checked by remember { mutableStateOf(false) }
+
 Switch(
     checked = checked,
     onCheckedChange = { checked = it },
@@ -75,6 +77,7 @@ SwitchDefaults 对象提供了 Switch 组件的默认颜色配置。
 
 ```kotlin
 var checked by remember { mutableStateOf(false) }
+
 Switch(
     checked = checked,
     onCheckedChange = { checked = it },
@@ -89,6 +92,7 @@ Switch(
 
 ```kotlin
 var checked by remember { mutableStateOf(false) }
+
 Row(
     verticalAlignment = Alignment.CenterVertically,
     modifier = Modifier.padding(16.dp)
@@ -107,6 +111,7 @@ Row(
 ```kotlin
 val options = listOf("飞行模式", "蓝牙", "位置服务")
 val checkedStates = remember { mutableStateListOf(false, true, false) }
+
 LazyColumn {
     items(options.size) { index ->
         Row(
@@ -135,6 +140,7 @@ val options = remember {
         Option("位置服务", false)
     )
 }
+
 LazyColumn {
     items(options.size) { index ->
         Row(

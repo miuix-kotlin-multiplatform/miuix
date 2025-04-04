@@ -3,7 +3,7 @@
 `ListPopup` 是 Miuix 中的弹出列表组件，用于显示一个包含多个选项的弹出菜单。它提供了一个轻量级的、悬浮在界面上的临时列表，适用于各种下拉菜单、上下文菜单等场景。
 
 ::: warning 注意
-`ListPopup` 需要在 `Scaffold` 组件内使用！使用 `dismissPopup()` 函数关闭弹出菜单。
+`ListPopup` 需要在 `Scaffold` 组件内使用！请使用 `dismissPopup(show)` 函数关闭弹出菜单。
 :::
 
 ## 引入
@@ -11,6 +11,7 @@
 ```kotlin
 import top.yukonga.miuix.kmp.basic.ListPopup
 import top.yukonga.miuix.kmp.basic.ListPopupColumn
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup
 ```
 
 ## 基本用法
@@ -21,6 +22,7 @@ ListPopup 组件可以用于创建简单的下拉菜单：
 var showPopup = remember { mutableStateOf(false) }
 var selectedIndex by remember { mutableStateOf(0) }
 val items = listOf("选项 1", "选项 2", "选项 3")
+
 Scaffold {
     Box {
         TextButton(
@@ -58,6 +60,7 @@ ListPopup 可以设置不同的对齐方式：
 
 ```kotlin
 var showPopup = remember { mutableStateOf(false) }
+
 ListPopup(
     show = showPopup,
     onDismissRequest = { dismissPopup(showPopup) } // 关闭弹出菜单
@@ -74,6 +77,7 @@ ListPopup(
 
 ```kotlin
 var showPopup = remember { mutableStateOf(false) }
+
 ListPopup(
     show = showPopup,
     onDismissRequest = { dismissPopup(showPopup) } // 关闭弹出菜单
@@ -134,6 +138,7 @@ PopupPositionProvider 接口定义了计算弹出列表位置的方法。
 
 ```kotlin
 var showPopup = remember { mutableStateOf(false) }
+
 Scaffold {
     Box {
         TextButton(

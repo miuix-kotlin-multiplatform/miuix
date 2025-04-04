@@ -14,6 +14,7 @@ TextField 组件可以用于获取用户输入：
 
 ```kotlin
 var text by remember { mutableStateOf("") }
+
 TextField(
     value = text,
     onValueChange = { text = it },
@@ -29,6 +30,7 @@ TextField(
 
 ```kotlin
 var text by remember { mutableStateOf("") }
+
 TextField(
     value = text,
     onValueChange = { text = it },
@@ -40,6 +42,7 @@ TextField(
 
 ```kotlin
 var text by remember { mutableStateOf("") }
+
 TextField(
     value = text,
     onValueChange = { text = it },
@@ -66,6 +69,7 @@ TextField(
 
 ```kotlin
 var text by remember { mutableStateOf("这是只读内容") }
+
 TextField(
     value = text,
     onValueChange = { text = it },
@@ -109,6 +113,7 @@ TextField(
 
 ```kotlin
 var text by remember { mutableStateOf("") }
+
 TextField(
     value = text,
     onValueChange = { text = it },
@@ -128,6 +133,7 @@ TextField(
 ```kotlin
 var password by remember { mutableStateOf("") }
 var passwordVisible by remember { mutableStateOf(false) }
+
 TextField(
     value = password,
     onValueChange = { password = it },
@@ -156,6 +162,7 @@ var email by remember { mutableStateOf("") }
 var isError by remember { mutableStateOf(false) }
 var errorColor = Color.Red.copy(0.3f)
 val emailPattern = remember { Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+") }
+
 Column {
     TextField(
         value = email,
@@ -182,6 +189,7 @@ Column {
 
 ```kotlin
 var text by remember { mutableStateOf("") }
+
 TextField(
     value = text,
     onValueChange = { text = it },
@@ -202,6 +210,7 @@ TextField(
 
 ```kotlin
 var textFieldValue by remember { mutableStateOf(TextFieldValue("")) }
+
 TextField(
     value = textFieldValue,
     onValueChange = { textFieldValue = it },

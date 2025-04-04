@@ -54,12 +54,13 @@ SmallTitle(
 ### 与其他组件组合使用
 
 ```kotlin
+var checked by remember { mutableStateOf(false) }
+
 Column {
     SmallTitle(text = "设置")
     Card(
         modifier = Modifier.padding(horizontal = 12.dp).padding(bottom = 12.dp)
     ) {
-        var checked by remember { mutableStateOf(false) }
         SuperSwitch(
             title = "蓝牙",
             checked = checked,

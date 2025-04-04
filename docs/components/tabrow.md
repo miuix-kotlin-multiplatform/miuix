@@ -16,6 +16,7 @@ import top.yukonga.miuix.kmp.basic.TabRowWithContour // 带轮廓样式
 ```kotlin
 val tabs = listOf("推荐", "关注", "热门", "精选")
 var selectedTabIndex by remember { mutableStateOf(0) }
+
 TabRow(
     tabs = tabs,
     selectedTabIndex = selectedTabIndex,
@@ -28,6 +29,7 @@ TabRow(
 ```kotlin
 val tabs = listOf("全部", "照片", "视频", "文档")
 var selectedTabIndex by remember { mutableStateOf(0) }
+
 TabRowWithContour(
     tabs = tabs,
     selectedTabIndex = selectedTabIndex,
@@ -99,6 +101,7 @@ TabRowDefaults 对象提供了 TabRow 组件的默认配置。
 ```kotlin
 val tabs = listOf("最新", "热门", "关注")
 var selectedTabIndex by remember { mutableStateOf(0) }
+
 TabRow(
     tabs = tabs,
     selectedTabIndex = selectedTabIndex,
@@ -117,6 +120,7 @@ TabRow(
 ```kotlin
 val tabs = listOf("短视频", "直播", "图文")
 var selectedTabIndex by remember { mutableStateOf(0) }
+
 TabRowWithContour(
     tabs = tabs,
     selectedTabIndex = selectedTabIndex,
@@ -133,12 +137,15 @@ TabRowWithContour(
 val tabs = listOf("页面1", "页面2", "页面3")
 val pagerState = rememberPagerState { tabs.size }
 var selectedTabIndex by remember { mutableStateOf(0) }
+
 LaunchedEffect(pagerState.currentPage) {
     selectedTabIndex = pagerState.currentPage
 }
+
 LaunchedEffect(selectedTabIndex) {
     pagerState.animateScrollToPage(selectedTabIndex)
 }
+
 Surface {
     Column {
         TabRow(

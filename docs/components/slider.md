@@ -12,6 +12,7 @@ import top.yukonga.miuix.kmp.basic.Slider
 
 ```kotlin
 var sliderValue by remember { mutableStateOf(0.5f) }
+
 Slider(
     progress = sliderValue,
     onProgressChange = { sliderValue = it }
@@ -24,6 +25,7 @@ Slider(
 
 ```kotlin
 var progress by remember { mutableStateOf(0.5f) }
+
 Slider(
     progress = progress,
     onProgressChange = { progress = it },
@@ -37,6 +39,7 @@ Slider 支持触觉反馈，可以通过 `hapticEffect` 参数自定义反馈效
 
 ```kotlin
 var progress by remember { mutableStateOf(0.5f) }
+
 Slider(
     progress = progress,
     onProgressChange = { progress = it },
@@ -100,8 +103,9 @@ SliderDefaults 对象提供了 Slider 组件的默认配置。
 ### 自定义数值范围
 
 ```kotlin
-    Column {
-    var temperature by remember { mutableStateOf(25f) }
+var temperature by remember { mutableStateOf(25f) }
+
+Column {
     Text("温度: $temperature°C")
     Slider(
         progress = temperature,
@@ -116,6 +120,7 @@ SliderDefaults 对象提供了 Slider 组件的默认配置。
 
 ```kotlin
 var volume by remember { mutableStateOf(0.7f) }
+
 Slider(
     progress = volume,
     onProgressChange = { volume = it },
@@ -130,6 +135,7 @@ Slider(
 
 ```kotlin
 var brightness by remember { mutableStateOf(0.8f) }
+
 Slider(
     progress = brightness,
     onProgressChange = { brightness = it },
@@ -142,6 +148,7 @@ Slider(
 
 ```kotlin
 var progress by remember { mutableStateOf(0.5f) }
+
 Slider(
     progress = progress,
     onProgressChange = { progress = it },

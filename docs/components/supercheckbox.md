@@ -15,6 +15,7 @@ SuperCheckbox 组件提供了基本的复选框功能：
 
 ```kotlin
 var isChecked by remember { mutableStateOf(false) }
+
 SuperCheckbox(
     title = "复选框选项",
     checked = isChecked,
@@ -26,6 +27,7 @@ SuperCheckbox(
 
 ```kotlin
 var notificationsEnabled by remember { mutableStateOf(false) }
+
 SuperCheckbox(
     title = "通知",
     summary = "接收来自应用的推送通知",
@@ -56,6 +58,7 @@ SuperCheckbox 支持将复选框放置在左侧或右侧：
 
 ```kotlin
 var leftChecked by remember { mutableStateOf(false) }
+
 SuperCheckbox(
     title = "左侧复选框",
     summary = "复选框位于左侧（默认）",
@@ -69,6 +72,7 @@ SuperCheckbox(
 
 ```kotlin
 var rightChecked by remember { mutableStateOf(false) }
+
 SuperCheckbox(
     title = "右侧复选框",
     summary = "复选框位于右侧",
@@ -104,6 +108,7 @@ SuperCheckbox(
 
 ```kotlin
 var backupEnabled by remember { mutableStateOf(false) }
+
 SuperCheckbox(
     title = "自动备份",
     summary = "定期备份您的数据",
@@ -126,6 +131,7 @@ var allSelected by remember { mutableStateOf(false) }
 var option1 by remember { mutableStateOf(false) }
 var option2 by remember { mutableStateOf(false) }
 var option3 by remember { mutableStateOf(false) }
+
 Column {
     SuperCheckbox(
         title = "选择全部",
@@ -171,6 +177,7 @@ Column {
 
 ```kotlin
 var customChecked by remember { mutableStateOf(false) }
+
 SuperCheckbox(
     title = "自定义颜色",
     titleColor = BasicComponentDefaults.titleColor(
@@ -195,6 +202,7 @@ SuperCheckbox(
 var showDialog = remember { mutableStateOf(false) }
 var privacyOption by remember { mutableStateOf(false) }
 var analyticsOption by remember { mutableStateOf(false) }
+
 Scaffold {
     SuperArrow(
         title = "隐私设置",

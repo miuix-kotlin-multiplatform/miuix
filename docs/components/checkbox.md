@@ -14,6 +14,7 @@ CheckBox 组件可以用于创建可选择的选项：
 
 ```kotlin
 var checked by remember { mutableStateOf(false) }
+
 Checkbox(
     checked = checked,
     onCheckedChange = { checked = it }
@@ -26,6 +27,7 @@ Checkbox(
 
 ```kotlin
 var checked by remember { mutableStateOf(false) }
+
 Checkbox(
     checked = checked,
     onCheckedChange = { checked = it },
@@ -74,6 +76,7 @@ CheckboxDefaults 对象提供了 Checkbox 组件的默认颜色配置。
 
 ```kotlin
 var checked by remember { mutableStateOf(false) }
+
 Checkbox(
     checked = checked,
     onCheckedChange = { checked = it },
@@ -88,6 +91,7 @@ Checkbox(
 
 ```kotlin
 var checked by remember { mutableStateOf(false) }
+
 Row(
     verticalAlignment = Alignment.CenterVertically,
     modifier = Modifier.padding(16.dp)
@@ -106,6 +110,7 @@ Row(
 ```kotlin
 val options = listOf("选项 A", "选项 B", "选项 C")
 val checkedStates = remember { mutableStateListOf(false, true, false) }
+
 LazyColumn {
     items(options.size) { index ->
         Row(
@@ -134,6 +139,7 @@ val options = remember {
         Option("选项 3", false)
     )
 }
+
 LazyColumn {
     items(options.size) { index ->
         Row(

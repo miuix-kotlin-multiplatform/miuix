@@ -22,6 +22,7 @@ val items = listOf(
     NavigationItem("设置", MiuixIcons.Useful.Settings)
 )
 var selectedIndex by remember { mutableStateOf(0) }
+
 NavigationBar(
     items = items,
     selected = selectedIndex,
@@ -73,6 +74,7 @@ val items = listOf(
     NavigationItem("设置", MiuixIcons.Useful.Settings)
 )
 var selectedIndex by remember { mutableStateOf(0) }
+
 NavigationBar(
     items = items,
     selected = selectedIndex,
@@ -90,6 +92,7 @@ val items = listOf(
     NavigationItem("设置", MiuixIcons.Useful.Settings)
 )
 var selectedIndex by remember { mutableStateOf(0) }
+
 NavigationBar(
     items = items,
     selected = selectedIndex,
@@ -119,6 +122,7 @@ val items = listOf(
     NavigationItem("设置", MiuixIcons.Useful.Settings)
 )
 var selectedIndex by remember { mutableStateOf(0) }
+
 Scaffold(
     bottomBar = {
         NavigationBar(

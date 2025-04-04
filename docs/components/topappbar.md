@@ -52,12 +52,13 @@ TopAppBar(
 )
 ```
 
-## 滚动行为（使用脚手架）
+## 大标题顶部栏滚动行为（使用脚手架）
 
 TopAppBar 支持随内容滚动时改变其显示状态：
 
 ```kotlin
 val scrollBehavior = MiuixScrollBehavior()
+
 Scaffold(
     topBar = {
         TopAppBar(
@@ -173,6 +174,7 @@ val scrollBehavior = MiuixScrollBehavior(
     flingAnimationSpec = rememberSplineBasedDecay(),
     canScroll = { isScrollingEnabled } // 可以动态控制是否允许滚动
 )
+
 TopAppBar(
     title = "标题",
     largeTitle = "大标题",
@@ -186,6 +188,7 @@ TopAppBar(
 
 ```kotlin
 var useSmallTopBar by remember { mutableStateOf(false) }
+
 Box(modifier = Modifier.fillMaxSize()) {
     if (useSmallTopBar) {
         SmallTopAppBar(
