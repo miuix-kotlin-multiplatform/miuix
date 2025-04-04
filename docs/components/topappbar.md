@@ -41,7 +41,7 @@ TopAppBar(
     largeTitle = "大标题", // 如果不指定，将使用 title 的值
     navigationIcon = {
         IconButton(onClick = { /* 处理点击事件 */ }) {
-            Icon(MiuixIcons.Base.ArrowLeft, contentDescription = "返回")
+            Icon(MiuixIcons.Basic.ArrowLeft, contentDescription = "返回")
         }
     },
     actions = {

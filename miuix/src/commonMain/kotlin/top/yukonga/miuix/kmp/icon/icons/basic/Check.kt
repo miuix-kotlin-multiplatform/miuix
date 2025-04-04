@@ -1,4 +1,4 @@
-package top.yukonga.miuix.kmp.icon.icons.base
+package top.yukonga.miuix.kmp.icon.icons.basic
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType
@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 
-val MiuixIcons.Base.Check: ImageVector
+val MiuixIcons.Basic.Check: ImageVector
     get() {
         if (_check != null) return _check!!
         _check = ImageVector.Builder("Check", 26.dp, 26.dp, 56f, 56f).apply {

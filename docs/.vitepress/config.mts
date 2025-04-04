@@ -96,7 +96,10 @@ export default defineConfig({
           text: '进阶',
           collapsed: false,
           items: [
-            { text: '多平台支持', link: '/guide/multiplatform' },
+            { text: '主题系统', link: '/guide/theme' },
+            { text: '图标系统', link: '/guide/icons' },
+            { text: '工具函数', link: '/guide/utils' },
+            { text: '平台支持', link: '/guide/multiplatform' },
             { text: '最佳实践', link: '/guide/best-practices' },
           ]
         }
@@ -165,6 +168,5 @@ export default defineConfig({
         },
       ]
     },
-
   }
 })
