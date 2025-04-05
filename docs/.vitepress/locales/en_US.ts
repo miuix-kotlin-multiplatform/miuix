@@ -6,27 +6,6 @@ export default defineConfig({
     lang: 'en_US',
     themeConfig: {
 
-        docFooter: {
-            prev: 'Previous Page',
-            next: 'Next Page'
-        },
-
-        outline: {
-            label: 'On this page'
-        },
-
-        lastUpdated: {
-            text: 'Last updated on',
-        },
-
-        langMenuLabel: 'Languages',
-        returnToTopLabel: 'Return to top',
-        sidebarMenuLabel: 'Menu',
-        darkModeSwitchLabel: 'Theme',
-        lightModeSwitchTitle: 'Switch to light theme',
-        darkModeSwitchTitle: 'Switch to dark theme',
-        skipToContentLabel: 'Skip to content',
-
         socialLinks: [
             { icon: 'github', link: 'https://github.com/YuKongA/miuix-kotlin-multiplatform' }
         ],
