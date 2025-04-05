@@ -2,7 +2,7 @@
 
 `TopAppBar` is a top application bar component in Miuix, used to provide navigation, title, and action buttons at the top of the interface. It supports both large title and regular modes, as well as dynamic effects during scrolling.
 
-This component is typically used in combination with the `Scaffold` component to maintain consistent layout and behavior across different pages of the application.
+This component is typically used in conjunction with the `Scaffold` component to maintain consistent layout and behavior across different pages in the application.
 
 ## Import
 
@@ -146,11 +146,11 @@ val scrollBehavior = MiuixScrollBehavior(
 )
 ```
 
-| Parameter Name     | Type                       | Default Value              | Description                                      |
-| ------------------ | -------------------------- | -------------------------- | ------------------------------------------------ |
-| state              | TopAppBarState             | rememberTopAppBarState()   | State object controlling scroll state            |
-| canScroll          | () -> Boolean              | { true }                   | Callback to control whether scrolling is allowed |
-| snapAnimationSpec  | AnimationSpec\<Float>?     | spring(stiffness = 3000f)  | Defines snap animation after scrolling           |
+| Parameter Name     | Type                        | Default Value              | Description                                      |
+| ------------------ | --------------------------- | -------------------------- | ------------------------------------------------ |
+| state              | TopAppBarState              | rememberTopAppBarState()   | State object controlling scroll state            |
+| canScroll          | () -> Boolean               | { true }                   | Callback to control whether scrolling is allowed |
+| snapAnimationSpec  | AnimationSpec\<Float>?      | spring(stiffness = 3000f)  | Defines snap animation after scrolling           |
 | flingAnimationSpec | DecayAnimationSpec\<Float>? | rememberSplineBasedDecay() | Defines decay animation for fling                |
 
 ## Advanced Usage

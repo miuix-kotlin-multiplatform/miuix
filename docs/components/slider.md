@@ -35,7 +35,7 @@ Slider(
 
 ## Haptic Feedback
 
-Slider supports haptic feedback, which can be customized through the `hapticEffect` parameter. See [SliderHapticEffect](/components/slider#sliderhapticeffect) for details.
+Slider supports haptic feedback, which can be customized through the `hapticEffect` parameter. See [SliderHapticEffect](../components/slider#sliderhapticeffect) for details.
 
 ```kotlin
 var progress by remember { mutableStateOf(0.5f) }

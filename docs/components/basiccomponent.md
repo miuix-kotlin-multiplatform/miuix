@@ -2,7 +2,7 @@
 
 `BasicComponent` is a foundational standard component in Miuix. It provides customizable content areas on the left and right sides, along with a title and summary, making it suitable for building list items, settings items, and other UI elements.
 
-This project builds upon it to provide some extended components, enabling developers to quickly create UI components that conform to design specifications. See the usage of extended components for details.
+This project builds upon it to provide some extended components, enabling developers to quickly create UI components that conform to design specifications. See the usage of [Extended Components](../components/#extended-components) for details.
 
 ## Import
 
@@ -83,19 +83,19 @@ BasicComponent(
 
 ### BasicComponent Properties
 
-| Property Name     | Type                            | Description                                           | Default Value                           | Required |
-| ----------------- | ------------------------------- | ----------------------------------------------------- | --------------------------------------- | -------- |
-| modifier          | Modifier                        | Modifier for the component                            | Modifier                                | No       |
-| insideMargin      | PaddingValues                   | Internal padding of the component                     | BasicComponentDefaults.InsideMargin     | No       |
-| title             | String?                         | Title of the component                                | null                                    | No       |
-| titleColor        | BasicComponentColors            | Title color configuration                             | BasicComponentDefaults.titleColor()     | No       |
-| summary           | String?                         | Summary of the component                              | null                                    | No       |
-| summaryColor      | BasicComponentColors            | Summary color configuration                           | BasicComponentDefaults.summaryColor()   | No       |
-| leftAction        | @Composable (() -> Unit?)?      | Composable content on the left side of the component  | null                                    | No       |
-| rightActions      | @Composable RowScope.() -> Unit | Composable content on the right side of the component | {}                                      | No       |
-| onClick           | (() -> Unit)?                   | Callback triggered when the component is clicked      | null                                    | No       |
-| enabled           | Boolean                         | Whether the component is enabled                      | true                                    | No       |
-| interactionSource | MutableInteractionSource        | Interaction source of the component                   | remember { MutableInteractionSource() } | No       |
+| Property Name     | Type                            | Description                                           | Default Value                            | Required |
+| ----------------- | ------------------------------- | ----------------------------------------------------- | ---------------------------------------- | -------- |
+| modifier          | Modifier                        | Modifier for the component                            | Modifier                                 | No       |
+| insideMargin      | PaddingValues                   | Internal padding of the component                     | BasicComponentDefaults.InsideMargin      | No       |
+| title             | String?                         | Title of the component                                | null                                     | No       |
+| titleColor        | BasicComponentColors            | Title color configuration                             | BasicComponentDefaults.titleColor()      | No       |
+| summary           | String?                         | Summary of the component                              | null                                     | No       |
+| summaryColor      | BasicComponentColors            | Summary color configuration                           | BasicComponentDefaults.summaryColor()    | No       |
+| leftAction        | @Composable (() -> Unit?)?      | Composable content on the left side of the component  | null                                     | No       |
+| rightActions      | @Composable RowScope.() -> Unit | Composable content on the right side of the component | {}                                       | No       |
+| onClick           | (() -> Unit)?                   | Callback triggered when the component is clicked      | null                                     | No       |
+| enabled           | Boolean                         | Whether the component is enabled                      | true                                     | No       |
+| interactionSource | MutableInteractionSource        | Interaction source of the component                   | remember \{ MutableInteractionSource() } | No       |
 
 ### BasicComponentDefaults Object
 

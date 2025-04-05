@@ -3,7 +3,7 @@
 `Scaffold` is a scaffolding component in Miuix used to implement basic design layout structures. It provides the fundamental framework for application interfaces, including containers for top bars, bottom bars, floating action buttons, and other elements.
 
 ::: warning
-The Scaffold component provides a suitable container for pop-up windows across platforms. Components such as `SuperDialog`, `SuperDropdown`, `SuperSpinner`, and `ListPopup` implement pop-up windows based on this, therefore they need to be wrapped by this component.
+The Scaffold component provides a suitable container for cross-platform popup windows. Components such as `SuperDialog`, `SuperDropdown`, `SuperSpinner`, and `ListPopup` are all implemented based on this and therefore need to be wrapped by this component.
 :::
 
 ::: info

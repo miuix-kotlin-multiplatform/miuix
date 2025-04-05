@@ -39,7 +39,7 @@ ColorPicker(
 
 ## Haptic Feedback
 
-ColorPicker supports haptic feedback, which can be customized using the `hapticEffect` parameter. See [SliderHapticEffect](/components/slider#sliderhapticeffect) for details.
+ColorPicker supports haptic feedback, which can be customized using the `hapticEffect` parameter. See [SliderHapticEffect](../components/slider#sliderhapticeffect) for details.
 
 ```kotlin
 ColorPicker(

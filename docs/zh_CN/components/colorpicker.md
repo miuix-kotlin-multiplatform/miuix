@@ -39,7 +39,7 @@ ColorPicker(
 
 ## 触觉反馈
 
-ColorPicker 支持触觉反馈，可以通过 `hapticEffect` 参数自定义反馈效果，详见 [SliderHapticEffect](/components/slider#sliderhapticeffect)。
+ColorPicker 支持触觉反馈，可以通过 `hapticEffect` 参数自定义反馈效果，详见 [SliderHapticEffect](../components/slider#sliderhapticeffect)。
 
 ```kotlin
 ColorPicker(
