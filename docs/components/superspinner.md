@@ -1,12 +1,12 @@
 # SuperSpinner
 
-`SuperSpinner` 是 Miuix 中的下拉选择器组件，提供了标题、摘要和带有图标、文本的选项列表，支持点击交互和多种显示模式，常用于具有视觉辅助的选项设置中。该组件与 `SuperDropdown` 组件类似，但提供更丰富的功能和交互体验。
+`SuperSpinner` is a dropdown selector component in Miuix that provides titles, summaries, and a list of options with icons and text. It supports click interaction and various display modes, commonly used in option settings with visual aids. This component is similar to `SuperDropdown` but offers richer functionality and interaction experience.
 
-::: warning 注意
-`SuperSpinner` 需要在 `Scaffold` 组件内使用！
+::: warning
+`SuperSpinner` must be used within a `Scaffold` component!
 :::
 
-## 引入
+## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.extra.SuperSpinner
@@ -14,21 +14,21 @@ import top.yukonga.miuix.kmp.extra.SpinnerEntry
 import top.yukonga.miuix.kmp.extra.SpinnerMode
 ```
 
-## 基本用法
+## Basic Usage
 
-SuperSpinner 组件提供了基础的下拉选择器功能：
+The SuperSpinner component provides basic dropdown selector functionality:
 
 ```kotlin
 var selectedIndex by remember { mutableStateOf(0) }
 val options = listOf(
-    SpinnerEntry(title = "选项 1"),
-    SpinnerEntry(title = "选项 2"),
-    SpinnerEntry(title = "选项 3"),
+    SpinnerEntry(title = "Option 1"),
+    SpinnerEntry(title = "Option 2"),
+    SpinnerEntry(title = "Option 3"),
 )
 
 Scaffold {
     SuperSpinner(
-        title = "下拉选择器",
+        title = "Dropdown Selector",
         items = options,
         selectedIndex = selectedIndex,
         onSelectedIndexChange = { selectedIndex = it }
@@ -36,10 +36,10 @@ Scaffold {
 }
 ```
 
-## 带图标和摘要的选项
+## Options with Icons and Summaries
 
 ```kotlin
-// 创建一个圆角矩形的 Painter
+// Create a rounded rectangle Painter
 class RoundedRectanglePainter(
     private val cornerRadius: Dp = 6.dp
 ) : Painter() {
@@ -58,30 +58,30 @@ var selectedIndex by remember { mutableStateOf(0) }
 val options = listOf(
     SpinnerEntry(
         icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFF5B29)) },
-        title = "红色主题",
-        summary = "活力四射的红色"
+        title = "Red Theme",
+        summary = "Vibrant red"
     ),
     SpinnerEntry(
         icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFF3482FF)) },
-        title = "蓝色主题",
-        summary = "沉稳冷静的蓝色"
+        title = "Blue Theme",
+        summary = "Calm blue"
     ),
     SpinnerEntry(
         icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFF36D167)) },
-        title = "绿色主题",
-        summary = "清新自然的绿色"
+        title = "Green Theme",
+        summary = "Fresh green"
     ),
     SpinnerEntry(
         icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFFB21D)) }, 
-        title = "黄色主题",
-        summary = "明亮活泼的黄色"
+        title = "Yellow Theme",
+        summary = "Bright yellow"
     )
 )
 
 Scaffold {
     SuperSpinner(
-        title = "功能选择",
-        summary = "选择您要执行的操作",
+        title = "Function Selection",
+        summary = "Choose the action you want to perform",
         items = options,
         selectedIndex = selectedIndex,
         onSelectedIndexChange = { selectedIndex = it }
@@ -89,81 +89,81 @@ Scaffold {
 }
 ```
 
-## 组件状态
+## Component States
 
-### 禁用状态
+### Disabled State
 
 ```kotlin
 SuperSpinner(
-    title = "禁用选择器",
-    summary = "此选择器当前不可用",
-    items = listOf(SpinnerEntry(title = "选项 1")),
+    title = "Disabled Selector",
+    summary = "This selector is currently unavailable",
+    items = listOf(SpinnerEntry(title = "Option 1")),
     selectedIndex = 0,
     onSelectedIndexChange = {},
     enabled = false
 )
 ```
 
-## 显示模式
+## Display Modes
 
-SuperSpinner 支持不同的显示模式：
+SuperSpinner supports different display modes:
 
-### 普通模式（根据点击位置自适应）
+### Normal Mode (Adaptive to Click Position)
 
 ```kotlin
 var selectedIndex by remember { mutableStateOf(0) }
 val options = listOf(
-    SpinnerEntry(title = "选项 1"),
-    SpinnerEntry(title = "选项 2"),
-    SpinnerEntry(title = "选项 3")
+    SpinnerEntry(title = "Option 1"),
+    SpinnerEntry(title = "Option 2"),
+    SpinnerEntry(title = "Option 3")
 )
 
 Scaffold {
     SuperSpinner(
-        title = "普通模式",
+        title = "Normal Mode",
         items = options,
         selectedIndex = selectedIndex,
         onSelectedIndexChange = { selectedIndex = it },
-        mode = SpinnerMode.Normal // 默认值
+        mode = SpinnerMode.Normal // Default value
     )
 }
 ```
 
-### 总是在右侧模式
+### Always on Right Mode
 
 ```kotlin
 var selectedIndex by remember { mutableStateOf(0) }
 val options = listOf(
-    SpinnerEntry(title = "选项 1"),
-    SpinnerEntry(title = "选项 2"),
-    SpinnerEntry(title = "选项 3")
+    SpinnerEntry(title = "Option 1"),
+    SpinnerEntry(title = "Option 2"),
+    SpinnerEntry(title = "Option 3")
 )
 
 Scaffold {
     SuperSpinner(
-        title = "总是在右侧模式",
+        title = "Always on Right Mode",
         items = options,
         selectedIndex = selectedIndex,
         onSelectedIndexChange = { selectedIndex = it },
-        mode = SpinnerMode.AlwaysOnRight // 总是在右侧模式
+        mode = SpinnerMode.AlwaysOnRight // Always on right mode
     )
 }
 ```
 
-### 将下拉菜单显示在对话框中
+### Display Dropdown Menu in Dialog
 
 ```kotlin
 var selectedIndex by remember { mutableStateOf(0) }
 val options = listOf(
-    SpinnerEntry(title = "选项 1"),
-    SpinnerEntry(title = "选项 2"),
-    SpinnerEntry(title = "选项 3")
+    SpinnerEntry(title = "Option 1"),
+    SpinnerEntry(title = "Option 2"),
+    SpinnerEntry(title = "Option 3")
 )
 
 Scaffold {
     SuperSpinner(
-        title = "对话框模式",
-        dialogButtonString = "取消",
+        title = "Dialog Mode",
+        dialogButtonString = "Cancel",
         items = options,
         selectedIndex = selectedIndex,
         onSelectedIndexChange = { selectedIndex = it }
@@ -171,58 +171,58 @@ Scaffold {
 }
 ```
 
-## 属性
+## Properties
 
-### SuperSpinner 属性（下拉列表形式）
+### SuperSpinner Properties (Dropdown List Form)
 
-| 属性名                | 类型                      | 说明                   | 默认值                                | 是否必须 |
-| --------------------- | ------------------------- | ---------------------- | ------------------------------------- | -------- |
-| title                 | String                    | 选择器的标题           | -                                     | 是       |
-| items                 | List\<SpinnerEntry>       | 选项列表               | -                                     | 是       |
-| selectedIndex         | Int                       | 当前选中项的索引       | -                                     | 是       |
-| onSelectedIndexChange | ((Int) -> Unit)?          | 选中项变化时的回调     | -                                     | 是       |
-| modifier              | Modifier                  | 应用于组件的修饰符     | Modifier                              | 否       |
-| titleColor            | BasicComponentColors      | 标题文本的颜色配置     | BasicComponentDefaults.titleColor()   | 否       |
-| summary               | String?                   | 选择器的摘要说明       | null                                  | 否       |
-| summaryColor          | BasicComponentColors      | 摘要文本的颜色配置     | BasicComponentDefaults.summaryColor() | 否       |
-| mode                  | SpinnerMode               | 选择器的显示模式       | SpinnerMode.Normal                    | 否       |
-| leftAction            | @Composable (() -> Unit)? | 左侧显示的自定义内容   | null                                  | 否       |
-| insideMargin          | PaddingValues             | 组件内部内容的边距     | BasicComponentDefaults.InsideMargin   | 否       |
-| maxHeight             | Dp?                       | 下拉菜单的最大高度     | null                                  | 否       |
-| enabled               | Boolean                   | 组件是否可交互         | true                                  | 否       |
-| showValue             | Boolean                   | 是否显示当前选中的值   | true                                  | 否       |
-| onClick               | (() -> Unit)?             | 点击选择器时的额外回调 | null                                  | 否       |
+| Property Name         | Type                      | Description                 | Default Value                         | Required |
+| --------------------- | ------------------------- | --------------------------- | ------------------------------------- | -------- |
+| title                 | String                    | Selector title              | -                                     | Yes      |
+| items                 | List\<SpinnerEntry>       | Options list                | -                                     | Yes      |
+| selectedIndex         | Int                       | Current selected item index | -                                     | Yes      |
+| onSelectedIndexChange | ((Int) -> Unit)?          | Selection change callback   | -                                     | Yes      |
+| modifier              | Modifier                  | Component modifier          | Modifier                              | No       |
+| titleColor            | BasicComponentColors      | Title text color config     | BasicComponentDefaults.titleColor()   | No       |
+| summary               | String?                   | Selector description        | null                                  | No       |
+| summaryColor          | BasicComponentColors      | Summary text color config   | BasicComponentDefaults.summaryColor() | No       |
+| mode                  | SpinnerMode               | Display mode                | SpinnerMode.Normal                    | No       |
+| leftAction            | @Composable (() -> Unit)? | Custom left content         | null                                  | No       |
+| insideMargin          | PaddingValues             | Internal content padding    | BasicComponentDefaults.InsideMargin   | No       |
+| maxHeight             | Dp?                       | Maximum dropdown height     | null                                  | No       |
+| enabled               | Boolean                   | Interactive state           | true                                  | No       |
+| showValue             | Boolean                   | Show current selected value | true                                  | No       |
+| onClick               | (() -> Unit)?             | Additional click callback   | null                                  | No       |
 
-### SuperSpinner 对话框模式额外属性
+### SuperSpinner Dialog Mode Additional Properties
 
-| 属性名             | 类型     | 说明                     | 默认值   | 是否必须 |
-| ------------------ | -------- | ------------------------ | -------- | -------- |
-| dialogButtonString | String   | 对话框底部按钮的文本     | -        | 是       |
-| popupModifier      | Modifier | 应用于弹出对话框的修饰符 | Modifier | 否       |
+| Property Name      | Type     | Description               | Default Value | Required |
+| ------------------ | -------- | ------------------------- | ------------- | -------- |
+| dialogButtonString | String   | Dialog bottom button text | -             | Yes      |
+| popupModifier      | Modifier | Dialog popup modifier     | Modifier      | No       |
 
-### SpinnerEntry 属性
+### SpinnerEntry Properties
 
-| 属性名  | 类型                              | 说明           |
-| ------- | --------------------------------- | -------------- |
-| icon    | @Composable ((Modifier) -> Unit)? | 选项的图标组件 |
-| title   | String?                           | 选项的标题     |
-| summary | String?                           | 选项的摘要描述 |
+| Property Name | Type                              | Description        |
+| ------------- | --------------------------------- | ------------------ |
+| icon          | @Composable ((Modifier) -> Unit)? | Option icon        |
+| title         | String?                           | Option title       |
+| summary       | String?                           | Option description |
 
-## 进阶用法
+## Advanced Usage
 
-### 自定义左侧内容
+### Custom Left Content
 
 ```kotlin
 var selectedIndex by remember { mutableStateOf(0) }
 val options = listOf(
-    SpinnerEntry(title = "红色"),
-    SpinnerEntry(title = "绿色"),
-    SpinnerEntry(title = "蓝色")
+    SpinnerEntry(title = "Red"),
+    SpinnerEntry(title = "Green"),
+    SpinnerEntry(title = "Blue")
 )
 
 Scaffold {
     SuperSpinner(
-        title = "自定义左侧内容",
+        title = "Custom Left Content",
         items = options,
         selectedIndex = selectedIndex,
         onSelectedIndexChange = { selectedIndex = it },
@@ -245,48 +245,48 @@ Scaffold {
 }
 ```
 
-### 限制下拉菜单高度
+### Limit Dropdown Menu Height
 
 ```kotlin
 var selectedIndex by remember { mutableStateOf(0) }
-val options = List(20) { SpinnerEntry(title = "选项 ${it + 1}") }
+val options = List(20) { SpinnerEntry(title = "Option ${it + 1}") }
 
 Scaffold {
     SuperSpinner(
-        title = "限制高度",
+        title = "Limit Height",
         items = options,
         selectedIndex = selectedIndex,
         onSelectedIndexChange = { selectedIndex = it },
-        maxHeight = 300.dp // 限制下拉菜单最大高度为300dp
+        maxHeight = 300.dp // Limit dropdown menu maximum height to 300dp
     )
 }
 ```
 
-### 隐藏选中值显示
+### Hide Selected Value Display
 
 ```kotlin
 var selectedIndex by remember { mutableStateOf(0) }
 val options = listOf(
-    SpinnerEntry(title = "选项 1"),
-    SpinnerEntry(title = "选项 2"),
-    SpinnerEntry(title = "选项 3")
+    SpinnerEntry(title = "Option 1"),
+    SpinnerEntry(title = "Option 2"),
+    SpinnerEntry(title = "Option 3")
 )
 
 Scaffold {
     SuperSpinner(
-        title = "隐藏选中值",
+        title = "Hide Selected Value",
         items = options,
         selectedIndex = selectedIndex,
         onSelectedIndexChange = { selectedIndex = it },
-        showValue = false // 隐藏选中值显示
+        showValue = false // Hide selected value display
     )
 }
 ```
 
-### 结合对话框使用
+### Use with Dialog
 
 ```kotlin
-// 创建一个圆角矩形的 Painter
+// Create a rounded rectangle Painter
 class RoundedRectanglePainter(
     private val cornerRadius: Dp = 6.dp
 ) : Painter() {
@@ -306,42 +306,42 @@ var selectedIndex by remember { mutableStateOf(0) }
 val colorOptions = listOf(
     SpinnerEntry(
         icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFF5B29)) },
-        title = "红色主题",
-        summary = "活力四射的红色"
+        title = "Red Theme",
+        summary = "Vibrant red"
     ),
     SpinnerEntry(
         icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFF3482FF)) },
-        title = "蓝色主题",
-        summary = "沉稳冷静的蓝色"
+        title = "Blue Theme",
+        summary = "Calm blue"
     ),
     SpinnerEntry(
         icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFF36D167)) },
-        title = "绿色主题",
-        summary = "清新自然的绿色"
+        title = "Green Theme",
+        summary = "Fresh green"
     ),
     SpinnerEntry(
         icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFFB21D)) }, 
-        title = "黄色主题",
-        summary = "明亮活泼的黄色"
+        title = "Yellow Theme",
+        summary = "Bright yellow"
     )
 )
 
 Scaffold {
     SuperArrow(
-        title = "主题颜色",
+        title = "Theme Color",
         onClick = { showDialog.value = true },
         holdDownState = showDialog.value
     )
     
     SuperDialog(
-        title = "主题颜色设置",
+        title = "Theme Color Settings",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) } // 关闭对话框
+        onDismissRequest = { dismissDialog(showDialog) } // Close dialog
     ) {
         Card {
             SuperSpinner(
-                title = "选择主题颜色",
-                summary = "选择您喜欢的主题颜色",
+                title = "Choose Theme Color",
+                summary = "Select your preferred theme color",
                 items = colorOptions,
                 selectedIndex = selectedIndex,
                 onSelectedIndexChange = { selectedIndex = it }
@@ -353,16 +353,16 @@ Scaffold {
             modifier = Modifier.padding(top = 12.dp)
         ) {
             TextButton(
-                text = "取消",
-                onClick = { dismissDialog(showDialog) }, // 关闭对话框
+                text = "Cancel",
+                onClick = { dismissDialog(showDialog) }, // Close dialog
                 modifier = Modifier.weight(1f)
             )
             Spacer(Modifier.width(16.dp))
             TextButton(
-                text = "确认",
-                onClick = { dismissDialog(showDialog) }, // 关闭对话框
+                text = "Confirm",
+                onClick = { dismissDialog(showDialog) }, // Close dialog
                 modifier = Modifier.weight(1f),
-                colors = ButtonDefaults.textButtonColorsPrimary() // 使用主题颜色
+                colors = ButtonDefaults.textButtonColorsPrimary() // Use theme color
             )
         }
     }

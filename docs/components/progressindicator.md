@@ -1,67 +1,64 @@
 # ProgressIndicator
 
-`ProgressIndicator` 是 Miuix 中的进度指示组件，用于展示操作的进度状态。提供了线性进度条、环形进度条和无限旋转指示器三种样式，适用于不同场景下的加载和进度展示需求。
+`ProgressIndicator` is a progress indication component in Miuix used to display the progress status of operations. It provides three styles: linear progress bar, circular progress indicator, and infinite spinning indicator, suitable for different loading and progress display scenarios.
 
-## 引入
+## Import
 
 ```kotlin
-import top.yukonga.miuix.kmp.basic.LinearProgressIndicator // 线性进度条
-import top.yukonga.miuix.kmp.basic.CircularProgressIndicator // 环形进度条
-import top.yukonga.miuix.kmp.basic.InfiniteProgressIndicator // 无限旋转指示器
+import top.yukonga.miuix.kmp.basic.LinearProgressIndicator // Linear progress bar
+import top.yukonga.miuix.kmp.basic.CircularProgressIndicator // Circular progress indicator
+import top.yukonga.miuix.kmp.basic.InfiniteProgressIndicator // Infinite spinning indicator
 ```
 
-## 基本用法
+## Basic Usage
 
-### 线性进度条
+### Linear Progress Bar
 
-线性进度条可用于展示操作的进度：
-
-
+Linear progress bar can be used to show operation progress:
 
 ```kotlin
-// 确定进度的线性进度条
+// Linear progress bar with determinate progress
 var progress by remember { mutableStateOf(0.3f) }
 
 LinearProgressIndicator(progress = progress)
 ```
 
 ```kotlin
-// 不确定进度的线性进度条
+// Linear progress bar with indeterminate progress
 LinearProgressIndicator()
 ```
 
+### Circular Progress Indicator
 
-### 环形进度条
-
-环形进度条适用于需要节省空间的场景：
+Circular progress indicator is suitable for space-saving scenarios:
 
 ```kotlin
-// 确定进度的环形进度条
+// Circular progress indicator with determinate progress
 var progress by remember { mutableStateOf(0.7f) }
 
 CircularProgressIndicator(progress = progress)
 ```
 
 ```kotlin
-// 不确定进度的环形进度条
+// Circular progress indicator with indeterminate progress
 CircularProgressIndicator()
 ```
 
-### 无限旋转指示器
+### Infinite Progress Indicator
 
-无限旋转指示器适用于无法确定操作时长的场景：
+Infinite progress indicator is suitable for scenarios where operation duration is uncertain:
 
 ```kotlin
 InfiniteProgressIndicator()
 ```
 
-## 组件状态
+## Component States
 
-所有进度指示器组件都支持确定进度和不确定进度两种状态：
+All progress indicator components support both determinate and indeterminate progress states:
 
-### 确定进度状态
+### Determinate Progress State
 
-当提供具体的进度值（0.0-1.0之间的浮点数）时，进度指示器会显示确切的进度：
+When a specific progress value (float between 0.0-1.0) is provided, the progress indicator shows exact progress:
 
 ```kotlin
 var progress by remember { mutableStateOf(0.6f) }
@@ -70,78 +67,78 @@ LinearProgressIndicator(progress = progress)
 CircularProgressIndicator(progress = progress)
 ```
 
-### 不确定进度状态
+### Indeterminate Progress State
 
-当进度值为 null 时，进度指示器会显示动画效果，表示操作正在进行但无法确定具体进度：
+When the progress value is null, the progress indicator shows an animation indicating an ongoing operation with unknown progress:
 
 ```kotlin
 LinearProgressIndicator(progress = null)
 CircularProgressIndicator(progress = null)
 ```
 
-## 属性
+## Properties
 
-### LinearProgressIndicator 属性
+### LinearProgressIndicator Properties
 
-| 属性名   | 类型                    | 说明                           | 默认值                                                         | 是否必须 |
-| -------- | ----------------------- | ------------------------------ | -------------------------------------------------------------- | -------- |
-| progress | Float?                  | 当前进度值，null表示不确定状态 | null                                                           | 否       |
-| modifier | Modifier                | 应用于进度条的修饰符           | Modifier                                                       | 否       |
-| colors   | ProgressIndicatorColors | 进度条的颜色配置               | ProgressIndicatorDefaults.progressIndicatorColors()            | 否       |
-| height   | Dp                      | 进度条的高度                   | ProgressIndicatorDefaults.DefaultLinearProgressIndicatorHeight | 否       |
+| Property Name | Type                    | Description                                    | Default Value                                                  | Required |
+| ------------- | ----------------------- | ---------------------------------------------- | -------------------------------------------------------------- | -------- |
+| progress      | Float?                  | Current progress value, null for indeterminate | null                                                           | No       |
+| modifier      | Modifier                | Modifier applied to the progress bar           | Modifier                                                       | No       |
+| colors        | ProgressIndicatorColors | Color configuration for the progress bar       | ProgressIndicatorDefaults.progressIndicatorColors()            | No       |
+| height        | Dp                      | Height of the progress bar                     | ProgressIndicatorDefaults.DefaultLinearProgressIndicatorHeight | No       |
 
-### CircularProgressIndicator 属性
+### CircularProgressIndicator Properties
 
-| 属性名      | 类型                    | 说明                           | 默认值                                                                | 是否必须 |
-| ----------- | ----------------------- | ------------------------------ | --------------------------------------------------------------------- | -------- |
-| progress    | Float?                  | 当前进度值，null表示不确定状态 | null                                                                  | 否       |
-| modifier    | Modifier                | 应用于进度条的修饰符           | Modifier                                                              | 否       |
-| colors      | ProgressIndicatorColors | 进度条的颜色配置               | ProgressIndicatorDefaults.progressIndicatorColors()                   | 否       |
-| strokeWidth | Dp                      | 环形进度条的描边宽度           | ProgressIndicatorDefaults.DefaultCircularProgressIndicatorStrokeWidth | 否       |
-| size        | Dp                      | 环形进度条的大小               | ProgressIndicatorDefaults.DefaultCircularProgressIndicatorSize        | 否       |
+| Property Name | Type                    | Description                                    | Default Value                                                         | Required |
+| ------------- | ----------------------- | ---------------------------------------------- | --------------------------------------------------------------------- | -------- |
+| progress      | Float?                  | Current progress value, null for indeterminate | null                                                                  | No       |
+| modifier      | Modifier                | Modifier applied to the progress indicator     | Modifier                                                              | No       |
+| colors        | ProgressIndicatorColors | Color configuration for the progress indicator | ProgressIndicatorDefaults.progressIndicatorColors()                   | No       |
+| strokeWidth   | Dp                      | Stroke width of the circular track             | ProgressIndicatorDefaults.DefaultCircularProgressIndicatorStrokeWidth | No       |
+| size          | Dp                      | Size of the circular indicator                 | ProgressIndicatorDefaults.DefaultCircularProgressIndicatorSize        | No       |
 
-### InfiniteProgressIndicator 属性
+### InfiniteProgressIndicator Properties
 
-| 属性名          | 类型     | 说明                 | 默认值                                                                    | 是否必须 |
-| --------------- | -------- | -------------------- | ------------------------------------------------------------------------- | -------- |
-| modifier        | Modifier | 应用于进度条的修饰符 | Modifier                                                                  | 否       |
-| color           | Color    | 进度指示器的颜色     | Color.Gray                                                                | 否       |
-| size            | Dp       | 进度指示器的大小     | ProgressIndicatorDefaults.DefaultInfiniteProgressIndicatorSize            | 否       |
-| strokeWidth     | Dp       | 环形轨道的描边宽度   | ProgressIndicatorDefaults.DefaultInfiniteProgressIndicatorStrokeWidth     | 否       |
-| orbitingDotSize | Dp       | 环绕点的大小         | ProgressIndicatorDefaults.DefaultInfiniteProgressIndicatorOrbitingDotSize | 否       |
+| Property Name   | Type     | Description                        | Default Value                                                             | Required |
+| --------------- | -------- | ---------------------------------- | ------------------------------------------------------------------------- | -------- |
+| modifier        | Modifier | Modifier applied to the indicator  | Modifier                                                                  | No       |
+| color           | Color    | Color of the progress indicator    | Color.Gray                                                                | No       |
+| size            | Dp       | Size of the indicator              | ProgressIndicatorDefaults.DefaultInfiniteProgressIndicatorSize            | No       |
+| strokeWidth     | Dp       | Stroke width of the circular track | ProgressIndicatorDefaults.DefaultInfiniteProgressIndicatorStrokeWidth     | No       |
+| orbitingDotSize | Dp       | Size of the orbiting dot           | ProgressIndicatorDefaults.DefaultInfiniteProgressIndicatorOrbitingDotSize | No       |
 
-### ProgressIndicatorDefaults 对象
+### ProgressIndicatorDefaults Object
 
-ProgressIndicatorDefaults 对象提供了进度指示器组件的默认值和颜色配置。
+The ProgressIndicatorDefaults object provides default values and color configurations for progress indicator components.
 
-#### 常量
+#### Constants
 
-| 常量名                                          | 类型 | 默认值 | 说明                     |
-| ----------------------------------------------- | ---- | ------ | ------------------------ |
-| DefaultLinearProgressIndicatorHeight            | Dp   | 6.dp   | 线性进度条的默认高度     |
-| DefaultCircularProgressIndicatorStrokeWidth     | Dp   | 4.dp   | 环形进度条的默认描边宽度 |
-| DefaultCircularProgressIndicatorSize            | Dp   | 30.dp  | 环形进度条的默认大小     |
-| DefaultInfiniteProgressIndicatorStrokeWidth     | Dp   | 2.dp   | 无限指示器的默认描边宽度 |
-| DefaultInfiniteProgressIndicatorOrbitingDotSize | Dp   | 2.dp   | 无限指示器默认环绕点大小 |
-| DefaultInfiniteProgressIndicatorSize            | Dp   | 20.dp  | 无限指示器的默认大小     |
+| Constant Name                                   | Type | Default Value | Description                                     |
+| ----------------------------------------------- | ---- | ------------- | ----------------------------------------------- |
+| DefaultLinearProgressIndicatorHeight            | Dp   | 6.dp          | Default height of linear progress bar           |
+| DefaultCircularProgressIndicatorStrokeWidth     | Dp   | 4.dp          | Default stroke width of circular indicator      |
+| DefaultCircularProgressIndicatorSize            | Dp   | 30.dp         | Default size of circular indicator              |
+| DefaultInfiniteProgressIndicatorStrokeWidth     | Dp   | 2.dp          | Default stroke width of infinite indicator      |
+| DefaultInfiniteProgressIndicatorOrbitingDotSize | Dp   | 2.dp          | Default orbiting dot size of infinite indicator |
+| DefaultInfiniteProgressIndicatorSize            | Dp   | 20.dp         | Default size of infinite indicator              |
 
-#### 方法
+#### Methods
 
-| 方法名                    | 类型                    | 说明                         |
-| ------------------------- | ----------------------- | ---------------------------- |
-| progressIndicatorColors() | ProgressIndicatorColors | 创建进度指示器的默认颜色配置 |
+| Method Name               | Type                    | Description                                        |
+| ------------------------- | ----------------------- | -------------------------------------------------- |
+| progressIndicatorColors() | ProgressIndicatorColors | Creates default color configuration for indicators |
 
-### ProgressIndicatorColors 类
+### ProgressIndicatorColors Class
 
-| 属性名                  | 类型  | 说明                         |
-| ----------------------- | ----- | ---------------------------- |
-| foregroundColor         | Color | 进度指示器的前景色           |
-| disabledForegroundColor | Color | 禁用状态时进度指示器的前景色 |
-| backgroundColor         | Color | 进度指示器的背景色           |
+| Property Name           | Type  | Description                                 |
+| ----------------------- | ----- | ------------------------------------------- |
+| foregroundColor         | Color | Foreground color of the progress indicator  |
+| disabledForegroundColor | Color | Foreground color when indicator is disabled |
+| backgroundColor         | Color | Background color of the progress indicator  |
 
-## 进阶用法
+## Advanced Usage
 
-### 自定义颜色的线性进度条
+### Custom Colored Linear Progress Bar
 
 ```kotlin
 var progress by remember { mutableStateOf(0.4f) }
@@ -155,7 +152,7 @@ LinearProgressIndicator(
 )
 ```
 
-### 调整大小的环形进度条
+### Resized Circular Progress Indicator
 
 ```kotlin
 var progress by remember { mutableStateOf(0.75f) }
@@ -167,7 +164,7 @@ CircularProgressIndicator(
 )
 ```
 
-### 结合按钮使用的加载状态
+### Loading State with Button
 
 ```kotlin
 var isLoading by remember { mutableStateOf(false) }
@@ -176,7 +173,7 @@ val scope = rememberCoroutineScope()
 Button(
     onClick = {
         isLoading = true
-        // 模拟操作
+        // Simulate operation
         scope.launch {
             delay(2000)
             isLoading = false
@@ -194,11 +191,11 @@ Button(
             strokeWidth = 4.dp
         )
     }
-    Text("提交")
+    Text("Submit")
 }
 ```
 
-### 自定义无限旋转指示器
+### Custom Infinite Progress Indicator
 
 ```kotlin
 InfiniteProgressIndicator(
@@ -209,7 +206,7 @@ InfiniteProgressIndicator(
 )
 ```
 
-### 结合卡片使用的加载状态
+### Loading State with Card
 
 ```kotlin
 var isLoading by remember { mutableStateOf(true) }
@@ -230,14 +227,14 @@ Card(
             ) {
                 CircularProgressIndicator()
                 Spacer(modifier = Modifier.height(16.dp))
-                Text("加载中...")
+                Text("Loading...")
             }
         } else {
-            Text("内容已加载")
+            Text("Content Loaded")
         }
     }
 }
-// 控制加载状态
+// Control loading state
 LaunchedEffect(Unit) {
     delay(3000)
     isLoading = false

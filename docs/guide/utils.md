@@ -1,114 +1,114 @@
-# 工具函数
+# Utility Functions
 
-Miuix 提供了一系列实用的工具函数，帮助您更高效地开发应用。以下是主要工具函数的详细介绍与使用示例。
+Miuix provides a series of utility functions to help you develop applications more efficiently. Below is a detailed introduction and usage examples of the main utility functions.
 
-## 弹窗工具 (MiuixPopupUtils)
+## Popup Utilities (MiuixPopupUtils)
 
-`MiuixPopupUtils` 是一个用于显示弹窗和对话框的工具类。该类已经集成到 `Scaffold` 组件中，可以直接使用。
+`MiuixPopupUtils` is a utility class for displaying popups and dialogs. This class is already integrated into the `Scaffold` component and can be used directly.
 
-### 显示对话框
+### Show Dialog
 
 ```kotlin
 showDialog {
-    // 对话框内容
+    // Dialog content
 }
 ```
-详见 [SuperDialog](../components/superdialog.md) 文档。
+See the [SuperDialog](../components/superdialog.md) documentation for details.
 
-### 关闭对话框
+### Dismiss Dialog
 
 ```kotlin
 dismissDialog(showDialog) 
 ```
 
-详见 [SuperDialog](../components/superdialog.md) 文档。
+See the [SuperDialog](../components/superdialog.md) documentation for details.
 
-### 显示弹窗
+### Show Popup
 
 ```kotlin
 showPopup(
-    transformOrigin = { TransformOrigin(0.5f, 0f) }, // 从顶部中间展开
-    windowDimming = true // 背景变暗
+    transformOrigin = { TransformOrigin(0.5f, 0f) }, // Expand from the top center
+    windowDimming = true // Dim the background
 ) {
-    // 弹窗内容
+    // Popup content
 }
 ```
 
-详见 [ListPopup](../components/listpopup.md) 文档。
+See the [ListPopup](../components/listpopup.md) documentation for details.
 
-### 关闭弹窗
+### Dismiss Popup
 
 ```kotlin
 dismissPopup(showPopup) 
 ```
 
-详见 [ListPopup](../components/listpopup.md) 文档。
+See the [ListPopup](../components/listpopup.md) documentation for details.
 
-## 越界回弹效果 (Overscroll)
+## Overscroll Effects
 
-Miuix 提供了易于使用的越界回弹效果，让滚动体验更加流畅自然。
+Miuix provides easy-to-use overscroll effects for smoother and more natural scrolling experiences.
 
-### 垂直越界回弹
+### Vertical Overscroll
 
 ```kotlin
 LazyColumn(
     modifier = Modifier.overScrollVertical()
 ) {
-    // 列表内容
+    // List content
 }
 ```
 
-### 水平越界回弹
+### Horizontal Overscroll
 
 ```kotlin
 LazyRow(
     modifier = Modifier.overScrollHorizontal()
 ) {
-    // 列表内容
+    // List content
 }
 ```
 
-### 自定义越界回弹参数
+### Custom Overscroll Parameters
 
 ```kotlin
 LazyColumn(
     modifier = Modifier.overScrollVertical(
         nestedScrollToParent = true,
-        springStiff = 150f, // 弹性系数
-        springDamp = 0.8f,  // 阻尼系数
-        isEnabled = { true } // 是否启用
+        springStiff = 150f, // Spring stiffness
+        springDamp = 0.8f,  // Damping coefficient
+        isEnabled = { true } // Enable or disable
     )
 ) {
-    // 列表内容
+    // List content
 }
 ```
 
-## 平滑圆角 (SmoothRoundedCornerShape)
+## Smooth Rounded Corners (SmoothRoundedCornerShape)
 
-`SmoothRoundedCornerShape` 提供了比标准 `RoundedCornerShape` 更加平滑的圆角效果。
+`SmoothRoundedCornerShape` provides smoother rounded corners compared to the standard `RoundedCornerShape`.
 
-### 基本使用
+### Basic Usage
 
 ```kotlin
 Surface(
     shape = SmoothRoundedCornerShape(16.dp)
 ) {
-    // 内容
+    // Content
 }
 ```
 
-### 自定义平滑程度和不同角度
+### Custom Smoothness and Different Angles
 
 ```kotlin
 Surface(
     shape = SmoothRoundedCornerShape(
-        smoothing = 0.8f, // 平滑度，值越高越平滑
+        smoothing = 0.8f, // Smoothness, higher values are smoother
         topStart = 16.dp,
         topEnd = 16.dp,
         bottomStart = 8.dp,
         bottomEnd = 8.dp
     )
 ) {
-    // 内容
+    // Content
 }
 ```

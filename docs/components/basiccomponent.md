@@ -1,63 +1,63 @@
 # BasicComponent
 
-`BasicComponent` 是 Miuix 中的基础标准组件。提供了标题、摘要以及左右两侧的可自定义内容区域，常用于构建列表项、设置项等界面元素。
+`BasicComponent` is a foundational standard component in Miuix. It provides customizable content areas on the left and right sides, along with a title and summary, making it suitable for building list items, settings items, and other UI elements.
 
-本项目以此为基础提供了一些扩展组件，方便开发者快速构建符合设计规范的 UI 组件，详见扩展组件的使用。
+This project builds upon it to provide some extended components, enabling developers to quickly create UI components that conform to design specifications. See the usage of extended components for details.
 
-## 引入
+## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.basic.BasicComponent
 ```
 
-## 基本用法
+## Basic Usage
 
-BasicComponent 组件可以用于展示标题和摘要信息：
+The BasicComponent can be used to display title and summary information:
 
 ```kotlin
 BasicComponent(
-    title = "设置项标题",
-    summary = "这里是设置项的描述文本"
+    title = "Setting Item Title",
+    summary = "This is the description text for the setting item"
 )
 ```
 
-## 组件变体
+## Component Variants
 
-### 可点击组件
+### Clickable Component
 
 ```kotlin
 BasicComponent(
     title = "Wi-Fi",
-    summary = "已连接到 MIUI-WiFi",
-    onClick = { /* 处理点击事件 */ }
+    summary = "Connected to MIUI-WiFi",
+    onClick = { /* Handle click event */ }
 )
 ```
 
-### 带左侧图标的组件
+### Component with Left Icon
 
 ```kotlin
 BasicComponent(
-    title = "昵称",
-    summary = "一段简介",
+    title = "Nickname",
+    summary = "A brief introduction",
     leftAction = {
         Icon(
             modifier = Modifier.padding(end = 16.dp),
             imageVector = MiuixIcons.Useful.Personal,
-            contentDescription = "头像图标",
+            contentDescription = "Avatar Icon",
             tint = MiuixTheme.colorScheme.onBackground
         )
     },
-    onClick = { /* 处理点击事件 */ }
+    onClick = { /* Handle click event */ }
 )
 ```
 
-### 带右侧操作的组件
+### Component with Right Actions
 
 ```kotlin
 var isFlightMode by remember { mutableStateOf(false) }
 
 BasicComponent(
-    title = "飞行模式",
+    title = "Flight Mode",
     rightActions = {
         Switch(
             checked = isFlightMode,
@@ -67,91 +67,91 @@ BasicComponent(
 )
 ```
 
-## 组件状态
+## Component States
 
-### 禁用状态
+### Disabled State
 
 ```kotlin
 BasicComponent(
-    title = "移动网络",
-    summary = "SIM卡未插入",
+    title = "Mobile Network",
+    summary = "SIM card not inserted",
     enabled = false
 )
 ```
 
-## 属性
+## Properties
 
-### BasicComponent 属性
+### BasicComponent Properties
 
-| 属性名            | 类型                            | 说明                 | 默认值                                  | 是否必须 |
-| ----------------- | ------------------------------- | -------------------- | --------------------------------------- | -------- |
-| modifier          | Modifier                        | 应用于组件的修饰符   | Modifier                                | 否       |
-| insideMargin      | PaddingValues                   | 组件内部边距         | BasicComponentDefaults.InsideMargin     | 否       |
-| title             | String?                         | 组件标题             | null                                    | 否       |
-| titleColor        | BasicComponentColors            | 标题颜色配置         | BasicComponentDefaults.titleColor()     | 否       |
-| summary           | String?                         | 组件摘要             | null                                    | 否       |
-| summaryColor      | BasicComponentColors            | 摘要颜色配置         | BasicComponentDefaults.summaryColor()   | 否       |
-| leftAction        | @Composable (() -> Unit?)?      | 组件左侧的可组合内容 | null                                    | 否       |
-| rightActions      | @Composable RowScope.() -> Unit | 组件右侧的可组合内容 | {}                                      | 否       |
-| onClick           | (() -> Unit)?                   | 点击组件时触发的回调 | null                                    | 否       |
-| enabled           | Boolean                         | 组件是否可用         | true                                    | 否       |
-| interactionSource | MutableInteractionSource        | 组件的交互源         | remember \{ MutableInteractionSource() } | 否       |
+| Property Name     | Type                            | Description                                           | Default Value                           | Required |
+| ----------------- | ------------------------------- | ----------------------------------------------------- | --------------------------------------- | -------- |
+| modifier          | Modifier                        | Modifier for the component                            | Modifier                                | No       |
+| insideMargin      | PaddingValues                   | Internal padding of the component                     | BasicComponentDefaults.InsideMargin     | No       |
+| title             | String?                         | Title of the component                                | null                                    | No       |
+| titleColor        | BasicComponentColors            | Title color configuration                             | BasicComponentDefaults.titleColor()     | No       |
+| summary           | String?                         | Summary of the component                              | null                                    | No       |
+| summaryColor      | BasicComponentColors            | Summary color configuration                           | BasicComponentDefaults.summaryColor()   | No       |
+| leftAction        | @Composable (() -> Unit?)?      | Composable content on the left side of the component  | null                                    | No       |
+| rightActions      | @Composable RowScope.() -> Unit | Composable content on the right side of the component | {}                                      | No       |
+| onClick           | (() -> Unit)?                   | Callback triggered when the component is clicked      | null                                    | No       |
+| enabled           | Boolean                         | Whether the component is enabled                      | true                                    | No       |
+| interactionSource | MutableInteractionSource        | Interaction source of the component                   | remember { MutableInteractionSource() } | No       |
 
-### BasicComponentDefaults 对象
+### BasicComponentDefaults Object
 
-BasicComponentDefaults 对象提供了 BasicComponent 组件的默认值和颜色配置。
+The BasicComponentDefaults object provides default values and color configurations for the BasicComponent.
 
-#### 常量
+#### Constants
 
-| 常量名       | 类型          | 说明           | 默认值               |
-| ------------ | ------------- | -------------- | -------------------- |
-| InsideMargin | PaddingValues | 组件的内部边距 | PaddingValues(16.dp) |
+| Constant Name | Type          | Description                       | Default Value        |
+| ------------- | ------------- | --------------------------------- | -------------------- |
+| InsideMargin  | PaddingValues | Internal padding of the component | PaddingValues(16.dp) |
 
-#### 方法
+#### Methods
 
-| 方法名         | 类型                 | 说明             |
-| -------------- | -------------------- | ---------------- |
-| titleColor()   | BasicComponentColors | 创建标题颜色配置 |
-| summaryColor() | BasicComponentColors | 创建摘要颜色配置 |
+| Method Name    | Type                 | Description                         |
+| -------------- | -------------------- | ----------------------------------- |
+| titleColor()   | BasicComponentColors | Creates title color configuration   |
+| summaryColor() | BasicComponentColors | Creates summary color configuration |
 
-### BasicComponentColors 类
+### BasicComponentColors Class
 
-用于配置组件的颜色状态。
+Used to configure the color states of the component.
 
-| 属性名        | 类型  | 说明           |
-| ------------- | ----- | -------------- |
-| color         | Color | 正常状态的颜色 |
-| disabledColor | Color | 禁用状态的颜色 |
+| Property Name | Type  | Description             |
+| ------------- | ----- | ----------------------- |
+| color         | Color | Color in normal state   |
+| disabledColor | Color | Color in disabled state |
 
-## 进阶用法
+## Advanced Usage
 
-### 复杂布局组件
+### Complex Layout Component
 
 ```kotlin
 BasicComponent(
-    title = "音量",
-    summary = "媒体音量：70%",
-        leftAction = {
+    title = "Volume",
+    summary = "Media Volume: 70%",
+    leftAction = {
         Icon(
-        modifier = Modifier.padding(end = 16.dp),
+            modifier = Modifier.padding(end = 16.dp),
             imageVector = MiuixIcons.Useful.Play,
-            contentDescription = "音量图标",
+            contentDescription = "Volume Icon",
             tint = MiuixTheme.colorScheme.onBackground
         )
     },
     rightActions = {
-        IconButton(onClick = { /* 减小音量 */ }) {
+        IconButton(onClick = { /* Decrease volume */ }) {
             Icon(
                 imageVector = MiuixIcons.Useful.Remove,
-                contentDescription = "减小音量",
+                contentDescription = "Decrease Volume",
                 tint = MiuixTheme.colorScheme.onBackground
             )
         }
         Text("70%")
-        IconButton(onClick = { /* 增大音量 */ }) {
+        IconButton(onClick = { /* Increase volume */ }) {
             Icon(
                 imageVector = MiuixIcons.Useful.New,
-                contentDescription = "增大音量",
+                contentDescription = "Increase Volume",
                 tint = MiuixTheme.colorScheme.onBackground
             )
         }
@@ -159,12 +159,12 @@ BasicComponent(
 )
 ```
 
-### 自定义样式组件
+### Custom Style Component
 
 ```kotlin
 BasicComponent(
-    title = "自定义组件",
-    summary = "使用自定义颜色",
+    title = "Custom Component",
+    summary = "Using custom colors",
     titleColor = BasicComponentColors(
         color = Color.Blue,
         disabledColor = Color.Gray
@@ -174,20 +174,20 @@ BasicComponent(
         disabledColor = Color.LightGray
     ),
     insideMargin = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
-    onClick = { /* 处理选项点击 */ }
+    onClick = { /* Handle option click */ }
 )
 ```
 
-### 列表中使用
+### Usage in a List
 
 ```kotlin
-val options = listOf("选项1", "选项2", "选项3", "选项4")
+val options = listOf("Option 1", "Option 2", "Option 3", "Option 4")
 
 Column {
     options.forEach { option ->
         BasicComponent(
             title = option,
-            onClick = { /* 处理选项点击 */ }
+            onClick = { /* Handle option click */ }
         )
     }
 }

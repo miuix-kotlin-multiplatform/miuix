@@ -1,72 +1,72 @@
 # FloatingActionButton
 
-`FloatingActionButton` 是 Miuix 中的悬浮按钮组件，通常用于展示页面中最重要或最常用的操作。它通常悬浮在界面上方，具有突出的视觉效果，便于用户快速访问。
+`FloatingActionButton` is a floating button component in Miuix, typically used to display the most important or frequently used actions on a page. It usually floats above the interface with a prominent visual effect for quick user access.
 
-此组件通常与 `Scaffold` 组件结合使用，以便在应用程序的不同页面中保持一致的布局和行为。
+This component is commonly used in conjunction with the `Scaffold` component to maintain consistent layout and behavior across different pages in the application.
 
-## 引入
+## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.basic.FloatingActionButton
 ```
 
-## 基本用法
+## Basic Usage
 
-FloatingActionButton 组件可以用于触发重要的操作：
+The FloatingActionButton component can be used to trigger important actions:
 
 ```kotlin
 FloatingActionButton(
-    onClick = { /* 处理点击事件 */ }
+    onClick = { /* Handle click event */ }
 ) {
     Icon(
         imageVector = MiuixIcons.Useful.New,
-        contentDescription = "添加"
+        contentDescription = "Add"
     )
 }
 ```
 
-## 组件状态
+## Component States
 
-由于本组件通常用于最常用的操作，因此组件本身没有内置状态变化。
+Since this component is typically used for the most common actions, it does not have built-in state variations.
 
-## 属性
+## Properties
 
-### FloatingActionButton 属性
+### FloatingActionButton Properties
 
-| 属性名                     | 类型                   | 说明                     | 默认值                         | 是否必须 |
-| -------------------------- | ---------------------- | ------------------------ | ------------------------------ | -------- |
-| onClick                    | () -> Unit             | 点击按钮时触发的回调     | -                              | 是       |
-| modifier                   | Modifier               | 应用于按钮的修饰符       | Modifier                       | 否       |
-| shape                      | Shape                  | 按钮的形状               | CircleShape                    | 否       |
-| containerColor             | Color                  | 按钮的背景颜色           | MiuixTheme.colorScheme.primary | 否       |
-| shadowElevation            | Dp                     | 按钮的阴影高度           | 4.dp                           | 否       |
-| minWidth                   | Dp                     | 按钮的最小宽度           | 60.dp                          | 否       |
-| minHeight                  | Dp                     | 按钮的最小高度           | 60.dp                          | 否       |
-| defaultWindowInsetsPadding | Boolean                | 是否应用默认窗口插入填充 | true                           | 否       |
-| content                    | @Composable () -> Unit | 按钮内容区域的可组合函数 | -                              | 是       |
+| Property Name              | Type                   | Description                         | Default Value                  | Required |
+| -------------------------- | ---------------------- | ----------------------------------- | ------------------------------ | -------- |
+| onClick                    | () -> Unit             | Callback triggered when clicked     | -                              | Yes      |
+| modifier                   | Modifier               | Modifier applied to the button      | Modifier                       | No       |
+| shape                      | Shape                  | Shape of the button                 | CircleShape                    | No       |
+| containerColor             | Color                  | Background color of the button      | MiuixTheme.colorScheme.primary | No       |
+| shadowElevation            | Dp                     | Shadow elevation of the button      | 4.dp                           | No       |
+| minWidth                   | Dp                     | Minimum width of the button         | 60.dp                          | No       |
+| minHeight                  | Dp                     | Minimum height of the button        | 60.dp                          | No       |
+| defaultWindowInsetsPadding | Boolean                | Apply default window insets padding | true                           | No       |
+| content                    | @Composable () -> Unit | Composable content of the button    | -                              | Yes      |
 
-## 进阶用法
+## Advanced Usage
 
-### 自定义颜色
+### Custom Color
 
 ```kotlin
 FloatingActionButton(
-    onClick = { /* 处理点击事件 */ },
+    onClick = { /* Handle click event */ },
     containerColor = Color.Red
 ) {
     Icon(
         imageVector = MiuixIcons.Useful.Like,
-        contentDescription = "喜欢",
+        contentDescription = "Like",
         tint = Color.White
     )
 }
 ```
 
-### 扩展的悬浮按钮
+### Extended Floating Action Button
 
 ```kotlin
 FloatingActionButton(
-    onClick = { /* 处理点击事件 */ },
+    onClick = { /* Handle click event */ },
     shape = RoundedCornerShape(16.dp),
     minWidth = 120.dp
 ) {
@@ -77,49 +77,49 @@ FloatingActionButton(
     ) {
         Icon(
             imageVector = MiuixIcons.Useful.New,
-            contentDescription = "添加",
+            contentDescription = "Add",
             tint = Color.White
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text("添加", color = Color.White)
+        Text("Add", color = Color.White)
     }
 }
 ```
 
-### 绑定到脚手架的悬浮按钮
+### Floating Action Button with Scaffold
 
 ```kotlin
 Scaffold(
     floatingActionButton = {
         FloatingActionButton(
-            onClick = { /* 处理点击事件 */ }
+            onClick = { /* Handle click event */ }
         ) {
             Icon(
                 imageVector = MiuixIcons.Useful.Add,
-                contentDescription = "添加"
+                contentDescription = "Add"
             )
         }
     },
     floatingActionButtonPosition = MiuixFabPosition.End
 ) { paddingValues ->
-    // 内容区域需要考虑 padding
+    // Content area needs to consider padding
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
-        ) {
-            // ...
+    ) {
+        // ...
     }
 }
 ```
 
-### 带动画效果的悬浮按钮
+### Animated Floating Action Button
 
 ```kotlin
 var expanded by remember { mutableStateOf(false) }
 val animatedSize by animateDpAsState(
     targetValue = if (expanded) 65.dp else 60.dp,
-    label = "FAB 尺寸动画",
+    label = "FAB size animation",
 )
 
 FloatingActionButton(
@@ -129,7 +129,7 @@ FloatingActionButton(
 ) {
     Icon(
         imageVector = if (expanded) MiuixIcons.Useful.Remove else MiuixIcons.Useful.New,
-        contentDescription = if (expanded) "移除" else "添加",
+        contentDescription = if (expanded) "Remove" else "Add",
         tint = Color.White
     )
 }

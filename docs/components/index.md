@@ -1,57 +1,56 @@
-# 组件库
+# Components
 
-Miuix 提供了丰富的 UI 组件，严格遵循 Xiaomi HyperOS 设计规范。每个组件都经过精心设计，确保视觉与交互效果与小米原生体验一致。
+Miuix provides a rich set of UI components that strictly follow Xiaomi HyperOS Design Guidelines. Each component is carefully designed to ensure visual and interactive consistency with the native Xiaomi experience.
 
-## 脚手架
+## Scaffold Components
 
-| 组件                             | 描述           | 常见用途           |
-| -------------------------------- | -------------- | ------------------ |
-| [Scaffold](/components/scaffold) | 应用的基础布局 | 页面结构、内容展示 |
+| Component                        | Description                   | Common Usage                    |
+| -------------------------------- | ----------------------------- | ------------------------------- |
+| [Scaffold](/components/scaffold) | Basic layout for applications | Page structure, content display |
 
-::: warning 注意
-Scaffold 组件为跨平台提供了一个合适的弹出窗口的容器。`SuperDialog`、`SuperDropdown`、`SuperSpinner`、`ListPopup` 等组件都基于此实现弹出窗口，因此都需要被该组件包裹。
+::: warning
+The Scaffold component provides a suitable container for pop-up windows across platforms. Components such as `SuperDialog`, `SuperDropdown`, `SuperSpinner`, and `ListPopup` implement pop-up windows based on this, therefore they need to be wrapped by this component.
 :::
 
-## 基础组件
+## Basic Components
 
-| 组件                                                     | 描述                   | 常见用途             |
-| -------------------------------------------------------- | ---------------------- | -------------------- |
-| [Surface](/components/surface)                           | 基础容器组件           | 内容展示、背景容器   |
-| [TopAppBar](/components/topappbar)                       | 应用顶部的导航栏       | 页面标题、主要操作   |
-| [NavigationBar](/components/navigationbar)               | 底部导航组件           | 主要页面切换         |
-| [TabRow](/components/tabrow)                             | 水平标签页切换栏       | 内容分类浏览         |
-| [Card](/components/card)                                 | 包含相关信息的容器     | 信息展示、内容分组   |
-| [BasicComponent](/components/basiccomponent)             | 通用基础组件           | 自定义组件开发       |
-| [Button](/components/button)                             | 触发操作的交互元素     | 表单提交、操作确认   |
-| [Text](/components/text)                                 | 展示各种样式的文字内容 | 标题、正文、描述文本 |
-| [SmallTitle](/components/smalltitle)                     | 小型标题组件           | 辅助标题、分类标识   |
-| [TextField](/components/textfield)                       | 接收用户文本输入       | 表单填写、搜索框     |
-| [Switch](/components/switch)                             | 双态切换控件           | 设置项开关、功能启用 |
-| [Checkbox](/components/checkbox)                         | 多选控件               | 多项选择、条款同意   |
-| [Slider](/components/slider)                             | 调节值的滑动控件       | 音量调节、范围选择   |
-| [ProgressIndicator](/components/progressindicator)       | 展示操作进度状态       | 加载中、进度展示     |
-| [Icon](/components/icon)                                 | 图标展示组件           | 图标按钮、状态指示   |
-| [FloatingActionButton](/components/floatingactionbutton) | 悬浮操作按钮           | 主要操作、快捷功能   |
-| [Divider](/components/divider)                           | 内容分隔线             | 区块分隔、层次划分   |
-| [PullToRefresh](/components/pulltorefresh)               | 下拉触发刷新操作       | 数据更新、页面刷新   |
-| [SearchBar](/components/searchbar)                       | 执行搜索的输入框       | 内容搜索、快速查找   |
-| [ColorPicker](/components/colorpicker)                   | 选择颜色的控件         | 主题设置、颜色选择   |
-| [ListPopup](/components/listpopup)                       | 列表弹出窗口组件       | 选项选择、功能列表   |
+| Component                                                | Description                                | Common Usage                          |
+| -------------------------------------------------------- | ------------------------------------------ | ------------------------------------- |
+| [Surface](/components/surface)                           | Basic container component                  | Content display, background container |
+| [TopAppBar](/components/topappbar)                       | Application top navigation bar             | Page title, primary actions           |
+| [NavigationBar](/components/navigationbar)               | Bottom navigation component                | Main page switching                   |
+| [TabRow](/components/tabrow)                             | Horizontal tab bar                         | Content category browsing             |
+| [Card](/components/card)                                 | Container with related information         | Information display, content grouping |
+| [BasicComponent](/components/basiccomponent)             | Universal base component                   | Custom component development          |
+| [Button](/components/button)                             | Interactive element for triggering actions | Form submission, action confirmation  |
+| [Text](/components/text)                                 | Display text content with various styles   | Titles, body text, descriptive text   |
+| [SmallTitle](/components/smalltitle)                     | Small title component                      | Auxiliary titles, category labels     |
+| [TextField](/components/textfield)                       | Receives user text input                   | Form filling, search boxes            |
+| [Switch](/components/switch)                             | Binary state toggle control                | Setting switches, feature enabling    |
+| [Checkbox](/components/checkbox)                         | Multiple selection control                 | Multiple choices, terms agreement     |
+| [Slider](/components/slider)                             | Sliding control for value adjustment       | Volume control, range selection       |
+| [ProgressIndicator](/components/progressindicator)       | Displays operation progress status         | Loading, progress display             |
+| [Icon](/components/icon)                                 | Icon display component                     | Icon buttons, status indicators       |
+| [FloatingActionButton](/components/floatingactionbutton) | Floating action button                     | Primary actions, quick functions      |
+| [Divider](/components/divider)                           | Content separator                          | Block separation, hierarchy division  |
+| [PullToRefresh](/components/pulltorefresh)               | Pull-down refresh operation                | Data update, page refresh             |
+| [SearchBar](/components/searchbar)                       | Search input field                         | Content search, quick find            |
+| [ColorPicker](/components/colorpicker)                   | Color selection control                    | Theme settings, color selection       |
+| [ListPopup](/components/listpopup)                       | List popup window component                | Option selection, feature list        |
 
+## Special Components
 
-## 特殊组件
+| Component                            | Description                          | Common Usage                    |
+| ------------------------------------ | ------------------------------------ | ------------------------------- |
+| [LazyColumn](/components/lazycolumn) | Lazy loading vertical list component | Long list display, data loading |
 
-| 组件                                 | 描述                 | 常见用途             |
-| ------------------------------------ | -------------------- | -------------------- |
-| [LazyColumn](/components/lazycolumn) | 懒加载的垂直列表组件 | 长列表展示、数据加载 |
+## Extended Components
 
-## 扩展组件
-
-| 组件                                       | 描述                               | 常见用途               |
-| ------------------------------------------ | ---------------------------------- | ---------------------- |
-| [SuperArrow](/components/superarrow)       | 基于 BasicComponent 的带箭头组件   | 指示可点击、导航提示   |
-| [SuperSwitch](/components/superswitch)     | 基于 BasicComponent 的开关组件     | 设置项开关、功能启用   |
-| [SuperCheckBox](/components/supercheckbox) | 基于 BasicComponent 的复选框组件   | 多项选择、条款同意     |
-| [SuperDropdown](/components/superdropdown) | 基于 BasicComponent 的下拉菜单组件 | 选项选择、功能列表     |
-| [SuperSpinner](/components/superspinner)   | 基于 BasicComponent 的高级菜单组件 | 进阶选项选择、功能列表 |
-| [SuperDialog](/components/superdialog)     | 基于 BasicComponent 的对话弹窗组件 | 提示、确认操作         |
+| Component                                  | Description                                | Common Usage                           |
+| ------------------------------------------ | ------------------------------------------ | -------------------------------------- |
+| [SuperArrow](/components/superarrow)       | Arrow component based on BasicComponent    | Clickable indication, navigation hints |
+| [SuperSwitch](/components/superswitch)     | Switch component based on BasicComponent   | Setting switches, feature enabling     |
+| [SuperCheckBox](/components/supercheckbox) | Checkbox component based on BasicComponent | Multiple selection, terms agreement    |
+| [SuperDropdown](/components/superdropdown) | Dropdown menu based on BasicComponent      | Option selection, feature list         |
+| [SuperSpinner](/components/superspinner)   | Advanced menu based on BasicComponent      | Advanced options, feature list         |
+| [SuperDialog](/components/superdialog)     | Dialog window based on BasicComponent      | Prompts, action confirmation           |

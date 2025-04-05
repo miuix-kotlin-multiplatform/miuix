@@ -1,16 +1,16 @@
 # Switch
 
-`Switch` 是 Miuix 中的基础切换组件，用于在两种状态之间进行切换。它提供了具有动画效果的交互式开关控件，适用于设置项的启用与禁用场景。
+`Switch` is a basic toggle component in Miuix used to switch between two states. It provides an interactive switch control with animation effects, suitable for enabling and disabling settings.
 
-## 引入
+## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.basic.Switch
 ```
 
-## 基本用法
+## Basic Usage
 
-Switch 组件可以用于在两种状态间切换：
+The Switch component can be used to toggle between two states:
 
 ```kotlin
 var checked by remember { mutableStateOf(false) }
@@ -21,9 +21,9 @@ Switch(
 )
 ```
 
-## 组件状态
+## Component States
 
-### 禁用状态
+### Disabled State
 
 ```kotlin
 var checked by remember { mutableStateOf(false) }
@@ -35,45 +35,44 @@ Switch(
 )
 ```
 
+## Properties
 
-## 属性
+### Switch Properties
 
-### Switch 属性
+| Property Name   | Type                 | Description                        | Default Value                 | Required |
+| --------------- | -------------------- | ---------------------------------- | ----------------------------- | -------- |
+| checked         | Boolean              | Whether the switch is checked      | -                             | Yes      |
+| onCheckedChange | ((Boolean) -> Unit)? | Callback when switch state changes | -                             | No       |
+| modifier        | Modifier             | Modifier applied to the switch     | Modifier                      | No       |
+| colors          | SwitchColors         | Color configuration for the switch | SwitchDefaults.switchColors() | No       |
+| enabled         | Boolean              | Whether the switch is interactive  | true                          | No       |
 
-| 属性名          | 类型                 | 说明                     | 默认值                        | 是否必须 |
-| --------------- | -------------------- | ------------------------ | ----------------------------- | -------- |
-| checked         | Boolean              | 开关是否处于选中状态     | -                             | 是       |
-| onCheckedChange | ((Boolean) -> Unit)? | 开关状态变化时的回调函数 | -                             | 否       |
-| modifier        | Modifier             | 应用于开关的修饰符       | Modifier                      | 否       |
-| colors          | SwitchColors         | 开关的颜色配置           | SwitchDefaults.switchColors() | 否       |
-| enabled         | Boolean              | 开关是否可交互           | true                          | 否       |
+### SwitchDefaults Object
 
-### SwitchDefaults 对象
+The SwitchDefaults object provides default color configurations for the Switch component.
 
-SwitchDefaults 对象提供了 Switch 组件的默认颜色配置。
+#### Methods
 
-#### 方法
+| Method Name    | Type         | Description                                 |
+| -------------- | ------------ | ------------------------------------------- |
+| switchColors() | SwitchColors | Creates default color config for the switch |
 
-| 方法名         | 类型         | 说明                   |
-| -------------- | ------------ | ---------------------- |
-| switchColors() | SwitchColors | 创建开关的默认颜色配置 |
+### SwitchColors Class
 
-### SwitchColors 类
+| Property Name               | Type  | Description                             | Default Value | Required |
+| --------------------------- | ----- | --------------------------------------- | ------------- | -------- |
+| checkedThumbColor           | Color | Thumb color when checked                | -             | Yes      |
+| uncheckedThumbColor         | Color | Thumb color when unchecked              | -             | Yes      |
+| disabledCheckedThumbColor   | Color | Thumb color when disabled and checked   | -             | Yes      |
+| disabledUncheckedThumbColor | Color | Thumb color when disabled and unchecked | -             | Yes      |
+| checkedTrackColor           | Color | Track color when checked                | -             | Yes      |
+| uncheckedTrackColor         | Color | Track color when unchecked              | -             | Yes      |
+| disabledCheckedTrackColor   | Color | Track color when disabled and checked   | -             | Yes      |
+| disabledUncheckedTrackColor | Color | Track color when disabled and unchecked | -             | Yes      |
 
-| 属性名                      | 类型  | 说明                         | 默认值 | 是否必须 |
-| --------------------------- | ----- | ---------------------------- | ------ | -------- |
-| checkedThumbColor           | Color | 选中状态时滑块的颜色         | -      | 是       |
-| uncheckedThumbColor         | Color | 未选中状态时滑块的颜色       | -      | 是       |
-| disabledCheckedThumbColor   | Color | 禁用且选中状态时滑块的颜色   | -      | 是       |
-| disabledUncheckedThumbColor | Color | 禁用且未选中状态时滑块的颜色 | -      | 是       |
-| checkedTrackColor           | Color | 选中状态时轨道的颜色         | -      | 是       |
-| uncheckedTrackColor         | Color | 未选中状态时轨道的颜色       | -      | 是       |
-| disabledCheckedTrackColor   | Color | 禁用且选中状态时轨道的颜色   | -      | 是       |
-| disabledUncheckedTrackColor | Color | 禁用且未选中状态时轨道的颜色 | -      | 是       |
+## Advanced Usage
 
-## 进阶用法
-
-### 自定义颜色
+### Custom Colors
 
 ```kotlin
 var checked by remember { mutableStateOf(false) }
@@ -88,7 +87,7 @@ Switch(
 )
 ```
 
-### 结合文本使用
+### Using with Text
 
 ```kotlin
 var checked by remember { mutableStateOf(false) }
@@ -102,14 +101,14 @@ Row(
         onCheckedChange = { checked = it }
     )
     Spacer(modifier = Modifier.width(8.dp))
-    Text(text = if (checked) "已开启" else "已关闭")
+    Text(text = if (checked) "Enabled" else "Disabled")
 }
 ```
 
-### 在列表中使用
+### Using in Lists
 
 ```kotlin
-val options = listOf("飞行模式", "蓝牙", "位置服务")
+val options = listOf("Airplane Mode", "Bluetooth", "Location Services")
 val checkedStates = remember { mutableStateListOf(false, true, false) }
 
 LazyColumn {
@@ -129,15 +128,15 @@ LazyColumn {
 }
 ```
 
-### 整行列表可点击
+### Clickable List Row
 
 ```kotlin
 data class Option(val text: String, var isSelected: Boolean)
 val options = remember {
     mutableStateListOf(
-        Option("飞行模式", false),
-        Option("蓝牙", true),
-        Option("位置服务", false)
+        Option("Airplane Mode", false),
+        Option("Bluetooth", true),
+        Option("Location Services", false)
     )
 }
 

@@ -1,16 +1,16 @@
 # CheckBox
 
-`CheckBox` 是 Miuix 中的基础选择组件，用于在选中与未选中状态间切换。它提供了具有动画效果的交互式选择控件，适用于多选场景和配置项的启用与禁用。
+`CheckBox` is a basic selection component in Miuix, used for toggling between checked and unchecked states. It provides an interactive selection control with animation effects, suitable for multiple selection scenarios and enabling/disabling configuration items.
 
-## 引入
+## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.basic.Checkbox
 ```
 
-## 基本用法
+## Basic Usage
 
-CheckBox 组件可以用于创建可选择的选项：
+The CheckBox component can be used to create selectable options:
 
 ```kotlin
 var checked by remember { mutableStateOf(false) }
@@ -21,9 +21,9 @@ Checkbox(
 )
 ```
 
-## 组件状态
+## Component States
 
-### 禁用状态
+### Disabled State
 
 ```kotlin
 var checked by remember { mutableStateOf(false) }
@@ -35,44 +35,44 @@ Checkbox(
 )
 ```
 
-## 属性
+## Properties
 
-### Checkbox 属性
+### Checkbox Properties
 
-| 属性名          | 类型                 | 说明                     | 默认值                            | 是否必须 |
-| --------------- | -------------------- | ------------------------ | --------------------------------- | -------- |
-| checked         | Boolean              | 复选框是否处于选中状态   | -                                 | 是       |
-| onCheckedChange | ((Boolean) -> Unit)? | 选中状态变化时的回调函数 | -                                 | 是       |
-| modifier        | Modifier             | 应用于复选框的修饰符     | Modifier                          | 否       |
-| colors          | CheckboxColors       | 复选框的颜色配置         | CheckboxDefaults.checkboxColors() | 否       |
-| enabled         | Boolean              | 复选框是否可交互         | true                              | 否       |
+| Property Name   | Type                 | Description                       | Default Value                     | Required |
+| --------------- | -------------------- | --------------------------------- | --------------------------------- | -------- |
+| checked         | Boolean              | Whether checkbox is checked       | -                                 | Yes      |
+| onCheckedChange | ((Boolean) -> Unit)? | Callback when check state changes | -                                 | Yes      |
+| modifier        | Modifier             | Modifier applied to the checkbox  | Modifier                          | No       |
+| colors          | CheckboxColors       | Color configuration for checkbox  | CheckboxDefaults.checkboxColors() | No       |
+| enabled         | Boolean              | Whether checkbox is interactive   | true                              | No       |
 
-### CheckboxDefaults 对象
+### CheckboxDefaults Object
 
-CheckboxDefaults 对象提供了 Checkbox 组件的默认颜色配置。
+The CheckboxDefaults object provides default color configurations for the Checkbox component.
 
-#### 方法
+#### Methods
 
-| 方法名           | 类型           | 说明                     |
-| ---------------- | -------------- | ------------------------ |
-| checkboxColors() | CheckboxColors | 创建复选框的默认颜色配置 |
+| Method Name      | Type           | Description                               |
+| ---------------- | -------------- | ----------------------------------------- |
+| checkboxColors() | CheckboxColors | Creates default color config for checkbox |
 
-### CheckboxColors 类
+### CheckboxColors Class
 
-| 属性名                           | 类型  | 说明                         |
-| -------------------------------- | ----- | ---------------------------- |
-| checkedForegroundColor           | Color | 选中状态时前景色（对勾颜色） |
-| uncheckedForegroundColor         | Color | 未选中状态时前景色           |
-| disabledCheckedForegroundColor   | Color | 禁用且选中状态时前景色       |
-| disabledUncheckedForegroundColor | Color | 禁用且未选中状态时前景色     |
-| checkedBackgroundColor           | Color | 选中状态时背景色             |
-| uncheckedBackgroundColor         | Color | 未选中状态时背景色           |
-| disabledCheckedBackgroundColor   | Color | 禁用且选中状态时背景色       |
-| disabledUncheckedBackgroundColor | Color | 禁用且未选中状态时背景色     |
+| Property Name                    | Type  | Description                                  |
+| -------------------------------- | ----- | -------------------------------------------- |
+| checkedForegroundColor           | Color | Foreground color when checked (checkmark)    |
+| uncheckedForegroundColor         | Color | Foreground color when unchecked              |
+| disabledCheckedForegroundColor   | Color | Foreground color when disabled and checked   |
+| disabledUncheckedForegroundColor | Color | Foreground color when disabled and unchecked |
+| checkedBackgroundColor           | Color | Background color when checked                |
+| uncheckedBackgroundColor         | Color | Background color when unchecked              |
+| disabledCheckedBackgroundColor   | Color | Background color when disabled and checked   |
+| disabledUncheckedBackgroundColor | Color | Background color when disabled and unchecked |
 
-## 进阶用法
+## Advanced Usage
 
-### 自定义颜色
+### Custom Colors
 
 ```kotlin
 var checked by remember { mutableStateOf(false) }
@@ -87,7 +87,7 @@ Checkbox(
 )
 ```
 
-### 结合文本使用
+### Using with Text
 
 ```kotlin
 var checked by remember { mutableStateOf(false) }
@@ -101,14 +101,14 @@ Row(
         onCheckedChange = { checked = it }
     )
     Spacer(modifier = Modifier.width(8.dp))
-    Text(text = "接受用户协议与隐私政策")
+    Text(text = "Accept Terms and Privacy Policy")
 }
 ```
 
-### 在列表中使用
+### Using in Lists
 
 ```kotlin
-val options = listOf("选项 A", "选项 B", "选项 C")
+val options = listOf("Option A", "Option B", "Option C")
 val checkedStates = remember { mutableStateListOf(false, true, false) }
 
 LazyColumn {
@@ -128,15 +128,15 @@ LazyColumn {
 }
 ```
 
-### 整行列表可点击
+### Clickable Row in List
 
 ```kotlin
 data class Option(val text: String, var isSelected: Boolean)
 val options = remember {
     mutableStateListOf(
-        Option("选项 1", false),
-        Option("选项 2", true),
-        Option("选项 3", false)
+        Option("Option 1", false),
+        Option("Option 2", true),
+        Option("Option 3", false)
     )
 }
 
@@ -164,4 +164,3 @@ LazyColumn {
         }
     }
 }
-```

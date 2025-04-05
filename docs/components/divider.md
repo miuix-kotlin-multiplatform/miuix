@@ -1,122 +1,122 @@
 # Divider
 
-`Divider` 是 Miuix 中的基础布局组件，用于在列表和布局中分隔内容。提供了水平分割线和垂直分割线两种形式。
+`Divider` is a basic layout component in Miuix used to separate content in lists and layouts. It provides both horizontal and vertical divider styles.
 
-## 引入
+## Import
 
 ```kotlin
-import top.yukonga.miuix.kmp.basic.HorizontalDivider // 水平分割线
-import top.yukonga.miuix.kmp.basic.VerticalDivider  // 垂直分割线
+import top.yukonga.miuix.kmp.basic.HorizontalDivider // Horizontal divider
+import top.yukonga.miuix.kmp.basic.VerticalDivider   // Vertical divider
 ```
 
-## 基本用法
+## Basic Usage
 
-### 水平分割线
+### Horizontal Divider
 
-水平分割线用于分隔垂直排列的内容：
+Horizontal divider is used to separate vertically arranged content:
 
 ```kotlin
 Column {
-    Text("上方内容")
+    Text("Content Above")
     HorizontalDivider()
-    Text("下方内容")
+    Text("Content Below")
 }
 ```
 
-### 垂直分割线
+### Vertical Divider
 
-垂直分割线用于分隔水平排列的内容：
+Vertical divider is used to separate horizontally arranged content:
 
 ```kotlin
 Row {
-    Text("左侧内容")
+    Text("Left Content")
     VerticalDivider()
-    Text("右侧内容")
+    Text("Right Content")
 }
 ```
 
-## 属性
+## Properties
 
-### HorizontalDivider 属性
+### HorizontalDivider Properties
 
-| 属性名    | 类型     | 说明                 | 默认值                       | 是否必须 |
-| --------- | -------- | -------------------- | ---------------------------- | -------- |
-| modifier  | Modifier | 应用于分割线的修饰符 | Modifier                     | 否       |
-| thickness | Dp       | 分割线的厚度         | DividerDefaults.Thickness    | 否       |
-| color     | Color    | 分割线的颜色         | DividerDefaults.DividerColor | 否       |
+| Property Name | Type     | Description                     | Default Value                | Required |
+| ------------- | -------- | ------------------------------- | ---------------------------- | -------- |
+| modifier      | Modifier | Modifier applied to the divider | Modifier                     | No       |
+| thickness     | Dp       | Thickness of the divider        | DividerDefaults.Thickness    | No       |
+| color         | Color    | Color of the divider            | DividerDefaults.DividerColor | No       |
 
-### VerticalDivider 属性
+### VerticalDivider Properties
 
-| 属性名    | 类型     | 说明                 | 默认值                       | 是否必须 |
-| --------- | -------- | -------------------- | ---------------------------- | -------- |
-| modifier  | Modifier | 应用于分割线的修饰符 | Modifier                     | 否       |
-| thickness | Dp       | 分割线的厚度         | DividerDefaults.Thickness    | 否       |
-| color     | Color    | 分割线的颜色         | DividerDefaults.DividerColor | 否       |
+| Property Name | Type     | Description                     | Default Value                | Required |
+| ------------- | -------- | ------------------------------- | ---------------------------- | -------- |
+| modifier      | Modifier | Modifier applied to the divider | Modifier                     | No       |
+| thickness     | Dp       | Thickness of the divider        | DividerDefaults.Thickness    | No       |
+| color         | Color    | Color of the divider            | DividerDefaults.DividerColor | No       |
 
-### DividerDefaults 对象
+### DividerDefaults Object
 
-DividerDefaults 对象提供了分割线组件的默认值。
+The DividerDefaults object provides default values for the divider components.
 
-#### 常量
+#### Constants
 
-| 常量名       | 类型  | 说明             | 默认值                             |
-| ------------ | ----- | ---------------- | ---------------------------------- |
-| Thickness    | Dp    | 分割线的默认厚度 | 0.75.dp                            |
-| DividerColor | Color | 分割线的默认颜色 | MiuixTheme.colorScheme.dividerLine |
+| Constant Name | Type  | Description                  | Default Value                      |
+| ------------- | ----- | ---------------------------- | ---------------------------------- |
+| Thickness     | Dp    | Default thickness of divider | 0.75.dp                            |
+| DividerColor  | Color | Default color of divider     | MiuixTheme.colorScheme.dividerLine |
 
-## 进阶用法
+## Advanced Usage
 
-### 自定义厚度的分割线
+### Custom Thickness Divider
 
 ```kotlin
 Column {
-    Text("上方内容")
+    Text("Content Above")
     HorizontalDivider(
         thickness = 2.dp
     )
-    Text("下方内容")
+    Text("Content Below")
 }
 ```
 
-### 自定义颜色的分割线
+### Custom Color Divider
 
 ```kotlin
 Column {
-    Text("上方内容")
+    Text("Content Above")
     HorizontalDivider(
         color = Color.Red
     )
-    Text("下方内容")
+    Text("Content Below")
 }
 ```
 
-### 带内边距的分割线
+### Divider with Padding
 
 ```kotlin
 Column {
-    Text("上方内容")
+    Text("Content Above")
     HorizontalDivider(
         modifier = Modifier.padding(horizontal = 16.dp)
     )
-    Text("下方内容")
+    Text("Content Below")
 }
 ```
 
-### 使用垂直分割线分隔按钮
+### Using Vertical Divider Between Buttons
 
 ```kotlin
 Row(
     horizontalArrangement = Arrangement.SpaceBetween,
     verticalAlignment = Alignment.CenterVertically
 ) {
-    Button(onClick = { /* 处理点击事件 */ }) {
-        Text("取消")
+    Button(onClick = { /* Handle click event */ }) {
+        Text("Cancel")
     }
     VerticalDivider(
         modifier = Modifier.height(24.dp)
     )
-    Button(onClick = { /* 处理点击事件 */ }) {
-        Text("确认")
+    Button(onClick = { /* Handle click event */ }) {
+        Text("Confirm")
     }
 }
 ```

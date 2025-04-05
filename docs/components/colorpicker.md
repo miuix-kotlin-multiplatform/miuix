@@ -1,16 +1,16 @@
 # ColorPicker
 
-`ColorPicker` 是 Miuix 中的颜色选择组件，允许用户通过调整色相、饱和度、明度和透明度来选择颜色。组件提供了直观的滑块界面，支持触觉反馈和实时颜色预览。
+`ColorPicker` is a color selection component in Miuix that allows users to pick colors by adjusting hue, saturation, brightness, and transparency. The component provides an intuitive slider interface with haptic feedback and real-time color preview.
 
-## 引入
+## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.basic.ColorPicker
 ```
 
-## 基本用法
+## Basic Usage
 
-ColorPicker 组件可以让用户选择自定义颜色：
+The ColorPicker component enables users to select custom colors:
 
 ```kotlin
 var selectedColor by remember { mutableStateOf(Color.Red) }
@@ -23,49 +23,49 @@ ColorPicker(
 )
 ```
 
-## 组件变体
+## Component Variants
 
-### 不带颜色预览
+### Without Color Preview
 
-默认情况下，ColorPicker 会显示当前选择的颜色预览，如果不想显示默认的颜色预览，可以将 `showPreview` 设置为 `false`：
+By default, ColorPicker displays a preview of the currently selected color. If you don't want to show the default color preview, set `showPreview` to `false`:
 
 ```kotlin
 ColorPicker(
     initialColor = Color.Blue,
-    onColorChanged = { /* 处理颜色变化 */ },
+    onColorChanged = { /* Handle color change */ },
     showPreview = false
 )
 ```
 
-## 触觉反馈
+## Haptic Feedback
 
-ColorPicker 支持触觉反馈，可以通过 `hapticEffect` 参数自定义反馈效果，详见 [SliderHapticEffect](/components/slider#sliderhapticeffect)。
+ColorPicker supports haptic feedback, which can be customized using the `hapticEffect` parameter. See [SliderHapticEffect](/components/slider#sliderhapticeffect) for details.
 
 ```kotlin
 ColorPicker(
     initialColor = Color.Green,
-    onColorChanged = { /* 处理颜色变化 */ },
+    onColorChanged = { /* Handle color change */ },
     hapticEffect = SliderHapticEffect.Step
 )
 ```
 
-## 属性
+## Properties
 
-### ColorPicker 属性
+### ColorPicker Properties
 
-| 属性名         | 类型                              | 说明                 | 默认值                             | 是否必须 |
-| -------------- | --------------------------------- | -------------------- | ---------------------------------- | -------- |
-| initialColor   | Color                             | 初始颜色             | -                                  | 是       |
-| onColorChanged | (Color) -> Unit                   | 颜色变化时的回调函数 | -                                  | 是       |
-| showPreview    | Boolean                           | 是否显示颜色预览     | true                               | 否       |
-| hapticEffect   | SliderDefaults.SliderHapticEffect | 滑块的触觉反馈效果   | SliderDefaults.DefaultHapticEffect | 否       |
-| modifier       | Modifier                          | 应用于组件的修饰符   | Modifier                           | 否       |
+| Property Name  | Type                              | Description                   | Default Value                      | Required |
+| -------------- | --------------------------------- | ----------------------------- | ---------------------------------- | -------- |
+| initialColor   | Color                             | Initial color                 | -                                  | Yes      |
+| onColorChanged | (Color) -> Unit                   | Callback for color changes    | -                                  | Yes      |
+| showPreview    | Boolean                           | Show color preview            | true                               | No       |
+| hapticEffect   | SliderDefaults.SliderHapticEffect | Slider haptic feedback effect | SliderDefaults.DefaultHapticEffect | No       |
+| modifier       | Modifier                          | Modifier for the component    | Modifier                           | No       |
 
-## 单独使用滑块组件
+## Individual Slider Components
 
-ColorPicker 提供了四种不同的滑块组件，可以单独使用：
+ColorPicker provides four different slider components that can be used independently:
 
-### HueSlider - 色相滑块
+### HueSlider
 
 ```kotlin
 var hue by remember { mutableStateOf(0f) }
@@ -78,13 +78,13 @@ HueSlider(
 )
 ```
 
-### SaturationSlider - 饱和度滑块
+### SaturationSlider
 
 ```kotlin
 var saturation by remember { mutableStateOf(0.5f) }
 
 SaturationSlider(
-    currentHue = 180f, // 当前色相
+    currentHue = 180f, // Current hue
     currentSaturation = saturation,
     onSaturationChanged = { newSaturation ->
         saturation = newSaturation
@@ -92,14 +92,14 @@ SaturationSlider(
 )
 ```
 
-### ValueSlider - 明度滑块
+### ValueSlider
 
 ```kotlin
 var value by remember { mutableStateOf(0.5f) }
 
 ValueSlider(
-    currentHue = 180f, // 当前色相
-    currentSaturation = 0.5f, // 当前饱和度
+    currentHue = 180f, // Current hue
+    currentSaturation = 0.5f, // Current saturation
     currentValue = value,
     onValueChanged = { newValue ->
         value = newValue
@@ -107,15 +107,15 @@ ValueSlider(
 )
 ```
 
-### AlphaSlider - 透明度滑块
+### AlphaSlider
 
 ```kotlin
 var alpha by remember { mutableStateOf(1f) }
 
 AlphaSlider(
-    currentHue = 180f, // 当前色相
-    currentSaturation = 0.5f, // 当前饱和度
-    currentValue = 0.5f, // 当前明度
+    currentHue = 180f, // Current hue
+    currentSaturation = 0.5f, // Current saturation
+    currentValue = 0.5f, // Current value
     currentAlpha = alpha,
     onAlphaChanged = { newAlpha ->
         alpha = newAlpha
@@ -123,11 +123,11 @@ AlphaSlider(
 )
 ```
 
-## 进阶用法
+## Advanced Usage
 
-### 在表单中使用
+### Using in Forms
 
-结合其他输入控件，创建颜色选择表单：
+Combine with other input controls to create a color selection form:
 
 ```kotlin
 var currentColor by remember { mutableStateOf(Color.Red) }
@@ -146,7 +146,7 @@ Surface {
             .padding(16.dp)
     ) {
         Text(
-            text = "选择颜色",
+            text = "Select Color",
             style = MiuixTheme.textStyles.title2
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -162,17 +162,17 @@ Surface {
         Spacer(modifier = Modifier.height(16.dp))
         TextField(
             value = hexValue,
-            onValueChange = { /* 可以添加十六进制值解析逻辑 */ },
-            label = "十六进制值",
+            onValueChange = { /* Add hex value parsing logic */ },
+            label = "Hex Value",
             modifier = Modifier.fillMaxWidth()
         )
     }
 }
 ```
 
-### 与对话框结合使用
+### Using with Dialog
 
-在对话框中使用 ColorPicker 创建颜色选择器：
+Use ColorPicker in a dialog to create a color selector:
 
 ```kotlin
 var showColorDialog = remember { mutableStateOf(false) }
@@ -180,13 +180,13 @@ var selectedColor by remember { mutableStateOf(Color.Red) }
 
 Scaffold { 
     TextButton(
-        text = "选择颜色",
+        text = "Select Color",
         onClick = { showColorDialog.value = true }
     )
     SuperDialog(
-        title = "选择颜色",
+        title = "Select Color",
         show = showColorDialog,
-        onDismissRequest = { dismissDialog(showColorDialog) } // 关闭对话框
+        onDismissRequest = { dismissDialog(showColorDialog) }
     ) {
         Column {
             ColorPicker(
@@ -200,17 +200,17 @@ Scaffold {
             ) {
                 TextButton(
                     modifier = Modifier.weight(1f),
-                    text = "取消",
-                    onClick = { dismissDialog(showColorDialog) } // 关闭对话框
+                    text = "Cancel",
+                    onClick = { dismissDialog(showColorDialog) }
                 )
                 TextButton(
                     modifier = Modifier.weight(1f),
-                    text = "确认",
-                    colors = ButtonDefaults.textButtonColorsPrimary(), // 使用主题颜色
+                    text = "Confirm",
+                    colors = ButtonDefaults.textButtonColorsPrimary(),
                     onClick = {
-                        dismissDialog(showColorDialog) // 关闭对话框
-                        // 处理确认逻辑
-                        // 例如：保存选中的颜色
+                        dismissDialog(showColorDialog)
+                        // Handle confirmation logic
+                        // For example: save the selected color
                     })
             }
         }

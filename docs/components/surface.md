@@ -1,16 +1,16 @@
 # Surface
 
-`Surface` 是 Miuix 中的基础容器组件，用于为应用内容提供一致的背景和边框效果，为界面元素提供统一的视觉基础。支持一些简单的自定义样式。
+`Surface` is a foundational container component in Miuix, used to provide consistent background and border effects for application content, offering a unified visual foundation for interface elements. It supports simple custom styles.
 
-## 引入
+## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.basic.Surface
 ```
 
-## 基本用法
+## Basic Usage
 
-Surface 组件可以包裹其他内容，为它们提供背景、边框和阴影效果：
+The Surface component can wrap other content, providing them with background, border, and shadow effects:
 
 ```kotlin
 Surface(
@@ -22,41 +22,41 @@ Surface(
     shadowElevation = 4.dp
 ) {
     Text(
-        text = "Surface 示例",
+        text = "Surface Example",
         modifier = Modifier.padding(16.dp)
     )
 }
 ```
 
-## 属性
+## Properties
 
-### 基础 Surface 属性
+### Basic Surface Properties
 
-| 属性名          | 类型                   | 说明                         | 默认值                            | 是否必须 |
-| --------------- | ---------------------- | ---------------------------- | --------------------------------- | -------- |
-| modifier        | Modifier               | 应用于 Surface 的修饰符      | Modifier                          | 否       |
-| shape           | Shape                  | Surface 的形状               | RectangleShape                    | 否       |
-| color           | Color                  | Surface 的背景颜色           | MiuixTheme.colorScheme.background | 否       |
-| border          | BorderStroke?          | Surface 的边框样式           | null                              | 否       |
-| shadowElevation | Dp                     | Surface 的阴影高度           | 0.dp                              | 否       |
-| content         | @Composable () -> Unit | Surface 内容区域的可组合函数 | -                                 | 是       |
+| Property Name   | Type                   | Description                                      | Default Value                     | Required |
+| --------------- | ---------------------- | ------------------------------------------------ | --------------------------------- | -------- |
+| modifier        | Modifier               | Modifiers applied to Surface                     | Modifier                          | No       |
+| shape           | Shape                  | Shape of the Surface                             | RectangleShape                    | No       |
+| color           | Color                  | Background color of Surface                      | MiuixTheme.colorScheme.background | No       |
+| border          | BorderStroke?          | Border style of Surface                          | null                              | No       |
+| shadowElevation | Dp                     | Shadow elevation of Surface                      | 0.dp                              | No       |
+| content         | @Composable () -> Unit | Composable function for the Surface content area | -                                 | Yes      |
 
-### 可点击 Surface 额外属性
+### Additional Properties for Clickable Surface
 
-| 属性名  | 类型       | 说明                      | 默认值 | 是否必须 |
-| ------- | ---------- | ------------------------- | ------ | -------- |
-| onClick | () -> Unit | 点击 Surface 时触发的回调 | -      | 是       |
-| enabled | Boolean    | Surface 是否可点击        | true   | 否       |
+| Property Name | Type       | Description                      | Default Value | Required |
+| ------------- | ---------- | -------------------------------- | ------------- | -------- |
+| onClick       | () -> Unit | Callback triggered on click      | -             | Yes      |
+| enabled       | Boolean    | Whether the Surface is clickable | true          | No       |
 
-## 进阶用法
+## Advanced Usage
 
-### 可点击 Surface
+### Clickable Surface
 
-创建可交互的 Surface，用于响应用户点击：
+Create an interactive Surface to respond to user clicks:
 
 ```kotlin
 Surface(
-    onClick = { /* 处理点击事件 */ },
+    onClick = { /* Handle click event */ },
     modifier = Modifier.size(200.dp).padding(16.dp),
     shape = RoundedCornerShape(16.dp),
     color = MiuixTheme.colorScheme.primaryContainer,
@@ -67,7 +67,7 @@ Surface(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "可点击，类似按钮",
+            text = "Clickable, like a button",
             modifier = Modifier.padding(16.dp).fillMaxSize(),
             textAlign = TextAlign.Center,
         )
@@ -75,9 +75,9 @@ Surface(
 }
 ```
 
-### 自定义样式
+### Custom Styles
 
-使用不同形状、颜色和边框创建自定义样式：
+Create custom styles with different shapes, colors, and borders:
 
 ```kotlin
 Surface(
@@ -92,7 +92,7 @@ Surface(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "圆形 Surface",
+            text = "Circular Surface",
             modifier = Modifier.padding(16.dp),
             textAlign = TextAlign.Center,
         )
@@ -100,9 +100,9 @@ Surface(
 }
 ```
 
-### 组合使用
+### Combined Usage
 
-将 Surface 与其他组件结合使用，创建卡片式布局：
+Combine Surface with other components to create card-like layouts:
 
 ```kotlin
 Surface(
@@ -116,33 +116,33 @@ Surface(
         modifier = Modifier.padding(16.dp)
     ) {
         Text(
-            text = "卡片标题",
+            text = "Card Title",
             style = MiuixTheme.textStyles.headline1
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "这是卡片内容区域，可以放置各种组件和信息。Surface 组件提供了统一的视觉容器。",
+            text = "This is the card content area, where various components and information can be placed. The Surface component provides a unified visual container.",
             style = MiuixTheme.textStyles.body1
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = { /* 处理点击事件 */ }
+            onClick = { /* Handle click event */ }
         ) {
-            Text("操作按钮")
+            Text("Action Button")
         }
     }
 }
 ```
 
-### 禁用状态
+### Disabled State
 
-创建可禁用状态的可点击 Surface：
+Create a clickable Surface with a disabled state:
 
 ```kotlin
 var isEnabled by remember { mutableStateOf(false) }
 
 Surface(
-    onClick = { /* 处理点击事件 */ },
+    onClick = { /* Handle click event */ },
     enabled = isEnabled,
     modifier = Modifier.size(200.dp).padding(16.dp),
     shape = RoundedCornerShape(16.dp),
@@ -154,7 +154,7 @@ Surface(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "禁用点击状态",
+            text = "Disabled Click State",
             modifier = Modifier.padding(16.dp),
             textAlign = TextAlign.Center,
         )

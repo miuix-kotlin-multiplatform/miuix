@@ -1,48 +1,48 @@
-# 平台支持
+# Platform Support
 
-Miuix 是一个支持多种平台的 Compose Multiplatform UI 框架，允许您使用相同的代码库在不同平台上构建应用程序。
+Miuix is a Compose Multiplatform UI framework that supports multiple platforms, allowing you to build applications for different platforms using the same codebase.
 
-## 支持的平台
+## Supported Platforms
 
-目前，Miuix 支持以下平台：
+Currently, Miuix supports the following platforms:
 
-- **Android**：适用于 Android 移动设备
-- **iOS**：适用于 iPhone 和 iPad 设备
-- **Desktop(JVM)**：适用于基于 JVM 的桌面应用
-- **WasmJs**：适用于 WebAssembly(Web) 环境
-- **MacOS**：适用于 macOS 原生应用
-- **Js**：适用于 JavaScript(Web) 环境
+- **Android**: For Android mobile devices
+- **iOS**: For iPhone and iPad devices
+- **Desktop (JVM)**: For JVM-based desktop applications
+- **WasmJs**: For WebAssembly (Web) environments
+- **MacOS**: For native macOS applications
+- **Js**: For JavaScript (Web) environments
 
-## 平台检测与适配
+## Platform Detection and Adaptation
 
-您可以使用 `platform()` 函数检测当前运行的平台，并据此调整 UI 或功能：
+You can use the `platform()` function to detect the current running platform and adjust the UI or functionality accordingly:
 
 ```kotlin
 when (platform()) {
     Platform.Android -> {
-        // Android 特定代码
+        // Android-specific code
     }
     Platform.IOS -> {
-        // iOS 特定代码
+        // iOS-specific code
     }
     Platform.Desktop -> {
-        // JVM 特定代码
+        // JVM-specific code
     }
     Platform.WasmJs -> {
-        // WebAssembly 特定代码
+        // WebAssembly-specific code
     }
     Platform.MacOS -> {
-        // macOS 特定代码
+        // macOS-specific code
     }
     Platform.Js -> {
-        // JavaScript 特定代码
+        // JavaScript-specific code
     }
 }
 ```
 
-## 窗口尺寸管理
+## Window Size Management
 
-Miuix 提供了跨平台的窗口尺寸获取功能：
+Miuix provides cross-platform functionality to retrieve window sizes:
 
 ```kotlin
 @Composable
@@ -50,38 +50,38 @@ fun MyResponsiveContent() {
     val windowSize = getWindowSize()
     val width = windowSize.width
     val height = windowSize.height
-    // 根据窗口尺寸调整 UI 布局
+    // Adjust UI layout based on window size
     Surface(
         modifier = Modifier.fillMaxSize(),
     ) {
         if (width > 600) {
-            Text("宽屏布局")
+            Text("Wide Layout")
         } else {
-            Text("窄屏布局")
+            Text("Narrow Layout")
         }
-        Text("\n高度：$height")
+        Text("\nHeight: $height")
     }
 }
 ```
 
-## 返回操作处理
+## Back Action Handling
 
-Compose MultiPlatform 没有提供完整的跨平台 BackHandler 接口，因此 Miuix 提供了统一的 `BackHandler` 接口：
+Compose Multiplatform does not provide a complete cross-platform BackHandler interface, so Miuix offers a unified `BackHandler` interface:
 
 ```kotlin
 @Composable
 fun Screen() {
-    // 处理返回操作
+    // Handle back action
     BackHandler(enabled = true) {
-        // 返回操作的处理逻辑
-        // 例如：导航到前一个屏幕或关闭对话框
+        // Logic for handling back action
+        // For example: navigate to the previous screen or close a dialog
     }
 }
 ```
 
-## 设备圆角
+## Device Rounded Corners
 
-安卓设备的屏幕圆角不同且其他平台不存在屏幕圆角获取，您可以使用 `getRoundedCorner()` 函数获取设备的圆角大小（不存在时使用预设值）：
+Android devices have varying screen corner radii, while other platforms may not have rounded corners. You can use the `getRoundedCorner()` function to retrieve the corner radius of the device (using a preset value if unavailable):
 
 ```kotlin
 @Composable
@@ -89,9 +89,9 @@ fun AdaptiveRoundedComponent() {
     val cornerRadius = getRoundedCorner()
     Surface(
         shape = RoundedCornerShape(cornerRadius),
-        // 其他属性
+        // Other properties
     ) {
-        // 内容
+        // Content
     }
 }
 ```

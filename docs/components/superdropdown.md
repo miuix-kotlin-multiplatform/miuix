@@ -1,29 +1,29 @@
 # SuperDropdown
 
-`SuperDropdown` 是 Miuix 中的下拉菜单组件，提供了标题、摘要和下拉选项列表，支持点击交互，常用于选项设置和列表选择中。
+`SuperDropdown` is a dropdown menu component in Miuix that provides a title, summary, and a list of dropdown options. It supports click interaction and is commonly used in option settings and list selections.
 
-::: warning 注意
-`SuperDropdown` 需要在 `Scaffold` 组件内使用！
+::: warning
+`SuperDropdown` must be used within a `Scaffold` component!
 :::
 
-## 引入
+## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.extra.SuperDropdown
 import top.yukonga.miuix.kmp.extra.DropDownMode
 ```
 
-## 基本用法
+## Basic Usage
 
-SuperDropdown 组件提供了基础的下拉菜单功能：
+The SuperDropdown component provides basic dropdown menu functionality:
 
 ```kotlin
 var selectedIndex by remember { mutableStateOf(0) }
-val options = listOf("选项 1", "选项 2", "选项 3")
+val options = listOf("Option 1", "Option 2", "Option 3")
 
 Scaffold {
     SuperDropdown(
-        title = "下拉菜单",
+        title = "Dropdown Menu",
         items = options,
         selectedIndex = selectedIndex,
         onSelectedIndexChange = { selectedIndex = it }
@@ -31,7 +31,7 @@ Scaffold {
 }
 ```
 
-## 带摘要的下拉菜单
+## Dropdown with Summary
 
 ```kotlin
 var selectedIndex by remember { mutableStateOf(0) }
@@ -39,8 +39,8 @@ val options = listOf("中文", "English", "日本語")
 
 Scaffold {
     SuperDropdown(
-        title = "语言设置",
-        summary = "选择您的首选语言",
+        title = "Language Settings",
+        summary = "Choose your preferred language",
         items = options,
         selectedIndex = selectedIndex,
         onSelectedIndexChange = { selectedIndex = it }
@@ -48,51 +48,51 @@ Scaffold {
 }
 ```
 
-## 组件状态
+## Component States
 
-### 禁用状态
+### Disabled State
 
 ```kotlin
 SuperDropdown(
-    title = "禁用下拉菜单",
-    summary = "此下拉菜单当前不可用",
-    items = listOf("选项 1"),
+    title = "Disabled Dropdown",
+    summary = "This dropdown menu is currently unavailable",
+    items = listOf("Option 1"),
     selectedIndex = 0,
     onSelectedIndexChange = {},
     enabled = false
 )
 ```
 
-## 下拉菜单位置
+## Dropdown Position
 
-SuperDropdown 支持不同的下拉位置模式：
+SuperDropdown supports different dropdown position modes:
 
-### 普通模式（根据点击位置自适应）
+### Normal Mode (Auto-adaptive based on click position)
 
 ```kotlin
 var selectedIndex by remember { mutableStateOf(0) }
-val options = listOf("选项 1", "选项 2", "选项 3")
+val options = listOf("Option 1", "Option 2", "Option 3")
 
 Scaffold {
     SuperDropdown(
-        title = "普通模式",
+        title = "Normal Mode",
         items = options,
         selectedIndex = selectedIndex,
         onSelectedIndexChange = { selectedIndex = it },
-        mode = DropDownMode.Normal // 默认值
+        mode = DropDownMode.Normal // Default value
     )
 }
 ```
 
-### 总是在右侧模式
+### Always on Right Mode
 
 ```kotlin
 var selectedIndex by remember { mutableStateOf(0) }
-val options = listOf("选项 1", "选项 2", "选项 3")
+val options = listOf("Option 1", "Option 2", "Option 3")
 
 Scaffold {
     SuperDropdown(
-        title = "总是在右侧模式",
+        title = "Always on Right Mode",
         items = options,
         selectedIndex = selectedIndex,
         onSelectedIndexChange = { selectedIndex = it },
@@ -101,48 +101,48 @@ Scaffold {
 }
 ```
 
-## 属性
+## Properties
 
-### SuperDropdown 属性
+### SuperDropdown Properties
 
-| 属性名                | 类型                 | 说明                     | 默认值                                | 是否必须 |
-| --------------------- | -------------------- | ------------------------ | ------------------------------------- | -------- |
-| title                 | String               | 下拉菜单的标题           | -                                     | 是       |
-| items                 | List\<String>         | 下拉选项列表             | -                                     | 是       |
-| selectedIndex         | Int                  | 当前选中项的索引         | -                                     | 是       |
-| onSelectedIndexChange | ((Int) -> Unit)?     | 选中项变化时的回调       | -                                     | 是       |
-| modifier              | Modifier             | 应用于组件的修饰符       | Modifier                              | 否       |
-| titleColor            | BasicComponentColors | 标题文本的颜色配置       | BasicComponentDefaults.titleColor()   | 否       |
-| summary               | String?              | 下拉菜单的摘要说明       | null                                  | 否       |
-| summaryColor          | BasicComponentColors | 摘要文本的颜色配置       | BasicComponentDefaults.summaryColor() | 否       |
-| mode                  | DropDownMode         | 下拉菜单的显示模式       | DropDownMode.Normal                   | 否       |
-| insideMargin          | PaddingValues        | 组件内部内容的边距       | BasicComponentDefaults.InsideMargin   | 否       |
-| maxHeight             | Dp?                  | 下拉菜单的最大高度       | null                                  | 否       |
-| enabled               | Boolean              | 组件是否可交互           | true                                  | 否       |
-| showValue             | Boolean              | 是否显示当前选中的值     | true                                  | 否       |
-| dropdownColors        | DropdownColors       | 下拉菜单的颜色配置       | DropdownDefaults.dropdownColors()     | 否       |
-| onClick               | (() -> Unit)?        | 点击下拉菜单时的额外回调 | null                                  | 否       |
+| Property Name         | Type                 | Description                       | Default Value                         | Required |
+| --------------------- | -------------------- | --------------------------------- | ------------------------------------- | -------- |
+| title                 | String               | Title of the dropdown menu        | -                                     | Yes      |
+| items                 | List\<String>        | List of dropdown options          | -                                     | Yes      |
+| selectedIndex         | Int                  | Index of currently selected item  | -                                     | Yes      |
+| onSelectedIndexChange | ((Int) -> Unit)?     | Callback when selection changes   | -                                     | Yes      |
+| modifier              | Modifier             | Modifier applied to the component | Modifier                              | No       |
+| titleColor            | BasicComponentColors | Title text color configuration    | BasicComponentDefaults.titleColor()   | No       |
+| summary               | String?              | Summary description of dropdown   | null                                  | No       |
+| summaryColor          | BasicComponentColors | Summary text color configuration  | BasicComponentDefaults.summaryColor() | No       |
+| mode                  | DropDownMode         | Display mode of dropdown menu     | DropDownMode.Normal                   | No       |
+| insideMargin          | PaddingValues        | Internal content padding          | BasicComponentDefaults.InsideMargin   | No       |
+| maxHeight             | Dp?                  | Maximum height of dropdown menu   | null                                  | No       |
+| enabled               | Boolean              | Whether component is interactive  | true                                  | No       |
+| showValue             | Boolean              | Whether to show selected value    | true                                  | No       |
+| dropdownColors        | DropdownColors       | Color configuration for dropdown  | DropdownDefaults.dropdownColors()     | No       |
+| onClick               | (() -> Unit)?        | Additional callback on click      | null                                  | No       |
 
-### DropdownColors 属性
+### DropdownColors Properties
 
-| 属性名                 | 类型  | 说明           |
-| ---------------------- | ----- | -------------- |
-| contentColor           | Color | 选项文本颜色   |
-| containerColor         | Color | 选项背景颜色   |
-| selectedContentColor   | Color | 选中项文本颜色 |
-| selectedContainerColor | Color | 选中项背景颜色 |
+| Property Name          | Type  | Description                    |
+| ---------------------- | ----- | ------------------------------ |
+| contentColor           | Color | Option text color              |
+| containerColor         | Color | Option background color        |
+| selectedContentColor   | Color | Selected item text color       |
+| selectedContainerColor | Color | Selected item background color |
 
-## 进阶用法
+## Advanced Usage
 
-### 自定义颜色
+### Custom Colors
 
 ```kotlin
 var selectedIndex by remember { mutableStateOf(0) }
-val options = listOf("红色", "绿色", "蓝色")
+val options = listOf("Red", "Green", "Blue")
 
 Scaffold {
     SuperDropdown(
-        title = "自定义颜色",
+        title = "Custom Colors",
         items = options,
         selectedIndex = selectedIndex,
         onSelectedIndexChange = { selectedIndex = it },
@@ -154,63 +154,63 @@ Scaffold {
 }
 ```
 
-### 限制下拉菜单高度
+### Limited Dropdown Height
 
 ```kotlin
 var selectedIndex by remember { mutableStateOf(0) }
-val options = List(20) { "选项 ${it + 1}" }
+val options = List(20) { "Option ${it + 1}" }
 
 Scaffold {
     SuperDropdown(
-        title = "限制高度",
+        title = "Limited Height",
         items = options,
         selectedIndex = selectedIndex,
         onSelectedIndexChange = { selectedIndex = it },
-        maxHeight = 200.dp // 限制下拉菜单最大高度为 200dp
+        maxHeight = 200.dp // Limit dropdown menu maximum height to 200dp
     )
 }
 ```
 
-### 隐藏选中值显示
+### Hide Selected Value Display
 
 ```kotlin
 var selectedIndex by remember { mutableStateOf(0) }
-val options = listOf("选项 1", "选项 2", "选项 3")
+val options = listOf("Option 1", "Option 2", "Option 3")
 
 Scaffold {
     SuperDropdown(
-        title = "隐藏选中值",
+        title = "Hide Selected Value",
         items = options,
         selectedIndex = selectedIndex,
         onSelectedIndexChange = { selectedIndex = it },
-        showValue = false // 隐藏选中值显示
+        showValue = false // Hide selected value display
     )
 }
 ```
 
-### 结合对话框使用
+### Use with Dialog
 
 ```kotlin
 var showDialog = remember { mutableStateOf(false) }
 var selectedIndex by remember { mutableStateOf(0) }
-val themes = listOf("浅色模式", "深色模式", "跟随系统")
+val themes = listOf("Light Mode", "Dark Mode", "System Default")
 
 Scaffold {
     SuperArrow(
-        title = "主题设置",
+        title = "Theme Settings",
         onClick = { showDialog.value = true },
         holdDownState = showDialog.value
     )
     
     SuperDialog(
-        title = "主题设置",
+        title = "Theme Settings",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) } // 关闭对话框
+        onDismissRequest = { dismissDialog(showDialog) }
     ) {
         Card {
             SuperDropdown(
-                title = "主题选择",
-                summary = "选择您喜欢的主题外观",
+                title = "Theme Selection",
+                summary = "Choose your preferred theme appearance",
                 items = themes,
                 selectedIndex = selectedIndex,
                 onSelectedIndexChange = { selectedIndex = it }
@@ -222,16 +222,16 @@ Scaffold {
             modifier = Modifier.padding(top = 12.dp)
         ) {
             TextButton(
-                text = "取消",
-                onClick = { dismissDialog(showDialog) }, // 关闭对话框
+                text = "Cancel",
+                onClick = { dismissDialog(showDialog) },
                 modifier = Modifier.weight(1f)
             )
             Spacer(Modifier.width(16.dp))
             TextButton(
-                text = "确认",
-                onClick = { dismissDialog(showDialog) }, // 关闭对话框
+                text = "Confirm",
+                onClick = { dismissDialog(showDialog) },
                 modifier = Modifier.weight(1f),
-                colors = ButtonDefaults.textButtonColorsPrimary() // 使用主题颜色
+                colors = ButtonDefaults.textButtonColorsPrimary()
             )
         }
     }

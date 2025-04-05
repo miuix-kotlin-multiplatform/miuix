@@ -1,14 +1,14 @@
 # Slider
 
-`Slider` 是 Miuix 中的基础交互组件，用于在连续的数值范围内进行选择。用户可以通过拖动滑块来调整值，适用于诸如音量调节、亮度控制、进度显示等场景。
+`Slider` is a basic interactive component in Miuix used for selecting values within a continuous range. Users can adjust values by dragging the slider, making it suitable for scenarios such as volume adjustment, brightness control, and progress display.
 
-## 引入
+## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.basic.Slider
 ```
 
-## 基本用法
+## Basic Usage
 
 ```kotlin
 var sliderValue by remember { mutableStateOf(0.5f) }
@@ -19,9 +19,9 @@ Slider(
 )
 ```
 
-## 组件状态
+## Component States
 
-### 禁用状态
+### Disabled State
 
 ```kotlin
 var progress by remember { mutableStateOf(0.5f) }
@@ -33,9 +33,9 @@ Slider(
 )
 ```
 
-## 触觉反馈
+## Haptic Feedback
 
-Slider 支持触觉反馈，可以通过 `hapticEffect` 参数自定义反馈效果，详见 [SliderHapticEffect](/components/slider#sliderhapticeffect)。
+Slider supports haptic feedback, which can be customized through the `hapticEffect` parameter. See [SliderHapticEffect](/components/slider#sliderhapticeffect) for details.
 
 ```kotlin
 var progress by remember { mutableStateOf(0.5f) }
@@ -47,66 +47,66 @@ Slider(
 )
 ```
 
-## 属性
+## Properties
 
-### Slider 属性
+### Slider Properties
 
-| 属性名           | 类型                              | 说明                     | 默认值                             | 是否必须 |
-| ---------------- | --------------------------------- | ------------------------ | ---------------------------------- | -------- |
-| progress         | Float                             | 当前滑块的进度值         | -                                  | 是       |
-| onProgressChange | (Float) -> Unit                   | 进度值变化时的回调函数   | -                                  | 是       |
-| modifier         | Modifier                          | 应用于滑块的修饰符       | Modifier                           | 否       |
-| enabled          | Boolean                           | 是否启用滑块             | true                               | 否       |
-| minValue         | Float                             | 滑块的最小值             | 0f                                 | 否       |
-| maxValue         | Float                             | 滑块的最大值             | 1f                                 | 否       |
-| height           | Dp                                | 滑块的高度               | SliderDefaults.MinHeight           | 否       |
-| colors           | SliderColors                      | 滑块的颜色配置           | SliderDefaults.sliderColors()      | 否       |
-| effect           | Boolean                           | 是否显示特殊效果         | false                              | 否       |
-| decimalPlaces    | Int                               | 拖动指示器中显示的小数位 | 2                                  | 否       |
-| hapticEffect     | SliderDefaults.SliderHapticEffect | 滑块的触感反馈类型       | SliderDefaults.DefaultHapticEffect | 否       |
+| Property Name    | Type                              | Description                            | Default Value                      | Required |
+| ---------------- | --------------------------------- | -------------------------------------- | ---------------------------------- | -------- |
+| progress         | Float                             | Current slider progress value          | -                                  | Yes      |
+| onProgressChange | (Float) -> Unit                   | Callback when progress value changes   | -                                  | Yes      |
+| modifier         | Modifier                          | Modifier applied to the slider         | Modifier                           | No       |
+| enabled          | Boolean                           | Whether the slider is enabled          | true                               | No       |
+| minValue         | Float                             | Minimum value of the slider            | 0f                                 | No       |
+| maxValue         | Float                             | Maximum value of the slider            | 1f                                 | No       |
+| height           | Dp                                | Height of the slider                   | SliderDefaults.MinHeight           | No       |
+| colors           | SliderColors                      | Color configuration of the slider      | SliderDefaults.sliderColors()      | No       |
+| effect           | Boolean                           | Whether to show special effects        | false                              | No       |
+| decimalPlaces    | Int                               | Decimal places shown in drag indicator | 2                                  | No       |
+| hapticEffect     | SliderDefaults.SliderHapticEffect | Type of haptic feedback                | SliderDefaults.DefaultHapticEffect | No       |
 
-### SliderDefaults 对象
+### SliderDefaults Object
 
-SliderDefaults 对象提供了 Slider 组件的默认配置。
+The SliderDefaults object provides default configurations for the Slider component.
 
-#### 常量
+#### Constants
 
-| 常量名              | 类型               | 默认值                  | 说明               |
-| ------------------- | ------------------ | ----------------------- | ------------------ |
-| MinHeight           | Dp                 | 30.dp                   | 滑块的默认高度     |
-| DefaultHapticEffect | SliderHapticEffect | SliderHapticEffect.Edge | 默认的触感反馈类型 |
+| Constant Name       | Type               | Default Value           | Description                  |
+| ------------------- | ------------------ | ----------------------- | ---------------------------- |
+| MinHeight           | Dp                 | 30.dp                   | Default height of the slider |
+| DefaultHapticEffect | SliderHapticEffect | SliderHapticEffect.Edge | Default haptic feedback type |
 
 ### SliderHapticEffect
 
-| 值   | 说明                       |
-| ---- | -------------------------- |
-| None | 无触感反馈                 |
-| Edge | 在 0% 和 100% 处有触感反馈 |
-| Step | 在每个步长处有触感反馈     |
+| Value | Description                    |
+| ----- | ------------------------------ |
+| None  | No haptic feedback             |
+| Edge  | Haptic feedback at 0% and 100% |
+| Step  | Haptic feedback at each step   |
 
-#### 方法
+#### Methods
 
-| 方法名         | 返回类型     | 说明                   |
-| -------------- | ------------ | ---------------------- |
-| sliderColors() | SliderColors | 创建滑块的默认颜色配置 |
+| Method Name    | Return Type  | Description                         |
+| -------------- | ------------ | ----------------------------------- |
+| sliderColors() | SliderColors | Creates default color configuration |
 
-### SliderColors 类
+### SliderColors Class
 
-| 属性名                  | 类型  | 说明                     |
-| ----------------------- | ----- | ------------------------ |
-| foregroundColor         | Color | 滑块的前景颜色           |
-| disabledForegroundColor | Color | 禁用状态时滑块的前景颜色 |
-| backgroundColor         | Color | 滑块的背景颜色           |
+| Property Name           | Type  | Description                    |
+| ----------------------- | ----- | ------------------------------ |
+| foregroundColor         | Color | Foreground color of the slider |
+| disabledForegroundColor | Color | Foreground color when disabled |
+| backgroundColor         | Color | Background color of the slider |
 
-## 进阶用法
+## Advanced Usage
 
-### 自定义数值范围
+### Custom Value Range
 
 ```kotlin
 var temperature by remember { mutableStateOf(25f) }
 
 Column {
-    Text("温度: $temperature°C")
+    Text("Temperature: $temperature°C")
     Slider(
         progress = temperature,
         onProgressChange = { temperature = it },
@@ -116,7 +116,7 @@ Column {
 }
 ```
 
-### 自定义颜色
+### Custom Colors
 
 ```kotlin
 var volume by remember { mutableStateOf(0.7f) }
@@ -131,7 +131,7 @@ Slider(
 )
 ```
 
-### 自定义高度和效果
+### Custom Height and Effects
 
 ```kotlin
 var brightness by remember { mutableStateOf(0.8f) }
@@ -144,7 +144,7 @@ Slider(
 )
 ```
 
-### 带触感反馈的滑块
+### Slider with Haptic Feedback
 
 ```kotlin
 var progress by remember { mutableStateOf(0.5f) }

@@ -1,20 +1,20 @@
 # TabRow
 
-`TabRow` 是 Miuix 中的导航组件，用于创建可横向滚动的标签页。提供了标准样式和带轮廓（Contour）样式两种变体，适用于内容分类和导航场景。
+`TabRow` is a navigation component in Miuix used to create horizontally scrollable tabs. It provides two variants: standard style and contour style, suitable for content categorization and navigation scenarios.
 
-## 引入
+## Import
 
 ```kotlin
-import top.yukonga.miuix.kmp.basic.TabRow // 标准样式
-import top.yukonga.miuix.kmp.basic.TabRowWithContour // 带轮廓样式
+import top.yukonga.miuix.kmp.basic.TabRow // Standard style
+import top.yukonga.miuix.kmp.basic.TabRowWithContour // Contour style
 ```
 
-## 基本用法
+## Basic Usage
 
-### 标准样式
+### Standard Style
 
 ```kotlin
-val tabs = listOf("推荐", "关注", "热门", "精选")
+val tabs = listOf("Recommended", "Following", "Popular", "Featured")
 var selectedTabIndex by remember { mutableStateOf(0) }
 
 TabRow(
@@ -24,10 +24,10 @@ TabRow(
 )
 ```
 
-### 带轮廓样式
+### Contour Style
 
 ```kotlin
-val tabs = listOf("全部", "照片", "视频", "文档")
+val tabs = listOf("All", "Photos", "Videos", "Documents")
 var selectedTabIndex by remember { mutableStateOf(0) }
 
 TabRowWithContour(
@@ -37,69 +37,69 @@ TabRowWithContour(
 )
 ```
 
-## 属性
+## Properties
 
-### TabRow 属性
+### TabRow Properties
 
-| 属性名           | 类型             | 说明                 | 默认值                            | 是否必须 |
-| ---------------- | ---------------- | -------------------- | --------------------------------- | -------- |
-| tabs             | List\<String>    | 标签文本列表         | -                                 | 是       |
-| selectedTabIndex | Int              | 当前选中的标签索引   | -                                 | 是       |
-| modifier         | Modifier         | 应用于标签行的修饰符 | Modifier                          | 否       |
-| colors           | TabRowColors     | 标签行的颜色配置     | TabRowDefaults.tabRowColors()     | 否       |
-| minWidth         | Dp               | 每个标签的最小宽度   | TabRowDefaults.TabRowMinWidth     | 否       |
-| height           | Dp               | 标签行的高度         | TabRowDefaults.TabRowHeight       | 否       |
-| cornerRadius     | Dp               | 标签的圆角半径       | TabRowDefaults.TabRowCornerRadius | 否       |
-| onTabSelected    | ((Int) -> Unit)? | 标签选中时的回调函数 | null                              | 否       |
+| Property Name    | Type             | Description                   | Default Value                     | Required |
+| ---------------- | ---------------- | ----------------------------- | --------------------------------- | -------- |
+| tabs             | List\<String>    | List of tab texts             | -                                 | Yes      |
+| selectedTabIndex | Int              | Current selected tab index    | -                                 | Yes      |
+| modifier         | Modifier         | Modifier for the tab row      | Modifier                          | No       |
+| colors           | TabRowColors     | Color configuration           | TabRowDefaults.tabRowColors()     | No       |
+| minWidth         | Dp               | Minimum width of each tab     | TabRowDefaults.TabRowMinWidth     | No       |
+| height           | Dp               | Height of the tab row         | TabRowDefaults.TabRowHeight       | No       |
+| cornerRadius     | Dp               | Corner radius of tabs         | TabRowDefaults.TabRowCornerRadius | No       |
+| onTabSelected    | ((Int) -> Unit)? | Callback when tab is selected | null                              | No       |
 
-### TabRowWithContour 属性
+### TabRowWithContour Properties
 
-| 属性名           | 类型             | 说明                 | 默认值                                       | 是否必须 |
-| ---------------- | ---------------- | -------------------- | -------------------------------------------- | -------- |
-| tabs             | List\<String>    | 标签文本列表         | -                                            | 是       |
-| selectedTabIndex | Int              | 当前选中的标签索引   | -                                            | 是       |
-| modifier         | Modifier         | 应用于标签行的修饰符 | Modifier                                     | 否       |
-| colors           | TabRowColors     | 标签行的颜色配置     | TabRowDefaults.tabRowColors()                | 否       |
-| minWidth         | Dp               | 每个标签的最小宽度   | TabRowDefaults.TabRowWithContourMinWidth     | 否       |
-| height           | Dp               | 标签行的高度         | TabRowDefaults.TabRowHeight                  | 否       |
-| cornerRadius     | Dp               | 标签的圆角半径       | TabRowDefaults.TabRowWithContourCornerRadius | 否       |
-| onTabSelected    | ((Int) -> Unit)? | 标签选中时的回调函数 | null                                         | 否       |
+| Property Name    | Type             | Description                   | Default Value                                | Required |
+| ---------------- | ---------------- | ----------------------------- | -------------------------------------------- | -------- |
+| tabs             | List\<String>    | List of tab texts             | -                                            | Yes      |
+| selectedTabIndex | Int              | Current selected tab index    | -                                            | Yes      |
+| modifier         | Modifier         | Modifier for the tab row      | Modifier                                     | No       |
+| colors           | TabRowColors     | Color configuration           | TabRowDefaults.tabRowColors()                | No       |
+| minWidth         | Dp               | Minimum width of each tab     | TabRowDefaults.TabRowWithContourMinWidth     | No       |
+| height           | Dp               | Height of the tab row         | TabRowDefaults.TabRowHeight                  | No       |
+| cornerRadius     | Dp               | Corner radius of tabs         | TabRowDefaults.TabRowWithContourCornerRadius | No       |
+| onTabSelected    | ((Int) -> Unit)? | Callback when tab is selected | null                                         | No       |
 
-### TabRowDefaults 对象
+### TabRowDefaults Object
 
-TabRowDefaults 对象提供了 TabRow 组件的默认配置。
+The TabRowDefaults object provides default configurations for the TabRow component.
 
-#### 常量
+#### Constants
 
-| 常量名                        | 类型 | 值    | 说明                         |
-| ----------------------------- | ---- | ----- | ---------------------------- |
-| TabRowHeight                  | Dp   | 42.dp | 标签行的默认高度             |
-| TabRowCornerRadius            | Dp   | 8.dp  | 标准样式的默认圆角半径       |
-| TabRowWithContourCornerRadius | Dp   | 10.dp | 带轮廓样式的默认圆角半径     |
-| TabRowMinWidth                | Dp   | 76.dp | 标准样式的每个标签最小宽度   |
-| TabRowWithContourMinWidth     | Dp   | 62.dp | 带轮廓样式的每个标签最小宽度 |
+| Constant Name                 | Type | Value | Description                              |
+| ----------------------------- | ---- | ----- | ---------------------------------------- |
+| TabRowHeight                  | Dp   | 42.dp | Default height of tab row                |
+| TabRowCornerRadius            | Dp   | 8.dp  | Default corner radius for standard style |
+| TabRowWithContourCornerRadius | Dp   | 10.dp | Default corner radius for contour style  |
+| TabRowMinWidth                | Dp   | 76.dp | Min width of tabs for standard style     |
+| TabRowWithContourMinWidth     | Dp   | 62.dp | Min width of tabs for contour style      |
 
-#### 方法
+#### Methods
 
-| 方法名         | 类型         | 说明                     |
-| -------------- | ------------ | ------------------------ |
-| tabRowColors() | TabRowColors | 创建标签行的默认颜色配置 |
+| Method Name    | Type         | Description                        |
+| -------------- | ------------ | ---------------------------------- |
+| tabRowColors() | TabRowColors | Create default color configuration |
 
-### TabRowColors 类
+### TabRowColors Class
 
-| 属性名                  | 类型  | 说明                   |
-| ----------------------- | ----- | ---------------------- |
-| backgroundColor         | Color | 标签的默认背景色       |
-| contentColor            | Color | 标签的默认内容色       |
-| selectedBackgroundColor | Color | 选中状态时标签的背景色 |
-| selectedContentColor    | Color | 选中状态时标签的内容色 |
+| Property Name           | Type  | Description                      |
+| ----------------------- | ----- | -------------------------------- |
+| backgroundColor         | Color | Default background color of tabs |
+| contentColor            | Color | Default content color of tabs    |
+| selectedBackgroundColor | Color | Background color of selected tab |
+| selectedContentColor    | Color | Content color of selected tab    |
 
-## 进阶用法
+## Advanced Usage
 
-### 自定义颜色
+### Custom Colors
 
 ```kotlin
-val tabs = listOf("最新", "热门", "关注")
+val tabs = listOf("Latest", "Popular", "Following")
 var selectedTabIndex by remember { mutableStateOf(0) }
 
 TabRow(
@@ -115,10 +115,10 @@ TabRow(
 )
 ```
 
-### 自定义尺寸
+### Custom Dimensions
 
 ```kotlin
-val tabs = listOf("短视频", "直播", "图文")
+val tabs = listOf("Short Videos", "Live", "Articles")
 var selectedTabIndex by remember { mutableStateOf(0) }
 
 TabRowWithContour(
@@ -131,10 +131,10 @@ TabRowWithContour(
 )
 ```
 
-### 与 Pager 结合使用
+### Using with Pager
 
 ```kotlin
-val tabs = listOf("页面1", "页面2", "页面3")
+val tabs = listOf("Page 1", "Page 2", "Page 3")
 val pagerState = rememberPagerState { tabs.size }
 var selectedTabIndex by remember { mutableStateOf(0) }
 
@@ -161,7 +161,7 @@ Surface {
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text("页面内容 ${page + 1}")
+                Text("Page Content ${page + 1}")
             }
         }
     }

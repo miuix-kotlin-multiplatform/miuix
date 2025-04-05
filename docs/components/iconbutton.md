@@ -1,47 +1,47 @@
 # IconButton
 
-`IconButton` 是 Miuix 中的图标按钮组件，用于提供辅助操作的交互点。它们通常用于需要紧凑按钮的场景，如工具栏或图片列表中。
+`IconButton` is a button component in Miuix used for providing auxiliary interaction points. They are typically used in scenarios that require compact buttons, such as toolbars or image lists.
 
-## 引入
+## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.basic.IconButton
 ```
 
-## 基本用法
+## Basic Usage
 
-IconButton 组件可以用于触发操作或事件：
+The IconButton component can be used to trigger actions or events:
 
 ```kotlin
 IconButton(
-    onClick = { /* 处理点击事件 */ }
+    onClick = { /* Handle click event */ }
 ) {
     Icon(
         imageVector = MiuixIcons.Useful.Like,
-        contentDescription = "点赞"
+        contentDescription = "Like"
     )
 }
 ```
 
-## 组件状态
+## Component States
 
-### 禁用状态
+### Disabled State
 
 ```kotlin
 IconButton(
-    onClick = { /* 处理点击事件 */ },
+    onClick = { /* Handle click event */ },
     enabled = false
 ) {
     Icon(
         imageVector = MiuixIcons.Useful.Like,
-        contentDescription = "点赞"
+        contentDescription = "Like"
     )
 }
 ```
 
-### 按下状态
+### Hold Down State
 
-IconButton 支持通过 `holdDownState` 参数控制按下状态，通常用于显示弹出对话框时的视觉反馈：
+IconButton supports controlling the hold down state through the `holdDownState` parameter, typically used for visual feedback when displaying pop-up dialogs:
 
 ```kotlin
 var showDialog = remember { mutableStateOf(false) }
@@ -53,81 +53,81 @@ Scaffold {
     ) {
         Icon(
             imageVector = MiuixIcons.Useful.Like,
-            contentDescription = "点赞"
+            contentDescription = "Like"
         )
     }
-    // 在其他地方定义对话框
+    // Define dialog elsewhere
     SuperDialog(
-        title = "对话框",
+        title = "Dialog",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) } // 关闭对话框
+        onDismissRequest = { dismissDialog(showDialog) }
     ) {
-        // 对话框内容
+        // Dialog content
     }
 }
 ```
 
-## 属性
+## Properties
 
-### IconButton 属性
+### IconButton Properties
 
-| 属性名          | 类型                   | 说明                  | 默认值                          | 是否必须 |
-| --------------- | ---------------------- | --------------------- | ------------------------------- | -------- |
-| onClick         | () -> Unit             | 点击按钮时触发的回调  | -                               | 是       |
-| modifier        | Modifier               | 应用于按钮的修饰符    | Modifier                        | 否       |
-| enabled         | Boolean                | 按钮是否可点击        | true                            | 否       |
-| holdDownState   | Boolean                | 是否处于按下状态      | false                           | 否       |
-| backgroundColor | Color                  | 按钮的背景颜色        | Color.Unspecified               | 否       |
-| cornerRadius    | Dp                     | 按钮圆角半径          | IconButtonDefaults.CornerRadius | 否       |
-| minHeight       | Dp                     | 按钮最小高度          | IconButtonDefaults.MinHeight    | 否       |
-| minWidth        | Dp                     | 按钮最小宽度          | IconButtonDefaults.MinWidth     | 否       |
-| content         | @Composable () -> Unit | 按钮内容，通常是 Icon | -                               | 是       |
+| Property Name   | Type                   | Description                        | Default Value                   | Required |
+| --------------- | ---------------------- | ---------------------------------- | ------------------------------- | -------- |
+| onClick         | () -> Unit             | Callback triggered on button click | -                               | Yes      |
+| modifier        | Modifier               | Modifier applied to the button     | Modifier                        | No       |
+| enabled         | Boolean                | Whether button is clickable        | true                            | No       |
+| holdDownState   | Boolean                | Whether button is held down        | false                           | No       |
+| backgroundColor | Color                  | Button background color            | Color.Unspecified               | No       |
+| cornerRadius    | Dp                     | Button corner radius               | IconButtonDefaults.CornerRadius | No       |
+| minHeight       | Dp                     | Button minimum height              | IconButtonDefaults.MinHeight    | No       |
+| minWidth        | Dp                     | Button minimum width               | IconButtonDefaults.MinWidth     | No       |
+| content         | @Composable () -> Unit | Button content, typically an Icon  | -                               | Yes      |
 
-### IconButtonDefaults 对象
+### IconButtonDefaults Object
 
-IconButtonDefaults 对象提供了图标按钮组件的默认值。
+The IconButtonDefaults object provides default values for the icon button component.
 
-#### 常量
+#### Constants
 
-| 常量名       | 类型 | 说明           | 默认值 |
-| ------------ | ---- | -------------- | ------ |
-| MinWidth     | Dp   | 按钮的最小宽度 | 40.dp  |
-| MinHeight    | Dp   | 按钮的最小高度 | 40.dp  |
-| CornerRadius | Dp   | 按钮的圆角半径 | 40.dp  |
+| Constant Name | Type | Description           | Default Value |
+| ------------- | ---- | --------------------- | ------------- |
+| MinWidth      | Dp   | Minimum button width  | 40.dp         |
+| MinHeight     | Dp   | Minimum button height | 40.dp         |
+| CornerRadius  | Dp   | Button corner radius  | 40.dp         |
 
-## 进阶用法
+## Advanced Usage
 
-### 自定义背景颜色
+### Custom Background Color
 
 ```kotlin
 IconButton(
-    onClick = { /* 处理点击事件 */ },
+    onClick = { /* Handle click event */ },
     backgroundColor = Color.LightGray.copy(alpha = 0.3f)
 ) {
     Icon(
         imageVector = MiuixIcons.Useful.Like,
-        contentDescription = "点赞"
+        contentDescription = "Like"
     )
 }
 ```
 
-### 自定义大小和圆角
+### Custom Size and Corner Radius
 
 ```kotlin
 IconButton(
-    onClick = { /* 处理点击事件 */ },
+    onClick = { /* Handle click event */ },
     minWidth = 48.dp,
     minHeight = 48.dp,
     cornerRadius = 12.dp
 ) {
     Icon(
         imageVector = MiuixIcons.Useful.Like,
-        contentDescription = "点赞"
+        contentDescription = "Like"
     )
 }
 ```
 
-### 结合其他组件使用
+### Using with Other Components
 
 ```kotlin
 Surface {
@@ -135,20 +135,20 @@ Surface {
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
-            onClick = { /* 处理点击事件 */ }
+            onClick = { /* Handle click event */ }
         ) {
             Icon(
                 imageVector = MiuixIcons.Useful.New,
                 tint = MiuixTheme.colorScheme.onBackground,
-                contentDescription = "添加"
+                contentDescription = "Add"
             )
         }
-        Text("添加新项目")
+        Text("Add New Item")
     }
 }
 ```
 
-### 动态图标按钮
+### Dynamic Icon Button
 
 ```kotlin
 var isLiked by remember { mutableStateOf(false) }
@@ -158,7 +158,7 @@ IconButton(
 ) {
     Icon(
         imageVector = if (isLiked) MiuixIcons.Useful.Like else MiuixIcons.Useful.Unlike,
-        contentDescription = if (isLiked) "已点赞" else "点赞",
+        contentDescription = if (isLiked) "Liked" else "Like",
         tint = if (isLiked) Color.Red else MiuixTheme.colorScheme.onBackground
     )
 }

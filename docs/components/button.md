@@ -1,157 +1,157 @@
 # Button
 
-`Button` 是 Miuix 中的基础交互组件，用于触发操作或事件。提供了多种风格选择，包括主要按钮、次要按钮和文本按钮。
+`Button` is a basic interactive component in Miuix, used to trigger actions or events. It provides multiple style options, including primary buttons, secondary buttons, and text buttons.
 
-## 引入
+## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.basic.Button
 ```
 
-## 基本用法
+## Basic Usage
 
-Button 组件可以用于触发操作或事件：
+The Button component can be used to trigger actions or events:
 
 ```kotlin
 Button(
-    onClick = { /* 处理点击事件 */ }
+    onClick = { /* Handle click event */ }
 ) {
-    Text("按钮")
+    Text("Button")
 }
 ```
 
-## 按钮类型
+## Button Types
 
-Miuix 提供了多种类型的按钮，适用于不同的场景和重要程度：
+Miuix provides various types of buttons suitable for different scenarios and levels of importance:
 
-### 主要按钮（Primary Button）
+### Primary Button
 
 ```kotlin
 Button(
-    onClick = { /* 处理点击事件 */ },
+    onClick = { /* Handle click event */ },
     colors = ButtonDefaults.buttonColorsPrimary()
 ) {
-    Text("主要按钮")
+    Text("Primary Button")
 }
 ```
 
-### 次要按钮（Secondary Button）
+### Secondary Button
 
 ```kotlin
 Button(
-    onClick = { /* 处理点击事件 */ },
+    onClick = { /* Handle click event */ },
     colors = ButtonDefaults.buttonColors()
 ) {
-    Text("次要按钮")
+    Text("Secondary Button")
 }
 ```
 
-### 文本按钮（Text Button）
+### Text Button
 
 ```kotlin
 TextButton(
-    text = "文本按钮",
-    onClick = { /* 处理点击事件 */ }
+    text = "Text Button",
+    onClick = { /* Handle click event */ }
 )
 ```
 
-## 组件状态
+## Component States
 
-### 禁用状态
+### Disabled State
 
 ```kotlin
 Button(
-    onClick = { /* 处理点击事件 */ },
+    onClick = { /* Handle click event */ },
     enabled = false
 ) {
-    Text("禁用按钮")
+    Text("Disabled Button")
 }
 ```
 
-## 属性
+## Properties
 
-### Button 属性
+### Button Properties
 
-| 属性名       | 类型                            | 说明                     | 默认值                        | 是否必须 |
-| ------------ | ------------------------------- | ------------------------ | ----------------------------- | -------- |
-| onClick      | () -> Unit                      | 点击按钮时触发的回调     | -                             | 是       |
-| modifier     | Modifier                        | 应用于按钮的修饰符       | Modifier                      | 否       |
-| enabled      | Boolean                         | 按钮是否可点击           | true                          | 否       |
-| cornerRadius | Dp                              | 按钮圆角半径             | ButtonDefaults.CornerRadius   | 否       |
-| minWidth     | Dp                              | 按钮最小宽度             | ButtonDefaults.MinWidth       | 否       |
-| minHeight    | Dp                              | 按钮最小高度             | ButtonDefaults.MinHeight      | 否       |
-| colors       | ButtonColors                    | 按钮颜色配置             | ButtonDefaults.buttonColors() | 否       |
-| insideMargin | PaddingValues                   | 按钮内部边距             | ButtonDefaults.InsideMargin   | 否       |
-| content      | @Composable RowScope.() -> Unit | 按钮内容区域的可组合函数 | -                             | 是       |
+| Property Name | Type                            | Description                            | Default Value                 | Required |
+| ------------- | ------------------------------- | -------------------------------------- | ----------------------------- | -------- |
+| onClick       | () -> Unit                      | Callback triggered on click            | -                             | Yes      |
+| modifier      | Modifier                        | Modifier applied to the button         | Modifier                      | No       |
+| enabled       | Boolean                         | Whether the button is clickable        | true                          | No       |
+| cornerRadius  | Dp                              | Corner radius of the button            | ButtonDefaults.CornerRadius   | No       |
+| minWidth      | Dp                              | Minimum width of the button            | ButtonDefaults.MinWidth       | No       |
+| minHeight     | Dp                              | Minimum height of the button           | ButtonDefaults.MinHeight      | No       |
+| colors        | ButtonColors                    | Button color configuration             | ButtonDefaults.buttonColors() | No       |
+| insideMargin  | PaddingValues                   | Internal padding of the button         | ButtonDefaults.InsideMargin   | No       |
+| content       | @Composable RowScope.() -> Unit | Composable function for button content | -                             | Yes      |
 
-### TextButton 属性
+### TextButton Properties
 
-| 属性名       | 类型             | 说明                 | 默认值                            | 是否必须 |
-| ------------ | ---------------- | -------------------- | --------------------------------- | -------- |
-| text         | String           | 按钮显示的文本       | -                                 | 是       |
-| onClick      | () -> Unit       | 点击按钮时触发的回调 | -                                 | 是       |
-| modifier     | Modifier         | 应用于按钮的修饰符   | Modifier                          | 否       |
-| enabled      | Boolean          | 按钮是否可点击       | true                              | 否       |
-| colors       | TextButtonColors | 文本按钮颜色配置     | ButtonDefaults.textButtonColors() | 否       |
-| cornerRadius | Dp               | 按钮圆角半径         | ButtonDefaults.CornerRadius       | 否       |
-| minWidth     | Dp               | 按钮最小宽度         | ButtonDefaults.MinWidth           | 否       |
-| minHeight    | Dp               | 按钮最小高度         | ButtonDefaults.MinHeight          | 否       |
-| insideMargin | PaddingValues    | 按钮内部边距         | ButtonDefaults.InsideMargin       | 否       |
+| Property Name | Type             | Description                     | Default Value                     | Required |
+| ------------- | ---------------- | ------------------------------- | --------------------------------- | -------- |
+| text          | String           | Text displayed on the button    | -                                 | Yes      |
+| onClick       | () -> Unit       | Callback triggered on click     | -                                 | Yes      |
+| modifier      | Modifier         | Modifier applied to the button  | Modifier                          | No       |
+| enabled       | Boolean          | Whether the button is clickable | true                              | No       |
+| colors        | TextButtonColors | Text button color configuration | ButtonDefaults.textButtonColors() | No       |
+| cornerRadius  | Dp               | Corner radius of the button     | ButtonDefaults.CornerRadius       | No       |
+| minWidth      | Dp               | Minimum width of the button     | ButtonDefaults.MinWidth           | No       |
+| minHeight     | Dp               | Minimum height of the button    | ButtonDefaults.MinHeight          | No       |
+| insideMargin  | PaddingValues    | Internal padding of the button  | ButtonDefaults.InsideMargin       | No       |
 
-### ButtonDefaults 对象
+### ButtonDefaults Object
 
-ButtonDefaults 对象提供了按钮组件的默认值和颜色配置。
+The ButtonDefaults object provides default values and color configurations for button components.
 
-#### 常量
+#### Constants
 
-| 常量名       | 类型          | 说明           | 默认值               |
-| ------------ | ------------- | -------------- | -------------------- |
-| MinWidth     | Dp            | 按钮的最小宽度 | 58.dp                |
-| MinHeight    | Dp            | 按钮的最小高度 | 40.dp                |
-| CornerRadius | Dp            | 按钮的圆角半径 | 16.dp                |
-| InsideMargin | PaddingValues | 按钮的内部边距 | PaddingValues(16.dp) |
+| Constant Name | Type          | Description                    | Default Value        |
+| ------------- | ------------- | ------------------------------ | -------------------- |
+| MinWidth      | Dp            | Minimum width of the button    | 58.dp                |
+| MinHeight     | Dp            | Minimum height of the button   | 40.dp                |
+| CornerRadius  | Dp            | Corner radius of the button    | 16.dp                |
+| InsideMargin  | PaddingValues | Internal padding of the button | PaddingValues(16.dp) |
 
-#### 方法
+#### Methods
 
-| 方法名                    | 类型             | 说明                       |
-| ------------------------- | ---------------- | -------------------------- |
-| buttonColors()            | ButtonColors     | 创建次要按钮的颜色配置     |
-| buttonColorsPrimary()     | ButtonColors     | 创建主要按钮的颜色配置     |
-| textButtonColors()        | TextButtonColors | 创建次要文本按钮的颜色配置 |
-| textButtonColorsPrimary() | TextButtonColors | 创建主要文本按钮的颜色配置 |
+| Method Name               | Type             | Description                                            |
+| ------------------------- | ---------------- | ------------------------------------------------------ |
+| buttonColors()            | ButtonColors     | Creates color configuration for secondary buttons      |
+| buttonColorsPrimary()     | ButtonColors     | Creates color configuration for primary buttons        |
+| textButtonColors()        | TextButtonColors | Creates color configuration for secondary text buttons |
+| textButtonColorsPrimary() | TextButtonColors | Creates color configuration for primary text buttons   |
 
-## 进阶用法
+## Advanced Usage
 
-### 带图标按钮
+### Button with Icon
 
 ```kotlin
 Button(
-    onClick = { /* 处理点击事件 */ }
+    onClick = { /* Handle click event */ }
 ) {
     Icon(
         imageVector = MiuixIcons.Useful.Like,
-        contentDescription = "图标"
+        contentDescription = "Icon"
     )
     Spacer(modifier = Modifier.width(8.dp))
-    Text("带图标按钮")
-    }
+    Text("Button with Icon")
+}
 ```
 
-### 自定义样式按钮
+### Custom Style Button
 
 ```kotlin
 Button(
-    onClick = { /* 处理点击事件 */ },
+    onClick = { /* Handle click event */ },
     colors = ButtonDefaults.buttonColors(
         color = Color.Red.copy(alpha = 0.7f)
     ),
     cornerRadius = 8.dp
 ) {
-    Text("自定义按钮")
+    Text("Custom Button")
 }
 ```
 
-### 加载状态按钮
+### Loading State Button
 
 ```kotlin
 var isLoading by remember { mutableStateOf(false) }
@@ -160,7 +160,7 @@ val scope = rememberCoroutineScope()
 Button(
     onClick = {
         isLoading = true
-        // 模拟操作
+        // Simulate operation
         scope.launch {
             delay(2000)
             isLoading = false
@@ -177,6 +177,6 @@ Button(
             strokeWidth = 4.dp
         )
     }
-    Text("提交")
+    Text("Submit")
 }
 ```

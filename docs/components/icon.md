@@ -1,154 +1,154 @@
 # Icon
 
-`Icon` 是 Miuix 中的基础图标组件，用于在界面中展示各种矢量图标、位图图标或自定义绘制内容。它提供了多种绘制图标的方式，适应不同的图标资源类型。
+`Icon` is a fundamental icon component in Miuix used to display various vector icons, bitmap icons, or custom drawn content in the interface. It provides multiple ways to render icons to accommodate different icon resource types.
 
-如果要跟随夜间模式或主题变化，需主动使用 `Icon` 组件的 `tint` 属性来设置图标的颜色，常用颜色为 `MiuixTheme.colorScheme.onBackground`。
+To follow night mode or theme changes, you need to actively use the `tint` property of the `Icon` component to set the icon color, commonly using `MiuixTheme.colorScheme.onBackground`.
 
-## 引入
+## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.basic.Icon
 ```
 
-## 基本用法
+## Basic Usage
 
-Icon 组件可以用于显示图标：
+The Icon component can be used to display icons:
 
 ```kotlin
 Icon(
     imageVector = MiuixIcons.Useful.Like,
-    contentDescription = "点赞图标"
+    contentDescription = "Like Icon"
 )
 ```
 
-## 图标类型
+## Icon Types
 
-Miuix Icon 支持多种类型的图标资源：
+Miuix Icon supports multiple types of icon resources:
 
-### 矢量图标（Vector Icon）
+### Vector Icon
 
 ```kotlin
 Icon(
     imageVector = MiuixIcons.Useful.Settings,
-    contentDescription = "设置图标"
+    contentDescription = "Settings Icon"
 )
 ```
 
-### 位图图标（Bitmap Icon）
+### Bitmap Icon
 
 ```kotlin
 val bitmap = ImageBitmap(...)
 Icon(
     bitmap = bitmap,
-    contentDescription = "位图图标"
+    contentDescription = "Bitmap Icon"
 )
 ```
 
-### 自定义绘制图标（Custom Painter）
+### Custom Painter
 
 ```kotlin
-val customPainter = remember { /* 自定义 Painter */ }
+val customPainter = remember { /* Custom Painter */ }
 
 Icon(
     painter = customPainter,
-    contentDescription = "自定义图标"
+    contentDescription = "Custom Icon"
 )
 ```
 
-## 组件状态
+## Component States
 
-### 自定义颜色
+### Custom Color
 
 ```kotlin
 Icon(
     imageVector = MiuixIcons.Useful.Personal,
-    contentDescription = "人像图标",
+    contentDescription = "Personal Icon",
     tint = Color.Red
 )
 ```
 
-### 原始颜色（不进行着色）
+### Original Color (No Tinting)
 
 ```kotlin
 Icon(
     imageVector = MiuixIcons.Useful.Like,
-    contentDescription = "点赞图标",
-    tint = Color.Unspecified // 默认情况
+    contentDescription = "Like Icon",
+    tint = Color.Unspecified // Default
 )
 ```
 
-## 属性
+## Properties
 
-### Icon 属性（ImageVector 版本）
+### Icon Properties (ImageVector Version)
 
-| 属性名             | 类型        | 说明                 | 默认值                     | 是否必须 |
-| ------------------ | ----------- | -------------------- | -------------------------- | -------- |
-| imageVector        | ImageVector | 要绘制的矢量图标     | -                          | 是       |
-| contentDescription | String?     | 图标的无障碍描述文本 | -                          | 否       |
-| modifier           | Modifier    | 应用于图标的修饰符   | Modifier                   | 否       |
-| tint               | Color       | 应用于图标的着色颜色 | IconDefaults.DefaultTint() | 否       |
+| Property Name      | Type        | Description                    | Default Value              | Required |
+| ------------------ | ----------- | ------------------------------ | -------------------------- | -------- |
+| imageVector        | ImageVector | Vector icon to draw            | -                          | Yes      |
+| contentDescription | String?     | Accessibility description text | -                          | No       |
+| modifier           | Modifier    | Modifier applied to the icon   | Modifier                   | No       |
+| tint               | Color       | Color tint applied to the icon | IconDefaults.DefaultTint() | No       |
 
-### Icon 属性（ImageBitmap 版本）
+### Icon Properties (ImageBitmap Version)
 
-| 属性名             | 类型        | 说明                 | 默认值                     | 是否必须 |
-| ------------------ | ----------- | -------------------- | -------------------------- | -------- |
-| bitmap             | ImageBitmap | 要绘制的位图图标     | -                          | 是       |
-| contentDescription | String?     | 图标的无障碍描述文本 | -                          | 否       |
-| modifier           | Modifier    | 应用于图标的修饰符   | Modifier                   | 否       |
-| tint               | Color       | 应用于图标的着色颜色 | IconDefaults.DefaultTint() | 否       |
+| Property Name      | Type        | Description                    | Default Value              | Required |
+| ------------------ | ----------- | ------------------------------ | -------------------------- | -------- |
+| bitmap             | ImageBitmap | Bitmap icon to draw            | -                          | Yes      |
+| contentDescription | String?     | Accessibility description text | -                          | No       |
+| modifier           | Modifier    | Modifier applied to the icon   | Modifier                   | No       |
+| tint               | Color       | Color tint applied to the icon | IconDefaults.DefaultTint() | No       |
 
-### Icon 属性（Painter 版本）
+### Icon Properties (Painter Version)
 
-| 属性名             | 类型     | 说明                 | 默认值                     | 是否必须 |
-| ------------------ | -------- | -------------------- | -------------------------- | -------- |
-| painter            | Painter  | 要使用的绘制器       | -                          | 是       |
-| contentDescription | String?  | 图标的无障碍描述文本 | -                          | 否       |
-| modifier           | Modifier | 应用于图标的修饰符   | Modifier                   | 否       |
-| tint               | Color    | 应用于图标的着色颜色 | IconDefaults.DefaultTint() | 否       |
+| Property Name      | Type     | Description                    | Default Value              | Required |
+| ------------------ | -------- | ------------------------------ | -------------------------- | -------- |
+| painter            | Painter  | Painter to use                 | -                          | Yes      |
+| contentDescription | String?  | Accessibility description text | -                          | No       |
+| modifier           | Modifier | Modifier applied to the icon   | Modifier                   | No       |
+| tint               | Color    | Color tint applied to the icon | IconDefaults.DefaultTint() | No       |
 
-### IconDefaults 对象
+### IconDefaults Object
 
-IconDefaults 对象提供了 Icon 组件的默认配置。
+The IconDefaults object provides default configurations for the Icon component.
 
-#### 方法
+#### Methods
 
-| 方法名      | 返回类型 | 说明                                        |
-| ----------- | -------- | ------------------------------------------- |
-| DefaultTint | Color    | 返回图标的默认着色颜色（Color.Unspecified） |
+| Method Name | Return Type | Description                                    |
+| ----------- | ----------- | ---------------------------------------------- |
+| DefaultTint | Color       | Returns default tint color (Color.Unspecified) |
 
-## 进阶用法
+## Advanced Usage
 
-### 自定义大小
+### Custom Size
 
 ```kotlin
 Icon(
     imageVector = MiuixIcons.Useful.Like,
-    contentDescription = "点赞图标",
+    contentDescription = "Like Icon",
     modifier = Modifier.size(32.dp)
 )
 ```
 
-### 结合其他组件使用
+### Using with Other Components
 
 ```kotlin
 Button(
-    onClick = { /* 处理点击事件 */ }
+    onClick = { /* Handle click event */ }
 ) {
     Icon(
         imageVector = MiuixIcons.Useful.Save,
-        contentDescription = "下载图标"
+        contentDescription = "Download Icon"
     )
     Spacer(modifier = Modifier.width(8.dp))
-    Text("下载")
+    Text("Download")
 }
 ```
 
-### 自定义样式
+### Custom Style
 
 ```kotlin
 Icon(
     imageVector = MiuixIcons.Useful.Info,
-    contentDescription = "警告图标",
+    contentDescription = "Warning Icon",
     tint = Color(0xFFFFA500),
     modifier = Modifier
         .size(48.dp)
@@ -160,14 +160,14 @@ Icon(
 )
 ```
 
-### 动态变化图标
+### Dynamic Icon
 
 ```kotlin
 var isSelected by remember { mutableStateOf(false) }
 
 Icon(
     imageVector = if (isSelected) MiuixIcons.Useful.Like else MiuixIcons.Useful.Unlike,
-    contentDescription = "喜欢图标",
+    contentDescription = "Like Icon",
     modifier = Modifier.clickable { isSelected = !isSelected }
 )
 ```

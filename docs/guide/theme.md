@@ -1,50 +1,58 @@
-# 主题系统
+# Theme System
 
-Miuix 提供了一套完整的主题系统，使您能够轻松地在整个应用中保持一致的设计风格。整个主题系统由颜色方案和文本样式组成。
+Miuix provides a complete theme system that allows you to easily maintain a consistent design style throughout your application. The theme system consists of color schemes and text styles.
 
-## 使用主题
+## Using the Theme
 
-要在您的应用中使用 Miuix 主题，只需将内容包装在 `MiuixTheme` 组合函数中：
+To use the Miuix theme in your application, simply wrap your content in the `MiuixTheme` composable function:
 
 ```kotlin
 MiuixTheme {
-    // 您的应用内容
+    // Your application content
     Scaffold(
         topBar = { /* ... */ },
     ) { padding ->
-        // 主体内容
+        // Main content
     }
 }
 ```
 
-默认情况下，Miuix 会自动选择适合当前系统设置的浅色或深色主题。
+By default, Miuix automatically selects a light or dark theme suitable for the current system settings.
 
-## 颜色系统
+## Color System
 
-Miuix 的颜色系统是基于 HyperOS 设计语言创建的，提供了一套完整的颜色方案，包括：
+The Miuix color system is based on the HyperOS design language and provides a complete set of color schemes, including:
 
-- 主色调（Primary colors）
-- 次要色调（Secondary colors）
-- 背景和表面色（Background and surface colors）
-- 文本色（Text colors）
-- 特殊状态颜色（如禁用状态）
+- Primary colors
+- Secondary colors
+- Background and surface colors
+- Text colors
+- Special state colors (e.g., disabled state)
 
-### 主要颜色属性
+### Key Color Properties
 
-以下是颜色系统中一些核心属性：
+Below are some core properties of the color system:
 
-| 属性名      | 描述               | 用途               |
-| ----------- | ------------------ | ------------------ |
-| primary     | 主色调             | 开关、按钮、滑块等 |
-| onPrimary   | 主色调上的文本颜色 | 主色调上的文本     |
-| background  | 背景色             | 应用背景           |
-| surface     | 表面色             | 卡片、对话框等     |
-| onSurface   | 表面色上的文本颜色 | 常规文本           |
-| dividerLine | 分隔线颜色         | 列表分隔线         |
+| Property Name      | Description               | Usage                        |
+| ------------------ | ------------------------- | ---------------------------- |
+| primary            | Primary color             | Switches, buttons, sliders   |
+| onPrimary          | Text color on primary     | Text on primary color        |
+| primaryContainer   | Primary container         | Components with primary      |
+| onPrimaryContainer | Text on primary container | Text on primary containers   |
+| secondary          | Secondary color           | Secondary buttons, cards     |
+| onSecondary        | Text on secondary         | Text on secondary color      |
+| background         | Background color          | App background               |
+| onBackground       | Text on background        | Text on background           |
+| surface            | Surface color             | Cards, dialogs               |
+| onSurface          | Text on surface           | Regular text                 |
+| onSurfaceSecondary | Secondary text on surface | Secondary text               |
+| outline            | Outline color             | Borders, outlines            |
+| dividerLine        | Divider line color        | List dividers                |
+| windowDimming      | Window dimming color      | Dialog, dropdown backgrounds |
 
-### 使用颜色
+### Using Colors
 
-在组合函数中，您可以通过 `MiuixTheme.colorScheme` 访问当前主题的颜色：
+In composable functions, you can access the current theme's colors via `MiuixTheme.colorScheme`:
 
 ```kotlin
 val backgroundColor = MiuixTheme.colorScheme.background
@@ -61,79 +69,79 @@ Surface(
 }
 ```
 
-### 浅色和深色主题
+### Light and Dark Themes
 
-Miuix提供了默认的浅色和深色主题颜色方案：
+Miuix provides default light and dark theme color schemes:
 
-- `lightColorScheme()` - 浅色主题的颜色方案
-- `darkColorScheme()` - 深色主题的颜色方案
+- `lightColorScheme()` - Light theme color scheme
+- `darkColorScheme()` - Dark theme color scheme
 
-## 文本样式
+## Text Styles
 
-Miuix 提供了一套预定义的文本样式，以保持整个应用中文本的一致性：
+Miuix provides a set of predefined text styles to maintain consistency in text throughout the application:
 
-| 样式名    | 用途             |
-| --------- | ---------------- |
-| main      | 主要文本         |
-| title1    | 大标题（32sp）   |
-| title2    | 中标题（24sp）   |
-| title3    | 小标题（20sp）   |
-| body1     | 正文（16sp）     |
-| body2     | 次要正文（14sp） |
-| button    | 按钮文本（17sp） |
-| footnote1 | 脚注（13sp）     |
-| footnote2 | 小脚注（11sp）   |
+| Style Name | Usage                      |
+| ---------- | -------------------------- |
+| main       | Main text                  |
+| title1     | Large title (32sp)         |
+| title2     | Medium title (24sp)        |
+| title3     | Small title (20sp)         |
+| body1      | Body text (16sp)           |
+| body2      | Secondary body text (14sp) |
+| button     | Button text (17sp)         |
+| footnote1  | Footnote (13sp)            |
+| footnote2  | Small footnote (11sp)      |
 
-### 使用文本样式
+### Using Text Styles
 
-您可以通过 `MiuixTheme.textStyles` 访问当前主题的文本样式：
+You can access the current theme's text styles via `MiuixTheme.textStyles`:
 
 ```kotlin
 Text(
-    text = "这是一个标题",
+    text = "This is a title",
     style = MiuixTheme.textStyles.title2
 )
 
 Text(
-    text = "这是一段正文内容",
+    text = "This is body content",
     style = MiuixTheme.textStyles.body1
 )
 ```
 
-## 自定义主题
+## Customizing the Theme
 
-您可以通过提供自己的 `Colors` 和 `TextStyles` 实例来全局自定义 Miuix 主题：
+You can globally customize the Miuix theme by providing your own `Colors` and `TextStyles` instances:
 
 ```kotlin
-// 自定义颜色方案
+// Custom color scheme
 val customColors = lightColorScheme(
     primary = Color(0xFF6200EE),
     onPrimary = Color.White,
     background = Color(0xFFF5F5F5),
-    // 其他颜色...
+    // Other colors...
 )
 
-// 自定义文本样式
+// Custom text styles
 val customTextStyles = defaultTextStyles(
     title1 = TextStyle(
         fontSize = 36.sp,
         fontWeight = FontWeight.Bold
     ),
-    // 其他文本样式...
+    // Other text styles...
 )
 
-// 应用自定义主题
+// Apply custom theme
 MiuixTheme(
     colors = customColors,
     textStyles = customTextStyles
 ) {
-    // 您的应用内容
+    // Your application content
 }
 ```
 
-## 响应系统深色模式
+## Follow to System Dark Mode
 
-为了自动响应系统的深色模式设置，您应该使用 `isSystemInDarkTheme()` 函数：
+To automatically follow the system's dark mode switch, you should use the `isSystemInDarkTheme()` function:
 
 ```kotlin
 @Composable
@@ -146,7 +154,7 @@ fun MyApp() {
     }
     
     MiuixTheme(colors = colors) {
-        // 应用内容
+        // Application content
     }
 }
 ```

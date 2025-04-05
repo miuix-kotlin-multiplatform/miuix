@@ -1,72 +1,72 @@
 # Scaffold
 
-`Scaffold` 是 Miuix 中的脚手架组件，用于实现基本设计视觉布局结构。它提供了应用程序界面的基本框架，包括顶部栏、底部栏、悬浮按钮等元素的容器。
+`Scaffold` is a scaffolding component in Miuix used to implement basic design layout structures. It provides the fundamental framework for application interfaces, including containers for top bars, bottom bars, floating action buttons, and other elements.
 
-::: warning 注意
-Scaffold 组件为跨平台提供了一个合适的弹出窗口的容器。`SuperDialog`、`SuperDropdown`、`SuperSpinner`、`ListPopup` 等组件都基于此实现弹出窗口，因此都需要被该组件包裹。
+::: warning
+The Scaffold component provides a suitable container for pop-up windows across platforms. Components such as `SuperDialog`, `SuperDropdown`, `SuperSpinner`, and `ListPopup` implement pop-up windows based on this, therefore they need to be wrapped by this component.
 :::
 
-::: info 信息
-为什么不用官方的 `Popup` 和 `Dialog` 而选择自行创建弹出窗口的容器？因为它们目前在跨平台支持中实现不完整，有些参数无法更改。
+::: info
+Why not use the official `Popup` and `Dialog` instead of creating our own popup window container? Because their cross-platform support is currently incomplete, with some parameters that cannot be modified.
 :::
 
-## 引入
+## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.basic.Scaffold
 ```
 
-## 基本用法
+## Basic Usage
 
-Scaffold 组件可以构建带有顶部栏的页面布局：
+The Scaffold component can be used to build a page layout with a top bar:
 
 ```kotlin
 Scaffold(
     topBar = {
-        SmallTopAppBar(title = "标题" )
+        SmallTopAppBar(title = "Title" )
     },
     content = { paddingValues ->
-        // 内容区域需要考虑 padding
+        // The content area needs to consider padding
         Box(
             modifier = Modifier
                 .padding(top = paddingValues.calculateTopPadding(), start = 26.dp)
                 .fillMaxSize()
         ) {
-            Text("内容区域")
+            Text("Content Area")
         }
     }
 )
 ```
 
-## 属性
+## Properties
 
-### Scaffold 属性
+### Scaffold Properties
 
-| 属性名                       | 类型                                | 说明                                         | 默认值                            | 是否必须 |
-| ---------------------------- | ----------------------------------- | -------------------------------------------- | --------------------------------- | -------- |
-| modifier                     | Modifier                            | 应用于脚手架的修饰符                         | Modifier                          | 否       |
-| topBar                       | @Composable () -> Unit              | 顶部栏，通常是 TopAppBar                     | {}                                | 否       |
-| bottomBar                    | @Composable () -> Unit              | 底部栏，通常是 NavigationBar                 | {}                                | 否       |
-| floatingActionButton         | @Composable () -> Unit              | 悬浮按钮                                     | {}                                | 否       |
-| floatingActionButtonPosition | MiuixFabPosition                    | 显示悬浮按钮的位置                           | MiuixFabPosition.End              | 否       |
-| snackbarHost                 | @Composable () -> Unit              | 用于显示 Snackbar 的容器，Miuix 不提供此组件 | {}                                | 否       |
-| popupHost                    | @Composable () -> Unit              | 用于显示弹出窗口的容器                       | \{ MiuixPopupHost() }             | 否       |
-| containerColor               | Color                               | 脚手架的背景颜色                             | MiuixTheme.colorScheme.background | 否       |
-| contentWindowInsets          | WindowInsets                        | 传递给内容的窗口插入边距                     | WindowInsets.statusBars           | 否       |
-| content                      | @Composable (PaddingValues) -> Unit | 脚手架的主要内容区域                         | -                                 | 是       |
+| Property Name                | Type                                | Description                                                              | Default Value                     | Required |
+| ---------------------------- | ----------------------------------- | ------------------------------------------------------------------------ | --------------------------------- | -------- |
+| modifier                     | Modifier                            | Modifier applied to the scaffold                                         | Modifier                          | No       |
+| topBar                       | @Composable () -> Unit              | Top bar, usually a TopAppBar                                             | {}                                | No       |
+| bottomBar                    | @Composable () -> Unit              | Bottom bar, usually a NavigationBar                                      | {}                                | No       |
+| floatingActionButton         | @Composable () -> Unit              | Floating action button                                                   | {}                                | No       |
+| floatingActionButtonPosition | MiuixFabPosition                    | Position to display the floating action button                           | MiuixFabPosition.End              | No       |
+| snackbarHost                 | @Composable () -> Unit              | Container for displaying Snackbar, Miuix does not provide this component | {}                                | No       |
+| popupHost                    | @Composable () -> Unit              | Container for displaying popup windows                                   | \{ MiuixPopupHost() }             | No       |
+| containerColor               | Color                               | Background color of the scaffold                                         | MiuixTheme.colorScheme.background | No       |
+| contentWindowInsets          | WindowInsets                        | Window insets passed to the content                                      | WindowInsets.statusBars           | No       |
+| content                      | @Composable (PaddingValues) -> Unit | Main content area of the scaffold                                        | -                                 | Yes      |
 
-### MiuixFabPosition 选项
+### MiuixFabPosition Options
 
-| 选项名     | 说明                                         |
-| ---------- | -------------------------------------------- |
-| Start      | 将悬浮按钮放置在屏幕底部左侧，在底部栏上方   |
-| Center     | 将悬浮按钮放置在屏幕底部中央，在底部栏上方   |
-| End        | 将悬浮按钮放置在屏幕底部右侧，在底部栏上方   |
-| EndOverlay | 将悬浮按钮放置在屏幕底部右侧，覆盖在底部栏上 |
+| Option Name | Description                                                                                    |
+| ----------- | ---------------------------------------------------------------------------------------------- |
+| Start       | Places the floating action button at the bottom left of the screen, above the bottom bar       |
+| Center      | Places the floating action button at the bottom center of the screen, above the bottom bar     |
+| End         | Places the floating action button at the bottom right of the screen, above the bottom bar      |
+| EndOverlay  | Places the floating action button at the bottom right of the screen, overlaying the bottom bar |
 
-## 进阶用法
+## Advanced Usage
 
-### 带有顶部栏和底部栏的页面布局
+### Page Layout with Top Bar and Bottom Bar
 
 ```kotlin
 val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
@@ -74,10 +74,10 @@ val topAppBarScrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
 Scaffold(
     topBar = {
         TopAppBar(
-            title = "标题",
+            title = "Title",
             navigationIcon = {
-                IconButton(onClick = { /* 处理导航点击 */ }) {
-                    Icon(MiuixIcons.Useful.Back, contentDescription = "返回")
+                IconButton(onClick = { /* Handle navigation click */ }) {
+                    Icon(MiuixIcons.Useful.Back, contentDescription = "Back")
                 }
             },
             scrollBehavior = topAppBarScrollBehavior
@@ -85,8 +85,8 @@ Scaffold(
     },
     bottomBar = {
         val items = listOf(
-            NavigationItem("首页", MiuixIcons.Useful.NavigatorSwitch),
-            NavigationItem("设置", MiuixIcons.Useful.Settings)
+            NavigationItem("Home", MiuixIcons.Useful.NavigatorSwitch),
+            NavigationItem("Settings", MiuixIcons.Useful.Settings)
         )
         var selectedItem by remember { mutableStateOf(0) }
         NavigationBar(
@@ -98,18 +98,18 @@ Scaffold(
         )
     },
     content = { paddingValues ->
-        // 内容区域需要考虑 padding
+        // The content area needs to consider padding
         LazyColumn(
             contentPadding = paddingValues,
             modifier = Modifier
                 .fillMaxSize()
-                // 绑定顶部栏的滚动行为
+                // Bind the scroll behavior of the top bar
                 .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
         ) {
             items(20) { index ->
                 SuperArrow(
                     title = "Item $index",
-                    onClick = { /* 处理点击 */ }
+                    onClick = { /* Handle click */ }
                 )
                 if (index < 19) HorizontalDivider()
             }
@@ -118,35 +118,35 @@ Scaffold(
 )
 ```
 
-### 带有悬浮按钮的页面布局
+### Page Layout with Floating Action Button
 
 ```kotlin
 Scaffold(
     topBar = {
-        SmallTopAppBar(title = "标题")
+        SmallTopAppBar(title = "Title")
     },
     floatingActionButton = {
         FloatingActionButton(
-            onClick = { /* 处理点击事件 */ }
+            onClick = { /* Handle click event */ }
         ) {
-            Icon(MiuixIcons.Useful.New, contentDescription = "添加")
+            Icon(MiuixIcons.Useful.New, contentDescription = "Add")
         }
     },
     floatingActionButtonPosition = MiuixFabPosition.End,
     content = { paddingValues ->
-        // 内容区域需要考虑 padding
+        // The content area needs to consider padding
         Box(
             modifier = Modifier
                 .padding(top = paddingValues.calculateTopPadding(), start = 26.dp)
                 .fillMaxSize()
         ) {
-               Text("点击右下角按钮添加内容")
+               Text("Click the button in the bottom right corner to add content")
         }
     }
 )
 ```
 
-### 带有 Snackbar 的页面布局（需要使用 Material 组件）
+### Page Layout with Snackbar (requires Material components)
 
 ```kotlin
 val snackbarHostState = remember { SnackbarHostState() }
@@ -155,48 +155,48 @@ val scope = rememberCoroutineScope()
 Scaffold(
     snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     topBar = {
-        SmallTopAppBar(title = "标题")
+        SmallTopAppBar(title = "Title")
     },
     floatingActionButton = {
         FloatingActionButton(
             onClick = {
                 scope.launch {
-                    snackbarHostState.showSnackbar("这是一条消息！")
+                    snackbarHostState.showSnackbar("This is a message!")
                 }
             }
         ) {
-            Icon(MiuixIcons.Useful.Info, contentDescription = "显示消息")
+            Icon(MiuixIcons.Useful.Info, contentDescription = "Show message")
         }
     },
     content = { paddingValues ->
-        // 内容区域需要考虑 padding
+        // The content area needs to consider padding
         Box(
             modifier = Modifier
                 .padding(top = paddingValues.calculateTopPadding(), start = 26.dp)
                 .fillMaxSize()
         ) {
-            Text("点击按钮显示 Snackbar")
+            Text("Click the button to show Snackbar")
         }
     }
 )
 ```
 
-### 自定义窗口插入边距
+### Custom Window Insets
 
 ```kotlin
 Scaffold(
     contentWindowInsets = WindowInsets.systemBars,
     topBar = {
-        SmallTopAppBar(title = "标题")
+        SmallTopAppBar(title = "Title")
     },
     content = { paddingValues ->
-        // 内容区域需要考虑 padding
+        // The content area needs to consider padding
         Box(
             modifier = Modifier
                 .padding(top = paddingValues.calculateTopPadding(), start = 26.dp)
                 .fillMaxSize()
         ) {
-            Text("考虑系统栏的内容区域")
+            Text("Content area considering system bars")
         }
     }
 )

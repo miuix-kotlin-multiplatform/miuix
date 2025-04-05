@@ -1,17 +1,17 @@
 # PullToRefresh
 
-`PullToRefresh` 是 Miuix 中的下拉刷新组件，可为列表和其他可滚动内容提供刷新功能。它提供了具有动画效果的交互式刷新指示器，适用于需要刷新数据的各种场景。
+`PullToRefresh` is a pull-to-refresh component in Miuix that provides refresh functionality for lists and other scrollable content. It features an animated interactive refresh indicator suitable for various scenarios where data refresh is needed.
 
-## 引入
+## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.basic.PullToRefresh
 import top.yukonga.miuix.kmp.basic.rememberPullToRefreshState
 ```
 
-## 基本用法
+## Basic Usage
 
-PullToRefresh 组件可以包裹任何可滚动的内容：
+PullToRefresh can wrap any scrollable content:
 
 ```kotlin
 val pullToRefreshState = rememberPullToRefreshState()
@@ -23,12 +23,12 @@ Surface{
         pullToRefreshState = pullToRefreshState,
         onRefresh = {
             scope.launch {
-                // 确定刷新状态
+                // Check refresh state
                 if (pullToRefreshState.isRefreshing) {
-                    delay(300) // 模拟刷新操作
-                    // 刷新完成
+                    delay(300) // Simulate refresh operation
+                    // Complete refresh
                     pullToRefreshState.completeRefreshing {
-                        // 更新数据
+                        // Update data
                         items++
                     }
                 }
@@ -42,7 +42,7 @@ Surface{
                 SuperArrow(
                     title = "Item $index",
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    onClick = { /* 点击事件 */ }
+                    onClick = { /* Click event */ }
                 )
             }
         }
@@ -50,74 +50,74 @@ Surface{
 }
 ```
 
-## 组件状态
+## Component States
 
-PullToRefresh 组件有以下几种状态：
+PullToRefresh has the following states:
 
-1. `Idle`：初始状态，无交互
-2. `Pulling`：用户正在下拉但尚未达到刷新阈值
-3. `ThresholdReached`：下拉达到阈值，松开可以刷新
-4. `Refreshing`：正在刷新
-5. `RefreshComplete`：刷新完成，正在回到初始状态
+1. `Idle`: Initial state, no interaction
+2. `Pulling`: User is pulling but hasn't reached the refresh threshold
+3. `ThresholdReached`: Pull threshold reached, release to refresh
+4. `Refreshing`: Currently refreshing
+5. `RefreshComplete`: Refresh completed, returning to initial state
 
 ```kotlin
 val pullToRefreshState = rememberPullToRefreshState()
-// 检查是否正在刷新
+// Check if refreshing
 if (pullToRefreshState.isRefreshing) {
-    // 正在刷新时的逻辑
-    delay(2000) // 模拟网络请求
-    pullToRefreshState.completeRefreshing {} // 完成刷新时的回调
+    // Logic during refresh
+    delay(2000) // Simulate network request
+    pullToRefreshState.completeRefreshing {} // Callback when refresh completes
 }
 ```
 
-## 属性
+## Properties
 
-### PullToRefresh 属性
+### PullToRefresh Properties
 
-| 属性名             | 类型                   | 说明                     | 默认值                                 | 是否必须 |
-| ------------------ | ---------------------- | ------------------------ | -------------------------------------- | -------- |
-| pullToRefreshState | PullToRefreshState     | 下拉刷新状态控制器       | -                                      | 是       |
-| onRefresh          | () -> Unit             | 刷新触发时的回调函数     | {}                                     | 是       |
-| modifier           | Modifier               | 应用于容器的修饰符       | Modifier                               | 否       |
-| color              | Color                  | 刷新指示器的颜色         | PullToRefreshDefaults.color            | 否       |
-| circleSize         | Dp                     | 刷新指示器圆圈的大小     | PullToRefreshDefaults.circleSize       | 否       |
-| refreshTexts       | List\<String>          | 不同状态下显示的文本列表 | PullToRefreshDefaults.refreshTexts     | 否       |
-| refreshTextStyle   | TextStyle              | 刷新文本的样式           | PullToRefreshDefaults.refreshTextStyle | 否       |
-| content            | @Composable () -> Unit | 可滚动内容的可组合函数   | -                                      | 是       |
+| Property Name      | Type                   | Description                    | Default Value                          | Required |
+| ------------------ | ---------------------- | ------------------------------ | -------------------------------------- | -------- |
+| pullToRefreshState | PullToRefreshState     | Refresh state controller       | -                                      | Yes      |
+| onRefresh          | () -> Unit             | Refresh callback function      | {}                                     | Yes      |
+| modifier           | Modifier               | Container modifier             | Modifier                               | No       |
+| color              | Color                  | Indicator color                | PullToRefreshDefaults.color            | No       |
+| circleSize         | Dp                     | Indicator circle size          | PullToRefreshDefaults.circleSize       | No       |
+| refreshTexts       | List\<String>          | Text list for different states | PullToRefreshDefaults.refreshTexts     | No       |
+| refreshTextStyle   | TextStyle              | Refresh text style             | PullToRefreshDefaults.refreshTextStyle | No       |
+| content            | @Composable () -> Unit | Scrollable content composable  | -                                      | Yes      |
 
-### PullToRefreshState 类
+### PullToRefreshState Class
 
-PullToRefreshState 是控制下拉刷新状态的类，可以通过 `rememberPullToRefreshState()` 创建。
+PullToRefreshState controls the refresh state and can be created using `rememberPullToRefreshState()`.
 
-#### 属性
+#### Properties
 
-| 属性名                      | 类型         | 说明                | 默认值 | 是否必须 |
-| --------------------------- | ------------ | ------------------- | ------ | -------- |
-| refreshState                | RefreshState | 当前刷新状态        | -      | 是       |
-| isRefreshing                | Boolean      | 是否正在刷新        | -      | 是       |
-| pullProgress                | Float        | 下拉进度（0-1之间） | -      | 是       |
-| refreshCompleteAnimProgress | Float        | 刷新完成动画进度    | -      | 是       |
+| Property Name               | Type         | Description            | Default Value | Required |
+| --------------------------- | ------------ | ---------------------- | ------------- | -------- |
+| refreshState                | RefreshState | Current refresh state  | -             | Yes      |
+| isRefreshing                | Boolean      | Is refreshing          | -             | Yes      |
+| pullProgress                | Float        | Pull progress (0-1)    | -             | Yes      |
+| refreshCompleteAnimProgress | Float        | Complete anim progress | -             | Yes      |
 
-#### 方法
+#### Methods
 
-| 方法名             | 参数                 | 类型 | 说明                     | 默认值 | 是否必须 |
-| ------------------ | -------------------- | ---- | ------------------------ | ------ | -------- |
-| completeRefreshing | (suspend () -> Unit) | -    | 完成刷新并执行提供的操作 | -      | 是       |
+| Method Name        | Parameters           | Type | Description                    | Default Value | Required |
+| ------------------ | -------------------- | ---- | ------------------------------ | ------------- | -------- |
+| completeRefreshing | (suspend () -> Unit) | -    | Complete refresh with callback | -             | Yes      |
 
-### PullToRefreshDefaults 对象
+### PullToRefreshDefaults Object
 
-PullToRefreshDefaults 对象提供了下拉刷新组件的默认值。
+PullToRefreshDefaults provides default values for the component.
 
-| 属性名           | 类型          | 说明                 | 默认值                                              |
-| ---------------- | ------------- | -------------------- | --------------------------------------------------- |
-| color            | Color         | 刷新指示器的默认颜色 | Color.Gray                                          |
-| circleSize       | Dp            | 指示器圆圈的默认大小 | 20.dp                                               |
-| refreshTexts     | List\<String> | 默认的刷新文本列表   | ["Pull down to refresh", "Release to refresh", ...] |
-| refreshTextStyle | TextStyle     | 默认的文本样式       | TextStyle(fontSize = 14.sp, fontWeight = Bold, ...) |
+| Property Name    | Type          | Description             | Default Value                                       |
+| ---------------- | ------------- | ----------------------- | --------------------------------------------------- |
+| color            | Color         | Default indicator color | Color.Gray                                          |
+| circleSize       | Dp            | Default indicator size  | 20.dp                                               |
+| refreshTexts     | List\<String> | Default text list       | ["Pull down to refresh", "Release to refresh", ...] |
+| refreshTextStyle | TextStyle     | Default text style      | TextStyle(fontSize = 14.sp, fontWeight = Bold, ...) |
 
-## 进阶用法
+## Advanced Usage
 
-### 自定义刷新指示器颜色
+### Custom Indicator Color
 
 ```kotlin
 val pullToRefreshState = rememberPullToRefreshState()
@@ -126,14 +126,14 @@ PullToRefresh(
     pullToRefreshState = pullToRefreshState,
     color = Color.Blue,
     onRefresh = { 
-        // 执行刷新操作
+        // Perform refresh
     }
 ) {
-    // 内容
+    // Content
 }
 ```
 
-### 自定义刷新文本
+### Custom Refresh Texts
 
 ```kotlin
 val pullToRefreshState = rememberPullToRefreshState()
@@ -141,20 +141,20 @@ val pullToRefreshState = rememberPullToRefreshState()
 PullToRefresh(
     pullToRefreshState = pullToRefreshState,
     refreshTexts = listOf(
-        "下拉刷新",
-        "松开刷新",
-        "正在刷新",
-        "刷新成功"
+        "Pull to refresh",
+        "Release to refresh",
+        "Refreshing",
+        "Refresh successful"
     ),
     onRefresh = {
-        // 执行刷新操作
+        // Perform refresh
     }
 ) {
-    // 内容
+    // Content
 }
 ```
 
-### 结合加载状态使用
+### Using with Loading State
 
 ```kotlin
 val pullToRefreshState = rememberPullToRefreshState()
@@ -165,7 +165,7 @@ PullToRefresh(
     pullToRefreshState = pullToRefreshState,
     onRefresh = {
         scope.launch {
-            delay(2000) // 模拟刷新操作
+            delay(2000) // Simulate refresh operation
             pullToRefreshState.completeRefreshing {
                 items = List(8) { "Updated Item $it" }
             }

@@ -1,122 +1,122 @@
 # SuperCheckbox
 
-`SuperCheckbox` 是 Miuix 中的复选框组件，提供了标题、摘要和复选框控件，支持点击交互，常用于多选项设置和选择列表中。
+`SuperCheckbox` is a checkbox component in Miuix that provides a title, summary, and checkbox control. It supports click interactions and is commonly used in multi-select settings and selection lists.
 
-## 引入
+## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.extra.SuperCheckbox
 import top.yukonga.miuix.kmp.extra.CheckboxLocation
 ```
 
-## 基本用法
+## Basic Usage
 
-SuperCheckbox 组件提供了基本的复选框功能：
+SuperCheckbox component provides basic checkbox functionality:
 
 ```kotlin
 var isChecked by remember { mutableStateOf(false) }
 
 SuperCheckbox(
-    title = "复选框选项",
+    title = "Checkbox Option",
     checked = isChecked,
     onCheckedChange = { isChecked = it }
 )
 ```
 
-## 带摘要的复选框
+## Checkbox with Summary
 
 ```kotlin
 var notificationsEnabled by remember { mutableStateOf(false) }
 
 SuperCheckbox(
-    title = "通知",
-    summary = "接收来自应用的推送通知",
+    title = "Notifications",
+    summary = "Receive push notifications from the app",
     checked = notificationsEnabled,
     onCheckedChange = { notificationsEnabled = it }
 )
 ```
 
-## 组件状态
+## Component States
 
-### 禁用状态
+### Disabled State
 
 ```kotlin
 SuperCheckbox(
-    title = "禁用复选框",
-    summary = "此复选框当前不可用",
+    title = "Disabled Checkbox",
+    summary = "This checkbox is currently unavailable",
     checked = true,
     onCheckedChange = {},
     enabled = false
 )
 ```
 
-## 复选框位置
+## Checkbox Position
 
-SuperCheckbox 支持将复选框放置在左侧或右侧：
+SuperCheckbox supports placing the checkbox on the left or right side:
 
-### 左侧复选框（默认）
+### Left Checkbox (Default)
 
 ```kotlin
 var leftChecked by remember { mutableStateOf(false) }
 
 SuperCheckbox(
-    title = "左侧复选框",
-    summary = "复选框位于左侧（默认）",
+    title = "Left Checkbox",
+    summary = "Checkbox is on the left side (default)",
     checked = leftChecked,
     onCheckedChange = { leftChecked = it },
-    checkboxLocation = CheckboxLocation.Left // 默认值
+    checkboxLocation = CheckboxLocation.Left // Default value
 )
 ```
 
-### 右侧复选框
+### Right Checkbox
 
 ```kotlin
 var rightChecked by remember { mutableStateOf(false) }
 
 SuperCheckbox(
-    title = "右侧复选框",
-    summary = "复选框位于右侧",
+    title = "Right Checkbox",
+    summary = "Checkbox is on the right side",
     checked = rightChecked,
     onCheckedChange = { rightChecked = it },
     checkboxLocation = CheckboxLocation.Right
 )
 ```
 
-## 属性
+## Properties
 
-### SuperCheckbox 属性
+### SuperCheckbox Properties
 
-| 属性名           | 类型                            | 说明                       | 默认值                                | 是否必须 |
-| ---------------- | ------------------------------- | -------------------------- | ------------------------------------- | -------- |
-| title            | String                          | 复选框项的标题             | -                                     | 是       |
-| checked          | Boolean                         | 复选框的选中状态           | -                                     | 是       |
-| onCheckedChange  | ((Boolean) -> Unit)?            | 复选框状态变化时的回调     | -                                     | 是       |
-| modifier         | Modifier                        | 应用于组件的修饰符         | Modifier                              | 否       |
-| titleColor       | BasicComponentColors            | 标题文本的颜色配置         | BasicComponentDefaults.titleColor()   | 否       |
-| summary          | String?                         | 复选框项的摘要说明         | null                                  | 否       |
-| summaryColor     | BasicComponentColors            | 摘要文本的颜色配置         | BasicComponentDefaults.summaryColor() | 否       |
-| checkboxColors   | CheckboxColors                  | 复选框控件的颜色配置       | CheckboxDefaults.checkboxColors()     | 否       |
-| rightActions     | @Composable RowScope.() -> Unit | 右侧自定义内容（复选框前） | {}                                    | 否       |
-| checkboxLocation | CheckboxLocation                | 复选框的位置               | CheckboxLocation.Left                 | 否       |
-| onClick          | (() -> Unit)?                   | 点击选项时触发的额外回调   | null                                  | 否       |
-| insideMargin     | PaddingValues                   | 组件内部内容的边距         | BasicComponentDefaults.InsideMargin   | 否       |
-| enabled          | Boolean                         | 组件是否可交互             | true                                  | 否       |
+| Property Name    | Type                            | Description                          | Default Value                         | Required |
+| ---------------- | ------------------------------- | ------------------------------------ | ------------------------------------- | -------- |
+| title            | String                          | Title of the checkbox item           | -                                     | Yes      |
+| checked          | Boolean                         | Checkbox checked state               | -                                     | Yes      |
+| onCheckedChange  | ((Boolean) -> Unit)?            | Callback when checkbox state changes | -                                     | Yes      |
+| modifier         | Modifier                        | Modifier applied to component        | Modifier                              | No       |
+| titleColor       | BasicComponentColors            | Title text color configuration       | BasicComponentDefaults.titleColor()   | No       |
+| summary          | String?                         | Summary description                  | null                                  | No       |
+| summaryColor     | BasicComponentColors            | Summary text color configuration     | BasicComponentDefaults.summaryColor() | No       |
+| checkboxColors   | CheckboxColors                  | Checkbox control color configuration | CheckboxDefaults.checkboxColors()     | No       |
+| rightActions     | @Composable RowScope.() -> Unit | Custom content before checkbox       | {}                                    | No       |
+| checkboxLocation | CheckboxLocation                | Checkbox position                    | CheckboxLocation.Left                 | No       |
+| onClick          | (() -> Unit)?                   | Additional callback on item click    | null                                  | No       |
+| insideMargin     | PaddingValues                   | Internal content padding             | BasicComponentDefaults.InsideMargin   | No       |
+| enabled          | Boolean                         | Whether component is interactive     | true                                  | No       |
 
-## 进阶用法
+## Advanced Usage
 
-### 带右侧额外内容
+### With Right Actions
 
 ```kotlin
 var backupEnabled by remember { mutableStateOf(false) }
 
 SuperCheckbox(
-    title = "自动备份",
-    summary = "定期备份您的数据",
+    title = "Auto Backup",
+    summary = "Periodically backup your data",
     checked = backupEnabled,
     onCheckedChange = { backupEnabled = it },
     rightActions = {
         Text(
-            text = if (backupEnabled) "已启用" else "未启用",
+            text = if (backupEnabled) "Enabled" else "Disabled",
             color = MiuixTheme.colorScheme.onSurfaceVariantActions,
             modifier = Modifier.padding(end = 6.dp)
         )
@@ -124,7 +124,7 @@ SuperCheckbox(
 )
 ```
 
-### 嵌套复选框
+### Nested Checkboxes
 
 ```kotlin
 var allSelected by remember { mutableStateOf(false) }
@@ -134,7 +134,7 @@ var option3 by remember { mutableStateOf(false) }
 
 Column {
     SuperCheckbox(
-        title = "选择全部",
+        title = "Select All",
         checked = allSelected,
         onCheckedChange = { newState ->
             allSelected = newState
@@ -144,7 +144,7 @@ Column {
         }
     )
     SuperCheckbox(
-        title = "选项 1",
+        title = "Option 1",
         checked = option1,
         onCheckedChange = { 
             option1 = it 
@@ -153,7 +153,7 @@ Column {
         modifier = Modifier.padding(start = 24.dp)
     )
     SuperCheckbox(
-        title = "选项 2",
+        title = "Option 2",
         checked = option2,
         onCheckedChange = { 
             option2 = it 
@@ -162,7 +162,7 @@ Column {
         modifier = Modifier.padding(start = 24.dp)
     )
     SuperCheckbox(
-        title = "选项 3",
+        title = "Option 3",
         checked = option3,
         onCheckedChange = { 
             option3 = it 
@@ -173,17 +173,17 @@ Column {
 }
 ```
 
-### 自定义颜色
+### Custom Colors
 
 ```kotlin
 var customChecked by remember { mutableStateOf(false) }
 
 SuperCheckbox(
-    title = "自定义颜色",
+    title = "Custom Colors",
     titleColor = BasicComponentDefaults.titleColor(
         color = MiuixTheme.colorScheme.primary
     ),
-    summary = "使用自定义颜色的复选框",
+    summary = "Checkbox with custom colors",
     summaryColor = BasicComponentDefaults.summaryColor(
         color = MiuixTheme.colorScheme.secondary
     ),
@@ -196,7 +196,7 @@ SuperCheckbox(
 )
 ```
 
-### 结合对话框使用
+### Using with Dialog
 
 ```kotlin
 var showDialog = remember { mutableStateOf(false) }
@@ -205,27 +205,27 @@ var analyticsOption by remember { mutableStateOf(false) }
 
 Scaffold {
     SuperArrow(
-        title = "隐私设置",
+        title = "Privacy Settings",
         onClick = { showDialog.value = true },
         holdDownState = showDialog.value
     )
     
     SuperDialog(
-        title = "隐私设置",
+        title = "Privacy Settings",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) } // 关闭对话框
+        onDismissRequest = { dismissDialog(showDialog) } // Close dialog
     ) {
         Card {
             SuperCheckbox(
-                title = "隐私政策",
-                summary = "同意隐私政策条款",
+                title = "Privacy Policy",
+                summary = "Agree to the privacy policy terms",
                 checked = privacyOption,
                 onCheckedChange = { privacyOption = it }
             )
             
             SuperCheckbox(
-                title = "分析数据",
-                summary = "允许收集匿名使用数据以改进服务",
+                title = "Analytics Data",
+                summary = "Allow collection of anonymous usage data to improve services",
                 checked = analyticsOption,
                 onCheckedChange = { analyticsOption = it }
             )
@@ -236,16 +236,16 @@ Scaffold {
             modifier = Modifier.padding(top = 12.dp)
         ) {
             TextButton(
-                text = "取消",
-                onClick = { dismissDialog(showDialog) }, // 关闭对话框
+                text = "Cancel",
+                onClick = { dismissDialog(showDialog) }, // Close dialog
                 modifier = Modifier.weight(1f)
             )
             Spacer(Modifier.width(16.dp))
             TextButton(
-                text = "确认",
-                onClick = { dismissDialog(showDialog) }, // 关闭对话框
+                text = "Confirm",
+                onClick = { dismissDialog(showDialog) }, // Close dialog
                 modifier = Modifier.weight(1f),
-                colors = ButtonDefaults.textButtonColorsPrimary() // 使用主题颜色
+                colors = ButtonDefaults.textButtonColorsPrimary() // Use theme colors
             )
         }
     }

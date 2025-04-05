@@ -1,172 +1,172 @@
 # SuperArrow
 
-`SuperArrow` 是 Miuix 中的箭头指示组件，通常用于导航或展示更多内容。提供了标题、摘要和右侧箭头图标，支持点击交互，常用于设置项、菜单项或列表项中。
+`SuperArrow` is a directional indicator component in Miuix, typically used for navigation or displaying additional content. It provides a title, summary, and right arrow icon with click interaction support, commonly used in settings, menu items, or list items.
 
-## 引入
+## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.extra.SuperArrow
 ```
 
-## 基本用法
+## Basic Usage
 
-SuperArrow 组件提供了基本的点击导航功能：
+The SuperArrow component provides basic click navigation functionality:
 
 ```kotlin
 SuperArrow(
-    title = "设置项",
-    onClick = { /* 处理点击事件 */ }
+    title = "Setting Item",
+    onClick = { /* Handle click event */ }
 )
 ```
 
-## 带摘要的箭头
+## Arrow with Summary
 
 ```kotlin
 SuperArrow(
-    title = "无线网络",
-    summary = "已连接到 WIFI-HOME",
-    onClick = { /* 处理点击事件 */ }
+    title = "Wireless Network",
+    summary = "Connected to WIFI-HOME",
+    onClick = { /* Handle click event */ }
 )
 ```
 
-## 组件状态
+## Component States
 
-### 禁用状态
+### Disabled State
 
 ```kotlin
 SuperArrow(
-    title = "禁用项",
-    summary = "此项目当前不可用",
+    title = "Disabled Item",
+    summary = "This item is currently unavailable",
     enabled = false,
-    onClick = { /* 不会被触发 */ }
+    onClick = { /* Won't be triggered */ }
 )
 ```
 
-### 按下状态
+### Hold Down State
 
-SuperArrow 支持通过 `holdDownState` 参数控制按下状态，通常用于显示弹出对话框时的视觉反馈：
+SuperArrow supports controlling the hold-down state through the `holdDownState` parameter, typically used for visual feedback when displaying popup dialogs:
 
 ```kotlin
 var showDialog = remember { mutableStateOf(false) }
 
 Scaffold {
     SuperArrow(
-        title = "打开对话框",
-        summary = "点击显示对话框",
+        title = "Open Dialog",
+        summary = "Click to show dialog",
         onClick = { showDialog.value = true },
         holdDownState = showDialog.value
     )
-    // 在其他地方定义对话框
+    // Define dialog elsewhere
     SuperDialog(
-        title = "对话框",
+        title = "Dialog",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) } // 关闭对话框
+        onDismissRequest = { dismissDialog(showDialog) }
     ) {
-        // 对话框内容
+        // Dialog content
     }
 }
 ```
 
-## 属性
+## Properties
 
-### SuperArrow 属性
+### SuperArrow Properties
 
-| 属性名           | 类型                      | 说明                     | 默认值                                 | 是否必须 |
-| ---------------- | ------------------------- | ------------------------ | -------------------------------------- | -------- |
-| title            | String                    | 箭头项的标题             | -                                      | 是       |
-| modifier         | Modifier                  | 应用于组件的修饰符       | Modifier                               | 否       |
-| titleColor       | BasicComponentColors      | 标题文本的颜色配置       | BasicComponentDefaults.titleColor()    | 否       |
-| summary          | String?                   | 箭头项的摘要说明         | null                                   | 否       |
-| summaryColor     | BasicComponentColors      | 摘要文本的颜色配置       | BasicComponentDefaults.summaryColor()  | 否       |
-| leftAction       | @Composable (() -> Unit)? | 左侧自定义内容           | null                                   | 否       |
-| rightText        | String?                   | 右侧文本内容             | null                                   | 否       |
-| rightActionColor | RightActionColors         | 右侧文本和箭头的颜色配置 | SuperArrowDefaults.rightActionColors() | 否       |
-| onClick          | (() -> Unit)?             | 点击箭头时触发的回调     | null                                   | 否       |
-| holdDownState    | Boolean                   | 组件是否处于按下状态     | false                                  | 否       |
-| insideMargin     | PaddingValues             | 组件内部内容的边距       | BasicComponentDefaults.InsideMargin    | 否       |
-| enabled          | Boolean                   | 组件是否可交互           | true                                   | 否       |
+| Property Name    | Type                      | Description                       | Default Value                          | Required |
+| ---------------- | ------------------------- | --------------------------------- | -------------------------------------- | -------- |
+| title            | String                    | Arrow item title                  | -                                      | Yes      |
+| modifier         | Modifier                  | Modifier applied to component     | Modifier                               | No       |
+| titleColor       | BasicComponentColors      | Title text color configuration    | BasicComponentDefaults.titleColor()    | No       |
+| summary          | String?                   | Arrow item summary description    | null                                   | No       |
+| summaryColor     | BasicComponentColors      | Summary text color configuration  | BasicComponentDefaults.summaryColor()  | No       |
+| leftAction       | @Composable (() -> Unit)? | Custom left content               | null                                   | No       |
+| rightText        | String?                   | Right text content                | null                                   | No       |
+| rightActionColor | RightActionColors         | Right text and arrow color config | SuperArrowDefaults.rightActionColors() | No       |
+| onClick          | (() -> Unit)?             | Callback triggered on click       | null                                   | No       |
+| holdDownState    | Boolean                   | Whether component is held down    | false                                  | No       |
+| insideMargin     | PaddingValues             | Internal content padding          | BasicComponentDefaults.InsideMargin    | No       |
+| enabled          | Boolean                   | Whether component is interactive  | true                                   | No       |
 
-### SuperArrowDefaults 对象
+### SuperArrowDefaults Object
 
-SuperArrowDefaults 对象提供了箭头组件的默认值和颜色配置。
+The SuperArrowDefaults object provides default values and color configurations for the arrow component.
 
-#### 方法
+#### Methods
 
-| 方法名            | 类型              | 说明                         |
-| ----------------- | ----------------- | ---------------------------- |
-| rightActionColors | RightActionColors | 创建右侧文本和箭头的颜色配置 |
+| Method Name       | Type              | Description                                   |
+| ----------------- | ----------------- | --------------------------------------------- |
+| rightActionColors | RightActionColors | Creates color config for right text and arrow |
 
-### RightActionColors 类
+### RightActionColors Class
 
-| 参数          | 类型  | 说明             |
-| ------------- | ----- | ---------------- |
-| color         | Color | 正常状态下的颜色 |
-| disabledColor | Color | 禁用状态下的颜色 |
+| Parameter     | Type  | Description             |
+| ------------- | ----- | ----------------------- |
+| color         | Color | Color in normal state   |
+| disabledColor | Color | Color in disabled state |
 
-## 进阶用法
+## Advanced Usage
 
-### 带左侧图标
+### With Left Icon
 
 ```kotlin
 SuperArrow(
-    title = "个人信息",
-    summary = "查看和修改您的个人资料",
+    title = "Personal Information",
+    summary = "View and edit your profile",
     leftAction = {
         Icon(
             imageVector = MiuixIcons.Useful.Personal,
-            contentDescription = "个人图标",
+            contentDescription = "Personal Icon",
             tint = MiuixTheme.colorScheme.onBackground,
             modifier = Modifier.padding(end = 16.dp)
         )
     },
-    onClick = { /* 处理点击事件 */ }
+    onClick = { /* Handle click event */ }
 )
 ```
 
-### 带右侧文本
+### With Right Text
 
 ```kotlin
 SuperArrow(
-    title = "存储空间",
-    summary = "管理应用存储空间",
+    title = "Storage Space",
+    summary = "Manage app storage space",
     rightText = "12.5 GB",
-    onClick = { /* 处理点击事件 */ }
+    onClick = { /* Handle click event */ }
 )
 ```
 
-### 结合对话框使用
+### Using with Dialog
 
 ```kotlin
 var showDialog = remember { mutableStateOf(false) }
-var language by remember { mutableStateOf("简体中文") }
+var language by remember { mutableStateOf("Simplified Chinese") }
 
 Scaffold {
     SuperArrow(
-        title = "语言设置",
-        summary = "选择应用显示语言",
+        title = "Language Settings",
+        summary = "Select app display language",
         rightText = language,
         onClick = { showDialog.value = true },
         holdDownState = showDialog.value
     )
     SuperDialog(
-        title = "选择语言",
+        title = "Select Language",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) } // 关闭对话框
+        onDismissRequest = { dismissDialog(showDialog) }
     ) {
-        // 对话框内容
+        // Dialog content
         Card {
             SuperArrow(
-                title = "简体中文",
+                title = "Simplified Chinese",
                 onClick = {
-                    language = "简体中文"
-                    dismissDialog(showDialog) // 关闭对话框
+                    language = "Simplified Chinese"
+                    dismissDialog(showDialog)
                 }
             )
             SuperArrow(
                 title = "English",
                 onClick = {
                     language = "English"
-                    dismissDialog(showDialog) // 关闭对话框
+                    dismissDialog(showDialog)
                 }
             )
         }
@@ -174,8 +174,8 @@ Scaffold {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             TextButton(
-                text = "取消",
-                onClick = { dismissDialog(showDialog) },  // 关闭对话框
+                text = "Cancel",
+                onClick = { dismissDialog(showDialog) },
                 modifier = Modifier.weight(1f).padding(top = 8.dp)
             )
         }
@@ -183,15 +183,15 @@ Scaffold {
 }
 ```
 
-### 自定义颜色
+### Custom Colors
 
 ```kotlin
 SuperArrow(
-    title = "自定义颜色",
+    title = "Custom Colors",
     titleColor = BasicComponentDefaults.titleColor(
         color = MiuixTheme.colorScheme.primary
     ),
-    summary = "使用自定义颜色",
+    summary = "Using custom colors",
     summaryColor = BasicComponentDefaults.summaryColor(
         color = MiuixTheme.colorScheme.secondary
     ),
@@ -199,6 +199,6 @@ SuperArrow(
         color = MiuixTheme.colorScheme.primary,
         disabledColor = MiuixTheme.colorScheme.disabledOnSecondaryVariant
     ),
-    onClick = { /* 处理点击事件 */ }
+    onClick = { /* Handle click event */ }
 )
 ```

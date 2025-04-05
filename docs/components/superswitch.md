@@ -1,90 +1,90 @@
 # SuperSwitch
 
-`SuperSwitch` 是 Miuix 中的开关组件，提供了标题、摘要和右侧开关控件，支持点击交互，常用于设置项和偏好切换中。
+`SuperSwitch` is a switch component in Miuix that provides a title, summary, and a switch control on the right. It supports click interaction and is commonly used in settings items and preference toggles.
 
-## 引入
+## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.extra.SuperSwitch
 ```
 
-## 基本用法
+## Basic Usage
 
-SuperSwitch 组件提供了基本的开关功能：
+The SuperSwitch component provides basic switch functionality:
 
 ```kotlin
 var isChecked by remember { mutableStateOf(false) }
 
 SuperSwitch(
-    title = "开关选项",
+    title = "Switch Option",
     checked = isChecked,
     onCheckedChange = { isChecked = it }
 )
 ```
 
-## 带摘要的开关
+## Switch with Summary
 
 ```kotlin
 var wifiEnabled by remember { mutableStateOf(false) }
 
 SuperSwitch(
     title = "WiFi",
-    summary = "打开以连接到无线网络",
+    summary = "Turn on to connect to wireless networks",
     checked = wifiEnabled,
     onCheckedChange = { wifiEnabled = it }
 )
 ```
 
-## 组件状态
+## Component States
 
-### 禁用状态
+### Disabled State
 
 ```kotlin
 SuperSwitch(
-    title = "禁用开关",
-    summary = "此开关当前不可用",
+    title = "Disabled Switch",
+    summary = "This switch is currently unavailable",
     checked = true,
     onCheckedChange = {},
     enabled = false
 )
 ```
 
-## 属性
+## Properties
 
-### SuperSwitch 属性
+### SuperSwitch Properties
 
-| 属性名          | 类型                            | 说明                       | 默认值                                | 是否必须 |
-| --------------- | ------------------------------- | -------------------------- | ------------------------------------- | -------- |
-| title           | String                          | 开关项的标题               | -                                     | 是       |
-| checked         | Boolean                         | 开关的选中状态             | -                                     | 是       |
-| onCheckedChange | ((Boolean) -> Unit)?            | 开关状态变化时的回调       | -                                     | 是       |
-| modifier        | Modifier                        | 应用于组件的修饰符         | Modifier                              | 否       |
-| titleColor      | BasicComponentColors            | 标题文本的颜色配置         | BasicComponentDefaults.titleColor()   | 否       |
-| summary         | String?                         | 开关项的摘要说明           | null                                  | 否       |
-| summaryColor    | BasicComponentColors            | 摘要文本的颜色配置         | BasicComponentDefaults.summaryColor() | 否       |
-| switchColors    | SwitchColors                    | 开关控件的颜色配置         | SwitchDefaults.switchColors()         | 否       |
-| leftAction      | @Composable (() -> Unit)?       | 左侧自定义内容             | null                                  | 否       |
-| rightActions    | @Composable RowScope.() -> Unit | 右侧自定义内容（开关前）   | {}                                    | 否       |
-| insideMargin    | PaddingValues                   | 组件内部内容的边距         | BasicComponentDefaults.InsideMargin   | 否       |
-| onClick         | (() -> Unit)?                   | 点击开关项时触发的额外回调 | null                                  | 否       |
-| enabled         | Boolean                         | 组件是否可交互             | true                                  | 否       |
+| Property Name   | Type                            | Description                              | Default Value                         | Required |
+| --------------- | ------------------------------- | ---------------------------------------- | ------------------------------------- | -------- |
+| title           | String                          | Switch item title                        | -                                     | Yes      |
+| checked         | Boolean                         | Switch checked state                     | -                                     | Yes      |
+| onCheckedChange | ((Boolean) -> Unit)?            | Switch state change callback             | -                                     | Yes      |
+| modifier        | Modifier                        | Component modifier                       | Modifier                              | No       |
+| titleColor      | BasicComponentColors            | Title text color configuration           | BasicComponentDefaults.titleColor()   | No       |
+| summary         | String?                         | Switch item summary                      | null                                  | No       |
+| summaryColor    | BasicComponentColors            | Summary text color configuration         | BasicComponentDefaults.summaryColor() | No       |
+| switchColors    | SwitchColors                    | Switch control color configuration       | SwitchDefaults.switchColors()         | No       |
+| leftAction      | @Composable (() -> Unit)?       | Custom left content                      | null                                  | No       |
+| rightActions    | @Composable RowScope.() -> Unit | Custom right content (before switch)     | {}                                    | No       |
+| insideMargin    | PaddingValues                   | Component internal content padding       | BasicComponentDefaults.InsideMargin   | No       |
+| onClick         | (() -> Unit)?                   | Additional callback on switch item click | null                                  | No       |
+| enabled         | Boolean                         | Component interactive state              | true                                  | No       |
 
-## 进阶用法
+## Advanced Usage
 
-### 带左侧图标
+### With Left Icon
 
 ```kotlin
 var enabled by remember { mutableStateOf(false) }
 
 SuperSwitch(
-    title = "测试",
-    summary = "启用以允许测试",
+    title = "Test",
+    summary = "Enable to allow testing",
     checked = enabled,
     onCheckedChange = { enabled = it },
     leftAction = {
         Icon(
             imageVector = MiuixIcons.Useful.Order,
-            contentDescription = "命令图标",
+            contentDescription = "Command Icon",
             tint = MiuixTheme.colorScheme.onBackground,
             modifier = Modifier.padding(end = 12.dp)
         )
@@ -92,19 +92,19 @@ SuperSwitch(
 )
 ```
 
-### 带右侧额外内容
+### With Right Additional Content
 
 ```kotlin
 var locationEnabled by remember { mutableStateOf(false) }
 
 SuperSwitch(
-    title = "位置服务",
-    summary = "允许应用获取位置信息",
+    title = "Location Services",
+    summary = "Allow apps to access location information",
     checked = locationEnabled,
     onCheckedChange = { locationEnabled = it },
     rightActions = {
         Text(
-            text = if (locationEnabled) "已开启" else "已关闭",
+            text = if (locationEnabled) "Enabled" else "Disabled",
             color = MiuixTheme.colorScheme.onSurfaceVariantActions,
             modifier = Modifier.padding(end = 6.dp)
         )
@@ -112,15 +112,16 @@ SuperSwitch(
 )
 ```
 
-### 带动画显示/隐藏的内容
+### With Animated Content Visibility
 
 ```kotlin
 var parentEnabled by remember { mutableStateOf(false) }
 var childEnabled by remember { mutableStateOf(false) }
+
 Column {
     SuperSwitch(
-        title = "主设置",
-        summary = "打开以显示更多选项",
+        title = "Main Setting",
+        summary = "Turn on to show more options",
         checked = parentEnabled,
         onCheckedChange = { parentEnabled = it }
     )
@@ -129,8 +130,8 @@ Column {
         visible = parentEnabled
     ) {
         SuperSwitch(
-            title = "子设置",
-            summary = "仅当主设置开启时可用",
+            title = "Sub Setting",
+            summary = "Only available when main setting is enabled",
             checked = childEnabled,
             onCheckedChange = { childEnabled = it }
         )
@@ -138,17 +139,17 @@ Column {
 }
 ```
 
-### 自定义颜色
+### Custom Colors
 
 ```kotlin
 var customEnabled by remember { mutableStateOf(false) }
 
 SuperSwitch(
-    title = "自定义颜色",
+    title = "Custom Colors",
     titleColor = BasicComponentDefaults.titleColor(
         color = MiuixTheme.colorScheme.primary
     ),
-    summary = "使用自定义颜色的开关",
+    summary = "Switch with custom colors",
     summaryColor = BasicComponentDefaults.summaryColor(
         color = MiuixTheme.colorScheme.secondary
     ),
@@ -161,7 +162,7 @@ SuperSwitch(
 )
 ```
 
-### 结合对话框使用
+### Use with Dialog
 
 ```kotlin
 var showDialog = remember { mutableStateOf(false) }
@@ -169,19 +170,19 @@ var option by remember { mutableStateOf(false) }
 
 Scaffold {
     SuperArrow(
-        title = "高级设置",
+        title = "Advanced Settings",
         onClick = { showDialog.value = true },
         holdDownState = showDialog.value
     )
     SuperDialog(
-        title = "高级设置",
+        title = "Advanced Settings",
         show = showDialog,
         onDismissRequest = { dismissDialog(showDialog) }
     ) {
         Card {
             SuperSwitch(
-                title = "实验性功能",
-                summary = "启用尚在开发中的功能",
+                title = "Experimental Features",
+                summary = "Enable features under development",
                 checked = option,
                 onCheckedChange = { option = it }
             )
@@ -191,16 +192,16 @@ Scaffold {
             modifier = Modifier.padding(top = 12.dp)
         ) {
             TextButton(
-                text = "取消",
-                onClick = { dismissDialog(showDialog) }, // 关闭对话框
+                text = "Cancel",
+                onClick = { dismissDialog(showDialog) },
                 modifier = Modifier.weight(1f)
             )
             Spacer(Modifier.width(16.dp))
             TextButton(
-                text = "确认",
-                onClick = { dismissDialog(showDialog) }, // 关闭对话框
+                text = "Confirm",
+                onClick = { dismissDialog(showDialog) },
                 modifier = Modifier.weight(1f),
-                colors = ButtonDefaults.textButtonColorsPrimary() // 使用主题颜色
+                colors = ButtonDefaults.textButtonColorsPrimary()
             )
         }
     }

@@ -1,55 +1,55 @@
 # Card
 
-`Card` 是 Miuix 中的基础容器组件，用于承载相关内容和操作。它提供了具有 Miuix 风格的卡片容器，适用于信息展示、内容分组等场景。
+`Card` is a basic container component in Miuix, used to hold related content and actions. It provides a card container with Miuix style, suitable for scenarios such as information display and content grouping.
 
-## 引入
+## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.basic.Card
 ```
 
-## 基本用法
+## Basic Usage
 
-Card 组件可以用于包装和组织内容：
+The Card component can be used to wrap and organize content:
 
 ```kotlin
 Card {
-    Text("这是卡片内容")
+    Text("This is card content")
 }
 ```
 
-## 属性
+## Properties
 
-### Card 属性
+### Card Properties
 
-| 属性名       | 类型                               | 说明                     | 默认值                      | 是否必须 |
-| ------------ | ---------------------------------- | ------------------------ | --------------------------- | -------- |
-| modifier     | Modifier                           | 应用于卡片的修饰符       | Modifier                    | 否       |
-| cornerRadius | Dp                                 | 卡片圆角半径             | CardDefaults.CornerRadius   | 否       |
-| insideMargin | PaddingValues                      | 卡片内部边距             | CardDefaults.InsideMargin   | 否       |
-| color        | Color                              | 卡片背景颜色             | CardDefaults.DefaultColor() | 否       |
-| content      | @Composable ColumnScope.() -> Unit | 卡片内容区域的可组合函数 | -                           | 是       |
+| Property Name | Type                               | Description              | Default Value               | Required |
+| ------------- | ---------------------------------- | ------------------------ | --------------------------- | -------- |
+| modifier      | Modifier                           | Modifier applied to card | Modifier                    | No       |
+| cornerRadius  | Dp                                 | Card corner radius       | CardDefaults.CornerRadius   | No       |
+| insideMargin  | PaddingValues                      | Card inner padding       | CardDefaults.InsideMargin   | No       |
+| color         | Color                              | Card background color    | CardDefaults.DefaultColor() | No       |
+| content       | @Composable ColumnScope.() -> Unit | Composable function for card content area | - | Yes |
 
-### CardDefaults 对象
+### CardDefaults Object
 
-CardDefaults 对象提供了卡片组件的默认值和颜色配置。
+The CardDefaults object provides default values and color configurations for the card component.
 
-#### 常量
+#### Constants
 
-| 常量名       | 类型          | 说明           | 默认值              |
-| ------------ | ------------- | -------------- | ------------------- |
-| CornerRadius | Dp            | 卡片的圆角半径 | 16.dp               |
-| InsideMargin | PaddingValues | 卡片的内部边距 | PaddingValues(0.dp) |
+| Constant Name | Type          | Description        | Default Value         |
+| ------------- | ------------- | ------------------ | --------------------- |
+| CornerRadius  | Dp            | Card corner radius | 16.dp                 |
+| InsideMargin  | PaddingValues | Card inner padding | PaddingValues(0.dp)   |
 
-#### 方法
+#### Methods
 
-| 方法名         | 类型  | 说明               |
-| -------------- | ----- | ------------------ |
-| DefaultColor() | Color | 创建卡片的默认颜色 |
+| Method Name    | Type  | Description               |
+| -------------- | ----- | ------------------------- |
+| DefaultColor() | Color | Creates the default color for the card |
 
-## 进阶用法
+## Advanced Usage
 
-### 自定义样式卡片
+### Custom Style Card
 
 ```kotlin
 Card(
@@ -57,11 +57,11 @@ Card(
     insideMargin = PaddingValues(16.dp),
     color = Color.LightGray.copy(alpha = 0.5f)
 ) {
-    Text("自定义样式卡片")
+    Text("Custom Style Card")
 }
 ```
 
-### 内容丰富的卡片
+### Content-Rich Card
 
 ```kotlin
 Card(
@@ -69,12 +69,12 @@ Card(
     insideMargin = PaddingValues(16.dp)
 ) {
     Text(
-        text = "卡片标题",
+        text = "Card Title",
         style = MiuixTheme.textStyles.title2
     )
     Spacer(modifier = Modifier.height(8.dp))
     Text(
-        text = "这是卡片的详细内容描述，可以包含多行文本信息。"
+        text = "This is a detailed description of the card, which can contain multiple lines of text."
     )
     Spacer(modifier = Modifier.height(16.dp))
     Row(
@@ -82,20 +82,20 @@ Card(
         horizontalArrangement = Arrangement.End
     ) {
         TextButton(
-            text = "取消",
-            onClick = { /* 处理取消事件 */ }
+            text = "Cancel",
+            onClick = { /* Handle cancel event */ }
         )
         Spacer(modifier = Modifier.width(8.dp))
         TextButton(
-            text = "确定",
-            colors = ButtonDefaults.textButtonColorsPrimary(), // 使用主题颜色
-            onClick = { /* 处理取消事件 */ }
+            text = "Confirm",
+            colors = ButtonDefaults.textButtonColorsPrimary(), // Use theme colors
+            onClick = { /* Handle confirm event */ }
         )
     }
 }
 ```
 
-### 列表中的卡片
+### Cards in a List
 
 ```kotlin
 LazyColumn {
@@ -106,7 +106,7 @@ LazyColumn {
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             insideMargin = PaddingValues(16.dp)
         ) {
-            Text("列表项 ${index + 1}")
+            Text("List Item ${index + 1}")
         }
     }
 }

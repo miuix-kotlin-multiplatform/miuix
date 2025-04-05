@@ -1,10 +1,10 @@
 # TopAppBar
 
-`TopAppBar` 是 Miuix 中的顶部应用栏组件，用于在界面顶部提供导航、标题和操作按钮。支持大标题模式和普通模式，以及滚动时的动态效果。
+`TopAppBar` is a top application bar component in Miuix, used to provide navigation, title, and action buttons at the top of the interface. It supports both large title and regular modes, as well as dynamic effects during scrolling.
 
-此组件通常与 `Scaffold` 组件结合使用，以便在应用程序的不同页面中保持一致的布局和行为。
+This component is typically used in combination with the `Scaffold` component to maintain consistent layout and behavior across different pages of the application.
 
-## 引入
+## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.basic.TopAppBar
@@ -13,48 +13,48 @@ import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 ```
 
-## 基本用法
+## Basic Usage
 
-### 小标题顶部栏
+### Small TopAppBar
 
 ```kotlin
 SmallTopAppBar(
-    title = "标题",
+    title = "Title",
     navigationIcon = {
-        IconButton(onClick = { /* 处理点击事件 */ }) {
-            Icon(MiuixIcons.Useful.Back, contentDescription = "返回")
+        IconButton(onClick = { /* Handle click event */ }) {
+            Icon(MiuixIcons.Useful.Back, contentDescription = "Back")
         }
     },
     actions = {
-        IconButton(onClick = { /* 处理点击事件 */ }) {
-            Icon(MiuixIcons.Useful.More, contentDescription = "更多")
+        IconButton(onClick = { /* Handle click event */ }) {
+            Icon(MiuixIcons.Useful.More, contentDescription = "More")
         }
     }
 )
 ```
 
-### 大标题顶部栏
+### Large TopAppBar
 
 ```kotlin
 TopAppBar(
-    title = "标题",
-    largeTitle = "大标题", // 如果不指定，将使用 title 的值
+    title = "Title",
+    largeTitle = "Large Title", // If not specified, title value will be used
     navigationIcon = {
-        IconButton(onClick = { /* 处理点击事件 */ }) {
-            Icon(MiuixIcons.Basic.ArrowLeft, contentDescription = "返回")
+        IconButton(onClick = { /* Handle click event */ }) {
+            Icon(MiuixIcons.Basic.ArrowLeft, contentDescription = "Back")
         }
     },
     actions = {
-        IconButton(onClick = { /* 处理点击事件 */ }) {
-            Icon(MiuixIcons.Useful.More, contentDescription = "更多")
+        IconButton(onClick = { /* Handle click event */ }) {
+            Icon(MiuixIcons.Useful.More, contentDescription = "More")
         }
     }
 )
 ```
 
-## 大标题顶部栏滚动行为（使用脚手架）
+## Large TopAppBar Scroll Behavior (Using Scaffold)
 
-TopAppBar 支持随内容滚动时改变其显示状态：
+TopAppBar supports changing its display state when content scrolls:
 
 ```kotlin
 val scrollBehavior = MiuixScrollBehavior()
@@ -62,81 +62,81 @@ val scrollBehavior = MiuixScrollBehavior()
 Scaffold(
     topBar = {
         TopAppBar(
-            title = "标题",
-            largeTitle = "大标题",
+            title = "Title",
+            largeTitle = "Large Title",
             scrollBehavior = scrollBehavior
         )
     }
 ) { paddingValues ->
-    // 内容区域需要考虑 padding
+    // Content area needs to consider padding
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            // 绑定顶部栏的滚动行为
+            // Bind top bar scroll behavior
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
         contentPadding = PaddingValues(top = paddingValues.calculateTopPadding())
     ) {
-        // 列表内容
+        // List content
     }
 }
 ```
 
-## 自定义样式
+## Custom Styles
 
-### 自定义颜色
+### Custom Colors
 
 ```kotlin
 TopAppBar(
-    title = "标题",
+    title = "Title",
     color = MiuixTheme.colorScheme.primary
 )
 ```
 
-### 自定义内容边距
+### Custom Content Padding
 
 ```kotlin
 TopAppBar(
-    title = "标题",
+    title = "Title",
     horizontalPadding = 32.dp
 )
 ```
 
-## 属性
+## Properties
 
-### TopAppBar 属性
+### TopAppBar Properties
 
-| 属性名                     | 类型                            | 说明                           | 默认值                            | 是否必须 |
-| -------------------------- | ------------------------------- | ------------------------------ | --------------------------------- | -------- |
-| title                      | String                          | 顶部栏标题                     | -                                 | 是       |
-| modifier                   | Modifier                        | 应用于顶部栏的修饰符           | Modifier                          | 否       |
-| color                      | Color                           | 顶部栏背景颜色                 | MiuixTheme.colorScheme.background | 否       |
-| largeTitle                 | String?                         | 大标题文本，不指定时使用 title | null                              | 否       |
-| navigationIcon             | @Composable () -> Unit          | 导航图标区域的可组合函数       | {}                                | 否       |
-| actions                    | @Composable RowScope.() -> Unit | 操作按钮区域的可组合函数       | {}                                | 否       |
-| scrollBehavior             | ScrollBehavior?                 | 控制顶部栏滚动行为             | null                              | 否       |
-| defaultWindowInsetsPadding | Boolean                         | 是否应用默认窗口边距           | true                              | 否       |
-| horizontalPadding          | Dp                              | 水平内容边距                   | 26.dp                             | 否       |
+| Property Name              | Type                            | Description                                    | Default Value                     | Required |
+| -------------------------- | ------------------------------- | ---------------------------------------------- | --------------------------------- | -------- |
+| title                      | String                          | Top bar title                                  | -                                 | Yes      |
+| modifier                   | Modifier                        | Modifier applied to the top bar                | Modifier                          | No       |
+| color                      | Color                           | Top bar background color                       | MiuixTheme.colorScheme.background | No       |
+| largeTitle                 | String?                         | Large title text, uses title if not specified  | null                              | No       |
+| navigationIcon             | @Composable () -> Unit          | Composable function for navigation icon area   | {}                                | No       |
+| actions                    | @Composable RowScope.() -> Unit | Composable function for action buttons area    | {}                                | No       |
+| scrollBehavior             | ScrollBehavior?                 | Controls top bar scroll behavior               | null                              | No       |
+| defaultWindowInsetsPadding | Boolean                         | Whether to apply default window insets padding | true                              | No       |
+| horizontalPadding          | Dp                              | Horizontal content padding                     | 26.dp                             | No       |
 
-### SmallTopAppBar 属性
+### SmallTopAppBar Properties
 
-| 属性名                     | 类型                            | 说明                     | 默认值                            | 是否必须 |
-| -------------------------- | ------------------------------- | ------------------------ | --------------------------------- | -------- |
-| title                      | String                          | 顶部栏标题               | -                                 | 是       |
-| modifier                   | Modifier                        | 应用于顶部栏的修饰符     | Modifier                          | 否       |
-| color                      | Color                           | 顶部栏背景颜色           | MiuixTheme.colorScheme.background | 否       |
-| navigationIcon             | @Composable () -> Unit          | 导航图标区域的可组合函数 | {}                                | 否       |
-| actions                    | @Composable RowScope.() -> Unit | 操作按钮区域的可组合函数 | {}                                | 否       |
-| scrollBehavior             | ScrollBehavior?                 | 控制顶部栏滚动行为       | null                              | 否       |
-| defaultWindowInsetsPadding | Boolean                         | 是否应用默认窗口边距     | true                              | 否       |
-| horizontalPadding          | Dp                              | 水平内容边距             | 26.dp                             | 否       |
+| Property Name              | Type                            | Description                                    | Default Value                     | Required |
+| -------------------------- | ------------------------------- | ---------------------------------------------- | --------------------------------- | -------- |
+| title                      | String                          | Top bar title                                  | -                                 | Yes      |
+| modifier                   | Modifier                        | Modifier applied to the top bar                | Modifier                          | No       |
+| color                      | Color                           | Top bar background color                       | MiuixTheme.colorScheme.background | No       |
+| navigationIcon             | @Composable () -> Unit          | Composable function for navigation icon area   | {}                                | No       |
+| actions                    | @Composable RowScope.() -> Unit | Composable function for action buttons area    | {}                                | No       |
+| scrollBehavior             | ScrollBehavior?                 | Controls top bar scroll behavior               | null                              | No       |
+| defaultWindowInsetsPadding | Boolean                         | Whether to apply default window insets padding | true                              | No       |
+| horizontalPadding          | Dp                              | Horizontal content padding                     | 26.dp                             | No       |
 
 ### ScrollBehavior
 
-MiuixScrollBehavior 是用于控制顶部栏滚动行为的配置对象。
+MiuixScrollBehavior is a configuration object used to control the scroll behavior of the top bar.
 
 #### rememberTopAppBarState
 
-用于创建和记住 TopAppBarState：
+Used to create and remember TopAppBarState:
 
 ```kotlin
 val scrollBehavior = MiuixScrollBehavior(
@@ -146,45 +146,45 @@ val scrollBehavior = MiuixScrollBehavior(
 )
 ```
 
-| 参数名             | 类型                        | 默认值                     | 说明                       |
-| ------------------ | --------------------------- | -------------------------- | -------------------------- |
-| state              | TopAppBarState              | rememberTopAppBarState()   | 控制滚动状态的状态对象     |
-| canScroll          | () -> Boolean               | { true }                   | 控制是否允许滚动的回调     |
-| snapAnimationSpec  | AnimationSpec\<Float>?      | spring(stiffness = 3000f)  | 定义顶部栏滚动后的吸附动画 |
-| flingAnimationSpec | DecayAnimationSpec\<Float>? | rememberSplineBasedDecay() | 定义顶部栏滑动的衰减动画   |
+| Parameter Name     | Type                       | Default Value              | Description                                      |
+| ------------------ | -------------------------- | -------------------------- | ------------------------------------------------ |
+| state              | TopAppBarState             | rememberTopAppBarState()   | State object controlling scroll state            |
+| canScroll          | () -> Boolean              | { true }                   | Callback to control whether scrolling is allowed |
+| snapAnimationSpec  | AnimationSpec\<Float>?     | spring(stiffness = 3000f)  | Defines snap animation after scrolling           |
+| flingAnimationSpec | DecayAnimationSpec\<Float>? | rememberSplineBasedDecay() | Defines decay animation for fling                |
 
-## 进阶用法
+## Advanced Usage
 
-### 处理窗口边距
+### Handling Window Insets
 
 ```kotlin
 TopAppBar(
-    title = "标题",
-    largeTitle = "大标题",
-    defaultWindowInsetsPadding = false // 自行处理窗口嵌入边距
+    title = "Title",
+    largeTitle = "Large Title",
+    defaultWindowInsetsPadding = false // Handle window insets manually
 )
 ```
 
-### 自定义滚动行为动画
+### Custom Scroll Behavior Animation
 
 ```kotlin
 var isScrollingEnabled by remember { mutableStateOf(true) }
 val scrollBehavior = MiuixScrollBehavior(
     snapAnimationSpec = tween(durationMillis = 100),
     flingAnimationSpec = rememberSplineBasedDecay(),
-    canScroll = { isScrollingEnabled } // 可以动态控制是否允许滚动
+    canScroll = { isScrollingEnabled } // Can dynamically control whether scrolling is allowed
 )
 
 TopAppBar(
-    title = "标题",
-    largeTitle = "大标题",
+    title = "Title",
+    largeTitle = "Large Title",
     scrollBehavior = scrollBehavior
 )
 ```
 
-### 大标题和小标题结合使用
+### Combining Large and Small Titles
 
-你可以使用 foundation 提供的 BoxWithConstraints 方法或者 Miuix 提供的 [getWindowSize()](../guide/multiplatform.md#窗口尺寸管理) 方法来获取当前窗口的尺寸，并根据窗口的宽度来决定使用大标题还是小标题。
+You can use the BoxWithConstraints method provided by foundation or the [getWindowSize()](../guide/multiplatform.md#window-size-management) method provided by Miuix to get the current window size and decide whether to use a large title or a small title based on the window width.
 
 ```kotlin
 var useSmallTopBar by remember { mutableStateOf(false) }
@@ -192,12 +192,12 @@ var useSmallTopBar by remember { mutableStateOf(false) }
 Box(modifier = Modifier.fillMaxSize()) {
     if (useSmallTopBar) {
         SmallTopAppBar(
-            title = "精简模式",
+            title = "Compact Mode",
             navigationIcon = {
                 IconButton(onClick = { useSmallTopBar = false }) {
                     Icon(
                         imageVector = MiuixIcons.Useful.Back,
-                        contentDescription = "切换到大标题",
+                        contentDescription = "Switch to Large Title",
                         tint = MiuixTheme.colorScheme.onBackground
                     )
                 }
@@ -205,13 +205,13 @@ Box(modifier = Modifier.fillMaxSize()) {
         )
     } else {
         TopAppBar(
-            title = "标题",
-            largeTitle = "展开模式",
+            title = "Title",
+            largeTitle = "Expanded Mode",
             navigationIcon = {
                 IconButton(onClick = { useSmallTopBar = true }) {
                     Icon(
-                            imageVector = MiuixIcons.Useful.Back,
-                        contentDescription = "切换到小标题",
+                        imageVector = MiuixIcons.Useful.Back,
+                        contentDescription = "Switch to Small Title",
                         tint = MiuixTheme.colorScheme.onBackground
                     )
                 }

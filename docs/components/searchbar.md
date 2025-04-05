@@ -1,15 +1,15 @@
 # SearchBar
 
-`SearchBar` 是 Miuix 中用于用户输入搜索内容的组件。它提供了一个直观且易用的搜索界面，支持展开/收起状态切换以及搜索建议展示。
+`SearchBar` is a component in Miuix used for user search input. It provides an intuitive and easy-to-use search interface with support for expanded/collapsed state switching and search suggestions display.
 
-## 引入
+## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.basic.SearchBar
 import top.yukonga.miuix.kmp.basic.InputField
 ```
 
-## 基本用法
+## Basic Usage
 
 ```kotlin
 var searchText by remember { mutableStateOf("") }
@@ -20,7 +20,7 @@ SearchBar(
         InputField(
             query = searchText,
             onQueryChange = { searchText = it },
-            onSearch = { /* 处理搜索操作 */ },
+            onSearch = { /* Handle search action */ },
             expanded = expanded,
             onExpandedChange = { expanded = it }
         )
@@ -28,45 +28,45 @@ SearchBar(
     expanded = expanded,
     onExpandedChange = { expanded = it }
 ) {
-    // 搜索结果内容
+    // Search results content
     Column {
-        // 在这里添加搜索建议或结果
+        // Add search suggestions or results here
     }
 }
 ```
 
-## 属性
+## Properties
 
-### SearchBar 属性
+### SearchBar Properties
 
-| 属性名             | 类型                               | 说明                       | 默认值   | 是否必须 |
-| ------------------ | ---------------------------------- | -------------------------- | -------- | -------- |
-| inputField         | @Composable () -> Unit             | 搜索输入框组件             | -        | 是       |
-| expanded           | Boolean                            | 是否展开显示搜索结果       | false    | 是       |
-| onExpandedChange   | (Boolean) -> Unit                  | 展开状态变化的回调         | -        | 是       |
-| modifier           | Modifier                           | 应用于搜索栏的修饰符       | Modifier | 否       |
-| outsideRightAction | @Composable (() -> Unit)?          | 展开时显示在右侧的操作组件 | null     | 否       |
-| content            | @Composable ColumnScope.() -> Unit | 展开时显示的内容           | -        | 是       |
+| Property Name      | Type                               | Description                                       | Default Value | Required |
+| ------------------ | ---------------------------------- | ------------------------------------------------- | ------------- | -------- |
+| inputField         | @Composable () -> Unit             | Search input field component                      | -             | Yes      |
+| expanded           | Boolean                            | Whether to show search results                    | false         | Yes      |
+| onExpandedChange   | (Boolean) -> Unit                  | Callback when expanded state changes              | -             | Yes      |
+| modifier           | Modifier                           | Modifier applied to the search bar                | Modifier      | No       |
+| outsideRightAction | @Composable (() -> Unit)?          | Action component shown on the right when expanded | null          | No       |
+| content            | @Composable ColumnScope.() -> Unit | Content shown when expanded                       | -             | Yes      |
 
-### InputField 属性
+### InputField Properties
 
-| 属性名            | 类型                      | 说明                       | 默认值               | 是否必须 |
-| ----------------- | ------------------------- | -------------------------- | -------------------- | -------- |
-| query             | String                    | 搜索框中的文本内容         | -                    | 是       |
-| onQueryChange     | (String) -> Unit          | 文本内容变化时的回调       | -                    | 是       |
-| onSearch          | (String) -> Unit          | 执行搜索操作时的回调       | -                    | 是       |
-| expanded          | Boolean                   | 是否处于展开状态           | -                    | 是       |
-| onExpandedChange  | (Boolean) -> Unit         | 展开状态变化的回调         | -                    | 是       |
-| label             | String                    | 搜索框为空时显示的提示文本 | ""                   | 否       |
-| enabled           | Boolean                   | 是否启用搜索框             | true                 | 否       |
-| insideMargin      | DpSize                    | 内部边距                   | DpSize(12.dp, 12.dp) | 否       |
-| leadingIcon       | @Composable (() -> Unit)? | 前置图标                   | null                 | 否       |
-| trailingIcon      | @Composable (() -> Unit)? | 后置图标                   | null                 | 否       |
-| interactionSource | MutableInteractionSource? | 交互源                     | null                 | 否       |
+| Property Name     | Type                      | Description                          | Default Value        | Required |
+| ----------------- | ------------------------- | ------------------------------------ | -------------------- | -------- |
+| query             | String                    | Text content in search field         | -                    | Yes      |
+| onQueryChange     | (String) -> Unit          | Callback when text content changes   | -                    | Yes      |
+| onSearch          | (String) -> Unit          | Callback when search is executed     | -                    | Yes      |
+| expanded          | Boolean                   | Whether in expanded state            | -                    | Yes      |
+| onExpandedChange  | (Boolean) -> Unit         | Callback when expanded state changes | -                    | Yes      |
+| label             | String                    | Placeholder text when empty          | ""                   | No       |
+| enabled           | Boolean                   | Whether search field is enabled      | true                 | No       |
+| insideMargin      | DpSize                    | Internal padding                     | DpSize(12.dp, 12.dp) | No       |
+| leadingIcon       | @Composable (() -> Unit)? | Leading icon                         | null                 | No       |
+| trailingIcon      | @Composable (() -> Unit)? | Trailing icon                        | null                 | No       |
+| interactionSource | MutableInteractionSource? | Interaction source                   | null                 | No       |
 
-## 进阶用法
+## Advanced Usage
 
-### 带图标的搜索栏
+### SearchBar with Icons
 
 ```kotlin
 var searchText by remember { mutableStateOf("") }
@@ -77,14 +77,14 @@ SearchBar(
         InputField(
             query = searchText,
             onQueryChange = { searchText = it },
-            onSearch = { /* 处理搜索操作 */ },
+            onSearch = { /* Handle search action */ },
             expanded = expanded,
             onExpandedChange = { expanded = it },
             leadingIcon = {
                 Icon(
                     modifier = Modifier.padding(start = 12.dp, end = 8.dp),
                     imageVector = MiuixIcons.Useful.Search,
-                    contentDescription = "搜索"
+                    contentDescription = "Search"
                 )
             }
         )
@@ -92,23 +92,23 @@ SearchBar(
     expanded = expanded,
     onExpandedChange = { expanded = it }
 ) {
-    // 搜索结果内容
+    // Search results content
 }
 ```
 
-### 带搜索建议的搜索栏
+### SearchBar with Suggestions
 
 ```kotlin
 var searchText by remember { mutableStateOf("") }
 var expanded by remember { mutableStateOf(false) }
-val suggestions = listOf("建议 1", "建议 2", "建议 3")
+val suggestions = listOf("Suggestion 1", "Suggestion 2", "Suggestion 3")
 
 SearchBar(
     inputField = {
         InputField(
             query = searchText,
             onQueryChange = { searchText = it },
-            onSearch = { /* 处理搜索操作 */ },
+            onSearch = { /* Handle search action */ },
             expanded = expanded,
             onExpandedChange = { expanded = it }
         )
@@ -130,7 +130,7 @@ SearchBar(
 }
 ```
 
-### 带取消按钮的搜索栏
+### SearchBar with Cancel Button
 
 ```kotlin
 var searchText by remember { mutableStateOf("") }
@@ -145,7 +145,7 @@ SearchBar(
             onSearch = { expanded = false },
             expanded = expanded,
             onExpandedChange = { expanded = it },
-            label = "搜索"
+            label = "Search"
         )
     },
     expanded = expanded,
@@ -161,11 +161,11 @@ SearchBar(
                     expanded = false
                     searchText = ""
                 },
-            text = "取消",
+            text = "Cancel",
             color = MiuixTheme.colorScheme.primary
         )
     }
 ) {
-    // 搜索结果内容
+    // Search results content
 }
 ```

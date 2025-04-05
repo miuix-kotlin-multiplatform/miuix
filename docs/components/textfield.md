@@ -1,16 +1,16 @@
 # TextField
 
-`TextField` 是 Miuix 中的基础输入组件，用于接收用户的文本输入。组件提供了丰富的自定义选项，支持标签动画、前置和后置图标等功能。
+`TextField` is a basic input component in Miuix for receiving text input from users. The component provides rich customization options, supporting label animations, leading and trailing icons, and other features.
 
-## 引入
+## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.basic.TextField
 ```
 
-## 基本用法
+## Basic Usage
 
-TextField 组件可以用于获取用户输入：
+The TextField component can be used to get user input:
 
 ```kotlin
 var text by remember { mutableStateOf("") }
@@ -18,15 +18,15 @@ var text by remember { mutableStateOf("") }
 TextField(
     value = text,
     onValueChange = { text = it },
-    label = "用户名"
+    label = "Username"
 )
 ```
 
-## 输入框类型
+## Input Types
 
-### 带标签输入框
+### TextField with Label
 
-标签会在输入框获得焦点或有内容时自动移动到顶部：
+The label automatically moves to the top when the input field gains focus or has content:
 
 ```kotlin
 var text by remember { mutableStateOf("") }
@@ -34,11 +34,11 @@ var text by remember { mutableStateOf("") }
 TextField(
     value = text,
     onValueChange = { text = it },
-    label = "邮箱地址"
+    label = "Email Address"
 )
 ```
 
-### 使用标签作为占位符
+### Using Label as Placeholder
 
 ```kotlin
 var text by remember { mutableStateOf("") }
@@ -46,70 +46,70 @@ var text by remember { mutableStateOf("") }
 TextField(
     value = text,
     onValueChange = { text = it },
-    label = "请输入内容",
+    label = "Please enter content",
     useLabelAsPlaceholder = true
 )
 ```
 
-## 组件状态
+## Component States
 
-### 禁用状态
+### Disabled State
 
 ```kotlin
 var text by remember { mutableStateOf("") }
 TextField(
     value = text,
     onValueChange = { text = it },
-    label = "禁用输入框",
+    label = "Disabled Input Field",
     enabled = false
 )
 ```
 
-### 只读状态
+### Read-Only State
 
 ```kotlin
-var text by remember { mutableStateOf("这是只读内容") }
+var text by remember { mutableStateOf("This is read-only content") }
 
 TextField(
     value = text,
     onValueChange = { text = it },
-    label = "只读输入框",
+    label = "Read-Only Input Field",
     readOnly = true
 )
 ```
 
-## 属性
+## Properties
 
-### TextField 属性
+### TextField Properties
 
-| 属性名                | 类型                                         | 说明                   | 默认值                                               | 是否必须 |
-| --------------------- | -------------------------------------------- | ---------------------- | ---------------------------------------------------- | -------- |
-| value                 | String 或 TextFieldValue                     | 输入框的文本值         | -                                                    | 是       |
-| onValueChange         | (String) -> Unit 或 (TextFieldValue) -> Unit | 文本变化时的回调函数   | -                                                    | 是       |
-| modifier              | Modifier                                     | 应用于输入框的修饰符   | Modifier                                             | 否       |
-| insideMargin          | DpSize                                       | 输入框内部边距         | DpSize(16.dp, 16.dp)                                 | 否       |
-| backgroundColor       | Color                                        | 输入框背景颜色         | MiuixTheme.colorScheme.secondaryContainer            | 否       |
-| cornerRadius          | Dp                                           | 输入框圆角半径         | 16.dp                                                | 否       |
-| label                 | String                                       | 输入框标签文本         | ""                                                   | 否       |
-| labelColor            | Color                                        | 标签文本颜色           | MiuixTheme.colorScheme.onSecondaryContainer          | 否       |
-| useLabelAsPlaceholder | Boolean                                      | 是否使用标签作为占位符 | false                                                | 否       |
-| enabled               | Boolean                                      | 输入框是否可用         | true                                                 | 否       |
-| readOnly              | Boolean                                      | 输入框是否只读         | false                                                | 否       |
-| textStyle             | TextStyle                                    | 输入文本样式           | MiuixTheme.textStyles.main                           | 否       |
-| keyboardOptions       | KeyboardOptions                              | 键盘选项配置           | KeyboardOptions.Default                              | 否       |
-| keyboardActions       | KeyboardActions                              | 键盘操作配置           | KeyboardActions.Default                              | 否       |
-| leadingIcon           | @Composable (() -> Unit)?                    | 前置图标               | null                                                 | 否       |
-| trailingIcon          | @Composable (() -> Unit)?                    | 后置图标               | null                                                 | 否       |
-| singleLine            | Boolean                                      | 是否为单行输入         | false                                                | 否       |
-| maxLines              | Int                                          | 最大行数               | 如果 singleLine 为 true 则为 1，否则为 Int.MAX_VALUE | 否       |
-| minLines              | Int                                          | 最小行数               | 1                                                    | 否       |
-| visualTransformation  | VisualTransformation                         | 视觉转换器             | VisualTransformation.None                            | 否       |
-| onTextLayout          | (TextLayoutResult) -> Unit                   | 文本布局变化回调       | {}                                                   | 否       |
-| interactionSource     | MutableInteractionSource?                    | 交互源                 | null                                                 | 否       |
+| Property Name         | Type                                         | Description                         | Default Value                                    | Required |
+| --------------------- | -------------------------------------------- | ----------------------------------- | ------------------------------------------------ | -------- |
+| value                 | String or TextFieldValue                     | Text value of the input field       | -                                                | Yes      |
+| onValueChange         | (String) -> Unit or (TextFieldValue) -> Unit | Callback when text changes          | -                                                | Yes      |
+| modifier              | Modifier                                     | Modifier applied to the input field | Modifier                                         | No       |
+| insideMargin          | DpSize                                       | Internal padding of input field     | DpSize(16.dp, 16.dp)                             | No       |
+| backgroundColor       | Color                                        | Background color                    | MiuixTheme.colorScheme.secondaryContainer        | No       |
+| cornerRadius          | Dp                                           | Corner radius                       | 16.dp                                            | No       |
+| label                 | String                                       | Label text                          | ""                                               | No       |
+| labelColor            | Color                                        | Label text color                    | MiuixTheme.colorScheme.onSecondaryContainer      | No       |
+| useLabelAsPlaceholder | Boolean                                      | Use label as placeholder            | false                                            | No       |
+| enabled               | Boolean                                      | Whether input field is enabled      | true                                             | No       |
+| readOnly              | Boolean                                      | Whether input field is read-only    | false                                            | No       |
+| textStyle             | TextStyle                                    | Text style                          | MiuixTheme.textStyles.main                       | No       |
+| keyboardOptions       | KeyboardOptions                              | Keyboard options                    | KeyboardOptions.Default                          | No       |
+| keyboardActions       | KeyboardActions                              | Keyboard actions                    | KeyboardActions.Default                          | No       |
+| leadingIcon           | @Composable (() -> Unit)?                    | Leading icon                        | null                                             | No       |
+| trailingIcon          | @Composable (() -> Unit)?                    | Trailing icon                       | null                                             | No       |
+| singleLine            | Boolean                                      | Single line input                   | false                                            | No       |
+| maxLines              | Int                                          | Maximum lines                       | If singleLine is true then 1, else Int.MAX_VALUE | No       |
+| minLines              | Int                                          | Minimum lines                       | 1                                                | No       |
+| visualTransformation  | VisualTransformation                         | Visual transformation               | VisualTransformation.None                        | No       |
+| onTextLayout          | (TextLayoutResult) -> Unit                   | Text layout callback                | {}                                               | No       |
+| interactionSource     | MutableInteractionSource?                    | Interaction source                  | null                                             | No       |
 
-## 进阶用法
+## Advanced Usage
 
-### 带图标输入框
+### TextField with Icons
 
 ```kotlin
 var text by remember { mutableStateOf("") }
@@ -117,18 +117,18 @@ var text by remember { mutableStateOf("") }
 TextField(
     value = text,
     onValueChange = { text = it },
-    label = "搜索",
+    label = "Search",
     leadingIcon = {
         Icon(
             imageVector = MiuixIcons.Useful.Search,
-            contentDescription = "搜索图标",
+            contentDescription = "Search Icon",
             modifier = Modifier.padding(horizontal = 12.dp)
         )
     }
 )
 ```
 
-### 密码输入框
+### Password Input Field
 
 ```kotlin
 var password by remember { mutableStateOf("") }
@@ -137,7 +137,7 @@ var passwordVisible by remember { mutableStateOf(false) }
 TextField(
     value = password,
     onValueChange = { password = it },
-    label = "密码",
+    label = "Password",
     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
     trailingIcon = {
@@ -148,14 +148,14 @@ TextField(
             Icon(
                 imageVector = MiuixIcons.Useful.Rename,
                 tint = if (passwordVisible) MiuixTheme.colorScheme.primary else MiuixTheme.colorScheme.onSecondaryContainer,
-                contentDescription = if (passwordVisible) "隐藏密码" else "显示密码"
+                contentDescription = if (passwordVisible) "Hide Password" else "Show Password"
             )
         }
     }
 )
 ```
 
-### 带验证的输入框
+### Input Field with Validation
 
 ```kotlin
 var email by remember { mutableStateOf("") }
@@ -170,13 +170,13 @@ Column {
             email = it
             isError = email.isNotEmpty() && !emailPattern.matches(email)
         },
-        label = "电子邮箱",
+        label = "Email",
         labelColor = if (isError) errorColor else MiuixTheme.colorScheme.onSecondaryContainer,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
     )
     if (isError) {
         Text(
-            text = "请输入有效的邮箱地址",
+            text = "Please enter a valid email address",
             color = errorColor,
                 style = MiuixTheme.textStyles.body2,
             modifier = Modifier.padding(start = 16.dp, top = 4.dp)
@@ -185,7 +185,7 @@ Column {
 }
 ```
 
-### 自定义样式
+### Custom Styles
 
 ```kotlin
 var text by remember { mutableStateOf("") }
@@ -193,7 +193,7 @@ var text by remember { mutableStateOf("") }
 TextField(
     value = text,
     onValueChange = { text = it },
-    label = "自定义输入框",
+    label = "Custom Input Field",
     cornerRadius = 8.dp,
     backgroundColor = MiuixTheme.colorScheme.primary.copy(alpha = 0.1f),
     textStyle = TextStyle(
@@ -204,9 +204,9 @@ TextField(
 )
 ```
 
-### 使用 TextFieldValue
+### Using TextFieldValue
 
-当需要更细致地控制文本选择和光标位置时：
+When you need more fine-grained control over text selection and cursor position:
 
 ```kotlin
 var textFieldValue by remember { mutableStateOf(TextFieldValue("")) }
@@ -214,7 +214,7 @@ var textFieldValue by remember { mutableStateOf(TextFieldValue("")) }
 TextField(
     value = textFieldValue,
     onValueChange = { textFieldValue = it },
-    label = "高级输入控制",
-    // TextFieldValue 提供了对文本、选择范围和光标位置的控制
+    label = "Advanced Input Control",
+    // TextFieldValue provides control over text, selection range, and cursor position
 )
 ```
