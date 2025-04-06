@@ -19,7 +19,7 @@ publishing {
 
             licenses {
                 license {
-                    name.set("Apache-2.0 license")
+                    name.set("Apache-2.0")
                     url.set("https://github.com/miuix-kotlin-multiplatform/miuix/blob/main/LICENSE")
                 }
             }
