@@ -1,51 +1,60 @@
 :root {
 
+    /* 亮色模式主要模糊颜色 */
+    --miuix-color-blur: rgba(255, 255, 255, 0.7);
+
+    /* 亮色模式文档页左侧顶部颜色 */
+    --miuix-color-blur-top: rgba(246, 246, 247, 0.7);
+
     /* 亮色模式搜索框颜色 */
     --miuix-color-search-button: rgba(255, 255, 255, 0.5);
 
-    /* 首页下滑后导航透明 */
-    .VPNavBar:not(.has-sidebar):not(.home.top) {
-        background-color: rgba(255, 255, 255, 0);
-        backdrop-filter: blur(15px)
-    }
 
-    /* 搜索框透明 */
+    /* 搜索框模糊 */
     .DocSearch-Button {
         background-color: var(--miuix-color-search-button);
-        backdrop-filter: blur(15px)
     }
 
-    /* Feature 透明 */
-    .VPFeature {
-        border: none;
-        box-shadow: 0 10px 30px 0 rgb(0 0 0 / 15%);
-        background-color: transparent;
-    }
-
-    /* 文档页侧边栏顶部透明 */
+    /* 文档页侧边栏顶部模糊 */
     .curtain {
-        background-color: rgba(255, 255, 255, 0);
-        backdrop-filter: blur(15px)
+        background-color: var(--miuix-color-blur-top);
+        backdrop-filter: blur(12px);
+    }
+
+    /* 移动端大纲栏模糊 */
+    .VPLocalNav {
+        background-color: var(--miuix-color-blur);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
     }
 
     @media (min-width: 960px) {
 
-        /* 文档页导航中间透明 */
-        .VPNavBar:not(.home.top) .content-body {
-            background-color: rgba(255, 255, 255, 0);
-            backdrop-filter: blur(15px)
+        /* 首页下滑后导航栏模糊 */
+        .VPNavBar:not(.has-sidebar):not(.home .top) {
+            background-color: var(--miuix-color-blur);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* 文档页导航中间模糊 */
+        .VPNavBar:not(.home.top):not(.home) .content-body {
+            background-color: var(--miuix-color-blur);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
     }
 
-    /* 移动端大纲栏透明 */
-    .VPLocalNav {
-        background-color: rgba(255, 255, 255, 0);
-        backdrop-filter: blur(15px)
-    }
 }
 
 
 .dark {
+    /* 深色模式主要模糊颜色 */
+    --miuix-color-blur: rgba(30, 30, 30, 0.7);
+
+    /* 亮色模式文档页左侧顶部颜色 */
+    --miuix-color-blur-top: rgba(22, 22, 24, 0.7);
+
     /* 深色模式搜索框颜色 */
-    --miuix-color-search-button: rgba(0, 0, 0, 0.2);
+    --miuix-color-search-button: rgba(30, 30, 30, 0.5);
 }
