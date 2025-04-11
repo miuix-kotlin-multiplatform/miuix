@@ -111,13 +111,6 @@ export default defineConfig({
                     ]
                 },
                 {
-                    text: '特殊组件',
-                    collapsed: false,
-                    items: [
-                        { text: 'LazyColumn', link: '/zh_CN/components/lazycolumn' },
-                    ]
-                },
-                {
                     text: '扩展组件',
                     collapsed: false,
                     items: [

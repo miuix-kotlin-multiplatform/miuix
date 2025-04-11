@@ -52,7 +52,11 @@ Miuix 提供了易于使用的越界回弹效果，让滚动体验更加流畅�
 
 ```kotlin
 LazyColumn(
-    modifier = Modifier.overScrollVertical()
+    modifier = Modifier
+        // 添加越界回弹效果
+        .overScrollVertical()
+        // 如需绑定 TopAppBar 滚动事件，则应在越界回弹效果之后添加
+        .nestedScroll(scrollBehavior.nestedScrollConnection)
 ) {
     // 列表内容
 }

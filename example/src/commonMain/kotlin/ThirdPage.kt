@@ -1,6 +1,7 @@
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -11,7 +12,6 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import misc.VersionInfo
 import top.yukonga.miuix.kmp.basic.Card
-import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.extra.SuperArrow
@@ -21,6 +21,7 @@ import top.yukonga.miuix.kmp.extra.SuperSwitch
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.getWindowSize
+import top.yukonga.miuix.kmp.utils.overScrollVertical
 
 @Composable
 fun ThirdPage(
@@ -41,8 +42,9 @@ fun ThirdPage(
     val showDialog = remember { mutableStateOf(false) }
     LazyColumn(
         modifier = Modifier
-            .height(getWindowSize().height.dp)
-            .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+            .overScrollVertical()
+            .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
+            .height(getWindowSize().height.dp),
         contentPadding = PaddingValues(top = padding.calculateTopPadding()),
     ) {
         item {

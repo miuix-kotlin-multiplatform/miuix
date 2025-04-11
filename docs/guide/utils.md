@@ -50,9 +50,15 @@ Miuix provides easy-to-use overscroll effects for smoother and more natural scro
 
 ### Vertical Overscroll
 
+### 垂直越界回弹
+
 ```kotlin
 LazyColumn(
-    modifier = Modifier.overScrollVertical()
+    modifier = Modifier
+        // Add overscroll effect
+        .overScrollVertical()
+        // If you want to bind the TopAppBar scroll behavior, please add it after the overscroll effect
+        .nestedScroll(scrollBehavior.nestedScrollConnection)
 ) {
     // List content
 }

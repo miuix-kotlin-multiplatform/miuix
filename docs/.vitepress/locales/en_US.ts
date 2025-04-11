@@ -91,13 +91,6 @@ export default defineConfig({
                     ]
                 },
                 {
-                    text: 'Special Components',
-                    collapsed: false,
-                    items: [
-                        { text: 'LazyColumn', link: '/components/lazycolumn' },
-                    ]
-                },
-                {
                     text: 'Extended Components',
                     collapsed: false,
                     items: [

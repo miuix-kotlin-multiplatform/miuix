@@ -38,12 +38,6 @@ The Scaffold component provides a suitable container for cross-platform popup wi
 | [ColorPicker](../components/colorpicker)                   | Color selection control                    | Theme settings, color selection       |
 | [ListPopup](../components/listpopup)                       | List popup window component                | Option selection, feature list        |
 
-## Special Components
-
-| Component                              | Description                          | Common Usage                    |
-| -------------------------------------- | ------------------------------------ | ------------------------------- |
-| [LazyColumn](../components/lazycolumn) | Lazy loading vertical list component | Long list display, data loading |
-
 ## Extended Components
 
 | Component                                    | Description                                | Common Usage                           |

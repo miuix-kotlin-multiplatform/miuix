@@ -63,7 +63,7 @@ Scaffold(
     topBar = {
         TopAppBar(
             title = "Title",
-            largeTitle = "Large Title",
+            largeTitle = "Large Title", // If not specified, title value will be used
             scrollBehavior = scrollBehavior
         )
     }
@@ -72,7 +72,9 @@ Scaffold(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            // Bind top bar scroll behavior
+            // If you want to add the overscroll effect, please add it before the scroll behavior
+            .overScrollVertical()
+            // Bind TopAppBar scroll behavior
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
         contentPadding = PaddingValues(top = paddingValues.calculateTopPadding())
     ) {

@@ -63,7 +63,7 @@ Scaffold(
     topBar = {
         TopAppBar(
             title = "标题",
-            largeTitle = "大标题",
+            largeTitle = "大标题", // 如果不指定，将使用 title 的值
             scrollBehavior = scrollBehavior
         )
     }
@@ -72,7 +72,9 @@ Scaffold(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            // 绑定顶部栏的滚动行为
+            // 如需添加越界回弹效果，则应在绑定滚动行为之前添加
+            .overScrollVertical()
+            // 绑定 TopAppBar 滚动事件
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
         contentPadding = PaddingValues(top = paddingValues.calculateTopPadding())
     ) {
