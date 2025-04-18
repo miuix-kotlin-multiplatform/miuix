@@ -22,7 +22,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import component.OtherComponent
 import component.TextComponent
 import top.yukonga.miuix.kmp.basic.BasicComponent
@@ -111,6 +114,7 @@ fun MainPage(
                                         miuixSearchValue = ""
                                     },
                                 text = "Cancel",
+                                style = TextStyle(fontSize = 17.sp, fontWeight = FontWeight.Bold),
                                 color = MiuixTheme.colorScheme.primary
                             )
                         },

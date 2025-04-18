@@ -32,14 +32,17 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import kotlinx.coroutines.delay
 import top.yukonga.miuix.kmp.icon.MiuixIcons
+import top.yukonga.miuix.kmp.icon.icons.basic.Search
 import top.yukonga.miuix.kmp.icon.icons.basic.SearchCleanup
-import top.yukonga.miuix.kmp.icon.icons.useful.Search
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
@@ -124,7 +127,7 @@ fun SearchBar(
 fun InputField(
     query: String,
     onQueryChange: (String) -> Unit,
-    label: String = "",
+    label: String = "Search",
     onSearch: (String) -> Unit,
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,
@@ -142,8 +145,8 @@ fun InputField(
     val leadingIcon = leadingIcon ?: {
         Icon(
             modifier = Modifier.padding(start = 16.dp, end = 8.dp),
-            imageVector = MiuixIcons.Useful.Search,
-            tint = MiuixTheme.colorScheme.onSurfaceContainer,
+            imageVector = MiuixIcons.Basic.Search,
+            tint = MiuixTheme.colorScheme.onSurfaceContainerHigh,
             contentDescription = "Search"
         )
     }
@@ -161,7 +164,7 @@ fun InputField(
                 Icon(
                     modifier = Modifier.clip(CircleShape).clickable { onQueryChange("") },
                     imageVector = MiuixIcons.Basic.SearchCleanup,
-                    tint = MiuixTheme.colorScheme.onSurfaceContainer,
+                    tint = MiuixTheme.colorScheme.onSurfaceContainerHighest,
                     contentDescription = "Search Cleanup"
                 )
             }
@@ -186,7 +189,7 @@ fun InputField(
             },
         enabled = enabled,
         singleLine = true,
-        textStyle = MiuixTheme.textStyles.main,
+        textStyle = MiuixTheme.textStyles.main.copy(fontWeight = FontWeight.Bold),
         cursorBrush = SolidColor(MiuixTheme.colorScheme.primary),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(onSearch = { onSearch(query) }),
@@ -214,6 +217,7 @@ fun InputField(
                         ) {
                             Text(
                                 text = if (!(query.isNotEmpty() || expanded)) label else "",
+                                style = TextStyle(fontSize = 17.sp, fontWeight = FontWeight.Bold),
                                 color = MiuixTheme.colorScheme.onSurfaceContainerHigh
                             )
                             innerTextField()
