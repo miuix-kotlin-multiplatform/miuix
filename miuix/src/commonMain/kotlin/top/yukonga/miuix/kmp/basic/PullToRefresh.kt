@@ -1,10 +1,9 @@
 package top.yukonga.miuix.kmp.basic
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -12,6 +11,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -178,21 +178,16 @@ fun RefreshHeader(
         }
     }
 
-    val textAlpha by derivedStateOf {
+    val textAlpha by derivedStateOf{
         when (pullToRefreshState.refreshState) {
-            RefreshState.Pulling -> {
-                if (pullProgress > 0.5f) (pullProgress - 0.5f) * 2f else 0f
-            }
-
-            RefreshState.RefreshComplete -> {
-                (1f - refreshCompleteAnimProgress * 1.2f).coerceAtLeast(0f)
-            }
-
+            RefreshState.Idle -> 0f
+            RefreshState.Pulling -> if (pullProgress > 0.6f) (pullProgress - 0.5f) * 2f else 0f
+            RefreshState.RefreshComplete -> (1f - refreshCompleteAnimProgress * 1.8f).coerceAtLeast(0f)
             else -> 1f
         }
     }
 
-    val headerHeight = with(density) {
+    val sHeight = with(density) {
         when (pullToRefreshState.refreshState) {
             RefreshState.Idle -> 0.dp
             RefreshState.Pulling -> circleSize * pullProgress
@@ -202,31 +197,47 @@ fun RefreshHeader(
         }.coerceAtMost(maxDrag.toDp())
     }
 
+
+    val headerHeight = with(density) {
+        when (pullToRefreshState.refreshState) {
+            RefreshState.Idle -> 0.dp
+            RefreshState.Pulling -> (circleSize+36.dp) * pullProgress
+            RefreshState.ThresholdReached -> (circleSize+36.dp) + (dragOffset - thresholdOffset).toDp()
+            RefreshState.Refreshing -> (circleSize+36.dp)
+            RefreshState.RefreshComplete -> (circleSize+36.dp).coerceIn(0.dp, (circleSize+36.dp) - (circleSize+36.dp) * refreshCompleteAnimProgress)
+        }.coerceAtMost(maxDrag.toDp()+36.dp)
+    }
+
+
+
+    // Header layout
     Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = modifier
+            .fillMaxWidth()
+            .height(headerHeight),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
     ) {
         RefreshContent(
-            modifier = Modifier.height(headerHeight),
+            modifier = Modifier.height(sHeight),
             circleSize = circleSize
         ) {
             val ringStrokeWidthPx = circleSize.toPx() / 11
-            val indicatorRadiusPx = size.minDimension / 2
-            val center = Offset(size.width / 2, size.height / 1.8f)
+            val indicatorRadiusPx = (size.minDimension / 2).coerceAtLeast(circleSize.toPx() / 3.5f)
+            val center = Offset(circleSize.toPx() / 2, circleSize.toPx() / 1.8f)
+            val alpha = (pullProgress-0.2f).coerceAtLeast(0f)
 
             when (pullToRefreshState.refreshState) {
                 RefreshState.Idle -> return@RefreshContent
                 RefreshState.Pulling -> {
-                    if (pullProgress > 0.3f) {
-                        drawInitialState(
-                            center = center,
-                            radius = indicatorRadiusPx,
-                            strokeWidth = ringStrokeWidthPx,
-                            color = color,
-                            alpha = pullProgress,
-                            refreshProgress = pullProgress
-                        )
-                    }
+                    drawInitialState(
+                        center = center,
+                        radius = indicatorRadiusPx,
+                        strokeWidth = ringStrokeWidthPx,
+                        color = color,
+                        alpha = alpha
+                    )
+
                 }
 
                 RefreshState.ThresholdReached -> drawThresholdExceededState(
@@ -257,20 +268,15 @@ fun RefreshHeader(
             }
         }
 
-        AnimatedVisibility(
-            visible = pullProgress >= 0.5f
-                    && pullToRefreshState.refreshState != RefreshState.Idle
-                    && pullToRefreshState.refreshState != RefreshState.RefreshComplete
-        ) {
-            Text(
-                text = refreshText,
-                style = refreshTextStyle,
-                color = color,
-                modifier = Modifier
-                    .alpha(textAlpha)
-                    .padding(top = 6.dp)
-            )
-        }
+        // Animated text with height and alpha
+        Text(
+            text = refreshText,
+            style = refreshTextStyle,
+            color = color,
+            modifier = Modifier
+                .padding(top = 6.dp)
+                .alpha(textAlpha)
+        )
     }
 }
 
@@ -323,13 +329,13 @@ private fun DrawScope.drawInitialState(
     radius: Float,
     strokeWidth: Float,
     color: Color,
-    alpha: Float,
-    refreshProgress: Float
+    alpha: Float
 ) {
+
     val alphaColor = color.copy(alpha = alpha)
     drawCircle(
         color = alphaColor,
-        radius = radius * refreshProgress,
+        radius = radius,
         center = center,
         style = Stroke(strokeWidth, cap = StrokeCap.Round)
     )
@@ -431,17 +437,16 @@ private fun DrawScope.drawRefreshCompleteState(
     color: Color,
     refreshCompleteProgress: Float
 ) {
-    val animatedRadius = radius * (1f - refreshCompleteProgress)
-    val alphaColor = color.copy(alpha = 1f - refreshCompleteProgress)
+    val animatedRadius = radius * ((1f - refreshCompleteProgress).coerceAtLeast(0.9f))
+    val alphaColor = color.copy(alpha = (1f - refreshCompleteProgress-0.2f).coerceAtLeast(0f))
 
-    if (animatedRadius > 0) {
-        drawCircle(
-            color = alphaColor,
-            radius = animatedRadius,
-            center = center,
-            style = Stroke(strokeWidth, cap = StrokeCap.Round)
-        )
-    }
+    drawCircle(
+        color = alphaColor,
+        radius = animatedRadius,
+        center = center,
+        style = Stroke(strokeWidth, cap = StrokeCap.Round)
+    )
+
 }
 
 /**
@@ -592,7 +597,7 @@ class PullToRefreshState(
             targetValue = 1f,
             animationSpec = tween(
                 durationMillis = 200,
-                easing = LinearOutSlowInEasing
+                easing = CubicBezierEasing(0f, 0f, 0f, 0.37f)
             )
         ) {
             _refreshCompleteAnimProgress.floatValue = this.value
@@ -676,7 +681,7 @@ class PullToRefreshState(
                             targetValue = refreshThresholdOffset,
                             animationSpec = tween(
                                 durationMillis = 200,
-                                easing = LinearOutSlowInEasing
+                                easing = CubicBezierEasing(0f, 0f, 0f, 0.37f)
                             )
                         )
                         rawDragOffset = refreshThresholdOffset
