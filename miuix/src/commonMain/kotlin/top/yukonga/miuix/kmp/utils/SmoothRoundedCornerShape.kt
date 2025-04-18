@@ -8,7 +8,6 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.graphics.shapes.CornerRounding
-import androidx.graphics.shapes.Cubic
 import androidx.graphics.shapes.RoundedPolygon
 
 fun Path.Companion.smoothRoundedRectangle(
@@ -20,6 +19,7 @@ fun Path.Companion.smoothRoundedRectangle(
     bottomRight: Float
 ): Path {
     if (size.width <= 0f || size.height <= 0f) return Path()
+    val clampedSmoothing = smoothing.coerceIn(0f, 1f)
 
     return RoundedPolygon(
         vertices = floatArrayOf(
@@ -29,10 +29,10 @@ fun Path.Companion.smoothRoundedRectangle(
             0f, size.height
         ),
         perVertexRounding = listOf(
-            CornerRounding(radius = topLeft, smoothing = smoothing),
-            CornerRounding(radius = topRight, smoothing = smoothing),
-            CornerRounding(radius = bottomRight, smoothing = smoothing),
-            CornerRounding(radius = bottomLeft, smoothing = smoothing),
+            CornerRounding(radius = topLeft, smoothing = clampedSmoothing),
+            CornerRounding(radius = topRight, smoothing = clampedSmoothing),
+            CornerRounding(radius = bottomRight, smoothing = clampedSmoothing),
+            CornerRounding(radius = bottomLeft, smoothing = clampedSmoothing),
         )
     ).toComposePath()
 }
@@ -105,36 +105,32 @@ class SmoothRoundedCornerShape(
             size = size,
             topLeft = topLeft,
             topRight = topRight,
-            bottomRight = bottomRight,
             bottomLeft = bottomLeft,
+            bottomRight = bottomRight
         )
         return Outline.Generic(path)
     }
 }
 
 fun RoundedPolygon.toComposePath(path: Path = Path()): Path {
-    pathFromCubicList(path, cubics)
+    path.rewind()
+
+    if (cubics.isEmpty()) return path
+    path.moveTo(cubics[0].anchor0X, cubics[0].anchor0Y)
+    for (cubic in cubics) {
+        path.cubicTo(
+            cubic.control0X, cubic.control0Y,
+            cubic.control1X, cubic.control1Y,
+            cubic.anchor1X, cubic.anchor1Y
+        )
+    }
+
+    path.close()
     return path
 }
 
-private fun pathFromCubicList(
-    path: Path,
-    cubicList: List<Cubic>
-) {
-    var first = true
-    path.rewind()
-    for (element in cubicList) {
-        if (first) {
-            path.moveTo(element.anchor0X, element.anchor0Y)
-            first = false
-        }
-        path.cubicTo(
-            element.control0X, element.control0Y, element.control1X, element.control1Y,
-            element.anchor1X, element.anchor1Y
-        )
-    }
-    path.close()
-}
-
+/**
+ * Default smoothing value for [SmoothRoundedCornerShape].
+ */
 const val DefaultSmoothing = 0.6f
 
