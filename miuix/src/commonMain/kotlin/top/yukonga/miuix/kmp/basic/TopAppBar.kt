@@ -324,13 +324,13 @@ class TopAppBarState(
      * A `0.0` indicates that the app bar does not overlap any content, while `1.0` indicates that
      * the entire visible app bar area overlaps the scrolled content.
      */
-    private val overlappedFraction: Float
+    val overlappedFraction: Float
         get() =
             if (heightOffsetLimit != 0f) {
                 1 -
                         ((heightOffsetLimit - contentOffset).coerceIn(
                             minimumValue = heightOffsetLimit,
-                            maximumValue = 0f
+                            maximumValue = 0f,
                         ) / heightOffsetLimit)
             } else {
                 0f
@@ -345,9 +345,9 @@ class TopAppBarState(
                     TopAppBarState(
                         initialHeightOffsetLimit = it[0],
                         initialHeightOffset = it[1],
-                        initialContentOffset = it[2]
+                        initialContentOffset = it[2],
                     )
-                }
+                },
             )
     }
 
@@ -411,7 +411,7 @@ private class ExitUntilCollapsedScrollBehavior(
     override val state: TopAppBarState,
     override val snapAnimationSpec: AnimationSpec<Float>?,
     override val flingAnimationSpec: DecayAnimationSpec<Float>?,
-    val canScroll: () -> Boolean = { true }
+    val canScroll: () -> Boolean = { true },
 ) : ScrollBehavior {
     override val isPinned: Boolean = false
     override var nestedScrollConnection =
@@ -421,7 +421,7 @@ private class ExitUntilCollapsedScrollBehavior(
                 if (!canScroll() || available.y > 0f) return Offset.Zero
 
                 val prevHeightOffset = state.heightOffset
-                state.heightOffset += available.y
+                state.heightOffset = state.heightOffset + available.y
                 return if (prevHeightOffset != state.heightOffset) {
                     // We're in the middle of top app bar collapse or expand.
                     // Consume only the scroll on the Y axis.
@@ -434,7 +434,7 @@ private class ExitUntilCollapsedScrollBehavior(
             override fun onPostScroll(
                 consumed: Offset,
                 available: Offset,
-                source: NestedScrollSource
+                source: NestedScrollSource,
             ): Offset {
                 if (!canScroll()) return Offset.Zero
                 state.contentOffset += consumed.y
@@ -442,27 +442,26 @@ private class ExitUntilCollapsedScrollBehavior(
                 if (available.y < 0f || consumed.y < 0f) {
                     // When scrolling up, just update the state's height offset.
                     val oldHeightOffset = state.heightOffset
-                    state.heightOffset += consumed.y
+                    state.heightOffset = state.heightOffset + consumed.y
                     return Offset(0f, state.heightOffset - oldHeightOffset)
-                }
-
-                if (consumed.y == 0f && available.y > 0) {
-                    // Reset the total content offset to zero when scrolling all the way down. This
-                    // will eliminate some float precision inaccuracies.
-                    state.contentOffset = 0f
                 }
 
                 if (available.y > 0f) {
                     // Adjust the height offset in case the consumed delta Y is less than what was
                     // recorded as available delta Y in the pre-scroll.
                     val oldHeightOffset = state.heightOffset
-                    state.heightOffset += available.y
+                    state.heightOffset = state.heightOffset + available.y
                     return Offset(0f, state.heightOffset - oldHeightOffset)
                 }
                 return Offset.Zero
             }
 
             override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
+                if (available.y > 0) {
+                    // Reset the total content offset to zero when scrolling all the way down. This
+                    // will eliminate some float precision inaccuracies.
+                    state.contentOffset = 0f
+                }
                 val superConsumed = super.onPostFling(consumed, available)
                 return superConsumed +
                         settleAppBar(state, available.y, flingAnimationSpec, snapAnimationSpec)
