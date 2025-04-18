@@ -1,7 +1,10 @@
 package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -11,6 +14,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,6 +24,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -32,6 +37,9 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import kotlinx.coroutines.delay
+import top.yukonga.miuix.kmp.icon.MiuixIcons
+import top.yukonga.miuix.kmp.icon.icons.basic.SearchCleanup
+import top.yukonga.miuix.kmp.icon.icons.useful.Search
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
@@ -130,11 +138,34 @@ fun InputField(
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
 
-    val paddingModifier = remember(insideMargin, leadingIcon, trailingIcon) {
-        if (leadingIcon == null && trailingIcon == null) Modifier.padding(horizontal = insideMargin.width, vertical = insideMargin.height)
-        else if (leadingIcon == null) Modifier.padding(start = insideMargin.width).padding(vertical = insideMargin.height)
-        else if (trailingIcon == null) Modifier.padding(end = insideMargin.width).padding(vertical = insideMargin.height)
-        else Modifier.padding(vertical = insideMargin.height)
+    @Suppress("NAME_SHADOWING")
+    val leadingIcon = leadingIcon ?: {
+        Icon(
+            modifier = Modifier.padding(start = 16.dp, end = 8.dp),
+            imageVector = MiuixIcons.Useful.Search,
+            tint = MiuixTheme.colorScheme.onSurfaceContainer,
+            contentDescription = "Search"
+        )
+    }
+
+    @Suppress("NAME_SHADOWING")
+    val trailingIcon = trailingIcon ?: {
+        AnimatedVisibility(
+            visible = query.isNotEmpty(),
+            enter = fadeIn(),
+            exit = fadeOut(),
+        ) {
+            Box(
+                modifier = Modifier.padding(start = 8.dp, end = 16.dp),
+            ) {
+                Icon(
+                    modifier = Modifier.clip(CircleShape).clickable { onQueryChange("") },
+                    imageVector = MiuixIcons.Basic.SearchCleanup,
+                    tint = MiuixTheme.colorScheme.onSurfaceContainer,
+                    contentDescription = "Search Cleanup"
+                )
+            }
+        }
     }
 
     val focused = interactionSource.collectIsFocusedAsState().value
@@ -174,25 +205,20 @@ fun InputField(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        if (leadingIcon != null) {
-                            leadingIcon()
-                        }
+                        leadingIcon()
                         Box(
                             modifier = Modifier
                                 .weight(1f)
-                                .then(paddingModifier),
+                                .padding(vertical = insideMargin.height),
                             contentAlignment = Alignment.CenterStart
                         ) {
                             Text(
                                 text = if (!(query.isNotEmpty() || expanded)) label else "",
                                 color = MiuixTheme.colorScheme.onSurfaceContainerHigh
                             )
-
                             innerTextField()
                         }
-                        if (trailingIcon != null) {
-                            trailingIcon()
-                        }
+                        trailingIcon()
                     }
                 }
             }

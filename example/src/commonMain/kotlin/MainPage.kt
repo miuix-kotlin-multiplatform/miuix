@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
@@ -22,20 +21,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import component.OtherComponent
 import component.TextComponent
 import top.yukonga.miuix.kmp.basic.BasicComponent
-import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.InputField
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.SearchBar
 import top.yukonga.miuix.kmp.basic.SmallTitle
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.useful.Search
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.overScrollVertical
 
@@ -101,18 +96,7 @@ fun MainPage(
                                 onSearch = { expanded = false },
                                 expanded = expanded,
                                 onExpandedChange = { expanded = it },
-                                label = "Search",
-                                leadingIcon = {
-                                    Icon(
-                                        modifier = Modifier
-                                            .padding(start = 12.dp, end = 8.dp)
-                                            .size(20.dp)
-                                            .alpha(0.4f),
-                                        imageVector = MiuixIcons.Useful.Search,
-                                        tint = MiuixTheme.colorScheme.onSurfaceContainer,
-                                        contentDescription = "Search"
-                                    )
-                                },
+                                label = "Search"
                             )
                         },
                         outsideRightAction = {
@@ -189,15 +173,7 @@ fun MainPage(
                                     onSearch = { expanded = false },
                                     expanded = expanded,
                                     onExpandedChange = { expanded = it },
-                                    label = "Search",
-                                    leadingIcon = {
-                                        Icon(
-                                            modifier = Modifier.padding(horizontal = 16.dp),
-                                            imageVector = MiuixIcons.Useful.Search,
-                                            tint = MiuixTheme.colorScheme.onSurfaceContainer,
-                                            contentDescription = "Search"
-                                        )
-                                    },
+                                    label = "Search"
                                 )
                             },
                             outsideRightAction = {
