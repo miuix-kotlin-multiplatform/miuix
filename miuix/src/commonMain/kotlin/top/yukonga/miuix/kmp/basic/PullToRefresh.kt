@@ -8,7 +8,6 @@ import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
@@ -157,8 +156,6 @@ fun RefreshHeader(
 
     val dragOffset = pullToRefreshState.dragOffsetAnimatable.value
     val thresholdOffset = pullToRefreshState.refreshThresholdOffset
-    val maxDrag = pullToRefreshState.maxDragDistancePx
-    val pullProgress = pullToRefreshState.pullProgress
     val rotation by animateRotation()
     val refreshCompleteAnimProgress = pullToRefreshState.refreshCompleteAnimProgress
 
@@ -171,17 +168,17 @@ fun RefreshHeader(
     val refreshText by derivedStateOf {
         when (pullToRefreshState.refreshState) {
             RefreshState.Idle -> ""
-            RefreshState.Pulling -> if (pullProgress > 0.5) refreshTexts[0] else ""
+            RefreshState.Pulling -> if (pullToRefreshState.pullProgress > 0.5) refreshTexts[0] else ""
             RefreshState.ThresholdReached -> refreshTexts[1]
             RefreshState.Refreshing -> refreshTexts[2]
             RefreshState.RefreshComplete -> refreshTexts[3]
         }
     }
 
-    val textAlpha by derivedStateOf{
+    val textAlpha by derivedStateOf {
         when (pullToRefreshState.refreshState) {
             RefreshState.Idle -> 0f
-            RefreshState.Pulling -> if (pullProgress > 0.6f) (pullProgress - 0.5f) * 2f else 0f
+            RefreshState.Pulling -> if (pullToRefreshState.pullProgress > 0.6f) (pullToRefreshState.pullProgress - 0.5f) * 2f else 0f
             RefreshState.RefreshComplete -> (1f - refreshCompleteAnimProgress * 1.8f).coerceAtLeast(0f)
             else -> 1f
         }
@@ -190,25 +187,22 @@ fun RefreshHeader(
     val sHeight = with(density) {
         when (pullToRefreshState.refreshState) {
             RefreshState.Idle -> 0.dp
-            RefreshState.Pulling -> circleSize * pullProgress
+            RefreshState.Pulling -> circleSize * pullToRefreshState.pullProgress
             RefreshState.ThresholdReached -> circleSize + (dragOffset - thresholdOffset).toDp()
             RefreshState.Refreshing -> circleSize
             RefreshState.RefreshComplete -> circleSize.coerceIn(0.dp, circleSize - circleSize * refreshCompleteAnimProgress)
-        }.coerceAtMost(maxDrag.toDp())
+        }
     }
-
 
     val headerHeight = with(density) {
         when (pullToRefreshState.refreshState) {
             RefreshState.Idle -> 0.dp
-            RefreshState.Pulling -> (circleSize+36.dp) * pullProgress
-            RefreshState.ThresholdReached -> (circleSize+36.dp) + (dragOffset - thresholdOffset).toDp()
-            RefreshState.Refreshing -> (circleSize+36.dp)
-            RefreshState.RefreshComplete -> (circleSize+36.dp).coerceIn(0.dp, (circleSize+36.dp) - (circleSize+36.dp) * refreshCompleteAnimProgress)
-        }.coerceAtMost(maxDrag.toDp()+36.dp)
+            RefreshState.Pulling -> (circleSize + 36.dp) * pullToRefreshState.pullProgress
+            RefreshState.ThresholdReached -> (circleSize + 36.dp) + (dragOffset - thresholdOffset).toDp()
+            RefreshState.Refreshing -> (circleSize + 36.dp)
+            RefreshState.RefreshComplete -> (circleSize + 36.dp).coerceIn(0.dp, (circleSize + 36.dp) - (circleSize + 36.dp) * refreshCompleteAnimProgress)
+        }
     }
-
-
 
     // Header layout
     Column(
@@ -225,7 +219,7 @@ fun RefreshHeader(
             val ringStrokeWidthPx = circleSize.toPx() / 11
             val indicatorRadiusPx = (size.minDimension / 2).coerceAtLeast(circleSize.toPx() / 3.5f)
             val center = Offset(circleSize.toPx() / 2, circleSize.toPx() / 1.8f)
-            val alpha = (pullProgress-0.2f).coerceAtLeast(0f)
+            val alpha = (pullToRefreshState.pullProgress - 0.2f).coerceAtLeast(0f)
 
             when (pullToRefreshState.refreshState) {
                 RefreshState.Idle -> return@RefreshContent
@@ -247,7 +241,7 @@ fun RefreshHeader(
                     color = color,
                     dragOffset = dragOffset,
                     thresholdOffset = thresholdOffset,
-                    maxDrag = maxDrag
+                    maxDrag = pullToRefreshState.maxDragDistancePx
                 )
 
                 RefreshState.Refreshing -> drawRefreshingState(
@@ -438,7 +432,7 @@ private fun DrawScope.drawRefreshCompleteState(
     refreshCompleteProgress: Float
 ) {
     val animatedRadius = radius * ((1f - refreshCompleteProgress).coerceAtLeast(0.9f))
-    val alphaColor = color.copy(alpha = (1f - refreshCompleteProgress-0.2f).coerceAtLeast(0f))
+    val alphaColor = color.copy(alpha = (1f - refreshCompleteProgress - 0.2f).coerceAtLeast(0f))
 
     drawCircle(
         color = alphaColor,
@@ -477,14 +471,14 @@ sealed class RefreshState {
 @Composable
 fun rememberPullToRefreshState(): PullToRefreshState {
     val coroutineScope = rememberCoroutineScope()
-    val screenHeight = getWindowSize().height
+    val screenHeight = getWindowSize().height.toFloat()
     val maxDragDistancePx = screenHeight * maxDragRatio
     val refreshThresholdOffset = maxDragDistancePx * thresholdRatio
 
     return remember {
         PullToRefreshState(
             coroutineScope,
-            maxDragDistancePx,
+            screenHeight,
             refreshThresholdOffset
         )
     }
@@ -516,9 +510,16 @@ class PullToRefreshState(
     val isRefreshing: Boolean by derivedStateOf { refreshState is RefreshState.Refreshing }
     private var pointerReleased by mutableStateOf(false)
 
+    /** 是否正在回弹过渡中 */
+    private var isRebounding by mutableStateOf(false)
+
     /** Pull progress */
     val pullProgress: Float by derivedStateOf {
-        (dragOffsetAnimatable.value / refreshThresholdOffset).coerceIn(0f, 1f)
+        if (refreshThresholdOffset > 0f) {
+            (dragOffsetAnimatable.value / refreshThresholdOffset).coerceIn(0f, 1f)
+        } else {
+            0f
+        }
     }
     private val _refreshCompleteAnimProgress = mutableFloatStateOf(1f)
 
@@ -560,6 +561,10 @@ class PullToRefreshState(
 
     internal fun resetPointerReleased() {
         pointerReleased = false
+    }
+
+    internal fun onPointerRelease() {
+        pointerReleased = true
     }
 
     val pointerReleasedValue: Boolean get() = pointerReleased
@@ -627,6 +632,13 @@ class PullToRefreshState(
                 }
 
                 return if (source == NestedScrollSource.UserInput && available.y < 0 && rawDragOffset > 0f) {
+                    if (isRebounding && dragOffsetAnimatable.isRunning) {
+                        coroutineScope.launch {
+                            dragOffsetAnimatable.stop()
+                        }
+                        isRebounding = false
+                    }
+
                     val delta = available.y.coerceAtLeast(-rawDragOffset)
                     rawDragOffset += delta
                     coroutineScope.launch {
@@ -644,8 +656,17 @@ class PullToRefreshState(
                 overScrollState.isOverScrollActive || isRefreshingInProgress || refreshState == RefreshState.Refreshing || refreshState == RefreshState.RefreshComplete -> Offset.Zero
                 source == NestedScrollSource.UserInput -> {
                     if (available.y > 0f && consumed.y == 0f) {
-                        val newOffset = (rawDragOffset + available.y).coerceAtMost(maxDragDistancePx)
-                        val consumedY = newOffset - rawDragOffset
+                        if (isRebounding && dragOffsetAnimatable.isRunning) {
+                            coroutineScope.launch {
+                                dragOffsetAnimatable.stop()
+                            }
+                            isRebounding = false
+                        }
+
+                        val resistanceFactor = calculateResistanceFactor(rawDragOffset)
+                        val effectiveY = available.y * resistanceFactor
+                        val newOffset = rawDragOffset + effectiveY
+                        val consumedY = effectiveY
                         rawDragOffset = newOffset
                         coroutineScope.launch {
                             dragOffsetAnimatable.snapTo(newOffset)
@@ -665,7 +686,7 @@ class PullToRefreshState(
             }
         }
 
-    suspend fun handlePointerReleased(
+    fun handlePointerReleased(
         onRefresh: () -> Unit
     ) {
         if (isRefreshingInProgress) {
@@ -692,23 +713,35 @@ class PullToRefreshState(
                     }
                 }
             } else {
-                animateDragOffset(
-                    targetValue = 0f,
-                    animationSpec = snap()
-                )
-                rawDragOffset = 0f
+                isRebounding = true
+                coroutineScope.launch {
+                    try {
+                        animateDragOffset(
+                            targetValue = 0f,
+                            animationSpec = tween(
+                                durationMillis = 250,
+                                easing = CubicBezierEasing(0.33f, 0f, 0.67f, 1f)
+                            )
+                        )
+                        rawDragOffset = 0f
+                    } finally {
+                        isRebounding = false
+                    }
+                }
             }
             resetPointerReleased()
         }
     }
 
-    fun onPointerRelease() {
-        pointerReleased = true
+    private fun calculateResistanceFactor(offset: Float): Float {
+        if (offset < refreshThresholdOffset) return 1.0f
+        val overThreshold = offset - refreshThresholdOffset
+        return 1.0f / (1.0f + overThreshold / refreshThresholdOffset * 0.8f)
     }
 }
 
 /** Maximum drag ratio */
-internal const val maxDragRatio = 1 / 5f
+internal const val maxDragRatio = 1 / 6f
 
 /** Threshold ratio */
 internal const val thresholdRatio = 1 / 4f
@@ -745,5 +778,5 @@ object PullToRefreshDefaults {
         fontWeight = FontWeight.Bold,
         color = color
     )
-
 }
+
