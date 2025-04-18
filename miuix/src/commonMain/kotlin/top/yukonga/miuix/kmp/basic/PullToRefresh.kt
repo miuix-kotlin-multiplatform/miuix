@@ -1,17 +1,16 @@
 package top.yukonga.miuix.kmp.basic
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -61,6 +60,8 @@ import top.yukonga.miuix.kmp.utils.OverScrollState
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import kotlin.math.PI
 import kotlin.math.cos
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.sin
 
 /**
@@ -88,13 +89,12 @@ fun PullToRefresh(
     content: @Composable () -> Unit
 ) {
     LaunchedEffect(pullToRefreshState.rawDragOffset) {
-        pullToRefreshState.updateDragOffsetAnimatable()
+        pullToRefreshState.syncDragOffsetWithRawOffset()
     }
     val overScrollState = LocalOverScrollState.current
     val nestedScrollConnection = remember(pullToRefreshState) {
         pullToRefreshState.createNestedScrollConnection(overScrollState)
     }
-
     val pointerModifier = Modifier.pointerInput(Unit) {
         awaitPointerEventScope {
             while (true) {
@@ -108,11 +108,9 @@ fun PullToRefresh(
             }
         }
     }
-
     LaunchedEffect(pullToRefreshState.pointerReleasedValue, pullToRefreshState.isRefreshing) {
         pullToRefreshState.handlePointerReleased(onRefresh)
     }
-
     CompositionLocalProvider(LocalPullToRefreshState provides pullToRefreshState) {
         Box(
             modifier = modifier
@@ -154,11 +152,8 @@ fun RefreshHeader(
 ) {
     val hapticFeedback = LocalHapticFeedback.current
     val density = LocalDensity.current
-
     val dragOffset = pullToRefreshState.dragOffsetAnimatable.value
     val thresholdOffset = pullToRefreshState.refreshThresholdOffset
-    val maxDrag = pullToRefreshState.maxDragDistancePx
-    val pullProgress = pullToRefreshState.pullProgress
     val rotation by animateRotation()
     val refreshCompleteAnimProgress = pullToRefreshState.refreshCompleteAnimProgress
 
@@ -168,109 +163,106 @@ fun RefreshHeader(
         }
     }
 
-    val refreshText by derivedStateOf {
-        when (pullToRefreshState.refreshState) {
-            RefreshState.Idle -> ""
-            RefreshState.Pulling -> if (pullProgress > 0.5) refreshTexts[0] else ""
-            RefreshState.ThresholdReached -> refreshTexts[1]
-            RefreshState.Refreshing -> refreshTexts[2]
-            RefreshState.RefreshComplete -> refreshTexts[3]
+    val refreshText by remember(pullToRefreshState.refreshState, pullToRefreshState.pullProgress) {
+        derivedStateOf {
+            when (pullToRefreshState.refreshState) {
+                RefreshState.Idle -> ""
+                RefreshState.Pulling -> if (pullToRefreshState.pullProgress > 0.5) refreshTexts[0] else ""
+                RefreshState.ThresholdReached -> refreshTexts[1]
+                RefreshState.Refreshing -> refreshTexts[2]
+                RefreshState.RefreshComplete -> refreshTexts[3]
+            }
         }
     }
-
-    val textAlpha by derivedStateOf {
-        when (pullToRefreshState.refreshState) {
-            RefreshState.Pulling -> {
-                if (pullProgress > 0.5f) (pullProgress - 0.5f) * 2f else 0f
+    val textAlpha by remember(pullToRefreshState.refreshState, pullToRefreshState.pullProgress, refreshCompleteAnimProgress) {
+        derivedStateOf {
+            when (pullToRefreshState.refreshState) {
+                RefreshState.Idle -> 0f
+                RefreshState.Pulling -> if (pullToRefreshState.pullProgress > 0.6f) (pullToRefreshState.pullProgress - 0.5f) * 2f else 0f
+                RefreshState.RefreshComplete -> (1f - refreshCompleteAnimProgress * 1.8f).coerceAtLeast(0f)
+                else -> 1f
             }
-
-            RefreshState.RefreshComplete -> {
-                (1f - refreshCompleteAnimProgress * 1.2f).coerceAtLeast(0f)
-            }
-
-            else -> 1f
         }
     }
-
-    val headerHeight = with(density) {
+    val sHeight = with(density) {
         when (pullToRefreshState.refreshState) {
             RefreshState.Idle -> 0.dp
-            RefreshState.Pulling -> circleSize * pullProgress
+            RefreshState.Pulling -> circleSize * pullToRefreshState.pullProgress
             RefreshState.ThresholdReached -> circleSize + (dragOffset - thresholdOffset).toDp()
             RefreshState.Refreshing -> circleSize
             RefreshState.RefreshComplete -> circleSize.coerceIn(0.dp, circleSize - circleSize * refreshCompleteAnimProgress)
-        }.coerceAtMost(maxDrag.toDp())
+        }
     }
-
+    val headerHeight = with(density) {
+        when (pullToRefreshState.refreshState) {
+            RefreshState.Idle -> 0.dp
+            RefreshState.Pulling -> (circleSize + 36.dp) * pullToRefreshState.pullProgress
+            RefreshState.ThresholdReached -> (circleSize + 36.dp) + (dragOffset - thresholdOffset).toDp()
+            RefreshState.Refreshing -> (circleSize + 36.dp)
+            RefreshState.RefreshComplete -> (circleSize + 36.dp).coerceIn(0.dp, (circleSize + 36.dp) - (circleSize + 36.dp) * refreshCompleteAnimProgress)
+        }
+    }
     Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = modifier
+            .fillMaxWidth()
+            .height(headerHeight),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
     ) {
         RefreshContent(
-            modifier = Modifier.height(headerHeight),
+            modifier = Modifier.height(sHeight),
             circleSize = circleSize
         ) {
             val ringStrokeWidthPx = circleSize.toPx() / 11
-            val indicatorRadiusPx = size.minDimension / 2
-            val center = Offset(size.width / 2, size.height / 1.8f)
-
+            val indicatorRadiusPx = max(size.minDimension / 2, circleSize.toPx() / 3.5f)
+            val center = Offset(circleSize.toPx() / 2, circleSize.toPx() / 1.8f)
+            val alpha = (pullToRefreshState.pullProgress - 0.2f).coerceAtLeast(0f)
             when (pullToRefreshState.refreshState) {
                 RefreshState.Idle -> return@RefreshContent
-                RefreshState.Pulling -> {
-                    if (pullProgress > 0.3f) {
-                        drawInitialState(
-                            center = center,
-                            radius = indicatorRadiusPx,
-                            strokeWidth = ringStrokeWidthPx,
-                            color = color,
-                            alpha = pullProgress,
-                            refreshProgress = pullProgress
-                        )
-                    }
-                }
+
+                RefreshState.Pulling -> drawInitialState(
+                    center,
+                    indicatorRadiusPx,
+                    ringStrokeWidthPx,
+                    color,
+                    alpha
+                )
 
                 RefreshState.ThresholdReached -> drawThresholdExceededState(
-                    center = center,
-                    radius = indicatorRadiusPx,
-                    strokeWidth = ringStrokeWidthPx,
-                    color = color,
-                    dragOffset = dragOffset,
-                    thresholdOffset = thresholdOffset,
-                    maxDrag = maxDrag
+                    center,
+                    indicatorRadiusPx,
+                    ringStrokeWidthPx,
+                    color,
+                    dragOffset,
+                    thresholdOffset,
+                    pullToRefreshState.maxDragDistancePx
                 )
 
                 RefreshState.Refreshing -> drawRefreshingState(
-                    center = center,
-                    radius = indicatorRadiusPx,
-                    strokeWidth = ringStrokeWidthPx,
-                    color = color,
-                    rotation = rotation
+                    center,
+                    indicatorRadiusPx,
+                    ringStrokeWidthPx,
+                    color,
+                    rotation
                 )
 
                 RefreshState.RefreshComplete -> drawRefreshCompleteState(
-                    center = center,
-                    radius = indicatorRadiusPx,
-                    strokeWidth = ringStrokeWidthPx,
-                    color = color,
-                    refreshCompleteProgress = refreshCompleteAnimProgress
+                    center,
+                    indicatorRadiusPx,
+                    ringStrokeWidthPx,
+                    color,
+                    refreshCompleteAnimProgress
                 )
             }
         }
-
-        AnimatedVisibility(
-            visible = pullProgress >= 0.5f
-                    && pullToRefreshState.refreshState != RefreshState.Idle
-                    && pullToRefreshState.refreshState != RefreshState.RefreshComplete
-        ) {
-            Text(
-                text = refreshText,
-                style = refreshTextStyle,
-                color = color,
-                modifier = Modifier
-                    .alpha(textAlpha)
-                    .padding(top = 6.dp)
-            )
-        }
+        Text(
+            text = refreshText,
+            style = refreshTextStyle,
+            color = color,
+            modifier = Modifier
+                .padding(top = 6.dp)
+                .alpha(textAlpha)
+        )
     }
 }
 
@@ -323,13 +315,11 @@ private fun DrawScope.drawInitialState(
     radius: Float,
     strokeWidth: Float,
     color: Color,
-    alpha: Float,
-    refreshProgress: Float
+    alpha: Float
 ) {
-    val alphaColor = color.copy(alpha = alpha)
     drawCircle(
-        color = alphaColor,
-        radius = radius * refreshProgress,
+        color = color.copy(alpha = alpha),
+        radius = radius,
         center = center,
         style = Stroke(strokeWidth, cap = StrokeCap.Round)
     )
@@ -347,17 +337,11 @@ private fun DrawScope.drawThresholdExceededState(
     thresholdOffset: Float,
     maxDrag: Float
 ) {
-    val lineLength =
-        if (dragOffset > thresholdOffset) {
-            (dragOffset - thresholdOffset)
-                .coerceAtMost(maxDrag - thresholdOffset)
-                .coerceAtLeast(0f)
-        } else {
-            0f
-        }
+    val lineLength = if (dragOffset > thresholdOffset) {
+        min(max(dragOffset - thresholdOffset, 0f), maxDrag - thresholdOffset)
+    } else 0f
     val topY = center.y
     val bottomY = center.y + lineLength
-
     drawArc(
         color = color,
         startAngle = 180f,
@@ -431,17 +415,14 @@ private fun DrawScope.drawRefreshCompleteState(
     color: Color,
     refreshCompleteProgress: Float
 ) {
-    val animatedRadius = radius * (1f - refreshCompleteProgress)
-    val alphaColor = color.copy(alpha = 1f - refreshCompleteProgress)
-
-    if (animatedRadius > 0) {
-        drawCircle(
-            color = alphaColor,
-            radius = animatedRadius,
-            center = center,
-            style = Stroke(strokeWidth, cap = StrokeCap.Round)
-        )
-    }
+    val animatedRadius = radius * ((1f - refreshCompleteProgress).coerceAtLeast(0.9f))
+    val alphaColor = color.copy(alpha = (1f - refreshCompleteProgress - 0.2f).coerceAtLeast(0f))
+    drawCircle(
+        color = alphaColor,
+        radius = animatedRadius,
+        center = center,
+        style = Stroke(strokeWidth, cap = StrokeCap.Round)
+    )
 }
 
 /**
@@ -472,14 +453,13 @@ sealed class RefreshState {
 @Composable
 fun rememberPullToRefreshState(): PullToRefreshState {
     val coroutineScope = rememberCoroutineScope()
-    val screenHeight = getWindowSize().height
+    val screenHeight = getWindowSize().height.toFloat()
     val maxDragDistancePx = screenHeight * maxDragRatio
     val refreshThresholdOffset = maxDragDistancePx * thresholdRatio
-
     return remember {
         PullToRefreshState(
             coroutineScope,
-            maxDragDistancePx,
+            screenHeight,
             refreshThresholdOffset
         )
     }
@@ -511,9 +491,14 @@ class PullToRefreshState(
     val isRefreshing: Boolean by derivedStateOf { refreshState is RefreshState.Refreshing }
     private var pointerReleased by mutableStateOf(false)
 
+    /**  Whether it is rebounding */
+    private var isRebounding by mutableStateOf(false)
+
     /** Pull progress */
     val pullProgress: Float by derivedStateOf {
-        (dragOffsetAnimatable.value / refreshThresholdOffset).coerceIn(0f, 1f)
+        if (refreshThresholdOffset > 0f) {
+            (dragOffsetAnimatable.value / refreshThresholdOffset).coerceIn(0f, 1f)
+        } else 0f
     }
     private val _refreshCompleteAnimProgress = mutableFloatStateOf(1f)
 
@@ -540,7 +525,7 @@ class PullToRefreshState(
         internalRefreshState = RefreshState.Refreshing
     }
 
-    suspend fun updateDragOffsetAnimatable() {
+    suspend fun syncDragOffsetWithRawOffset() {
         if (!dragOffsetAnimatable.isRunning) {
             dragOffsetAnimatable.snapTo(rawDragOffset)
         }
@@ -555,6 +540,10 @@ class PullToRefreshState(
 
     internal fun resetPointerReleased() {
         pointerReleased = false
+    }
+
+    internal fun onPointerRelease() {
+        pointerReleased = true
     }
 
     val pointerReleasedValue: Boolean get() = pointerReleased
@@ -578,9 +567,7 @@ class PullToRefreshState(
                 block()
             } finally {
                 internalRefreshState = RefreshState.RefreshComplete
-                launch {
-                    startManualRefreshCompleteAnimation()
-                }
+                launch { startManualRefreshCompleteAnimation() }
             }
         }
     }
@@ -592,7 +579,7 @@ class PullToRefreshState(
             targetValue = 1f,
             animationSpec = tween(
                 durationMillis = 200,
-                easing = LinearOutSlowInEasing
+                easing = CubicBezierEasing(0f, 0f, 0f, 0.37f)
             )
         ) {
             _refreshCompleteAnimProgress.floatValue = this.value
@@ -609,60 +596,50 @@ class PullToRefreshState(
 
     fun createNestedScrollConnection(
         overScrollState: OverScrollState
-    ): NestedScrollConnection =
-        object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-
-                if (overScrollState.isOverScrollActive) {
-                    return Offset.Zero
+    ): NestedScrollConnection = object : NestedScrollConnection {
+        override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+            if (overScrollState.isOverScrollActive) return Offset.Zero
+            if (isRefreshingInProgress || refreshState == RefreshState.Refreshing || refreshState == RefreshState.RefreshComplete) return Offset.Zero
+            return if (source == NestedScrollSource.UserInput && available.y < 0 && rawDragOffset > 0f) {
+                if (isRebounding && dragOffsetAnimatable.isRunning) {
+                    coroutineScope.launch { dragOffsetAnimatable.stop() }
+                    isRebounding = false
                 }
+                val delta = available.y.coerceAtLeast(-rawDragOffset)
+                rawDragOffset += delta
+                coroutineScope.launch { dragOffsetAnimatable.snapTo(rawDragOffset) }
+                Offset(0f, delta)
+            } else Offset.Zero
+        }
 
-                if (isRefreshingInProgress || refreshState == RefreshState.Refreshing || refreshState == RefreshState.RefreshComplete) {
-                    return Offset.Zero
-                }
-
-                return if (source == NestedScrollSource.UserInput && available.y < 0 && rawDragOffset > 0f) {
-                    val delta = available.y.coerceAtLeast(-rawDragOffset)
-                    rawDragOffset += delta
-                    coroutineScope.launch {
-                        dragOffsetAnimatable.snapTo(rawDragOffset)
+        override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset = when {
+            overScrollState.isOverScrollActive || isRefreshingInProgress || refreshState == RefreshState.Refreshing || refreshState == RefreshState.RefreshComplete -> Offset.Zero
+            source == NestedScrollSource.UserInput -> {
+                if (available.y > 0f && consumed.y == 0f) {
+                    if (isRebounding && dragOffsetAnimatable.isRunning) {
+                        coroutineScope.launch { dragOffsetAnimatable.stop() }
+                        isRebounding = false
                     }
-                    Offset(0f, delta)
+                    val resistanceFactor = calculateResistanceFactor(rawDragOffset)
+                    val effectiveY = available.y * resistanceFactor
+                    val newOffset = rawDragOffset + effectiveY
+                    val consumedY = effectiveY
+                    rawDragOffset = newOffset
+                    coroutineScope.launch { dragOffsetAnimatable.snapTo(newOffset) }
+                    Offset(0f, consumedY)
+                } else if (available.y < 0f) {
+                    val newOffset = max(rawDragOffset + available.y, 0f)
+                    val consumedY = rawDragOffset - newOffset
+                    rawDragOffset = newOffset
+                    Offset(0f, -consumedY)
                 } else Offset.Zero
             }
 
-            override fun onPostScroll(
-                consumed: Offset,
-                available: Offset,
-                source: NestedScrollSource
-            ): Offset = when {
-                overScrollState.isOverScrollActive || isRefreshingInProgress || refreshState == RefreshState.Refreshing || refreshState == RefreshState.RefreshComplete -> Offset.Zero
-                source == NestedScrollSource.UserInput -> {
-                    if (available.y > 0f && consumed.y == 0f) {
-                        val newOffset = (rawDragOffset + available.y).coerceAtMost(maxDragDistancePx)
-                        val consumedY = newOffset - rawDragOffset
-                        rawDragOffset = newOffset
-                        coroutineScope.launch {
-                            dragOffsetAnimatable.snapTo(newOffset)
-                        }
-                        Offset(0f, consumedY)
-                    } else if (available.y < 0f) {
-                        val newOffset = (rawDragOffset + available.y).coerceAtLeast(0f)
-                        val consumedY = rawDragOffset - newOffset
-                        rawDragOffset = newOffset
-                        Offset(0f, -consumedY)
-                    } else {
-                        Offset.Zero
-                    }
-                }
-
-                else -> Offset.Zero
-            }
+            else -> Offset.Zero
         }
+    }
 
-    suspend fun handlePointerReleased(
-        onRefresh: () -> Unit
-    ) {
+    fun handlePointerReleased(onRefresh: () -> Unit) {
         if (isRefreshingInProgress) {
             resetPointerReleased()
             return
@@ -676,7 +653,7 @@ class PullToRefreshState(
                             targetValue = refreshThresholdOffset,
                             animationSpec = tween(
                                 durationMillis = 200,
-                                easing = LinearOutSlowInEasing
+                                easing = CubicBezierEasing(0f, 0f, 0f, 0.37f)
                             )
                         )
                         rawDragOffset = refreshThresholdOffset
@@ -687,23 +664,35 @@ class PullToRefreshState(
                     }
                 }
             } else {
-                animateDragOffset(
-                    targetValue = 0f,
-                    animationSpec = snap()
-                )
-                rawDragOffset = 0f
+                isRebounding = true
+                coroutineScope.launch {
+                    try {
+                        animateDragOffset(
+                            targetValue = 0f,
+                            animationSpec = tween(
+                                durationMillis = 250,
+                                easing = CubicBezierEasing(0.33f, 0f, 0.67f, 1f)
+                            )
+                        )
+                        rawDragOffset = 0f
+                    } finally {
+                        isRebounding = false
+                    }
+                }
             }
             resetPointerReleased()
         }
     }
 
-    fun onPointerRelease() {
-        pointerReleased = true
+    private fun calculateResistanceFactor(offset: Float): Float {
+        if (offset < refreshThresholdOffset) return 1.0f
+        val overThreshold = offset - refreshThresholdOffset
+        return 1.0f / (1.0f + overThreshold / refreshThresholdOffset * 0.8f)
     }
 }
 
 /** Maximum drag ratio */
-internal const val maxDragRatio = 1 / 5f
+internal const val maxDragRatio = 1 / 6f
 
 /** Threshold ratio */
 internal const val thresholdRatio = 1 / 4f
@@ -740,5 +729,4 @@ object PullToRefreshDefaults {
         fontWeight = FontWeight.Bold,
         color = color
     )
-
 }
