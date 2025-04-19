@@ -127,7 +127,7 @@ fun SearchBar(
 fun InputField(
     query: String,
     onQueryChange: (String) -> Unit,
-    label: String = "Search",
+    label: String = "",
     onSearch: (String) -> Unit,
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,

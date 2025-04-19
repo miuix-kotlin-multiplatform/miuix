@@ -27,10 +27,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.Saver
@@ -49,14 +52,15 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFirst
+import androidx.compose.ui.util.lerp
 import top.yukonga.miuix.kmp.basic.TopAppBarState.Companion.Saver
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import kotlin.math.abs
@@ -90,10 +94,13 @@ fun TopAppBar(
     defaultWindowInsetsPadding: Boolean = true,
     horizontalPadding: Dp = 26.dp
 ) {
-    val density = LocalDensity.current
+    val largeTitleHeight = remember { mutableStateOf(0) }
     val expandedHeightPx by rememberUpdatedState(
-        with(density) { (TopAppBarExpandedHeight).toPx().coerceAtLeast(0f) }
+        remember(largeTitleHeight.value) {
+            largeTitleHeight.value.toFloat().coerceAtLeast(0f)
+        }
     )
+
     SideEffect {
         // Sets the app bar's height offset to collapse the entire bar's height when content is
         // scrolled.
@@ -138,6 +145,7 @@ fun TopAppBar(
             scrolledOffset = { scrollBehavior?.state?.heightOffset ?: 0f },
             expandedHeightPx = expandedHeightPx,
             horizontalPadding = horizontalPadding,
+            largeTitleHeight = largeTitleHeight,
             defaultWindowInsetsPadding = defaultWindowInsetsPadding
         )
     }
@@ -231,9 +239,6 @@ fun MiuixScrollBehavior(
             canScroll = canScroll
         )
     }
-
-/** The default expanded height of a [TopAppBar]. */
-val TopAppBarExpandedHeight: Dp = 48.dp
 
 /**
  * Creates a [TopAppBarState] that is remembered across compositions.
@@ -551,8 +556,19 @@ private fun TopAppBarLayout(
     scrolledOffset: ScrolledOffset,
     expandedHeightPx: Float,
     horizontalPadding: Dp,
+    largeTitleHeight: MutableState<Int>,
     defaultWindowInsetsPadding: Boolean
 ) {
+    // Subtract the scrolledOffset from the maxHeight. The scrolledOffset is expected to be
+    // equal or smaller than zero.
+    val heightOffset by remember(scrolledOffset) {
+        derivedStateOf {
+            val offset = scrolledOffset.offset()
+            if (offset.isNaN()) 0 else offset.roundToInt()
+        }
+    }
+
+    // Small Title Animation
     val extOffset = abs(scrolledOffset.offset()) / expandedHeightPx * 2
     val alpha by animateFloatAsState(
         targetValue = if (1 - extOffset.coerceIn(0f, 1f) == 0f) 1f else 0f,
@@ -562,10 +578,6 @@ private fun TopAppBarLayout(
         targetValue = if (extOffset > 1f) 0f else 10f,
         animationSpec = tween(durationMillis = 250)
     )
-    // Subtract the scrolledOffset from the maxHeight. The scrolledOffset is expected to be
-    // equal or smaller than zero.
-    val scrolledOffsetValue = scrolledOffset.offset()
-    val heightOffset = if (scrolledOffsetValue.isNaN()) 0 else scrolledOffsetValue.roundToInt()
 
     Layout(
         {
@@ -580,15 +592,17 @@ private fun TopAppBarLayout(
                     .layoutId("title")
                     .padding(horizontal = horizontalPadding)
                     .graphicsLayer(
-                        translationY = translationY,
-                        alpha = alpha
+                        alpha = alpha,
+                        translationY = translationY
                     )
             ) {
                 Text(
                     text = title,
                     maxLines = 1,
                     fontSize = MiuixTheme.textStyles.title3.fontSize,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    overflow = TextOverflow.Ellipsis,
+                    softWrap = false
                 )
             }
             Box(
@@ -608,18 +622,17 @@ private fun TopAppBarLayout(
                         .padding(top = 56.dp)
                         .padding(horizontal = horizontalPadding)
                         .graphicsLayer(alpha = 1f - (abs(scrolledOffset.offset()) / expandedHeightPx * 2).coerceIn(0f, 1f))
-                        .clipToBounds()
                 ) {
                     Text(
                         modifier = Modifier.offset { IntOffset(0, heightOffset) },
                         text = largeTitle,
-                        maxLines = 1,
                         fontSize = MiuixTheme.textStyles.title1.fontSize,
-                        fontWeight = FontWeight.Normal
+                        fontWeight = FontWeight.Normal,
+                        onTextLayout = {
+                            largeTitleHeight.value = it.size.height
+                        }
                     )
                 }
-
-
             }
         },
         modifier = Modifier
@@ -630,7 +643,6 @@ private fun TopAppBarLayout(
                         .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
                 } else Modifier
             )
-            .heightIn(max = 56.dp + TopAppBarExpandedHeight)
             .clipToBounds()
     ) { measurables, constraints ->
         val navigationIconPlaceable =
@@ -643,36 +655,38 @@ private fun TopAppBarLayout(
                 .fastFirst { it.layoutId == "actionIcons" }
                 .measure(constraints.copy(minWidth = 0, minHeight = 0))
 
-        val maxTitleWidth =
-            if (constraints.maxWidth == Constraints.Infinity) {
-                constraints.maxWidth
-            } else {
-                (constraints.maxWidth - navigationIconPlaceable.width - actionIconsPlaceable.width)
-                    .coerceAtLeast(0)
-            }
+        val maxTitleWidth = constraints.maxWidth - navigationIconPlaceable.width - actionIconsPlaceable.width
 
         val titlePlaceable =
             measurables
                 .fastFirst { it.layoutId == "title" }
-                .measure(constraints.copy(minWidth = 0, maxWidth = maxTitleWidth, minHeight = 0))
-
-
-        val layoutHeight =
-            (if (constraints.maxHeight == Constraints.Infinity) {
-                constraints.maxHeight
-            } else {
-                constraints.maxHeight + heightOffset
-            }).coerceAtLeast(0)
+                .measure(constraints.copy(minWidth = 0, maxWidth = (maxTitleWidth * 0.9).roundToInt(), minHeight = 0))
 
         val largeTitlePlaceable =
             measurables
                 .fastFirst { it.layoutId == "largeTitle" }
                 .measure(
-                    constraints.copy(minWidth = 0, minHeight = 0)
+                    constraints.copy(
+                        minWidth = 0,
+                        minHeight = 0,
+                        maxHeight = Constraints.Infinity
+                    )
                 )
 
+        val collapsedHeight = 56.dp.roundToPx()
+        val expandedHeight = maxOf(
+            collapsedHeight,
+            largeTitlePlaceable.height
+        )
+
+        val layoutHeight = lerp(
+            start = collapsedHeight,
+            stop = expandedHeight,
+            fraction = 1f - (abs(scrolledOffset.offset()) / expandedHeightPx).coerceIn(0f, 1f)
+        ).toFloat().roundToInt()
+
         layout(constraints.maxWidth, layoutHeight) {
-            val verticalCenter = 60.dp.roundToPx() / 2
+            val verticalCenter = collapsedHeight / 2
 
             // Navigation icon
             navigationIconPlaceable.placeRelative(
@@ -743,7 +757,9 @@ private fun SmallTopAppBarLayout(
                     text = title,
                     maxLines = 1,
                     fontSize = MiuixTheme.textStyles.title3.fontSize,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    overflow = TextOverflow.Ellipsis,
+                    softWrap = false
                 )
             }
             Box(
@@ -774,19 +790,12 @@ private fun SmallTopAppBarLayout(
                 .fastFirst { it.layoutId == "actionIcons" }
                 .measure(constraints.copy(minWidth = 0, minHeight = 0))
 
-        val maxTitleWidth =
-            if (constraints.maxWidth == Constraints.Infinity) {
-                constraints.maxWidth
-            } else {
-                (constraints.maxWidth - navigationIconPlaceable.width - actionIconsPlaceable.width)
-                    .coerceAtLeast(0)
-            }
+        val maxTitleWidth = constraints.maxWidth - navigationIconPlaceable.width - actionIconsPlaceable.width
 
         val titlePlaceable =
             measurables
                 .fastFirst { it.layoutId == "title" }
-                .measure(constraints.copy(minWidth = 0, maxWidth = maxTitleWidth, minHeight = 0))
-
+                .measure(constraints.copy(minWidth = 0, maxWidth = (maxTitleWidth * 0.9).roundToInt(), minHeight = 0))
 
         val layoutHeight =
             if (constraints.maxHeight == Constraints.Infinity) {
