@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.captionBar
 import androidx.compose.foundation.layout.displayCutout
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBars
@@ -61,7 +60,6 @@ import androidx.compose.ui.util.fastFirst
 import top.yukonga.miuix.kmp.basic.TopAppBarState.Companion.Saver
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import kotlin.math.abs
-import kotlin.math.max
 import kotlin.math.roundToInt
 
 /**
@@ -611,9 +609,9 @@ private fun TopAppBarLayout(
                         .padding(horizontal = horizontalPadding)
                         .graphicsLayer(alpha = 1f - (abs(scrolledOffset.offset()) / expandedHeightPx * 2).coerceIn(0f, 1f))
                         .clipToBounds()
-                ){
+                ) {
                     Text(
-                        modifier = Modifier.offset{IntOffset(0,heightOffset)},
+                        modifier = Modifier.offset { IntOffset(0, heightOffset) },
                         text = largeTitle,
                         maxLines = 1,
                         fontSize = MiuixTheme.textStyles.title1.fontSize,
@@ -670,7 +668,7 @@ private fun TopAppBarLayout(
             measurables
                 .fastFirst { it.layoutId == "largeTitle" }
                 .measure(
-                    constraints.copy(minWidth = 0)
+                    constraints.copy(minWidth = 0, minHeight = 0)
                 )
 
         layout(constraints.maxWidth, layoutHeight) {
