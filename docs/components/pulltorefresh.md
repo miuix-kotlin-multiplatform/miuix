@@ -18,7 +18,7 @@ val pullToRefreshState = rememberPullToRefreshState()
 var items by remember { mutableStateOf(1) }
 val scope = rememberCoroutineScope()
 
-Surface{
+Surface {
     PullToRefresh(
         pullToRefreshState = pullToRefreshState,
         onRefresh = {
@@ -79,6 +79,7 @@ if (pullToRefreshState.isRefreshing) {
 | pullToRefreshState | PullToRefreshState     | Refresh state controller       | -                                      | Yes      |
 | onRefresh          | () -> Unit             | Refresh callback function      | {}                                     | Yes      |
 | modifier           | Modifier               | Container modifier             | Modifier                               | No       |
+| contentPadding     | PaddingValues          | Content padding                | PaddingValues(0.dp)                    | No       |
 | color              | Color                  | Indicator color                | PullToRefreshDefaults.color            | No       |
 | circleSize         | Dp                     | Indicator circle size          | PullToRefreshDefaults.circleSize       | No       |
 | refreshTexts       | List\<String>          | Text list for different states | PullToRefreshDefaults.refreshTexts     | No       |
@@ -91,29 +92,29 @@ PullToRefreshState controls the refresh state and can be created using `remember
 
 #### Properties
 
-| Property Name               | Type         | Description            | Default Value | Required |
-| --------------------------- | ------------ | ---------------------- | ------------- | -------- |
-| refreshState                | RefreshState | Current refresh state  | -             | Yes      |
-| isRefreshing                | Boolean      | Is refreshing          | -             | Yes      |
-| pullProgress                | Float        | Pull progress (0-1)    | -             | Yes      |
-| refreshCompleteAnimProgress | Float        | Complete anim progress | -             | Yes      |
+| Property Name               | Type         | Description            | Required |
+| --------------------------- | ------------ | ---------------------- | -------- |
+| refreshState                | RefreshState | Current refresh state  | Yes      |
+| isRefreshing                | Boolean      | Is refreshing          | Yes      |
+| pullProgress                | Float        | Pull progress (0-1)    | Yes      |
+| refreshCompleteAnimProgress | Float        | Complete anim progress | Yes      |
 
 #### Methods
 
-| Method Name        | Parameters           | Type | Description                    | Default Value | Required |
-| ------------------ | -------------------- | ---- | ------------------------------ | ------------- | -------- |
-| completeRefreshing | (suspend () -> Unit) | -    | Complete refresh with callback | -             | Yes      |
+| Method Name        | Parameters           | Description                    | Required |
+| ------------------ | -------------------- | ------------------------------ | -------- |
+| completeRefreshing | (suspend () -> Unit) | Complete refresh with callback | Yes      |
 
 ### PullToRefreshDefaults Object
 
 PullToRefreshDefaults provides default values for the component.
 
-| Property Name    | Type          | Description             | Default Value                                       |
-| ---------------- | ------------- | ----------------------- | --------------------------------------------------- |
-| color            | Color         | Default indicator color | Color.Gray                                          |
-| circleSize       | Dp            | Default indicator size  | 20.dp                                               |
-| refreshTexts     | List\<String> | Default text list       | ["Pull down to refresh", "Release to refresh", ...] |
-| refreshTextStyle | TextStyle     | Default text style      | TextStyle(fontSize = 14.sp, fontWeight = Bold, ...) |
+| Property Name    | Type          | Description             | Default Value                                                                             |
+| ---------------- | ------------- | ----------------------- | ----------------------------------------------------------------------------------------- |
+| color            | Color         | Default indicator color | Color.Gray                                                                                |
+| circleSize       | Dp            | Default indicator size  | 20.dp                                                                                     |
+| refreshTexts     | List\<String> | Default text list       | ["Pull down to refresh", "Release to refresh", "Refreshing...", "Refreshed successfully"] |
+| refreshTextStyle | TextStyle     | Default text style      | TextStyle(fontSize = 14.sp, fontWeight = Bold, color = color)                             |
 
 ## Advanced Usage
 

@@ -1,6 +1,5 @@
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,6 +18,7 @@ import top.yukonga.miuix.kmp.basic.PullToRefresh
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.rememberPullToRefreshState
 import top.yukonga.miuix.kmp.extra.SuperDropdown
+import top.yukonga.miuix.kmp.utils.getWindowSize
 import top.yukonga.miuix.kmp.utils.overScrollVertical
 
 @Composable
@@ -44,17 +44,16 @@ fun SecondPage(
     }
 
     PullToRefresh(
-        modifier = Modifier.padding(
-            top = padding.calculateTopPadding()
-        ),
         pullToRefreshState = pullToRefreshState,
-        onRefresh = { ii.value++ }
+        onRefresh = { ii.value++ },
+        contentPadding = PaddingValues(top = padding.calculateTopPadding())
     ) {
         LazyColumn(
             modifier = Modifier
                 .overScrollVertical()
                 .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
-                .fillMaxSize(),
+                .height(getWindowSize().height.dp),
+            contentPadding = PaddingValues(top = padding.calculateTopPadding()),
         ) {
             item {
                 Card(

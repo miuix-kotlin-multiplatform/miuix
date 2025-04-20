@@ -18,7 +18,7 @@ val pullToRefreshState = rememberPullToRefreshState()
 var items by remember { mutableStateOf(1) }
 val scope = rememberCoroutineScope()
 
-Surface{
+Surface {
     PullToRefresh(
         pullToRefreshState = pullToRefreshState,
         onRefresh = {
@@ -79,6 +79,7 @@ if (pullToRefreshState.isRefreshing) {
 | pullToRefreshState | PullToRefreshState     | 下拉刷新状态控制器       | -                                      | 是       |
 | onRefresh          | () -> Unit             | 刷新触发时的回调函数     | {}                                     | 是       |
 | modifier           | Modifier               | 应用于容器的修饰符       | Modifier                               | 否       |
+| contentPadding     | PaddingValues          | 内容区的内边距           | PaddingValues(0.dp)                    | 否       |
 | color              | Color                  | 刷新指示器的颜色         | PullToRefreshDefaults.color            | 否       |
 | circleSize         | Dp                     | 刷新指示器圆圈的大小     | PullToRefreshDefaults.circleSize       | 否       |
 | refreshTexts       | List\<String>          | 不同状态下显示的文本列表 | PullToRefreshDefaults.refreshTexts     | 否       |
@@ -87,33 +88,33 @@ if (pullToRefreshState.isRefreshing) {
 
 ### PullToRefreshState 类
 
-PullToRefreshState 是控制下拉刷新状态的类，可以通过 `rememberPullToRefreshState()` 创建。
+PullToRefreshState 用于控制下拉刷新状态，可通过 `rememberPullToRefreshState()` 创建。
 
 #### 属性
 
-| 属性名                      | 类型         | 说明                | 默认值 | 是否必须 |
-| --------------------------- | ------------ | ------------------- | ------ | -------- |
-| refreshState                | RefreshState | 当前刷新状态        | -      | 是       |
-| isRefreshing                | Boolean      | 是否正在刷新        | -      | 是       |
-| pullProgress                | Float        | 下拉进度（0-1之间） | -      | 是       |
-| refreshCompleteAnimProgress | Float        | 刷新完成动画进度    | -      | 是       |
+| 属性名                      | 类型         | 说明                | 是否必须 |
+| --------------------------- | ------------ | ------------------- | -------- |
+| refreshState                | RefreshState | 当前刷新状态        | 是       |
+| isRefreshing                | Boolean      | 是否正在刷新        | 是       |
+| pullProgress                | Float        | 下拉进度（0-1之间） | 是       |
+| refreshCompleteAnimProgress | Float        | 刷新完成动画进度    | 是       |
 
 #### 方法
 
-| 方法名             | 参数                 | 类型 | 说明                     | 默认值 | 是否必须 |
-| ------------------ | -------------------- | ---- | ------------------------ | ------ | -------- |
-| completeRefreshing | (suspend () -> Unit) | -    | 完成刷新并执行提供的操作 | -      | 是       |
+| 方法名             | 参数                 | 说明                     | 是否必须 |
+| ------------------ | -------------------- | ------------------------ | -------- |
+| completeRefreshing | (suspend () -> Unit) | 完成刷新并执行提供的操作 | 是       |
 
 ### PullToRefreshDefaults 对象
 
-PullToRefreshDefaults 对象提供了下拉刷新组件的默认值。
+PullToRefreshDefaults 提供下拉刷新组件的默认值。
 
-| 属性名           | 类型          | 说明                 | 默认值                                              |
-| ---------------- | ------------- | -------------------- | --------------------------------------------------- |
-| color            | Color         | 刷新指示器的默认颜色 | Color.Gray                                          |
-| circleSize       | Dp            | 指示器圆圈的默认大小 | 20.dp                                               |
-| refreshTexts     | List\<String> | 默认的刷新文本列表   | ["Pull down to refresh", "Release to refresh", ...] |
-| refreshTextStyle | TextStyle     | 默认的文本样式       | TextStyle(fontSize = 14.sp, fontWeight = Bold, ...) |
+| 属性名           | 类型          | 说明                 | 默认值                                                                                    |
+| ---------------- | ------------- | -------------------- | ----------------------------------------------------------------------------------------- |
+| color            | Color         | 刷新指示器的默认颜色 | Color.Gray                                                                                |
+| circleSize       | Dp            | 指示器圆圈的默认大小 | 20.dp                                                                                     |
+| refreshTexts     | List\<String> | 默认的刷新文本列表   | ["Pull down to refresh", "Release to refresh", "Refreshing...", "Refreshed successfully"] |
+| refreshTextStyle | TextStyle     | 默认的文本样式       | TextStyle(fontSize = 14.sp, fontWeight = Bold, color = color)                             |
 
 ## 进阶用法
 

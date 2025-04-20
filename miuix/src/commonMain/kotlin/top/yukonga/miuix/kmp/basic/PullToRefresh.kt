@@ -13,9 +13,11 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -69,7 +71,9 @@ import kotlin.math.sin
  * modified from the example provided by @sd086.
  *
  * @param modifier The modifier to be applied to the [PullToRefresh].
- * @param pullToRefreshState pullToRefreshState
+ * @param pullToRefreshState The state of the pull-to-refresh.
+ * @param contentPadding The padding to be applied to the content.
+ *   Only [PaddingValues.calculateTopPadding] is required.
  * @param color The color of the refresh indicator.
  * @param circleSize The size of the refresh indicator circle.
  * @param refreshTexts The texts to show when refreshing.
@@ -81,6 +85,7 @@ import kotlin.math.sin
 fun PullToRefresh(
     modifier: Modifier = Modifier,
     pullToRefreshState: PullToRefreshState,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
     color: Color = PullToRefreshDefaults.color,
     circleSize: Dp = PullToRefreshDefaults.circleSize,
     refreshTexts: List<String> = PullToRefreshDefaults.refreshTexts,
@@ -119,6 +124,7 @@ fun PullToRefresh(
         ) {
             Column {
                 RefreshHeader(
+                    modifier = Modifier.offset(y = contentPadding.calculateTopPadding()),
                     pullToRefreshState = pullToRefreshState,
                     circleSize = circleSize,
                     color = color,
