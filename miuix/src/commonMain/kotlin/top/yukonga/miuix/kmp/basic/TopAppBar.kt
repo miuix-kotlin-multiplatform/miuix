@@ -682,7 +682,10 @@ private fun TopAppBarLayout(
         val layoutHeight = lerp(
             start = collapsedHeight,
             stop = expandedHeight,
-            fraction = 1f - (abs(scrolledOffset.offset()) / expandedHeightPx).coerceIn(0f, 1f)
+            fraction = if (expandedHeightPx > 0f) {
+                val offset = scrolledOffset.offset()
+                if (offset.isNaN()) 1f else (1f - (abs(offset) / expandedHeightPx).coerceIn(0f, 1f))
+            } else 1f
         ).toFloat().roundToInt()
 
         layout(constraints.maxWidth, layoutHeight) {
