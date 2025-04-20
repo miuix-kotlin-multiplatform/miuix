@@ -91,9 +91,11 @@ fun MainPage(
                     SmallTitle(text = "SearchBar")
                     SearchBar(
                         modifier = Modifier
-                            .padding(start = 12.dp, end = 12.dp, bottom = 6.dp),
+                            .padding(start = 12.dp, bottom = 6.dp),
                         inputField = {
                             InputField(
+                                modifier = Modifier
+                                    .padding(end = 12.dp),
                                 query = miuixSearchValue,
                                 onQueryChange = { miuixSearchValue = it },
                                 onSearch = { expanded = false },
@@ -105,7 +107,7 @@ fun MainPage(
                         outsideRightAction = {
                             Text(
                                 modifier = Modifier
-                                    .padding(start = 12.dp)
+                                    .padding(end = 12.dp)
                                     .clickable(
                                         interactionSource = null,
                                         indication = null
@@ -169,9 +171,11 @@ fun MainPage(
                         SmallTitle(text = "SearchBar")
                         SearchBar(
                             modifier = Modifier
-                                .padding(start = 12.dp, end = 12.dp, bottom = 6.dp),
+                                .padding(start = 12.dp, bottom = 6.dp),
                             inputField = {
                                 InputField(
+                                    modifier = Modifier
+                                        .padding(end = 12.dp),
                                     query = miuixSearchValue,
                                     onQueryChange = { miuixSearchValue = it },
                                     onSearch = { expanded = false },
@@ -183,7 +187,7 @@ fun MainPage(
                             outsideRightAction = {
                                 Text(
                                     modifier = Modifier
-                                        .padding(start = 12.dp)
+                                        .padding(end = 12.dp)
                                         .clickable(
                                             interactionSource = null,
                                             indication = null
