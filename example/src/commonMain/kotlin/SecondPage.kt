@@ -57,8 +57,7 @@ fun SecondPage(
         ) {
             item {
                 Card(
-                    modifier = Modifier
-                        .padding(12.dp)
+                    modifier = Modifier.padding(12.dp)
                 ) {
                     for (i in 0 until ii.value) {
                         SuperDropdown(

@@ -90,12 +90,8 @@ fun MainPage(
                 item {
                     SmallTitle(text = "SearchBar")
                     SearchBar(
-                        modifier = Modifier
-                            .padding(start = 12.dp, bottom = 6.dp),
                         inputField = {
                             InputField(
-                                modifier = Modifier
-                                    .padding(end = 12.dp),
                                 query = miuixSearchValue,
                                 onQueryChange = { miuixSearchValue = it },
                                 onSearch = { expanded = false },
@@ -163,19 +159,14 @@ fun MainPage(
                 LazyColumn(
                     modifier = Modifier
                         .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
-                        .padding(start = 12.dp)
                         .weight(1f),
                     contentPadding = PaddingValues(top = padding.calculateTopPadding())
                 ) {
                     item {
                         SmallTitle(text = "SearchBar")
                         SearchBar(
-                            modifier = Modifier
-                                .padding(start = 12.dp, bottom = 6.dp),
                             inputField = {
                                 InputField(
-                                    modifier = Modifier
-                                        .padding(end = 12.dp),
                                     query = miuixSearchValue,
                                     onQueryChange = { miuixSearchValue = it },
                                     onSearch = { expanded = false },
@@ -187,7 +178,6 @@ fun MainPage(
                             outsideRightAction = {
                                 Text(
                                     modifier = Modifier
-                                        .padding(end = 12.dp)
                                         .clickable(
                                             interactionSource = null,
                                             indication = null
