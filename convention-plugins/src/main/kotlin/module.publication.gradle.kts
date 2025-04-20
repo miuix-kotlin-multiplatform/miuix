@@ -3,6 +3,9 @@ plugins {
     signing
 }
 
+val githubUrl = "https://github.com"
+val projectUrl = "$githubUrl/miuix-kotlin-multiplatform/miuix"
+
 publishing {
     publications.withType<MavenPublication> {
         // Stub javadoc.jar artifact
@@ -15,23 +18,37 @@ publishing {
         pom {
             name.set("miuix")
             description.set("A UI library for Compose MultiPlatform")
-            url.set("https://github.com/miuix-kotlin-multiplatform/miuix")
-
+            url.set(projectUrl)
             licenses {
                 license {
-                    name.set("Apache-2.0")
-                    url.set("https://github.com/miuix-kotlin-multiplatform/miuix/blob/main/LICENSE")
+                    name.set("The Apache Software License, Version 2.0")
+                    url.set("$projectUrl/blob/main/LICENSE")
                 }
+            }
+            issueManagement {
+                system.set("Github")
+                url.set("$projectUrl/issues")
+            }
+            scm {
+                connection.set("$projectUrl.git")
+                url.set(projectUrl)
             }
             developers {
                 developer {
                     id.set("YuKongA")
                     name.set("YuKongA")
-                    url.set("https://github.com/YuKongA")
+                    url.set("$githubUrl/YuKongA")
                 }
-            }
-            scm {
-                url.set("https://github.com/miuix-kotlin-multiplatform/miuix")
+                developer {
+                    id.set("HowieHChen")
+                    name.set("Howie")
+                    url.set("$githubUrl/HowieHChen")
+                }
+                developer {
+                    id.set("Voemp")
+                    name.set("Voemp")
+                    url.set("$githubUrl/Voemp")
+                }
             }
         }
     }

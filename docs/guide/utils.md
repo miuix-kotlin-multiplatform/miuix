@@ -50,8 +50,6 @@ Miuix provides easy-to-use overscroll effects for smoother and more natural scro
 
 ### Vertical Overscroll
 
-### 垂直越界回弹
-
 ```kotlin
 LazyColumn(
     modifier = Modifier
