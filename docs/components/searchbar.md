@@ -39,14 +39,15 @@ SearchBar(
 
 ### SearchBar Properties
 
-| Property Name      | Type                               | Description                                       | Default Value | Required |
-| ------------------ | ---------------------------------- | ------------------------------------------------- | ------------- | -------- |
-| inputField         | @Composable () -> Unit             | Search input field component                      | -             | Yes      |
-| expanded           | Boolean                            | Whether to show search results                    | false         | Yes      |
-| onExpandedChange   | (Boolean) -> Unit                  | Callback when expanded state changes              | -             | Yes      |
-| modifier           | Modifier                           | Modifier applied to the search bar                | Modifier      | No       |
-| outsideRightAction | @Composable (() -> Unit)?          | Action component shown on the right when expanded | null          | No       |
-| content            | @Composable ColumnScope.() -> Unit | Content shown when expanded                       | -             | Yes      |
+| Property Name      | Type                               | Description                                       | Default Value       | Required |
+| ------------------ | ---------------------------------- | ------------------------------------------------- | ------------------- | -------- |
+| inputField         | @Composable () -> Unit             | Search input field component                      | -                   | Yes      |
+| onExpandedChange   | (Boolean) -> Unit                  | Callback when expanded state changes              | -                   | Yes      |
+| insideMargin       | DpSize                             | Internal padding                                  | DpSize(12.dp, 0.dp) | No       |
+| modifier           | Modifier                           | Modifier applied to the search bar                | Modifier            | No       |
+| expanded           | Boolean                            | Whether to show search results                    | false               | No       |
+| outsideRightAction | @Composable (() -> Unit)?          | Action component shown on the right when expanded | null                | No       |
+| content            | @Composable ColumnScope.() -> Unit | Content shown when expanded                       | -                   | Yes      |
 
 ### InputField Properties
 
@@ -54,14 +55,14 @@ SearchBar(
 | ----------------- | ------------------------- | ------------------------------------ | -------------------- | -------- |
 | query             | String                    | Text content in search field         | -                    | Yes      |
 | onQueryChange     | (String) -> Unit          | Callback when text content changes   | -                    | Yes      |
+| label             | String                    | Placeholder text when empty          | ""                   | No       |
 | onSearch          | (String) -> Unit          | Callback when search is executed     | -                    | Yes      |
 | expanded          | Boolean                   | Whether in expanded state            | -                    | Yes      |
 | onExpandedChange  | (Boolean) -> Unit         | Callback when expanded state changes | -                    | Yes      |
-| label             | String                    | Placeholder text when empty          | ""                   | No       |
+| modifier          | Modifier                  | Modifier applied to the input field  | Modifier             | No       |
 | enabled           | Boolean                   | Whether search field is enabled      | true                 | No       |
-| insideMargin      | DpSize                    | Internal padding                     | DpSize(12.dp, 12.dp) | No       |
-| leadingIcon       | @Composable (() -> Unit)? | Leading icon                         | null                 | No       |
-| trailingIcon      | @Composable (() -> Unit)? | Trailing icon                        | null                 | No       |
+| leadingIcon       | @Composable (() -> Unit)? | Leading icon                         | default search icon  | No       |
+| trailingIcon      | @Composable (() -> Unit)? | Trailing icon                        | default clear button | No       |
 | interactionSource | MutableInteractionSource? | Interaction source                   | null                 | No       |
 
 ## Advanced Usage

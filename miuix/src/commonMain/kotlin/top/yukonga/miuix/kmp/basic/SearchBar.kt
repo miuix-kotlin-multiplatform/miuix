@@ -1,8 +1,12 @@
 package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.Interaction
@@ -13,6 +17,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
@@ -53,6 +58,7 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
  * @param inputField the input field to input a query in the [SearchBar].
  * @param onExpandedChange the callback to be invoked when the [SearchBar]'s expanded state is
  *   changed.
+ * @param insideMargin The margin inside the [SearchBar].
  * @param modifier the [Modifier] to be applied to the [SearchBar].
  * @param expanded whether the [SearchBar] is expanded and showing search results.
  * @param outsideRightAction the action to be shown at the right side of the [SearchBar] when it is
@@ -63,6 +69,7 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 fun SearchBar(
     inputField: @Composable () -> Unit,
     onExpandedChange: (Boolean) -> Unit,
+    insideMargin: DpSize = DpSize(12.dp, 0.dp),
     modifier: Modifier = Modifier,
     expanded: Boolean = false,
     outsideRightAction: @Composable (() -> Unit)? = null,
@@ -76,11 +83,17 @@ fun SearchBar(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Box(modifier = Modifier.weight(1f)) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(vertical = insideMargin.height, horizontal = insideMargin.width)
+                ) {
                     inputField()
                 }
                 AnimatedVisibility(
-                    visible = expanded
+                    visible = expanded,
+                    enter = expandHorizontally() + slideInHorizontally(initialOffsetX = { it }),
+                    exit = shrinkHorizontally() + slideOutHorizontally(targetOffsetX = { it })
                 ) {
                     outsideRightAction?.invoke()
                 }
@@ -115,7 +128,6 @@ fun SearchBar(
  * @param enabled the enabled state of this input field. When `false`, this component will not
  *   respond to user input, and it will appear visually disabled and disabled to accessibility
  *   services.
- * @param insideMargin the margin inside the [InputField].
  * @param leadingIcon the leading icon to be displayed at the start of the input field.
  * @param trailingIcon the trailing icon to be displayed at the end of the input field.
  * @param interactionSource an optional hoisted [MutableInteractionSource] for observing and
@@ -133,7 +145,6 @@ fun InputField(
     onExpandedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    insideMargin: DpSize = DpSize(12.dp, 12.dp),
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     interactionSource: MutableInteractionSource? = null,
@@ -212,7 +223,7 @@ fun InputField(
                         Box(
                             modifier = Modifier
                                 .weight(1f)
-                                .padding(vertical = insideMargin.height),
+                                .heightIn(min = 45.dp),
                             contentAlignment = Alignment.CenterStart
                         ) {
                             Text(

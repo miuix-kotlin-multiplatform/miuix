@@ -39,30 +39,31 @@ SearchBar(
 
 ### SearchBar 属性
 
-| 属性名             | 类型                               | 说明                       | 默认值   | 是否必须 |
-| ------------------ | ---------------------------------- | -------------------------- | -------- | -------- |
-| inputField         | @Composable () -> Unit             | 搜索输入框组件             | -        | 是       |
-| expanded           | Boolean                            | 是否展开显示搜索结果       | false    | 是       |
-| onExpandedChange   | (Boolean) -> Unit                  | 展开状态变化的回调         | -        | 是       |
-| modifier           | Modifier                           | 应用于搜索栏的修饰符       | Modifier | 否       |
-| outsideRightAction | @Composable (() -> Unit)?          | 展开时显示在右侧的操作组件 | null     | 否       |
-| content            | @Composable ColumnScope.() -> Unit | 展开时显示的内容           | -        | 是       |
+| 属性名             | 类型                               | 说明                       | 默认值              | 是否必须 |
+| ------------------ | ---------------------------------- | -------------------------- | ------------------- | -------- |
+| inputField         | @Composable () -> Unit             | 搜索输入框组件             | -                   | 是       |
+| onExpandedChange   | (Boolean) -> Unit                  | 展开状态变化的回调         | -                   | 是       |
+| insideMargin       | DpSize                             | 内部边距                   | DpSize(12.dp, 0.dp) | 否       |
+| modifier           | Modifier                           | 应用于搜索栏的修饰符       | Modifier            | 否       |
+| expanded           | Boolean                            | 是否展开显示搜索结果       | false               | 否       |
+| outsideRightAction | @Composable (() -> Unit)?          | 展开时显示在右侧的操作组件 | null                | 否       |
+| content            | @Composable ColumnScope.() -> Unit | 展开时显示的内容           | -                   | 是       |
 
 ### InputField 属性
 
-| 属性名            | 类型                      | 说明                       | 默认值               | 是否必须 |
-| ----------------- | ------------------------- | -------------------------- | -------------------- | -------- |
-| query             | String                    | 搜索框中的文本内容         | -                    | 是       |
-| onQueryChange     | (String) -> Unit          | 文本内容变化时的回调       | -                    | 是       |
-| onSearch          | (String) -> Unit          | 执行搜索操作时的回调       | -                    | 是       |
-| expanded          | Boolean                   | 是否处于展开状态           | -                    | 是       |
-| onExpandedChange  | (Boolean) -> Unit         | 展开状态变化的回调         | -                    | 是       |
-| label             | String                    | 搜索框为空时显示的提示文本 | ""                   | 否       |
-| enabled           | Boolean                   | 是否启用搜索框             | true                 | 否       |
-| insideMargin      | DpSize                    | 内部边距                   | DpSize(12.dp, 12.dp) | 否       |
-| leadingIcon       | @Composable (() -> Unit)? | 前置图标                   | null                 | 否       |
-| trailingIcon      | @Composable (() -> Unit)? | 后置图标                   | null                 | 否       |
-| interactionSource | MutableInteractionSource? | 交互源                     | null                 | 否       |
+| 属性名            | 类型                      | 说明                       | 默认值       | 是否必须 |
+| ----------------- | ------------------------- | -------------------------- | ------------ | -------- |
+| query             | String                    | 搜索框中的文本内容         | -            | 是       |
+| onQueryChange     | (String) -> Unit          | 文本内容变化时的回调       | -            | 是       |
+| label             | String                    | 搜索框为空时显示的提示文本 | ""           | 否       |
+| onSearch          | (String) -> Unit          | 执行搜索操作时的回调       | -            | 是       |
+| expanded          | Boolean                   | 是否处于展开状态           | -            | 是       |
+| onExpandedChange  | (Boolean) -> Unit         | 展开状态变化的回调         | -            | 是       |
+| modifier          | Modifier                  | 应用于输入框的修饰符       | Modifier     | 否       |
+| enabled           | Boolean                   | 是否启用搜索框             | true         | 否       |
+| leadingIcon       | @Composable (() -> Unit)? | 前置图标                   | 默认放大镜   | 否       |
+| trailingIcon      | @Composable (() -> Unit)? | 后置图标                   | 默认清除按钮 | 否       |
+| interactionSource | MutableInteractionSource? | 交互源                     | null         | 否       |
 
 ## 进阶用法
 
