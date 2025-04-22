@@ -33,6 +33,10 @@ fun ThirdPage(
     onShowTopAppBarChange: (Boolean) -> Unit,
     showBottomBar: Boolean,
     onShowBottomBarChange: (Boolean) -> Unit,
+    useFloatingToolbar: Boolean,
+    onUseFloatingToolbarChange: (Boolean) -> Unit,
+    floatingToolbarPosition: Int,
+    onFloatingToolbarPositionChange: (Int) -> Unit,
     showFloatingActionButton: Boolean,
     onShowFloatingActionButtonChange: (Boolean) -> Unit,
     enablePageUserScroll: Boolean,
@@ -66,6 +70,27 @@ fun ThirdPage(
                     title = "Show Bottom Bar",
                     checked = showBottomBar,
                     onCheckedChange = onShowBottomBarChange
+                )
+                SuperSwitch(
+                    title = "Use Floating Toolbar",
+                    checked = useFloatingToolbar,
+                    onCheckedChange = onUseFloatingToolbarChange
+                )
+                SuperDropdown(
+                    title = "Floating Toolbar Position",
+                    items = listOf(
+                        "LeftTop",
+                        "LeftCenter",
+                        "LeftBottom",
+                        "RightTop",
+                        "RightCenter",
+                        "RightBottom",
+                        "BottomLeft",
+                        "BottomCenter",
+                        "BottomRight"
+                    ),
+                    selectedIndex = floatingToolbarPosition,
+                    onSelectedIndexChange = onFloatingToolbarPositionChange
                 )
                 SuperSwitch(
                     title = "Show Floating Action Button",

@@ -5,6 +5,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
@@ -42,6 +45,7 @@ import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.FloatingActionButton
+import top.yukonga.miuix.kmp.basic.FloatingToolbar
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.ListPopup
@@ -54,9 +58,11 @@ import top.yukonga.miuix.kmp.basic.PopupPositionProvider
 import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.SmallTopAppBar
+import top.yukonga.miuix.kmp.basic.ToolbarPosition
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.extra.DropdownImpl
 import top.yukonga.miuix.kmp.icon.MiuixIcons
+import top.yukonga.miuix.kmp.icon.icons.basic.Check
 import top.yukonga.miuix.kmp.icon.icons.other.GitHub
 import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
 import top.yukonga.miuix.kmp.icon.icons.useful.NavigatorSwitch
@@ -70,6 +76,8 @@ data class UIState(
     val showFPSMonitor: Boolean = false,
     val showTopAppBar: Boolean = true,
     val showBottomBar: Boolean = true,
+    val useFloatingToolbar: Boolean = false,
+    val floatingToolbarPosition: Int = 7,
     val showFloatingActionButton: Boolean = true,
     val enablePageUserScroll: Boolean = false,
     val isTopPopupExpanded: Boolean = false
@@ -131,7 +139,7 @@ fun UITest(
         },
         bottomBar = {
             AnimatedVisibility(
-                visible = uiState.showBottomBar,
+                visible = uiState.showBottomBar && !uiState.useFloatingToolbar,
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
@@ -183,6 +191,68 @@ fun UITest(
             onUiStateChange = { uiState = it },
             colorMode = colorMode,
         )
+    }
+
+    AnimatedVisibility(
+        visible = uiState.useFloatingToolbar,
+        enter = fadeIn() + slideInVertically(initialOffsetY = { it }) + expandVertically(),
+        exit = fadeOut() + slideOutVertically(targetOffsetY = { it }) + shrinkVertically()
+    ) {
+        FloatingToolbar(
+            position = when (uiState.floatingToolbarPosition) {
+                0 -> ToolbarPosition.LeftTop
+                1 -> ToolbarPosition.LeftCenter
+                2 -> ToolbarPosition.LeftBottom
+                3 -> ToolbarPosition.RightTop
+                4 -> ToolbarPosition.RightCenter
+                5 -> ToolbarPosition.RightBottom
+                6 -> ToolbarPosition.BottomLeft
+                7 -> ToolbarPosition.BottomCenter
+                8 -> ToolbarPosition.BottomRight
+                else -> ToolbarPosition.BottomCenter
+            },
+            modifier = Modifier.hazeEffect(hazeState) {
+                style = hazeStyle
+                blurRadius = 25.dp
+                noiseFactor = 0f
+            },
+            color = Color.Transparent
+        ) {
+            // IconButton with dynamic tint
+            listOf(
+                MiuixIcons.Useful.NavigatorSwitch to 0,
+                MiuixIcons.Useful.Order to 1,
+                MiuixIcons.Useful.Settings to 2
+            ).forEach { (icon, pageIndex) ->
+                IconButton(
+                    modifier = Modifier.size(48.dp),
+                    onClick = {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(pageIndex)
+                        }
+                    }
+                ) {
+                    Icon(
+                        icon,
+                        contentDescription = null,
+                        tint = if (selectedPage == pageIndex) MiuixTheme.colorScheme.onSurfaceContainer else MiuixTheme.colorScheme.onSurfaceContainerVariant
+                    )
+                }
+            }
+
+            // FPS Monitor toggle button
+            IconButton(
+                onClick = {
+                    uiState = uiState.copy(showFPSMonitor = !uiState.showFPSMonitor)
+                }
+            ) {
+                Icon(
+                    MiuixIcons.Basic.Check,
+                    contentDescription = null,
+                    tint = if (uiState.showFPSMonitor) MiuixTheme.colorScheme.primaryVariant else MiuixTheme.colorScheme.onSurfaceContainerVariant
+                )
+            }
+        }
     }
 
     AnimatedVisibility(
@@ -351,6 +421,10 @@ fun AppHorizontalPager(
                     onShowTopAppBarChange = { onUiStateChange(uiState.copy(showTopAppBar = it)) },
                     showBottomBar = uiState.showBottomBar,
                     onShowBottomBarChange = { onUiStateChange(uiState.copy(showBottomBar = it)) },
+                    useFloatingToolbar = uiState.useFloatingToolbar,
+                    onUseFloatingToolbarChange = { onUiStateChange(uiState.copy(useFloatingToolbar = it)) },
+                    floatingToolbarPosition = uiState.floatingToolbarPosition,
+                    onFloatingToolbarPositionChange = { onUiStateChange(uiState.copy(floatingToolbarPosition = it)) },
                     showFloatingActionButton = uiState.showFloatingActionButton,
                     onShowFloatingActionButtonChange = { onUiStateChange(uiState.copy(showFloatingActionButton = it)) },
                     enablePageUserScroll = uiState.enablePageUserScroll,

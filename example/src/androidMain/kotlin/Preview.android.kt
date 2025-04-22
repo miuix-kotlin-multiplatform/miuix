@@ -60,6 +60,10 @@ fun ThirdPagePreview() {
                 {},
                 false,
                 {},
+                0,
+                {},
+                false,
+                {},
                 false,
                 {},
                 remember { mutableIntStateOf(0) }
