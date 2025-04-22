@@ -48,14 +48,14 @@ Scaffold(
 | topBar                       | @Composable () -> Unit              | 顶部栏，通常是 TopAppBar                     | {}                                | 否       |
 | bottomBar                    | @Composable () -> Unit              | 底部栏，通常是 NavigationBar                 | {}                                | 否       |
 | floatingActionButton         | @Composable () -> Unit              | 悬浮按钮                                     | {}                                | 否       |
-| floatingActionButtonPosition | MiuixFabPosition                    | 显示悬浮按钮的位置                           | MiuixFabPosition.End              | 否       |
+| floatingActionButtonPosition | FabPosition                    | 显示悬浮按钮的位置                           | FabPosition.End              | 否       |
 | snackbarHost                 | @Composable () -> Unit              | 用于显示 Snackbar 的容器，Miuix 不提供此组件 | {}                                | 否       |
 | popupHost                    | @Composable () -> Unit              | 用于显示弹出窗口的容器                       | \{ MiuixPopupHost() }             | 否       |
 | containerColor               | Color                               | 脚手架的背景颜色                             | MiuixTheme.colorScheme.background | 否       |
 | contentWindowInsets          | WindowInsets                        | 传递给内容的窗口插入边距                     | WindowInsets.statusBars           | 否       |
 | content                      | @Composable (PaddingValues) -> Unit | 脚手架的主要内容区域                         | -                                 | 是       |
 
-### MiuixFabPosition 选项
+### FabPosition 选项
 
 | 选项名     | 说明                                         |
 | ---------- | -------------------------------------------- |
@@ -132,7 +132,7 @@ Scaffold(
             Icon(MiuixIcons.Useful.New, contentDescription = "添加")
         }
     },
-    floatingActionButtonPosition = MiuixFabPosition.End,
+    floatingActionButtonPosition = FabPosition.End,
     content = { paddingValues ->
         // 内容区域需要考虑 padding
         Box(

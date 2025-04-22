@@ -51,6 +51,7 @@ import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.ListPopup
 import top.yukonga.miuix.kmp.basic.ListPopupColumn
 import top.yukonga.miuix.kmp.basic.ListPopupDefaults
+import top.yukonga.miuix.kmp.basic.FabPosition
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.NavigationBar
 import top.yukonga.miuix.kmp.basic.NavigationItem
@@ -79,6 +80,7 @@ data class UIState(
     val useFloatingToolbar: Boolean = false,
     val floatingToolbarPosition: Int = 7,
     val showFloatingActionButton: Boolean = true,
+    val floatingActionButtonPosition: Int = 2,
     val enablePageUserScroll: Boolean = false,
     val isTopPopupExpanded: Boolean = false
 )
@@ -176,6 +178,12 @@ fun UITest(
                     )
                 }
             }
+        },
+        floatingActionButtonPosition = when (uiState.floatingActionButtonPosition) {
+            0 -> FabPosition.Start
+            1 -> FabPosition.Center
+            2 -> FabPosition.End
+            else -> FabPosition.EndOverlay
         }
     ) { padding ->
         AppHorizontalPager(
@@ -216,9 +224,8 @@ fun UITest(
                 blurRadius = 25.dp
                 noiseFactor = 0f
             },
-            color = Color.Transparent
+            color = MiuixTheme.colorScheme.background.copy(0.67f)
         ) {
-            // IconButton with dynamic tint
             listOf(
                 MiuixIcons.Useful.NavigatorSwitch to 0,
                 MiuixIcons.Useful.Order to 1,
@@ -238,19 +245,6 @@ fun UITest(
                         tint = if (selectedPage == pageIndex) MiuixTheme.colorScheme.onSurfaceContainer else MiuixTheme.colorScheme.onSurfaceContainerVariant
                     )
                 }
-            }
-
-            // FPS Monitor toggle button
-            IconButton(
-                onClick = {
-                    uiState = uiState.copy(showFPSMonitor = !uiState.showFPSMonitor)
-                }
-            ) {
-                Icon(
-                    MiuixIcons.Basic.Check,
-                    contentDescription = null,
-                    tint = if (uiState.showFPSMonitor) MiuixTheme.colorScheme.primaryVariant else MiuixTheme.colorScheme.onSurfaceContainerVariant
-                )
             }
         }
     }
@@ -427,6 +421,8 @@ fun AppHorizontalPager(
                     onFloatingToolbarPositionChange = { onUiStateChange(uiState.copy(floatingToolbarPosition = it)) },
                     showFloatingActionButton = uiState.showFloatingActionButton,
                     onShowFloatingActionButtonChange = { onUiStateChange(uiState.copy(showFloatingActionButton = it)) },
+                    fabPosition = uiState.floatingActionButtonPosition,
+                    onFabPositionChange = { onUiStateChange(uiState.copy(floatingActionButtonPosition = it)) },
                     enablePageUserScroll = uiState.enablePageUserScroll,
                     onEnablePageUserScrollChange = { onUiStateChange(uiState.copy(enablePageUserScroll = it)) },
                     colorMode = colorMode

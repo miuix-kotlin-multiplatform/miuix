@@ -100,7 +100,7 @@ Scaffold(
             )
         }
     },
-    floatingActionButtonPosition = MiuixFabPosition.End
+    floatingActionButtonPosition = FabPosition.End
 ) { paddingValues ->
     // 内容区域需要考虑 padding
     Box(

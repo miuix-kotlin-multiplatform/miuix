@@ -100,7 +100,7 @@ Scaffold(
             )
         }
     },
-    floatingActionButtonPosition = MiuixFabPosition.End
+    floatingActionButtonPosition = FabPosition.End
 ) { paddingValues ->
     // Content area needs to consider padding
     Box(

@@ -31,7 +31,6 @@ import androidx.compose.ui.util.fastMaxBy
 import top.yukonga.miuix.kmp.extra.SuperDialog
 import top.yukonga.miuix.kmp.extra.SuperDropdown
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.MiuixPopupHost
 
 /**
@@ -68,7 +67,7 @@ fun Scaffold(
     topBar: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
-    floatingActionButtonPosition: MiuixFabPosition = MiuixFabPosition.End,
+    floatingActionButtonPosition: FabPosition = FabPosition.End,
     snackbarHost: @Composable () -> Unit = {},
     popupHost: @Composable () -> Unit = { MiuixPopupHost() },
     containerColor: Color = MiuixTheme.colorScheme.background,
@@ -113,7 +112,7 @@ fun Scaffold(
  *   typically a [NavigationBar].
  * @param fab the [FloatingActionButton] displayed on top of the [content], below the [snackbar] and
  *   above the [NavigationBar]
- * @param fabPosition [MiuixFabPosition] for the FAB (if present).
+ * @param fabPosition [FabPosition] for the FAB (if present).
  * @param popup the [MiuixPopupHost] displayed on top of the [content].
  * @param content the main 'body' of the [Scaffold].
  * @param contentWindowInsets the [WindowInsets] to apply to the [content].
@@ -124,7 +123,7 @@ private fun ScaffoldLayout(
     snackbar: @Composable () -> Unit,
     bottomBar: @Composable () -> Unit,
     fab: @Composable () -> Unit,
-    fabPosition: MiuixFabPosition,
+    fabPosition: FabPosition,
     popup: @Composable () -> Unit,
     content: @Composable (PaddingValues) -> Unit,
     contentWindowInsets: WindowInsets
@@ -180,7 +179,7 @@ private fun ScaffoldLayout(
                 // FAB distance from the left of the layout, taking into account LTR / RTL
                 val fabLeftOffset =
                     when (fabPosition) {
-                        MiuixFabPosition.Start -> {
+                        FabPosition.Start -> {
                             if (layoutDirection == LayoutDirection.Ltr) {
                                 FabSpacing.roundToPx()
                             } else {
@@ -188,8 +187,8 @@ private fun ScaffoldLayout(
                             }
                         }
 
-                        MiuixFabPosition.End,
-                        MiuixFabPosition.EndOverlay -> {
+                        FabPosition.End,
+                        FabPosition.EndOverlay -> {
                             if (layoutDirection == LayoutDirection.Ltr) {
                                 layoutWidth - FabSpacing.roundToPx() - fabWidth
                             } else {
@@ -213,7 +212,7 @@ private fun ScaffoldLayout(
 
         val fabOffsetFromBottom =
             fabPlacement?.let {
-                if (bottomBarHeight == null || fabPosition == MiuixFabPosition.EndOverlay) {
+                if (bottomBarHeight == null || fabPosition == FabPosition.EndOverlay) {
                     it.height + FabSpacing.roundToPx() + contentWindowInsets.getBottom(this@SubcomposeLayout)
                 } else {
                     // Total height is the bottom bar height + the FAB height + the padding
@@ -313,39 +312,39 @@ internal class MutableWindowInsets(initialInsets: WindowInsets = WindowInsets(0,
 }
 
 @kotlin.jvm.JvmInline
-value class MiuixFabPosition internal constructor(@Suppress("unused") private val value: Int) {
+value class FabPosition internal constructor(@Suppress("unused") private val value: Int) {
     companion object {
         /**
          * Position FAB at the bottom of the screen at the start, above the [NavigationBar] (if it
          * exists)
          */
-        val Start = MiuixFabPosition(0)
+        val Start = FabPosition(0)
 
         /**
          * Position FAB at the bottom of the screen in the center, above the [NavigationBar] (if it
          * exists)
          */
-        val Center = MiuixFabPosition(1)
+        val Center = FabPosition(1)
 
         /**
          * Position FAB at the bottom of the screen at the end, above the [NavigationBar] (if it
          * exists)
          */
-        val End = MiuixFabPosition(2)
+        val End = FabPosition(2)
 
         /**
          * Position FAB at the bottom of the screen at the end, overlaying the [NavigationBar] (if
          * it exists)
          */
-        val EndOverlay = MiuixFabPosition(3)
+        val EndOverlay = FabPosition(3)
     }
 
     override fun toString(): String {
         return when (this) {
-            Start -> "MiuixFabPosition.Start"
-            Center -> "MiuixFabPosition.Center"
-            End -> "MiuixFabPosition.End"
-            else -> "MiuixFabPosition.EndOverlay"
+            Start -> "FabPosition.Start"
+            Center -> "FabPosition.Center"
+            End -> "FabPosition.End"
+            else -> "FabPosition.EndOverlay"
         }
     }
 }

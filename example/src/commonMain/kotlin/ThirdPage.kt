@@ -1,3 +1,4 @@
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -39,6 +40,8 @@ fun ThirdPage(
     onFloatingToolbarPositionChange: (Int) -> Unit,
     showFloatingActionButton: Boolean,
     onShowFloatingActionButtonChange: (Boolean) -> Unit,
+    fabPosition: Int,
+    onFabPositionChange: (Int) -> Unit,
     enablePageUserScroll: Boolean,
     onEnablePageUserScrollChange: (Boolean) -> Unit,
     colorMode: MutableState<Int>
@@ -76,27 +79,48 @@ fun ThirdPage(
                     checked = useFloatingToolbar,
                     onCheckedChange = onUseFloatingToolbarChange
                 )
-                SuperDropdown(
-                    title = "Floating Toolbar Position",
-                    items = listOf(
-                        "LeftTop",
-                        "LeftCenter",
-                        "LeftBottom",
-                        "RightTop",
-                        "RightCenter",
-                        "RightBottom",
-                        "BottomLeft",
-                        "BottomCenter",
-                        "BottomRight"
-                    ),
-                    selectedIndex = floatingToolbarPosition,
-                    onSelectedIndexChange = onFloatingToolbarPositionChange
-                )
+                AnimatedVisibility(
+                    visible = useFloatingToolbar
+                ) {
+                    SuperDropdown(
+                        title = "Floating Toolbar Position",
+                        items = listOf(
+                            "LeftTop",
+                            "LeftCenter",
+                            "LeftBottom",
+                            "RightTop",
+                            "RightCenter",
+                            "RightBottom",
+                            "BottomLeft",
+                            "BottomCenter",
+                            "BottomRight"
+                        ),
+                        selectedIndex = floatingToolbarPosition,
+                        onSelectedIndexChange = onFloatingToolbarPositionChange
+                    )
+                }
                 SuperSwitch(
                     title = "Show Floating Action Button",
                     checked = showFloatingActionButton,
                     onCheckedChange = onShowFloatingActionButtonChange
                 )
+                AnimatedVisibility(
+                    visible = showFloatingActionButton
+                ) {
+                    SuperDropdown(
+                        title = "Floating Action Button Position",
+                        items = listOf(
+                            "Start",
+                            "Center",
+                            "End",
+                            "EndOverlay",
+                        ),
+                        selectedIndex = fabPosition,
+                        onSelectedIndexChange = { fabPosition ->
+                            onFabPositionChange(fabPosition)
+                        }
+                    )
+                }
                 SuperSwitch(
                     title = "Enable Page User Scroll",
                     checked = enablePageUserScroll,

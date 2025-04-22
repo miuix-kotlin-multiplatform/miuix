@@ -48,14 +48,14 @@ Scaffold(
 | topBar                       | @Composable () -> Unit              | Top bar, usually a TopAppBar                                             | {}                                | No       |
 | bottomBar                    | @Composable () -> Unit              | Bottom bar, usually a NavigationBar                                      | {}                                | No       |
 | floatingActionButton         | @Composable () -> Unit              | Floating action button                                                   | {}                                | No       |
-| floatingActionButtonPosition | MiuixFabPosition                    | Position to display the floating action button                           | MiuixFabPosition.End              | No       |
+| floatingActionButtonPosition | FabPosition                    | Position to display the floating action button                           | FabPosition.End              | No       |
 | snackbarHost                 | @Composable () -> Unit              | Container for displaying Snackbar, Miuix does not provide this component | {}                                | No       |
 | popupHost                    | @Composable () -> Unit              | Container for displaying popup windows                                   | \{ MiuixPopupHost() }             | No       |
 | containerColor               | Color                               | Background color of the scaffold                                         | MiuixTheme.colorScheme.background | No       |
 | contentWindowInsets          | WindowInsets                        | Window insets passed to the content                                      | WindowInsets.statusBars           | No       |
 | content                      | @Composable (PaddingValues) -> Unit | Main content area of the scaffold                                        | -                                 | Yes      |
 
-### MiuixFabPosition Options
+### FabPosition Options
 
 | Option Name | Description                                                                                    |
 | ----------- | ---------------------------------------------------------------------------------------------- |
@@ -132,7 +132,7 @@ Scaffold(
             Icon(MiuixIcons.Useful.New, contentDescription = "Add")
         }
     },
-    floatingActionButtonPosition = MiuixFabPosition.End,
+    floatingActionButtonPosition = FabPosition.End,
     content = { paddingValues ->
         // The content area needs to consider padding
         Box(
