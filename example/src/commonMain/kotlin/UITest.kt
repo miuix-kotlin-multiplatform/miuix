@@ -5,8 +5,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -86,10 +84,10 @@ data class UIState(
     val floatingBottomBarShowMode: Int = 0,
     val floatingBottomBarPosition: Int = 0,
     val showFloatingToolbar: Boolean = false,
-    val floatingToolbarPosition: Int = 7,
+    val floatingToolbarPosition: Int = 1,
+    val floatingToolbarOrientation: Int = 1,
     val showFloatingActionButton: Boolean = true,
     val floatingActionButtonPosition: Int = 2,
-    val floatingToolbarOrientation: Int = 0,
     val enablePageUserScroll: Boolean = false,
     val isTopPopupExpanded: Boolean = false
 )
@@ -165,7 +163,11 @@ fun UITest(
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
-                AnimatedVisibility(!uiState.useFloatingBottomBar) {
+                AnimatedVisibility(
+                    visible = !uiState.useFloatingBottomBar,
+                    enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
+                    exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top)
+                ) {
                     NavigationBar(
                         modifier = Modifier
                             .hazeEffect(hazeState) {
@@ -176,15 +178,17 @@ fun UITest(
                         items = navigationItem,
                         selected = selectedPage,
                         onClick = { index ->
-                            if (index in 0..navigationItem.lastIndex) {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(index)
-                                }
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(index)
                             }
                         }
                     )
                 }
-                AnimatedVisibility(uiState.useFloatingBottomBar) {
+                AnimatedVisibility(
+                    visible = uiState.useFloatingBottomBar,
+                    enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
+                    exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top)
+                ) {
                     FloatingNavigationBar(
                         modifier = Modifier
                             .hazeEffect(hazeState) {
@@ -202,14 +206,11 @@ fun UITest(
                         horizontalAlignment = when (uiState.floatingBottomBarPosition) {
                             0 -> CenterHorizontally
                             1 -> Alignment.Start
-                            2 -> Alignment.End
-                            else -> CenterHorizontally
+                            else -> Alignment.End
                         },
                         onClick = { index ->
-                            if (index in 0..navigationItem.lastIndex) {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(index)
-                                }
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(index)
                             }
                         }
                     )
@@ -240,8 +241,8 @@ fun UITest(
         floatingToolbar = {
             AnimatedVisibility(
                 visible = uiState.showFloatingToolbar,
-                enter = fadeIn() + slideInVertically(initialOffsetY = { it }) + expandVertically(),
-                exit = fadeOut() + slideOutVertically(targetOffsetY = { it }) + shrinkVertically()
+                enter = fadeIn(),
+                exit = fadeOut(),
             ) {
                 FloatingToolbar(
                     items = floatingToolbarItem,
