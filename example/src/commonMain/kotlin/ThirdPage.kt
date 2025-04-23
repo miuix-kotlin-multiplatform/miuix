@@ -1,4 +1,5 @@
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -38,6 +39,8 @@ fun ThirdPage(
     onUseFloatingToolbarChange: (Boolean) -> Unit,
     floatingToolbarPosition: Int,
     onFloatingToolbarPositionChange: (Int) -> Unit,
+    floatingToolbarOrientation: Int,
+    onFloatingToolbarOrientationChange: (Int) -> Unit,
     showFloatingActionButton: Boolean,
     onShowFloatingActionButtonChange: (Boolean) -> Unit,
     fabPosition: Int,
@@ -71,7 +74,7 @@ fun ThirdPage(
                 )
                 SuperSwitch(
                     title = "Show Bottom Bar",
-                    checked = showBottomBar,
+                    checked = if (useFloatingToolbar) false else showBottomBar,
                     onCheckedChange = onShowBottomBarChange
                 )
                 SuperSwitch(
@@ -82,22 +85,29 @@ fun ThirdPage(
                 AnimatedVisibility(
                     visible = useFloatingToolbar
                 ) {
-                    SuperDropdown(
-                        title = "Floating Toolbar Position",
-                        items = listOf(
-                            "LeftTop",
-                            "LeftCenter",
-                            "LeftBottom",
-                            "RightTop",
-                            "RightCenter",
-                            "RightBottom",
-                            "BottomLeft",
-                            "BottomCenter",
-                            "BottomRight"
-                        ),
-                        selectedIndex = floatingToolbarPosition,
-                        onSelectedIndexChange = onFloatingToolbarPositionChange
-                    )
+                    Column {
+                        SuperDropdown(
+                            title = "Floating Toolbar Position",
+                            items = listOf(
+                                "TopStart",
+                                "CenterStart",
+                                "BottomStart",
+                                "TopEnd",
+                                "CenterEnd",
+                                "BottomEnd",
+                                "TopCenter",
+                                "BottomCenter"
+                            ),
+                            selectedIndex = floatingToolbarPosition,
+                            onSelectedIndexChange = onFloatingToolbarPositionChange
+                        )
+                        SuperDropdown(
+                            title = "Floating Toolbar Orientation",
+                            items = listOf("Horizontal", "Vertical"),
+                            selectedIndex = floatingToolbarOrientation,
+                            onSelectedIndexChange = onFloatingToolbarOrientationChange
+                        )
+                    }
                 }
                 SuperSwitch(
                     title = "Show Floating Action Button",

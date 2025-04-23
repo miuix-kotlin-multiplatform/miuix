@@ -1,93 +1,127 @@
 package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.captionBar
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import top.yukonga.miuix.kmp.basic.ToolbarPosition.BottomCenter
-import top.yukonga.miuix.kmp.basic.ToolbarPosition.BottomLeft
-import top.yukonga.miuix.kmp.basic.ToolbarPosition.BottomRight
-import top.yukonga.miuix.kmp.basic.ToolbarPosition.LeftBottom
-import top.yukonga.miuix.kmp.basic.ToolbarPosition.LeftCenter
-import top.yukonga.miuix.kmp.basic.ToolbarPosition.LeftTop
-import top.yukonga.miuix.kmp.basic.ToolbarPosition.RightBottom
-import top.yukonga.miuix.kmp.basic.ToolbarPosition.RightCenter
-import top.yukonga.miuix.kmp.basic.ToolbarPosition.RightTop
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
-@OptIn(ExperimentalAnimationApi::class)
+/**
+ * A [FloatingToolbar] that renders its content in a Card, arranged either horizontally or vertically.
+ * The actual placement on screen is handled by the parent, typically Scaffold.
+ *
+ * @param items The list of [NavigationItem]s to display in the toolbar.
+ * @param selected The index of the currently selected item.
+ * @param onClick The callback invoked when an item is clicked.
+ * @param modifier The modifier to be applied to the [FloatingToolbar].
+ * @param targetState The orientation of the buttons inside the [FloatingToolbar] (Horizontal or Vertical).
+ * @param cornerRadius Corner radius of the [FloatingToolbar] background Card.
+ * @param color Background color of the [FloatingToolbar].
+ * @param contentPadding Padding inside the [FloatingToolbar], around the buttons.
+ * @param outSidePadding Padding outside the [FloatingToolbar].
+ * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [FloatingToolbar].
+ */
 @Composable
-        /**
-         * A floating toolbar that can be positioned at various screen edges.
-         * Supports animated transitions between positions and customizable content.
-         *
-         * @param modifier Modifier applied to the toolbar content.
-         * @param cornerRadius Corner radius of the toolbar background.
-         * @param position ToolbarPosition specifying where the toolbar is aligned.
-         * @param color Background color of the toolbar.
-         * @param insideMargin Padding between the toolbar and screen edges.
-         * @param buttons Composable content of the toolbar (e.g., buttons).
-         */
 fun FloatingToolbar(
+    items: List<FloatingToolbarItem>,
+    selected: Int,
+    onClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    cornerRadius: Dp = CardDefaults.CornerRadius,
-    position: ToolbarPosition = BottomCenter,
-    color: Color = MiuixTheme.colorScheme.background,
-    insideMargin: PaddingValues = PaddingValues(12.dp, 8.dp),
-    buttons: @Composable () -> Unit
+    targetState: FloatingToolbarOrientation = FloatingToolbarDefaults.Orientation,
+    cornerRadius: Dp = FloatingToolbarDefaults.CornerRadius,
+    color: Color = FloatingToolbarDefaults.DefaultColor(),
+    contentPadding: PaddingValues = FloatingToolbarDefaults.ContentPadding,
+    outSidePadding: PaddingValues = FloatingToolbarDefaults.OutSidePadding,
+    showBorder: Boolean = true,
+    defaultWindowInsetsPadding: Boolean = true,
 ) {
-    val alignment = position.toAlignment()
-    val isHorizontal = position.isBottomRow()
-    val bottomPadding = if (position.needsBottomInset())
-        WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-    else 0.dp
+    Column(
+        modifier = Modifier
+            .padding(outSidePadding)
+            .then(
+                if (defaultWindowInsetsPadding) {
+                    Modifier
+                        .windowInsetsPadding(WindowInsets.statusBars.only(WindowInsetsSides.Vertical))
+                        .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Vertical))
+                        .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
+                        .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal))
+                } else Modifier
+            )
 
-    Box(Modifier.fillMaxSize()) {
-        Box(
-            modifier = Modifier
-                .align(alignment)
-                .padding(insideMargin)
-                .padding(bottom = bottomPadding)
-        ) {
-            Card(
-                cornerRadius = cornerRadius,
-                color = color
-            ) {
-                AnimatedContent(
-                    targetState = position,
-                    transitionSpec = { fadeIn() togetherWith fadeOut() },
-                    label = "toolbar-animation"
-                ) {
-                    if (isHorizontal) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = modifier.padding(vertical = 8.dp, horizontal = 8.dp)
-                        ) { buttons() }
-                    } else {
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = modifier.padding(vertical = 8.dp, horizontal = 8.dp)
-                        ) { buttons() }
+            .background(color = color)
+            .then(
+                if (showBorder) {
+                    Modifier
+                        .background(color = MiuixTheme.colorScheme.dividerLine, shape = SmoothRoundedCornerShape(cornerRadius))
+                        .padding(0.75.dp)
+                } else Modifier
+            )
+            .clip(SmoothRoundedCornerShape(cornerRadius))
+    ) {
+        AnimatedContent(
+            modifier = modifier,
+            targetState = targetState,
+            transitionSpec = { fadeIn() togetherWith fadeOut() },
+            label = "toolbar-animation"
+        ) { targetOrientation ->
+            val layoutModifier = Modifier.padding(contentPadding)
+            val content = @Composable {
+                items.forEachIndexed { index, item ->
+                    IconButton(
+                        modifier = Modifier.size(48.dp),
+                        onClick = { onClick(index) }
+                    ) {
+                        Icon(
+                            item.icon,
+                            contentDescription = item.label,
+                            tint = if (selected == index) {
+                                MiuixTheme.colorScheme.onSurfaceContainer
+                            } else {
+                                MiuixTheme.colorScheme.onSurfaceContainerVariant
+                            }
+                        )
                     }
+                }
+            }
+            when (targetOrientation) {
+                FloatingToolbarOrientation.Horizontal -> {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = layoutModifier
+                    ) { content() }
+                }
+
+                FloatingToolbarOrientation.Vertical -> {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = layoutModifier
+                    ) { content() }
                 }
             }
         }
@@ -95,60 +129,49 @@ fun FloatingToolbar(
 }
 
 /**
- * Returns true if the position is one of the bottom row options.
+ * Represents the orientation of the FloatingToolbar's content.
  */
-fun ToolbarPosition.isBottomRow(): Boolean = this in listOf(
-    BottomLeft,
-    BottomCenter,
-    BottomRight
-)
-
-/**
- * Returns true if the position should include bottom system inset padding.
- */
-fun ToolbarPosition.needsBottomInset(): Boolean = this in listOf(
-    LeftBottom,
-    RightBottom,
-    BottomLeft,
-    BottomCenter,
-    BottomRight
-)
-
-/**
- * Represents the position of a toolbar in a layout.
- *
- * @property LeftTop Top left corner of the container
- * @property LeftCenter Center left of the container
- * @property LeftBottom Bottom left corner of the container
- * @property RightTop Top right corner of the container
- * @property RightCenter Center right of the container
- * @property RightBottom Bottom right corner of the container
- * @property BottomLeft Left side of the bottom row
- * @property BottomCenter Center of the bottom row
- * @property BottomRight Right side of the bottom row
- */
-enum class ToolbarPosition {
-    LeftTop,
-    LeftCenter,
-    LeftBottom,
-    RightTop,
-    RightCenter,
-    RightBottom,
-    BottomLeft,
-    BottomCenter,
-    BottomRight;
-
-    fun toAlignment(): Alignment {
-        return when (this) {
-            LeftTop -> Alignment.TopStart
-            LeftCenter -> Alignment.CenterStart
-            LeftBottom -> Alignment.BottomStart
-            RightTop -> Alignment.TopEnd
-            RightCenter -> Alignment.CenterEnd
-            RightBottom -> Alignment.BottomEnd
-            BottomLeft -> Alignment.BottomStart
-            BottomCenter -> Alignment.BottomCenter
-            BottomRight -> Alignment.BottomEnd
-        }
-    }
+enum class FloatingToolbarOrientation {
+    Horizontal, Vertical
 }
+
+object FloatingToolbarDefaults {
+
+    /**
+     * Default orientation of the context of the [FloatingToolbar].
+     */
+    val Orientation = FloatingToolbarOrientation.Horizontal
+
+    /**
+     * Default corner radius of the [FloatingToolbar].
+     */
+    val CornerRadius = 50.dp
+
+    /**
+     * Default color of the [FloatingToolbar].
+     */
+    @Composable
+    fun DefaultColor() = MiuixTheme.colorScheme.surfaceContainer
+
+    /**
+     * Default padding inside the [FloatingToolbar].
+     */
+    val ContentPadding = PaddingValues(8.dp)
+
+    /**
+     * Default padding outside the [FloatingToolbar].
+     */
+    val OutSidePadding = PaddingValues(12.dp, 8.dp)
+}
+
+
+/**
+ * The data class for [FloatingToolbar].
+ *
+ * @param label The label of the item.
+ * @param icon The icon of the item.
+ */
+data class FloatingToolbarItem(
+    val label: String,
+    val icon: ImageVector
+)

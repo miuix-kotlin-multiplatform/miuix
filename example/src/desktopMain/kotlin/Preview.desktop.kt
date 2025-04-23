@@ -56,6 +56,8 @@ fun ThirdPagePreview() {
                 {},
                 7,
                 {},
+                0,
+                {},
                 false,
                 {},
                 2,

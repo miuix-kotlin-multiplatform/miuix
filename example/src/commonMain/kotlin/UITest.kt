@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
@@ -34,6 +33,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
@@ -44,14 +44,16 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import kotlinx.coroutines.launch
+import top.yukonga.miuix.kmp.basic.FabPosition
 import top.yukonga.miuix.kmp.basic.FloatingActionButton
 import top.yukonga.miuix.kmp.basic.FloatingToolbar
+import top.yukonga.miuix.kmp.basic.FloatingToolbarItem
+import top.yukonga.miuix.kmp.basic.FloatingToolbarOrientation
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.ListPopup
 import top.yukonga.miuix.kmp.basic.ListPopupColumn
 import top.yukonga.miuix.kmp.basic.ListPopupDefaults
-import top.yukonga.miuix.kmp.basic.FabPosition
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.NavigationBar
 import top.yukonga.miuix.kmp.basic.NavigationItem
@@ -63,7 +65,6 @@ import top.yukonga.miuix.kmp.basic.ToolbarPosition
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.extra.DropdownImpl
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.basic.Check
 import top.yukonga.miuix.kmp.icon.icons.other.GitHub
 import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
 import top.yukonga.miuix.kmp.icon.icons.useful.NavigatorSwitch
@@ -81,6 +82,7 @@ data class UIState(
     val floatingToolbarPosition: Int = 7,
     val showFloatingActionButton: Boolean = true,
     val floatingActionButtonPosition: Int = 2,
+    val floatingToolbarOrientation: Int = 0,
     val enablePageUserScroll: Boolean = false,
     val isTopPopupExpanded: Boolean = false
 )
@@ -95,12 +97,23 @@ fun UITest(
     val selectedPage by remember { derivedStateOf { pagerState.currentPage } }
     val currentScrollBehavior = topAppBarScrollBehaviorList[selectedPage]
 
-    val items = remember {
-        listOf(
-            NavigationItem("HomePage", MiuixIcons.Useful.NavigatorSwitch),
-            NavigationItem("DropDown", MiuixIcons.Useful.Order),
-            NavigationItem("Settings", MiuixIcons.Useful.Settings)
-        )
+
+    @Composable
+    fun rememberCommonItems(): List<Pair<String, ImageVector>> {
+        return remember {
+            listOf(
+                "HomePage" to MiuixIcons.Useful.NavigatorSwitch,
+                "DropDown" to MiuixIcons.Useful.Order,
+                "Settings" to MiuixIcons.Useful.Settings
+            )
+        }
+    }
+
+    val navigationItem = rememberCommonItems().map { (label, icon) ->
+        NavigationItem(label, icon)
+    }
+    val floatingToolbarItem = rememberCommonItems().map { (label, icon) ->
+        FloatingToolbarItem(label, icon)
     }
 
     var uiState by remember { mutableStateOf(UIState()) }
@@ -127,7 +140,7 @@ fun UITest(
                     hazeState = hazeState,
                     hazeStyle = hazeStyle,
                     currentScrollBehavior = currentScrollBehavior,
-                    items = items,
+                    items = navigationItem,
                     isTopPopupExpanded = uiState.isTopPopupExpanded,
                     showTopPopup = showTopPopup,
                     onPopupExpandedChange = { uiState = uiState.copy(isTopPopupExpanded = it) },
@@ -152,10 +165,10 @@ fun UITest(
                             blurRadius = 25.dp
                             noiseFactor = 0f
                         },
-                    items = items,
+                    items = navigationItem,
                     selected = selectedPage,
                     onClick = { index ->
-                        if (index in 0..items.lastIndex) {
+                        if (index in 0..navigationItem.lastIndex) {
                             coroutineScope.launch {
                                 pagerState.animateScrollToPage(index)
                             }
@@ -184,6 +197,44 @@ fun UITest(
             1 -> FabPosition.Center
             2 -> FabPosition.End
             else -> FabPosition.EndOverlay
+        },
+        floatingToolbar = {
+            AnimatedVisibility(
+                visible = uiState.useFloatingToolbar,
+                enter = fadeIn() + slideInVertically(initialOffsetY = { it }) + expandVertically(),
+                exit = fadeOut() + slideOutVertically(targetOffsetY = { it }) + shrinkVertically()
+            ) {
+                FloatingToolbar(
+                    items = floatingToolbarItem,
+                    selected = selectedPage,
+                    onClick = { index ->
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    },
+                    modifier = Modifier
+                        .hazeEffect(hazeState) {
+                            style = hazeStyle
+                            blurRadius = 25.dp
+                            noiseFactor = 0f
+                        },
+                    color = Color.Transparent,
+                    targetState = when (uiState.floatingToolbarOrientation) {
+                        0 -> FloatingToolbarOrientation.Horizontal
+                        else -> FloatingToolbarOrientation.Vertical
+                    },
+                )
+            }
+        },
+        floatingToolbarPosition = when (uiState.floatingToolbarPosition) {
+            0 -> ToolbarPosition.TopStart
+            1 -> ToolbarPosition.CenterStart
+            2 -> ToolbarPosition.BottomStart
+            3 -> ToolbarPosition.TopEnd
+            4 -> ToolbarPosition.CenterEnd
+            5 -> ToolbarPosition.BottomEnd
+            6 -> ToolbarPosition.TopCenter
+            else -> ToolbarPosition.BottomCenter
         }
     ) { padding ->
         AppHorizontalPager(
@@ -200,55 +251,6 @@ fun UITest(
             colorMode = colorMode,
         )
     }
-
-    AnimatedVisibility(
-        visible = uiState.useFloatingToolbar,
-        enter = fadeIn() + slideInVertically(initialOffsetY = { it }) + expandVertically(),
-        exit = fadeOut() + slideOutVertically(targetOffsetY = { it }) + shrinkVertically()
-    ) {
-        FloatingToolbar(
-            position = when (uiState.floatingToolbarPosition) {
-                0 -> ToolbarPosition.LeftTop
-                1 -> ToolbarPosition.LeftCenter
-                2 -> ToolbarPosition.LeftBottom
-                3 -> ToolbarPosition.RightTop
-                4 -> ToolbarPosition.RightCenter
-                5 -> ToolbarPosition.RightBottom
-                6 -> ToolbarPosition.BottomLeft
-                7 -> ToolbarPosition.BottomCenter
-                8 -> ToolbarPosition.BottomRight
-                else -> ToolbarPosition.BottomCenter
-            },
-            modifier = Modifier.hazeEffect(hazeState) {
-                style = hazeStyle
-                blurRadius = 25.dp
-                noiseFactor = 0f
-            },
-            color = MiuixTheme.colorScheme.background.copy(0.67f)
-        ) {
-            listOf(
-                MiuixIcons.Useful.NavigatorSwitch to 0,
-                MiuixIcons.Useful.Order to 1,
-                MiuixIcons.Useful.Settings to 2
-            ).forEach { (icon, pageIndex) ->
-                IconButton(
-                    modifier = Modifier.size(48.dp),
-                    onClick = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(pageIndex)
-                        }
-                    }
-                ) {
-                    Icon(
-                        icon,
-                        contentDescription = null,
-                        tint = if (selectedPage == pageIndex) MiuixTheme.colorScheme.onSurfaceContainer else MiuixTheme.colorScheme.onSurfaceContainerVariant
-                    )
-                }
-            }
-        }
-    }
-
     AnimatedVisibility(
         visible = uiState.showFPSMonitor,
         enter = fadeIn() + expandHorizontally(),
@@ -419,6 +421,8 @@ fun AppHorizontalPager(
                     onUseFloatingToolbarChange = { onUiStateChange(uiState.copy(useFloatingToolbar = it)) },
                     floatingToolbarPosition = uiState.floatingToolbarPosition,
                     onFloatingToolbarPositionChange = { onUiStateChange(uiState.copy(floatingToolbarPosition = it)) },
+                    floatingToolbarOrientation = uiState.floatingToolbarOrientation,
+                    onFloatingToolbarOrientationChange = { onUiStateChange(uiState.copy(floatingToolbarOrientation = it)) },
                     showFloatingActionButton = uiState.showFloatingActionButton,
                     onShowFloatingActionButtonChange = { onUiStateChange(uiState.copy(showFloatingActionButton = it)) },
                     fabPosition = uiState.floatingActionButtonPosition,
