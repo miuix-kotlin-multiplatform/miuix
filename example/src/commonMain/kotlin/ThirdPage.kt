@@ -97,7 +97,7 @@ fun ThirdPage(
                         ) {
                             Column {
                                 SuperDropdown(
-                                    title = "BottomBar Toolbar Show Mode",
+                                    title = "BottomBar Show Mode",
                                     items = listOf("IconOnly", "IconAndText", "TextOnly"),
                                     selectedIndex = floatingBottomBarShowMode,
                                     onSelectedIndexChange = onFloatingBottomBarShowModeChange
