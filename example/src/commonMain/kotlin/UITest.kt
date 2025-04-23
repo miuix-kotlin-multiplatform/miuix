@@ -31,6 +31,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -46,6 +48,8 @@ import dev.chrisbanes.haze.hazeSource
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.FabPosition
 import top.yukonga.miuix.kmp.basic.FloatingActionButton
+import top.yukonga.miuix.kmp.basic.FloatingNavigationBar
+import top.yukonga.miuix.kmp.basic.FloatingNavigationBarShowMode
 import top.yukonga.miuix.kmp.basic.FloatingToolbar
 import top.yukonga.miuix.kmp.basic.FloatingToolbarItem
 import top.yukonga.miuix.kmp.basic.FloatingToolbarOrientation
@@ -78,7 +82,10 @@ data class UIState(
     val showFPSMonitor: Boolean = false,
     val showTopAppBar: Boolean = true,
     val showBottomBar: Boolean = true,
-    val useFloatingToolbar: Boolean = false,
+    val useFloatingBottomBar: Boolean = false,
+    val floatingBottomBarShowMode: Int = 0,
+    val floatingBottomBarPosition: Int = 0,
+    val showFloatingToolbar: Boolean = false,
     val floatingToolbarPosition: Int = 7,
     val showFloatingActionButton: Boolean = true,
     val floatingActionButtonPosition: Int = 2,
@@ -154,27 +161,59 @@ fun UITest(
         },
         bottomBar = {
             AnimatedVisibility(
-                visible = uiState.showBottomBar && !uiState.useFloatingToolbar,
+                visible = uiState.showBottomBar,
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
-                NavigationBar(
-                    modifier = Modifier
-                        .hazeEffect(hazeState) {
-                            style = hazeStyle
-                            blurRadius = 25.dp
-                            noiseFactor = 0f
-                        },
-                    items = navigationItem,
-                    selected = selectedPage,
-                    onClick = { index ->
-                        if (index in 0..navigationItem.lastIndex) {
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(index)
+                AnimatedVisibility(!uiState.useFloatingBottomBar) {
+                    NavigationBar(
+                        modifier = Modifier
+                            .hazeEffect(hazeState) {
+                                style = hazeStyle
+                                blurRadius = 25.dp
+                                noiseFactor = 0f
+                            },
+                        items = navigationItem,
+                        selected = selectedPage,
+                        onClick = { index ->
+                            if (index in 0..navigationItem.lastIndex) {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
                             }
                         }
-                    }
-                )
+                    )
+                }
+                AnimatedVisibility(uiState.useFloatingBottomBar) {
+                    FloatingNavigationBar(
+                        modifier = Modifier
+                            .hazeEffect(hazeState) {
+                                style = hazeStyle
+                                blurRadius = 25.dp
+                                noiseFactor = 0f
+                            },
+                        items = navigationItem,
+                        selected = selectedPage,
+                        showMode = when (uiState.floatingBottomBarShowMode) {
+                            0 -> FloatingNavigationBarShowMode.IconOnly
+                            1 -> FloatingNavigationBarShowMode.IconAndText
+                            else -> FloatingNavigationBarShowMode.TextOnly
+                        },
+                        horizontalAlignment = when (uiState.floatingBottomBarPosition) {
+                            0 -> CenterHorizontally
+                            1 -> Alignment.Start
+                            2 -> Alignment.End
+                            else -> CenterHorizontally
+                        },
+                        onClick = { index ->
+                            if (index in 0..navigationItem.lastIndex) {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
+                            }
+                        }
+                    )
+                }
             }
         },
         floatingActionButton = {
@@ -200,7 +239,7 @@ fun UITest(
         },
         floatingToolbar = {
             AnimatedVisibility(
-                visible = uiState.useFloatingToolbar,
+                visible = uiState.showFloatingToolbar,
                 enter = fadeIn() + slideInVertically(initialOffsetY = { it }) + expandVertically(),
                 exit = fadeOut() + slideOutVertically(targetOffsetY = { it }) + shrinkVertically()
             ) {
@@ -417,8 +456,14 @@ fun AppHorizontalPager(
                     onShowTopAppBarChange = { onUiStateChange(uiState.copy(showTopAppBar = it)) },
                     showBottomBar = uiState.showBottomBar,
                     onShowBottomBarChange = { onUiStateChange(uiState.copy(showBottomBar = it)) },
-                    useFloatingToolbar = uiState.useFloatingToolbar,
-                    onUseFloatingToolbarChange = { onUiStateChange(uiState.copy(useFloatingToolbar = it)) },
+                    showFloatingToolbar = uiState.showFloatingToolbar,
+                    onShowFloatingToolbarChange = { onUiStateChange(uiState.copy(showFloatingToolbar = it)) },
+                    useFloatingBottomBar = uiState.useFloatingBottomBar,
+                    onUseFloatingBottomBarChange = { onUiStateChange(uiState.copy(useFloatingBottomBar = it)) },
+                    floatingBottomBarShowMode = uiState.floatingBottomBarShowMode,
+                    onFloatingBottomBarShowModeChange = { onUiStateChange(uiState.copy(floatingBottomBarShowMode = it)) },
+                    floatingBottomBarPosition = uiState.floatingBottomBarPosition,
+                    onFloatingBottomBarPositionChange = { onUiStateChange(uiState.copy(floatingBottomBarPosition = it)) },
                     floatingToolbarPosition = uiState.floatingToolbarPosition,
                     onFloatingToolbarPositionChange = { onUiStateChange(uiState.copy(floatingToolbarPosition = it)) },
                     floatingToolbarOrientation = uiState.floatingToolbarOrientation,

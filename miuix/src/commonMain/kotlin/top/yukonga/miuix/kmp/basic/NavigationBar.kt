@@ -8,18 +8,22 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.captionBar
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,7 +31,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -39,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.Platform
+import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.platform
 
 /**
@@ -145,6 +152,157 @@ fun NavigationBar(
             }
         }
     }
+}
+
+/**
+ * A floating navigation bar that supports 2 to 5 items.
+ *
+ * @param items The list of items to display in the [NavigationBar].
+ * @param selected The index of the currently selected item in the [NavigationBar].
+ * @param onClick A callback function that is invoked when an item is clicked. It receives the selected item's index.
+ * @param modifier A [Modifier] to be applied to the [NavigationBar] for additional customization.
+ * @param color The background color of the [NavigationBar].
+ * @param defaultWindowInsetsPadding Whether to apply default window insets padding (e.g., for status bars or navigation bars).
+ * @param cornerRadius The corner radius of the [NavigationBar], used for rounded corners.
+ * @param outSidePadding The padding applied outside the [NavigationBar].
+ * @param horizontalAlignment The alignment of the [NavigationBar] within its parent, typically used to center it horizontally.
+ * @param showBorder Whether to display a border around the [NavigationBar].
+ * @param showMode The mode for displaying items in the [NavigationBar]. It can show icons, text, or both.
+ */
+@Composable
+fun FloatingNavigationBar(
+    cornerRadius: Dp = FloatingToolbarDefaults.CornerRadius,
+    modifier: Modifier = Modifier,
+    color: Color = MiuixTheme.colorScheme.surfaceContainer,
+    outSidePadding: PaddingValues = FloatingToolbarDefaults.OutSidePadding,
+    horizontalAlignment: Alignment.Horizontal = CenterHorizontally,
+    showBorder: Boolean = true,
+    defaultWindowInsetsPadding: Boolean = true,
+    items: List<NavigationItem>,
+    selected: Int,
+    onClick: (Int) -> Unit,
+    showMode: FloatingNavigationBarShowMode = FloatingNavigationBarShowMode.IconOnly
+) {
+    require(items.size in 2..5) { "BottomBar must have between 2 and 5 items" }
+    Surface(
+        color = Color.Transparent
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .padding(outSidePadding)
+                    .then(
+                        if (defaultWindowInsetsPadding) {
+                            Modifier
+                                .windowInsetsPadding(WindowInsets.statusBars.only(WindowInsetsSides.Vertical))
+                                .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Vertical))
+                                .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
+                                .windowInsetsPadding(WindowInsets.navigationBars)
+                        } else Modifier
+                    )
+                    .then(
+                        if (showBorder) {
+                            Modifier
+                                .background(
+                                    color = MiuixTheme.colorScheme.dividerLine,
+                                    shape = SmoothRoundedCornerShape(cornerRadius)
+                                )
+                                .padding(0.75.dp) // 边框内边距
+                        } else Modifier
+                    )
+                    .clip(SmoothRoundedCornerShape(cornerRadius))
+                    .background(color)
+                    .then(modifier)
+                    .padding(horizontal = 12.dp)
+                    .align(horizontalAlignment),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                items.forEachIndexed { index, item ->
+                    val isSelected = selected == index
+                    var isPressed by remember { mutableStateOf(false) }
+                    val tint by animateColorAsState(
+                        targetValue = when {
+                            isPressed -> if (isSelected) {
+                                MiuixTheme.colorScheme.onSurfaceContainer.copy(alpha = 0.6f)
+                            } else {
+                                MiuixTheme.colorScheme.onSurfaceContainerVariant.copy(alpha = 0.6f)
+                            }
+
+                            isSelected -> MiuixTheme.colorScheme.onSurfaceContainer
+                            else -> MiuixTheme.colorScheme.onSurfaceContainerVariant
+                        }
+                    )
+                    val fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                    Column(
+                        modifier = Modifier
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onPress = {
+                                        isPressed = true
+                                        tryAwaitRelease()
+                                        isPressed = false
+                                    },
+                                    onTap = { onClick(index) }
+                                )
+                            },
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        if (showMode == FloatingNavigationBarShowMode.IconAndText) {
+                            Image(
+                                modifier = Modifier.size(32.dp).padding(top = 6.dp),
+                                imageVector = item.icon,
+                                contentDescription = item.label,
+                                colorFilter = ColorFilter.tint(tint)
+                            )
+                            Text(
+                                modifier = Modifier.padding(bottom = if (platform() != Platform.IOS) 12.dp else 0.dp),
+                                text = item.label,
+                                color = tint,
+                                textAlign = TextAlign.Center,
+                                fontSize = 12.sp,
+                                fontWeight = fontWeight
+                            )
+                        } else if (showMode == FloatingNavigationBarShowMode.TextOnly) {
+                            Text(
+                                modifier = Modifier.padding(vertical = 12.dp),
+                                text = item.label,
+                                color = tint,
+                                textAlign = TextAlign.Center,
+                                fontSize = 14.sp,
+                                fontWeight = fontWeight
+                            )
+                        } else {
+                            Image(
+                                modifier = Modifier.padding(vertical = 8.dp).size(32.dp),
+                                imageVector = item.icon,
+                                contentDescription = item.label,
+                                colorFilter = ColorFilter.tint(tint)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Defines the display mode for items in a FloatingNavigationBar.
+ *
+ * This controls whether to show both icon and text, icon only, or text only.
+ */
+enum class FloatingNavigationBarShowMode {
+    /** Show both icon and text. */
+    IconAndText,
+
+    /** Show icon only. */
+    IconOnly,
+
+    /** Show text only. */
+    TextOnly
 }
 
 /** The default expanded height of a [NavigationBar]. */
