@@ -47,7 +47,7 @@ import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.FabPosition
 import top.yukonga.miuix.kmp.basic.FloatingActionButton
 import top.yukonga.miuix.kmp.basic.FloatingNavigationBar
-import top.yukonga.miuix.kmp.basic.FloatingNavigationBarShowMode
+import top.yukonga.miuix.kmp.basic.FloatingNavigationBarMode
 import top.yukonga.miuix.kmp.basic.FloatingToolbar
 import top.yukonga.miuix.kmp.basic.FloatingToolbarItem
 import top.yukonga.miuix.kmp.basic.FloatingToolbarOrientation
@@ -79,10 +79,10 @@ import utils.FPSMonitor
 data class UIState(
     val showFPSMonitor: Boolean = false,
     val showTopAppBar: Boolean = true,
-    val showBottomBar: Boolean = true,
-    val useFloatingBottomBar: Boolean = false,
-    val floatingBottomBarShowMode: Int = 0,
-    val floatingBottomBarPosition: Int = 0,
+    val showNavigationBar: Boolean = true,
+    val useFloatingNavigationBar: Boolean = false,
+    val floatingNavigationBarMode: Int = 0,
+    val floatingNavigationBarPosition: Int = 0,
     val showFloatingToolbar: Boolean = false,
     val floatingToolbarPosition: Int = 1,
     val floatingToolbarOrientation: Int = 1,
@@ -159,12 +159,12 @@ fun UITest(
         },
         bottomBar = {
             AnimatedVisibility(
-                visible = uiState.showBottomBar,
+                visible = uiState.showNavigationBar,
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
                 AnimatedVisibility(
-                    visible = !uiState.useFloatingBottomBar,
+                    visible = !uiState.useFloatingNavigationBar,
                     enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
                     exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top)
                 ) {
@@ -185,7 +185,7 @@ fun UITest(
                     )
                 }
                 AnimatedVisibility(
-                    visible = uiState.useFloatingBottomBar,
+                    visible = uiState.useFloatingNavigationBar,
                     enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
                     exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top)
                 ) {
@@ -198,12 +198,12 @@ fun UITest(
                             },
                         items = navigationItem,
                         selected = selectedPage,
-                        showMode = when (uiState.floatingBottomBarShowMode) {
-                            0 -> FloatingNavigationBarShowMode.IconOnly
-                            1 -> FloatingNavigationBarShowMode.IconAndText
-                            else -> FloatingNavigationBarShowMode.TextOnly
+                        mode = when (uiState.floatingNavigationBarMode) {
+                            0 -> FloatingNavigationBarMode.IconOnly
+                            1 -> FloatingNavigationBarMode.IconAndText
+                            else -> FloatingNavigationBarMode.TextOnly
                         },
-                        horizontalAlignment = when (uiState.floatingBottomBarPosition) {
+                        horizontalAlignment = when (uiState.floatingNavigationBarPosition) {
                             0 -> CenterHorizontally
                             1 -> Alignment.Start
                             else -> Alignment.End
@@ -455,16 +455,16 @@ fun AppHorizontalPager(
                     onShowFPSMonitorChange = { onUiStateChange(uiState.copy(showFPSMonitor = it)) },
                     showTopAppBar = uiState.showTopAppBar,
                     onShowTopAppBarChange = { onUiStateChange(uiState.copy(showTopAppBar = it)) },
-                    showBottomBar = uiState.showBottomBar,
-                    onShowBottomBarChange = { onUiStateChange(uiState.copy(showBottomBar = it)) },
+                    showNavigationBar = uiState.showNavigationBar,
+                    onShowNavigationBarChange = { onUiStateChange(uiState.copy(showNavigationBar = it)) },
                     showFloatingToolbar = uiState.showFloatingToolbar,
                     onShowFloatingToolbarChange = { onUiStateChange(uiState.copy(showFloatingToolbar = it)) },
-                    useFloatingBottomBar = uiState.useFloatingBottomBar,
-                    onUseFloatingBottomBarChange = { onUiStateChange(uiState.copy(useFloatingBottomBar = it)) },
-                    floatingBottomBarShowMode = uiState.floatingBottomBarShowMode,
-                    onFloatingBottomBarShowModeChange = { onUiStateChange(uiState.copy(floatingBottomBarShowMode = it)) },
-                    floatingBottomBarPosition = uiState.floatingBottomBarPosition,
-                    onFloatingBottomBarPositionChange = { onUiStateChange(uiState.copy(floatingBottomBarPosition = it)) },
+                    useFloatingNavigationBar = uiState.useFloatingNavigationBar,
+                    onUseFloatingNavigationBarChange = { onUiStateChange(uiState.copy(useFloatingNavigationBar = it)) },
+                    floatingNavigationBarMode = uiState.floatingNavigationBarMode,
+                    onFloatingNavigationBarModeChange = { onUiStateChange(uiState.copy(floatingNavigationBarMode = it)) },
+                    floatingNavigationBarPosition = uiState.floatingNavigationBarPosition,
+                    onFloatingNavigationBarPositionChange = { onUiStateChange(uiState.copy(floatingNavigationBarPosition = it)) },
                     floatingToolbarPosition = uiState.floatingToolbarPosition,
                     onFloatingToolbarPositionChange = { onUiStateChange(uiState.copy(floatingToolbarPosition = it)) },
                     floatingToolbarOrientation = uiState.floatingToolbarOrientation,

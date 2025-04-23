@@ -165,7 +165,7 @@ fun NavigationBar(
  * @param horizontalAlignment The alignment of the [FloatingNavigationBar] within its parent, typically used to center it horizontally.
  * @param showBorder Whether to display a border around the [FloatingNavigationBar].
  * @param defaultWindowInsetsPadding whether to apply default window insets padding to the [FloatingNavigationBar].
- * @param showMode The mode for displaying items in the [FloatingNavigationBar]. It can show icons, text or both.
+ * @param mode The mode for displaying items in the [FloatingNavigationBar]. It can show icons, text or both.
  */
 @Composable
 fun FloatingNavigationBar(
@@ -178,7 +178,7 @@ fun FloatingNavigationBar(
     horizontalAlignment: Alignment.Horizontal = CenterHorizontally,
     showBorder: Boolean = true,
     defaultWindowInsetsPadding: Boolean = true,
-    showMode: FloatingNavigationBarShowMode = FloatingNavigationBarShowMode.IconOnly
+    mode: FloatingNavigationBarMode = FloatingNavigationBarMode.IconOnly
 ) {
     require(items.size in 2..5) { "FloatingNavigationBar must have between 2 and 5 items" }
     Column(
@@ -244,7 +244,7 @@ fun FloatingNavigationBar(
                         },
                     horizontalAlignment = CenterHorizontally
                 ) {
-                    if (showMode == FloatingNavigationBarShowMode.IconAndText) {
+                    if (mode == FloatingNavigationBarMode.IconAndText) {
                         Image(
                             modifier = Modifier.padding(top = 6.dp).size(24.dp),
                             imageVector = item.icon,
@@ -259,7 +259,7 @@ fun FloatingNavigationBar(
                             fontSize = 12.sp,
                             fontWeight = fontWeight
                         )
-                    } else if (showMode == FloatingNavigationBarShowMode.TextOnly) {
+                    } else if (mode == FloatingNavigationBarMode.TextOnly) {
                         Text(
                             modifier = Modifier.padding(vertical = 16.dp, horizontal = 2.dp),
                             text = item.label,
@@ -287,7 +287,7 @@ fun FloatingNavigationBar(
  *
  * This controls whether to show both icon and text, icon only, or text only.
  */
-enum class FloatingNavigationBarShowMode {
+enum class FloatingNavigationBarMode {
     /** Show both icon and text. */
     IconAndText,
 

@@ -33,14 +33,14 @@ fun ThirdPage(
     onShowFPSMonitorChange: (Boolean) -> Unit,
     showTopAppBar: Boolean,
     onShowTopAppBarChange: (Boolean) -> Unit,
-    showBottomBar: Boolean,
-    onShowBottomBarChange: (Boolean) -> Unit,
-    useFloatingBottomBar: Boolean,
-    onUseFloatingBottomBarChange: (Boolean) -> Unit,
-    floatingBottomBarShowMode: Int,
-    onFloatingBottomBarShowModeChange: (Int) -> Unit,
-    floatingBottomBarPosition: Int,
-    onFloatingBottomBarPositionChange: (Int) -> Unit,
+    showNavigationBar: Boolean,
+    onShowNavigationBarChange: (Boolean) -> Unit,
+    useFloatingNavigationBar: Boolean,
+    onUseFloatingNavigationBarChange: (Boolean) -> Unit,
+    floatingNavigationBarMode: Int,
+    onFloatingNavigationBarModeChange: (Int) -> Unit,
+    floatingNavigationBarPosition: Int,
+    onFloatingNavigationBarPositionChange: (Int) -> Unit,
     showFloatingToolbar: Boolean,
     onShowFloatingToolbarChange: (Boolean) -> Unit,
     floatingToolbarPosition: Int,
@@ -74,46 +74,46 @@ fun ThirdPage(
                     onCheckedChange = onShowFPSMonitorChange
                 )
                 SuperSwitch(
-                    title = "Show Top App Bar",
+                    title = "Show TopAppBar",
                     checked = showTopAppBar,
                     onCheckedChange = onShowTopAppBarChange
                 )
                 SuperSwitch(
-                    title = "Show Bottom Bar",
-                    checked = showBottomBar,
-                    onCheckedChange = onShowBottomBarChange
+                    title = "Show NavigationBar",
+                    checked = showNavigationBar,
+                    onCheckedChange = onShowNavigationBarChange
                 )
                 AnimatedVisibility(
-                    visible = showBottomBar
+                    visible = showNavigationBar
                 ) {
                     Column {
                         SuperSwitch(
-                            title = "Use Floating Bottom Bar",
-                            checked = useFloatingBottomBar,
-                            onCheckedChange = onUseFloatingBottomBarChange
+                            title = "Use FloatingNavigationBar",
+                            checked = useFloatingNavigationBar,
+                            onCheckedChange = onUseFloatingNavigationBarChange
                         )
                         AnimatedVisibility(
-                            visible = useFloatingBottomBar
+                            visible = useFloatingNavigationBar
                         ) {
                             Column {
                                 SuperDropdown(
-                                    title = "BottomBar Show Mode",
+                                    title = "FloatingNavigationBar Mode",
                                     items = listOf("IconOnly", "IconAndText", "TextOnly"),
-                                    selectedIndex = floatingBottomBarShowMode,
-                                    onSelectedIndexChange = onFloatingBottomBarShowModeChange
+                                    selectedIndex = floatingNavigationBarMode,
+                                    onSelectedIndexChange = onFloatingNavigationBarModeChange
                                 )
                                 SuperDropdown(
-                                    title = "Floating BottomBar Position",
+                                    title = "FloatingNavigationBar Position",
                                     items = listOf("Center", "Start", "End"),
-                                    selectedIndex = floatingBottomBarPosition,
-                                    onSelectedIndexChange = onFloatingBottomBarPositionChange
+                                    selectedIndex = floatingNavigationBarPosition,
+                                    onSelectedIndexChange = onFloatingNavigationBarPositionChange
                                 )
                             }
                         }
                     }
                 }
                 SuperSwitch(
-                    title = "Show Floating Toolbar Bar",
+                    title = "Show FloatingToolbar",
                     checked = showFloatingToolbar,
                     onCheckedChange = onShowFloatingToolbarChange
                 )
@@ -122,7 +122,7 @@ fun ThirdPage(
                 ) {
                     Column {
                         SuperDropdown(
-                            title = "Floating Toolbar Position",
+                            title = "FloatingToolbar Position",
                             items = listOf(
                                 "TopStart",
                                 "CenterStart",
@@ -137,7 +137,7 @@ fun ThirdPage(
                             onSelectedIndexChange = onFloatingToolbarPositionChange
                         )
                         SuperDropdown(
-                            title = "Floating Toolbar Orientation",
+                            title = "FloatingToolbar Orientation",
                             items = listOf("Horizontal", "Vertical"),
                             selectedIndex = floatingToolbarOrientation,
                             onSelectedIndexChange = onFloatingToolbarOrientationChange
@@ -145,7 +145,7 @@ fun ThirdPage(
                     }
                 }
                 SuperSwitch(
-                    title = "Show Floating Action Button",
+                    title = "Show FloatingActionButton",
                     checked = showFloatingActionButton,
                     onCheckedChange = onShowFloatingActionButtonChange
                 )
@@ -153,7 +153,7 @@ fun ThirdPage(
                     visible = showFloatingActionButton
                 ) {
                     SuperDropdown(
-                        title = "Floating Action Button Position",
+                        title = "FloatingActionButton Position",
                         items = listOf(
                             "Start",
                             "Center",
