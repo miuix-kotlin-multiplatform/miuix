@@ -68,7 +68,7 @@ fun FloatingToolbar(
                         .windowInsetsPadding(WindowInsets.statusBars.only(WindowInsetsSides.Vertical))
                         .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Vertical))
                         .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
-                        .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal))
+                        .windowInsetsPadding(WindowInsets.navigationBars)
                 } else Modifier
             )
 
