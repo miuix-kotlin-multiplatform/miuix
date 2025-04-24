@@ -182,11 +182,13 @@ fun FloatingNavigationBar(
 ) {
     require(items.size in 2..5) { "FloatingNavigationBar must have between 2 and 5 items" }
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .pointerInput(Unit) { detectTapGestures { /* Do nothing to consume the click */ } }
     ) {
         Row(
             modifier = Modifier
-                .padding(bottom = if (platform() != Platform.IOS) 40.dp else 34.dp)
+                .padding(bottom = if (platform() != Platform.IOS) 36.dp else 30.dp)
                 .then(
                     if (defaultWindowInsetsPadding) {
                         Modifier
@@ -270,7 +272,7 @@ fun FloatingNavigationBar(
                         )
                     } else {
                         Image(
-                            modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp).size(28.dp),
+                            modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp).size(28.dp),
                             imageVector = item.icon,
                             contentDescription = item.label,
                             colorFilter = ColorFilter.tint(tint)

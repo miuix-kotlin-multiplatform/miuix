@@ -1,3 +1,4 @@
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
@@ -5,8 +6,12 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.captionBarPadding
@@ -33,7 +38,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
@@ -43,14 +47,13 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.FabPosition
 import top.yukonga.miuix.kmp.basic.FloatingActionButton
 import top.yukonga.miuix.kmp.basic.FloatingNavigationBar
 import top.yukonga.miuix.kmp.basic.FloatingNavigationBarMode
 import top.yukonga.miuix.kmp.basic.FloatingToolbar
-import top.yukonga.miuix.kmp.basic.FloatingToolbarItem
-import top.yukonga.miuix.kmp.basic.FloatingToolbarOrientation
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.ListPopup
@@ -102,23 +105,12 @@ fun UITest(
     val selectedPage by remember { derivedStateOf { pagerState.currentPage } }
     val currentScrollBehavior = topAppBarScrollBehaviorList[selectedPage]
 
-
-    @Composable
-    fun rememberCommonItems(): List<Pair<String, ImageVector>> {
-        return remember {
-            listOf(
-                "HomePage" to MiuixIcons.Useful.NavigatorSwitch,
-                "DropDown" to MiuixIcons.Useful.Order,
-                "Settings" to MiuixIcons.Useful.Settings
-            )
-        }
-    }
-
-    val navigationItem = rememberCommonItems().map { (label, icon) ->
-        NavigationItem(label, icon)
-    }
-    val floatingToolbarItem = rememberCommonItems().map { (label, icon) ->
-        FloatingToolbarItem(label, icon)
+    val navigationItem = remember {
+        listOf(
+            NavigationItem("HomePage", MiuixIcons.Useful.NavigatorSwitch),
+            NavigationItem("DropDown", MiuixIcons.Useful.Order),
+            NavigationItem("Settings", MiuixIcons.Useful.Settings)
+        )
     }
 
     var uiState by remember { mutableStateOf(UIState()) }
@@ -241,29 +233,35 @@ fun UITest(
         floatingToolbar = {
             AnimatedVisibility(
                 visible = uiState.showFloatingToolbar,
-                enter = fadeIn(),
-                exit = fadeOut(),
+                enter = fadeIn() + slideInVertically(initialOffsetY = { it }) + expandVertically(),
+                exit = fadeOut() + slideOutVertically(targetOffsetY = { it }) + shrinkVertically()
             ) {
                 FloatingToolbar(
-                    items = floatingToolbarItem,
-                    selected = selectedPage,
-                    onClick = { index ->
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
-                    },
                     modifier = Modifier
                         .hazeEffect(hazeState) {
                             style = hazeStyle
                             blurRadius = 25.dp
                             noiseFactor = 0f
                         },
-                    color = Color.Transparent,
-                    targetState = when (uiState.floatingToolbarOrientation) {
-                        0 -> FloatingToolbarOrientation.Horizontal
-                        else -> FloatingToolbarOrientation.Vertical
-                    },
-                )
+                    color = Color.Transparent
+                ) {
+                    AnimatedContent(
+                        targetState = uiState.floatingToolbarOrientation,
+                    ) { orientation ->
+                        val floatingToolbarContent = @Composable {
+                            FloatingToolbarContent(
+                                items = navigationItem,
+                                pagerState = pagerState,
+                                coroutineScope = coroutineScope,
+                                selectedPage = selectedPage
+                            )
+                        }
+                        when (orientation) {
+                            0 -> Row { floatingToolbarContent() }
+                            else -> Column { floatingToolbarContent() }
+                        }
+                    }
+                }
             }
         },
         floatingToolbarPosition = when (uiState.floatingToolbarPosition) {
@@ -480,4 +478,33 @@ fun AppHorizontalPager(
             }
         }
     )
+}
+
+@Composable
+fun FloatingToolbarContent(
+    items: List<NavigationItem>,
+    pagerState: PagerState,
+    coroutineScope: CoroutineScope,
+    selectedPage: Int
+) {
+    items.forEachIndexed { index, item ->
+        IconButton(
+            onClick = {
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(index)
+                }
+            },
+            modifier = Modifier.padding(8.dp)
+        ) {
+            Icon(
+                imageVector = item.icon,
+                tint = if (selectedPage == index) {
+                    MiuixTheme.colorScheme.onSurfaceContainer
+                } else {
+                    MiuixTheme.colorScheme.onSurfaceContainerVariant
+                },
+                contentDescription = item.label
+            )
+        }
+    }
 }
