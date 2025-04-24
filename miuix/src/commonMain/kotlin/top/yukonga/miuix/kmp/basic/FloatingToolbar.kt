@@ -31,8 +31,9 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
  * @param color Background color of the [FloatingToolbar].
  * @param cornerRadius Corner radius of the [FloatingToolbar].
  * @param outSidePadding Padding outside the [FloatingToolbar].
- * @param showBorder Whether to show a border around the [FloatingToolbar].
+ * @param showDivider Whether to show the divider line around the [FloatingToolbar].
  * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [FloatingToolbar].
+ * @param content The [Composable] content of the [FloatingToolbar].
  */
 @Composable
 fun FloatingToolbar(
@@ -40,7 +41,7 @@ fun FloatingToolbar(
     color: Color = FloatingToolbarDefaults.DefaultColor(),
     cornerRadius: Dp = FloatingToolbarDefaults.CornerRadius,
     outSidePadding: PaddingValues = FloatingToolbarDefaults.OutSidePadding,
-    showBorder: Boolean = true,
+    showDivider: Boolean = true,
     defaultWindowInsetsPadding: Boolean = true,
     content: @Composable () -> Unit
 ) {
@@ -58,9 +59,12 @@ fun FloatingToolbar(
             )
             .background(color = color)
             .then(
-                if (showBorder) {
+                if (showDivider) {
                     Modifier
-                        .background(color = MiuixTheme.colorScheme.dividerLine, shape = SmoothRoundedCornerShape(cornerRadius))
+                        .background(
+                            color = MiuixTheme.colorScheme.dividerLine,
+                            shape = SmoothRoundedCornerShape(cornerRadius)
+                        )
                         .padding(0.75.dp)
                 } else Modifier
             )
