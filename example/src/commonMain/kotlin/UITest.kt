@@ -6,8 +6,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -233,8 +231,8 @@ fun UITest(
         floatingToolbar = {
             AnimatedVisibility(
                 visible = uiState.showFloatingToolbar,
-                enter = fadeIn() + slideInVertically(initialOffsetY = { it }) + expandVertically(),
-                exit = fadeOut() + slideOutVertically(targetOffsetY = { it }) + shrinkVertically()
+                enter = fadeIn(),
+                exit = fadeOut()
             ) {
                 FloatingToolbar(
                     modifier = Modifier
