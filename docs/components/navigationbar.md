@@ -1,8 +1,8 @@
-# NavigationBar & FloatingNavigationBar
+# NavigationBar
 
 `NavigationBar` is a bottom navigation bar component in Miuix, used to create navigation menus fixed at the bottom of applications. It supports 2 to 5 navigation items, each containing an icon and a text label.
 
-`FloatingNavigationBar` is a floating-style navigation bar, also supporting 2 to 5 navigation items, offering different display modes (icon only, text only, icon and text).
+`FloatingNavigationBar` is a floating-style bottom navigation bar component, also supporting 2 to 5 navigation items, offering different display modes (icon only, text only, icon and text).
 
 These components are typically used in conjunction with the `Scaffold` component to maintain consistent layout and behavior across different pages in the application.
 

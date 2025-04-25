@@ -68,7 +68,7 @@ export default defineConfig({
                     items: [
                         { text: 'Surface', link: '/components/surface' },
                         { text: 'TopAppBar', link: '/components/topappbar' },
-                        { text: 'NavigationBar & FloatingNavigationBar', link: '/components/navigationbar' },
+                        { text: 'NavigationBar', link: '/components/navigationbar' },
                         { text: 'TabRow', link: '/components/tabrow' },
                         { text: 'Card', link: '/components/card' },
                         { text: 'BasicComponent', link: '/components/basiccomponent' },

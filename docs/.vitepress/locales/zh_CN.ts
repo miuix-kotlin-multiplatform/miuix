@@ -88,7 +88,7 @@ export default defineConfig({
                     items: [
                         { text: 'Surface', link: '/zh_CN/components/surface' },
                         { text: 'TopAppBar', link: '/zh_CN/components/topappbar' },
-                        { text: 'NavigationBar 与 FloatingNavigationBar', link: '/zh_CN/components/navigationbar' },
+                        { text: 'NavigationBar', link: '/zh_CN/components/navigationbar' },
                         { text: 'TabRow', link: '/zh_CN/components/tabrow' },
                         { text: 'Card', link: '/zh_CN/components/card' },
                         { text: 'BasicComponent', link: '/zh_CN/components/basiccomponent' },

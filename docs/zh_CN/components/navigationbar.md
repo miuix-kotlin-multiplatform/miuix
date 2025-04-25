@@ -1,8 +1,8 @@
-# NavigationBar 与 FloatingNavigationBar
+# NavigationBar
 
 `NavigationBar` 是 Miuix 中的底部导航栏组件，用于在应用底部创建导航菜单，支持 2 到 5 个导航项，每个导航项包含图标和文本标签。
 
-`FloatingNavigationBar` 是一个悬浮样式的导航栏，同样支持 2 到 5 个导航项，提供不同的显示模式（仅图标、仅文本、图标和文本）。
+`FloatingNavigationBar` 是一个悬浮样式的底部导航栏组件，同样支持 2 到 5 个导航项，提供不同的显示模式（仅图标、仅文本、图标和文本）。
 
 这些组件通常与 `Scaffold` 组件结合使用，以便在应用程序的不同页面中保持一致的布局和行为。
 
