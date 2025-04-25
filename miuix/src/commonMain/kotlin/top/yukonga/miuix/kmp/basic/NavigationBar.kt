@@ -7,6 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -255,23 +257,49 @@ fun FloatingNavigationBar(
                             contentDescription = item.label,
                             colorFilter = ColorFilter.tint(tint)
                         )
-                        Text(
+                        Box(
                             modifier = Modifier.padding(bottom = 6.dp),
-                            text = item.label,
-                            color = tint,
-                            textAlign = TextAlign.Center,
-                            fontSize = 12.sp,
-                            fontWeight = fontWeight
-                        )
+                            contentAlignment = Alignment.Center
+                        ) {
+                            // Invisible text for layout calculation (always bold)
+                            Text(
+                                modifier = Modifier.alpha(0f),
+                                text = item.label,
+                                textAlign = TextAlign.Center,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold // Always bold for layout
+                            )
+                            // Visible text
+                            Text(
+                                text = item.label,
+                                color = tint,
+                                textAlign = TextAlign.Center,
+                                fontSize = 12.sp,
+                                fontWeight = fontWeight
+                            )
+                        }
                     } else if (mode == FloatingNavigationBarMode.TextOnly) {
-                        Text(
+                        Box(
                             modifier = Modifier.padding(vertical = 16.dp, horizontal = 2.dp),
-                            text = item.label,
-                            color = tint,
-                            textAlign = TextAlign.Center,
-                            fontSize = 14.sp,
-                            fontWeight = fontWeight
-                        )
+                            contentAlignment = Alignment.Center
+                        ) {
+                            // Invisible text for layout calculation
+                            Text(
+                                modifier = Modifier.alpha(0f),
+                                text = item.label,
+                                textAlign = TextAlign.Center,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold // Always bold for layout
+                            )
+                            // Visible text
+                            Text(
+                                text = item.label,
+                                color = tint,
+                                textAlign = TextAlign.Center,
+                                fontSize = 14.sp,
+                                fontWeight = fontWeight
+                            )
+                        }
                     } else {
                         Image(
                             modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp).size(28.dp),
