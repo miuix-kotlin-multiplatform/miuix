@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -45,7 +46,6 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.FabPosition
 import top.yukonga.miuix.kmp.basic.FloatingActionButton
@@ -69,6 +69,8 @@ import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.extra.DropdownImpl
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.other.GitHub
+import top.yukonga.miuix.kmp.icon.icons.useful.Delete
+import top.yukonga.miuix.kmp.icon.icons.useful.Edit
 import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
 import top.yukonga.miuix.kmp.icon.icons.useful.NavigatorSwitch
 import top.yukonga.miuix.kmp.icon.icons.useful.Order
@@ -234,29 +236,46 @@ fun UITest(
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
+                val floatingToolbarBgColor = MiuixTheme.colorScheme.primary
                 FloatingToolbar(
                     modifier = Modifier
                         .hazeEffect(hazeState) {
-                            style = hazeStyle
+                            style = HazeStyle(
+                                backgroundColor = floatingToolbarBgColor,
+                                tint = HazeTint(floatingToolbarBgColor.copy(0.67f))
+                            )
                             blurRadius = 25.dp
                             noiseFactor = 0f
                         },
-                    color = Color.Transparent
+                    color = Color.Transparent,
+                    cornerRadius = 32.dp,
+                    //showDivider = false
                 ) {
                     AnimatedContent(
                         targetState = uiState.floatingToolbarOrientation,
                     ) { orientation ->
-                        val floatingToolbarContent = @Composable {
-                            FloatingToolbarContent(
-                                items = navigationItem,
-                                pagerState = pagerState,
-                                coroutineScope = coroutineScope,
-                                selectedPage = selectedPage
-                            )
+                        @Composable
+                        fun floatingToolbarContent() {
+                            IconButton(onClick = { /* Action 1 */ }) {
+                                Icon(MiuixIcons.Useful.Edit, contentDescription = "Edit", tint = MiuixTheme.colorScheme.onPrimaryContainer)
+                            }
+                            IconButton(onClick = { /* Action 2 */ }) {
+                                Icon(MiuixIcons.Useful.Delete, contentDescription = "Delete", tint = MiuixTheme.colorScheme.onPrimaryContainer)
+                            }
+                            IconButton(onClick = { /* Action 3 */ }) {
+                                Icon(MiuixIcons.Useful.ImmersionMore, contentDescription = "More", tint = MiuixTheme.colorScheme.onPrimaryContainer)
+                            }
                         }
                         when (orientation) {
-                            0 -> Row { floatingToolbarContent() }
-                            else -> Column { floatingToolbarContent() }
+                            0 -> Row(
+                                modifier = Modifier.padding(8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) { floatingToolbarContent() }
+
+                            else -> Column(
+                                modifier = Modifier.padding(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) { floatingToolbarContent() }
                         }
                     }
                 }
@@ -476,33 +495,4 @@ fun AppHorizontalPager(
             }
         }
     )
-}
-
-@Composable
-fun FloatingToolbarContent(
-    items: List<NavigationItem>,
-    pagerState: PagerState,
-    coroutineScope: CoroutineScope,
-    selectedPage: Int
-) {
-    items.forEachIndexed { index, item ->
-        IconButton(
-            onClick = {
-                coroutineScope.launch {
-                    pagerState.animateScrollToPage(index)
-                }
-            },
-            modifier = Modifier.padding(8.dp)
-        ) {
-            Icon(
-                imageVector = item.icon,
-                tint = if (selectedPage == index) {
-                    MiuixTheme.colorScheme.onSurfaceContainer
-                } else {
-                    MiuixTheme.colorScheme.onSurfaceContainerVariant
-                },
-                contentDescription = item.label
-            )
-        }
-    }
 }
