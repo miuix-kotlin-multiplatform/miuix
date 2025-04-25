@@ -37,8 +37,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -162,6 +164,7 @@ fun NavigationBar(
  * @param cornerRadius The corner radius of the [FloatingNavigationBar], used for rounded corners.
  * @param horizontalAlignment The alignment of the [FloatingNavigationBar] within its parent, typically used to center it horizontally.
  * @param horizontalOutSidePadding The horizontal padding to be applied outside the [FloatingNavigationBar].
+ * @param shadowElevation The shadow elevation of the [FloatingNavigationBar].
  * @param showDivider Whether to show the divider line around the [FloatingNavigationBar].
  * @param defaultWindowInsetsPadding whether to apply default window insets padding to the [FloatingNavigationBar].
  * @param mode The mode for displaying items in the [FloatingNavigationBar]. It can show icons, text or both.
@@ -176,7 +179,8 @@ fun FloatingNavigationBar(
     cornerRadius: Dp = FloatingToolbarDefaults.CornerRadius,
     horizontalAlignment: Alignment.Horizontal = CenterHorizontally,
     horizontalOutSidePadding: Dp = 36.dp,
-    showDivider: Boolean = true,
+    shadowElevation: Dp = 1.dp,
+    showDivider: Boolean = false,
     defaultWindowInsetsPadding: Boolean = true,
     mode: FloatingNavigationBarMode = FloatingNavigationBarMode.IconOnly,
 ) {
@@ -211,7 +215,19 @@ fun FloatingNavigationBar(
                             .padding(0.75.dp)
                     } else Modifier
                 )
-                .clip(SmoothRoundedCornerShape(cornerRadius))
+                .then(
+                    if (shadowElevation > 0.dp) {
+                        Modifier.graphicsLayer(
+                            shadowElevation = with(LocalDensity.current) { shadowElevation.toPx() },
+                            shape = SmoothRoundedCornerShape(cornerRadius),
+                            clip = cornerRadius > 0.dp
+                        )
+                    } else if (cornerRadius > 0.dp) {
+                        Modifier.clip(SmoothRoundedCornerShape(cornerRadius))
+                    } else {
+                        Modifier
+                    }
+                )
                 .background(color)
                 .then(modifier)
                 .padding(horizontal = 12.dp)

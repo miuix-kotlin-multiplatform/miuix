@@ -42,7 +42,8 @@ Scaffold(
 | color                      | Color                  | 工具栏背景颜色             | FloatingToolbarDefaults.DefaultColor() | 否       |
 | cornerRadius               | Dp                     | 工具栏圆角半径             | FloatingToolbarDefaults.CornerRadius   | 否       |
 | outSidePadding             | PaddingValues          | 工具栏外部的内边距         | FloatingToolbarDefaults.OutSidePadding | 否       |
-| showDivider                | Boolean                | 是否显示工具栏周围的分割线 | true                                   | 否       |
+| shadowElevation            | Dp                     | 工具栏的阴影高度           | 4.dp                                   | 否       |
+| showDivider                | Boolean                | 是否显示工具栏周围的分割线 | false                                  | 否       |
 | defaultWindowInsetsPadding | Boolean                | 是否应用默认窗口嵌入边距   | true                                   | 否       |
 | content                    | @Composable () -> Unit | 工具栏内容区域的可组合函数 | -                                      | 是       |
 

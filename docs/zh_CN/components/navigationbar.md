@@ -96,7 +96,8 @@ Scaffold(
 | cornerRadius               | Dp                        | 导航栏的圆角半径                   | FloatingToolbarDefaults.CornerRadius    | 否       |
 | horizontalAlignment        | Alignment.Horizontal      | 导航栏在其父容器中的水平对齐方式   | CenterHorizontally                      | 否       |
 | horizontalOutSidePadding   | Dp                        | 导航栏外部的水平内边距             | 36.dp                                   | 否       |
-| showDivider                | Boolean                   | 是否显示导航栏周围的分割线         | true                                    | 否       |
+| shadowElevation            | Dp                        | 导航栏的阴影高度                   | 1.dp                                    | 否       |
+| showDivider                | Boolean                   | 是否显示导航栏周围的分割线         | false                                   | 否       |
 | defaultWindowInsetsPadding | Boolean                   | 是否应用默认窗口嵌入边距           | true                                    | 否       |
 | mode                       | FloatingNavigationBarMode | 导航项的显示模式（图标/文本/两者） | FloatingNavigationBarMode.IconOnly      | 否       |
 

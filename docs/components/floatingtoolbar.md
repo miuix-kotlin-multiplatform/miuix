@@ -42,7 +42,8 @@ Scaffold(
 | color                      | Color                  | Background color of the toolbar        | FloatingToolbarDefaults.DefaultColor() | No       |
 | cornerRadius               | Dp                     | Corner radius of the toolbar           | FloatingToolbarDefaults.CornerRadius   | No       |
 | outSidePadding             | PaddingValues          | Padding outside the toolbar            | FloatingToolbarDefaults.OutSidePadding | No       |
-| showDivider                | Boolean                | Show divider line around the toolbar   | true                                   | No       |
+| shadowElevation            | Dp                     | The shadow elevation of the toolbar    | 4.dp                                   | No       |
+| showDivider                | Boolean                | Show divider line around the toolbar   | false                                  | No       |
 | defaultWindowInsetsPadding | Boolean                | Apply default window insets padding    | true                                   | No       |
 | content                    | @Composable () -> Unit | Composable content area of the toolbar | -                                      | Yes      |
 

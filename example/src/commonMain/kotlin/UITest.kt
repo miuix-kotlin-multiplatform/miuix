@@ -248,8 +248,7 @@ fun UITest(
                             noiseFactor = 0f
                         },
                     color = Color.Transparent,
-                    cornerRadius = 32.dp,
-                    //showDivider = false
+                    cornerRadius = 20.dp
                 ) {
                     AnimatedContent(
                         targetState = uiState.floatingToolbarOrientation,

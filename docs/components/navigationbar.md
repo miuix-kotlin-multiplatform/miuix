@@ -96,7 +96,8 @@ Both `NavigationBar` and `FloatingNavigationBar` automatically handle the visual
 | cornerRadius               | Dp                        | Corner radius of the nav bar            | FloatingToolbarDefaults.CornerRadius    | No       |
 | horizontalAlignment        | Alignment.Horizontal      | Horizontal alignment within its parent  | CenterHorizontally                      | No       |
 | horizontalOutSidePadding   | Dp                        | Horizontal padding outside the nav bar  | 36.dp                                   | No       |
-| showDivider                | Boolean                   | Show divider line around the nav bar    | true                                    | No       |
+| shadowElevation            | Dp                        | The shadow elevation of the nav bar     | 1.dp                                    | No       |
+| showDivider                | Boolean                   | Show divider line around the nav bar    | false                                   | No       |
 | defaultWindowInsetsPadding | Boolean                   | Apply default window insets padding     | true                                    | No       |
 | mode                       | FloatingNavigationBarMode | Display mode for items (icon/text/both) | FloatingNavigationBarMode.IconOnly      | No       |
 

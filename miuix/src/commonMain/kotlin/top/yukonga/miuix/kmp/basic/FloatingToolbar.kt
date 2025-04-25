@@ -17,7 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -31,6 +33,7 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
  * @param color Background color of the [FloatingToolbar].
  * @param cornerRadius Corner radius of the [FloatingToolbar].
  * @param outSidePadding Padding outside the [FloatingToolbar].
+ * @param shadowElevation The shadow elevation of the [FloatingToolbar].
  * @param showDivider Whether to show the divider line around the [FloatingToolbar].
  * @param defaultWindowInsetsPadding Whether to apply default window insets padding to the [FloatingToolbar].
  * @param content The [Composable] content of the [FloatingToolbar].
@@ -41,7 +44,8 @@ fun FloatingToolbar(
     color: Color = FloatingToolbarDefaults.DefaultColor(),
     cornerRadius: Dp = FloatingToolbarDefaults.CornerRadius,
     outSidePadding: PaddingValues = FloatingToolbarDefaults.OutSidePadding,
-    showDivider: Boolean = true,
+    shadowElevation: Dp = 4.dp,
+    showDivider: Boolean = false,
     defaultWindowInsetsPadding: Boolean = true,
     content: @Composable () -> Unit
 ) {
@@ -67,7 +71,19 @@ fun FloatingToolbar(
                         .padding(0.75.dp)
                 } else Modifier
             )
-            .clip(SmoothRoundedCornerShape(cornerRadius))
+            .then(
+                if (shadowElevation > 0.dp) {
+                    Modifier.graphicsLayer(
+                        shadowElevation = with(LocalDensity.current) { shadowElevation.toPx() },
+                        shape = SmoothRoundedCornerShape(cornerRadius),
+                        clip = cornerRadius > 0.dp
+                    )
+                } else if (cornerRadius > 0.dp) {
+                    Modifier.clip(SmoothRoundedCornerShape(cornerRadius))
+                } else {
+                    Modifier
+                }
+            )
             .background(color = color)
             .pointerInput(Unit) { detectTapGestures { /* Do nothing to consume the click */ } }
     ) {
