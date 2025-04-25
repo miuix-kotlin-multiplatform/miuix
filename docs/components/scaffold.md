@@ -48,7 +48,9 @@ Scaffold(
 | topBar                       | @Composable () -> Unit              | Top bar, usually a TopAppBar                                             | {}                                | No       |
 | bottomBar                    | @Composable () -> Unit              | Bottom bar, usually a NavigationBar                                      | {}                                | No       |
 | floatingActionButton         | @Composable () -> Unit              | Floating action button                                                   | {}                                | No       |
-| floatingActionButtonPosition | FabPosition                    | Position to display the floating action button                           | FabPosition.End              | No       |
+| floatingActionButtonPosition | FabPosition                         | Position to display the floating action button                           | FabPosition.End                   | No       |
+| floatingToolbar              | @Composable () -> Unit              | Floating toolbar                                                         | {}                                | No       |
+| floatingToolbarPosition      | ToolbarPosition                     | Position to display the floating toolbar                                 | ToolbarPosition.BottomCenter      | No       |
 | snackbarHost                 | @Composable () -> Unit              | Container for displaying Snackbar, Miuix does not provide this component | {}                                | No       |
 | popupHost                    | @Composable () -> Unit              | Container for displaying popup windows                                   | \{ MiuixPopupHost() }             | No       |
 | containerColor               | Color                               | Background color of the scaffold                                         | MiuixTheme.colorScheme.background | No       |
@@ -63,6 +65,19 @@ Scaffold(
 | Center      | Places the floating action button at the bottom center of the screen, above the bottom bar     |
 | End         | Places the floating action button at the bottom right of the screen, above the bottom bar      |
 | EndOverlay  | Places the floating action button at the bottom right of the screen, overlaying the bottom bar |
+
+### ToolbarPosition Options
+
+| Option Name  | Description                                                          |
+| ------------ | -------------------------------------------------------------------- |
+| TopStart     | Places the floating toolbar at the top start corner                  |
+| CenterStart  | Places the floating toolbar vertically centered on the start edge    |
+| BottomStart  | Places the floating toolbar at the bottom start corner               |
+| TopEnd       | Places the floating toolbar at the top end corner                    |
+| CenterEnd    | Places the floating toolbar vertically centered on the end edge      |
+| BottomEnd    | Places the floating toolbar at the bottom end corner                 |
+| TopCenter    | Places the floating toolbar horizontally centered at the top edge    |
+| BottomCenter | Places the floating toolbar horizontally centered at the bottom edge |
 
 ## Advanced Usage
 

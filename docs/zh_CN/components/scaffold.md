@@ -48,7 +48,9 @@ Scaffold(
 | topBar                       | @Composable () -> Unit              | 顶部栏，通常是 TopAppBar                     | {}                                | 否       |
 | bottomBar                    | @Composable () -> Unit              | 底部栏，通常是 NavigationBar                 | {}                                | 否       |
 | floatingActionButton         | @Composable () -> Unit              | 悬浮按钮                                     | {}                                | 否       |
-| floatingActionButtonPosition | FabPosition                    | 显示悬浮按钮的位置                           | FabPosition.End              | 否       |
+| floatingActionButtonPosition | FabPosition                         | 显示悬浮按钮的位置                           | FabPosition.End                   | 否       |
+| floatingToolbar              | @Composable () -> Unit              | 悬浮工具栏                                   | {}                                | 否       |
+| floatingToolbarPosition      | ToolbarPosition                     | 显示悬浮工具栏的位置                         | ToolbarPosition.BottomCenter      | 否       |
 | snackbarHost                 | @Composable () -> Unit              | 用于显示 Snackbar 的容器，Miuix 不提供此组件 | {}                                | 否       |
 | popupHost                    | @Composable () -> Unit              | 用于显示弹出窗口的容器                       | \{ MiuixPopupHost() }             | 否       |
 | containerColor               | Color                               | 脚手架的背景颜色                             | MiuixTheme.colorScheme.background | 否       |
@@ -63,6 +65,19 @@ Scaffold(
 | Center     | 将悬浮按钮放置在屏幕底部中央，在底部栏上方   |
 | End        | 将悬浮按钮放置在屏幕底部右侧，在底部栏上方   |
 | EndOverlay | 将悬浮按钮放置在屏幕底部右侧，覆盖在底部栏上 |
+
+### ToolbarPosition 选项
+
+| 选项名       | 说明                               |
+| ------------ | ---------------------------------- |
+| TopStart     | 将悬浮工具栏放置在屏幕顶部左侧     |
+| CenterStart  | 将悬浮工具栏放置在屏幕左侧垂直居中 |
+| BottomStart  | 将悬浮工具栏放置在屏幕底部左侧     |
+| TopEnd       | 将悬浮工具栏放置在屏幕顶部右侧     |
+| CenterEnd    | 将悬浮工具栏放置在屏幕右侧垂直居中 |
+| BottomEnd    | 将悬浮工具栏放置在屏幕底部右侧     |
+| TopCenter    | 将悬浮工具栏放置在屏幕顶部水平居中 |
+| BottomCenter | 将悬浮工具栏放置在屏幕底部水平居中 |
 
 ## 进阶用法
 

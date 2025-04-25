@@ -32,6 +32,7 @@ The Scaffold component provides a suitable container for cross-platform popup wi
 | [ProgressIndicator](../components/progressindicator)       | Displays operation progress status         | Loading, progress display             |
 | [Icon](../components/icon)                                 | Icon display component                     | Icon buttons, status indicators       |
 | [FloatingActionButton](../components/floatingactionbutton) | Floating action button                     | Primary actions, quick functions      |
+| [FloatingToolbar](../components/floatingtoolbar)           | Floating toolbar                           | Quick actions, information display    |
 | [Divider](../components/divider)                           | Content separator                          | Block separation, hierarchy division  |
 | [PullToRefresh](../components/pulltorefresh)               | Pull-down refresh operation                | Data update, page refresh             |
 | [SearchBar](../components/searchbar)                       | Search input field                         | Content search, quick find            |

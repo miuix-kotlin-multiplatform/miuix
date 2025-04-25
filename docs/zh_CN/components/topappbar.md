@@ -18,17 +18,21 @@ import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 ### 小标题顶部栏
 
 ```kotlin
-SmallTopAppBar(
-    title = "标题",
-    navigationIcon = {
-        IconButton(onClick = { /* 处理点击事件 */ }) {
-            Icon(MiuixIcons.Useful.Back, contentDescription = "返回")
-        }
-    },
-    actions = {
-        IconButton(onClick = { /* 处理点击事件 */ }) {
-            Icon(MiuixIcons.Useful.More, contentDescription = "更多")
-        }
+Scaffold(
+    topBar = {
+        SmallTopAppBar(
+            title = "标题",
+            navigationIcon = {
+                IconButton(onClick = { /* 处理点击事件 */ }) {
+                    Icon(MiuixIcons.Useful.Back, contentDescription = "返回")
+                }
+            },
+            actions = {
+                IconButton(onClick = { /* 处理点击事件 */ }) {
+                    Icon(MiuixIcons.Useful.More, contentDescription = "更多")
+                }
+            }
+        )
     }
 )
 ```
@@ -36,18 +40,22 @@ SmallTopAppBar(
 ### 大标题顶部栏
 
 ```kotlin
-TopAppBar(
-    title = "标题",
-    largeTitle = "大标题", // 如果不指定，将使用 title 的值
-    navigationIcon = {
-        IconButton(onClick = { /* 处理点击事件 */ }) {
-            Icon(MiuixIcons.Basic.ArrowLeft, contentDescription = "返回")
-        }
-    },
-    actions = {
-        IconButton(onClick = { /* 处理点击事件 */ }) {
-            Icon(MiuixIcons.Useful.More, contentDescription = "更多")
-        }
+Scaffold(
+    topBar = {
+        TopAppBar(
+            title = "标题",
+            largeTitle = "大标题", // 如果不指定，将使用 title 的值
+            navigationIcon = {
+                IconButton(onClick = { /* 处理点击事件 */ }) {
+                    Icon(MiuixIcons.Basic.ArrowLeft, contentDescription = "返回")
+                }
+            },
+            actions = {
+                IconButton(onClick = { /* 处理点击事件 */ }) {
+                    Icon(MiuixIcons.Useful.More, contentDescription = "更多")
+                }
+           }
+        )
     }
 )
 ```

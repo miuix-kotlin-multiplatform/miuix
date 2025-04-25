@@ -68,7 +68,7 @@ export default defineConfig({
                     items: [
                         { text: 'Surface', link: '/components/surface' },
                         { text: 'TopAppBar', link: '/components/topappbar' },
-                        { text: 'NavigationBar', link: '/components/navigationbar' },
+                        { text: 'NavigationBar & FloatingNavigationBar', link: '/components/navigationbar' },
                         { text: 'TabRow', link: '/components/tabrow' },
                         { text: 'Card', link: '/components/card' },
                         { text: 'BasicComponent', link: '/components/basiccomponent' },
@@ -83,6 +83,7 @@ export default defineConfig({
                         { text: 'ProgressIndicator', link: '/components/progressindicator' },
                         { text: 'Icon', link: '/components/icon' },
                         { text: 'FloatingActionButton', link: '/components/floatingactionbutton' },
+                        { text: 'FloatingToolbar', link: '/components/floatingtoolbar' },
                         { text: 'Divider', link: '/components/divider' },
                         { text: 'PullToRefresh', link: '/components/pulltorefresh' },
                         { text: 'SearchBar', link: '/components/searchbar' },

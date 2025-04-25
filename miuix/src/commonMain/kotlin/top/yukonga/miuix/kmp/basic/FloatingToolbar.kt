@@ -57,7 +57,6 @@ fun FloatingToolbar(
                         .windowInsetsPadding(WindowInsets.navigationBars)
                 } else Modifier
             )
-            .background(color = color)
             .then(
                 if (showDivider) {
                     Modifier
@@ -69,6 +68,7 @@ fun FloatingToolbar(
                 } else Modifier
             )
             .clip(SmoothRoundedCornerShape(cornerRadius))
+            .background(color = color)
             .pointerInput(Unit) { detectTapGestures { /* Do nothing to consume the click */ } }
     ) {
         Box(
