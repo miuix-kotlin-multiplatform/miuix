@@ -1,3 +1,4 @@
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
@@ -5,8 +6,11 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.captionBarPadding
@@ -29,6 +33,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -41,7 +47,11 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import kotlinx.coroutines.launch
+import top.yukonga.miuix.kmp.basic.FabPosition
 import top.yukonga.miuix.kmp.basic.FloatingActionButton
+import top.yukonga.miuix.kmp.basic.FloatingNavigationBar
+import top.yukonga.miuix.kmp.basic.FloatingNavigationBarMode
+import top.yukonga.miuix.kmp.basic.FloatingToolbar
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.ListPopup
@@ -54,10 +64,13 @@ import top.yukonga.miuix.kmp.basic.PopupPositionProvider
 import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.SmallTopAppBar
+import top.yukonga.miuix.kmp.basic.ToolbarPosition
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.extra.DropdownImpl
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.other.GitHub
+import top.yukonga.miuix.kmp.icon.icons.useful.Delete
+import top.yukonga.miuix.kmp.icon.icons.useful.Edit
 import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
 import top.yukonga.miuix.kmp.icon.icons.useful.NavigatorSwitch
 import top.yukonga.miuix.kmp.icon.icons.useful.Order
@@ -69,8 +82,15 @@ import utils.FPSMonitor
 data class UIState(
     val showFPSMonitor: Boolean = false,
     val showTopAppBar: Boolean = true,
-    val showBottomBar: Boolean = true,
+    val showNavigationBar: Boolean = true,
+    val useFloatingNavigationBar: Boolean = false,
+    val floatingNavigationBarMode: Int = 0,
+    val floatingNavigationBarPosition: Int = 0,
+    val showFloatingToolbar: Boolean = false,
+    val floatingToolbarPosition: Int = 1,
+    val floatingToolbarOrientation: Int = 1,
     val showFloatingActionButton: Boolean = true,
+    val floatingActionButtonPosition: Int = 2,
     val enablePageUserScroll: Boolean = false,
     val isTopPopupExpanded: Boolean = false
 )
@@ -85,7 +105,7 @@ fun UITest(
     val selectedPage by remember { derivedStateOf { pagerState.currentPage } }
     val currentScrollBehavior = topAppBarScrollBehaviorList[selectedPage]
 
-    val items = remember {
+    val navigationItem = remember {
         listOf(
             NavigationItem("HomePage", MiuixIcons.Useful.NavigatorSwitch),
             NavigationItem("DropDown", MiuixIcons.Useful.Order),
@@ -117,7 +137,7 @@ fun UITest(
                     hazeState = hazeState,
                     hazeStyle = hazeStyle,
                     currentScrollBehavior = currentScrollBehavior,
-                    items = items,
+                    items = navigationItem,
                     isTopPopupExpanded = uiState.isTopPopupExpanded,
                     showTopPopup = showTopPopup,
                     onPopupExpandedChange = { uiState = uiState.copy(isTopPopupExpanded = it) },
@@ -131,27 +151,62 @@ fun UITest(
         },
         bottomBar = {
             AnimatedVisibility(
-                visible = uiState.showBottomBar,
+                visible = uiState.showNavigationBar,
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
-                NavigationBar(
-                    modifier = Modifier
-                        .hazeEffect(hazeState) {
-                            style = hazeStyle
-                            blurRadius = 25.dp
-                            noiseFactor = 0f
-                        },
-                    items = items,
-                    selected = selectedPage,
-                    onClick = { index ->
-                        if (index in 0..items.lastIndex) {
+                AnimatedVisibility(
+                    visible = !uiState.useFloatingNavigationBar,
+                    enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
+                    exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top)
+                ) {
+                    NavigationBar(
+                        modifier = Modifier
+                            .hazeEffect(hazeState) {
+                                style = hazeStyle
+                                blurRadius = 25.dp
+                                noiseFactor = 0f
+                            },
+                        items = navigationItem,
+                        selected = selectedPage,
+                        onClick = { index ->
                             coroutineScope.launch {
                                 pagerState.animateScrollToPage(index)
                             }
                         }
-                    }
-                )
+                    )
+                }
+                AnimatedVisibility(
+                    visible = uiState.useFloatingNavigationBar,
+                    enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
+                    exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top)
+                ) {
+                    FloatingNavigationBar(
+                        modifier = Modifier
+                            .hazeEffect(hazeState) {
+                                style = hazeStyle
+                                blurRadius = 25.dp
+                                noiseFactor = 0f
+                            },
+                        items = navigationItem,
+                        selected = selectedPage,
+                        mode = when (uiState.floatingNavigationBarMode) {
+                            0 -> FloatingNavigationBarMode.IconOnly
+                            1 -> FloatingNavigationBarMode.IconAndText
+                            else -> FloatingNavigationBarMode.TextOnly
+                        },
+                        horizontalAlignment = when (uiState.floatingNavigationBarPosition) {
+                            0 -> CenterHorizontally
+                            1 -> Alignment.Start
+                            else -> Alignment.End
+                        },
+                        onClick = { index ->
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(index)
+                            }
+                        }
+                    )
+                }
             }
         },
         floatingActionButton = {
@@ -168,6 +223,72 @@ fun UITest(
                     )
                 }
             }
+        },
+        floatingActionButtonPosition = when (uiState.floatingActionButtonPosition) {
+            0 -> FabPosition.Start
+            1 -> FabPosition.Center
+            2 -> FabPosition.End
+            else -> FabPosition.EndOverlay
+        },
+        floatingToolbar = {
+            AnimatedVisibility(
+                visible = uiState.showFloatingToolbar,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                val floatingToolbarBgColor = MiuixTheme.colorScheme.primary
+                FloatingToolbar(
+                    modifier = Modifier
+                        .hazeEffect(hazeState) {
+                            style = HazeStyle(
+                                backgroundColor = floatingToolbarBgColor,
+                                tint = HazeTint(floatingToolbarBgColor.copy(0.67f))
+                            )
+                            blurRadius = 25.dp
+                            noiseFactor = 0f
+                        },
+                    color = Color.Transparent,
+                    cornerRadius = 20.dp
+                ) {
+                    AnimatedContent(
+                        targetState = uiState.floatingToolbarOrientation,
+                    ) { orientation ->
+                        @Composable
+                        fun floatingToolbarContent() {
+                            IconButton(onClick = { /* Action 1 */ }) {
+                                Icon(MiuixIcons.Useful.Edit, contentDescription = "Edit", tint = MiuixTheme.colorScheme.onPrimaryContainer)
+                            }
+                            IconButton(onClick = { /* Action 2 */ }) {
+                                Icon(MiuixIcons.Useful.Delete, contentDescription = "Delete", tint = MiuixTheme.colorScheme.onPrimaryContainer)
+                            }
+                            IconButton(onClick = { /* Action 3 */ }) {
+                                Icon(MiuixIcons.Useful.ImmersionMore, contentDescription = "More", tint = MiuixTheme.colorScheme.onPrimaryContainer)
+                            }
+                        }
+                        when (orientation) {
+                            0 -> Row(
+                                modifier = Modifier.padding(8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) { floatingToolbarContent() }
+
+                            else -> Column(
+                                modifier = Modifier.padding(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) { floatingToolbarContent() }
+                        }
+                    }
+                }
+            }
+        },
+        floatingToolbarPosition = when (uiState.floatingToolbarPosition) {
+            0 -> ToolbarPosition.TopStart
+            1 -> ToolbarPosition.CenterStart
+            2 -> ToolbarPosition.BottomStart
+            3 -> ToolbarPosition.TopEnd
+            4 -> ToolbarPosition.CenterEnd
+            5 -> ToolbarPosition.BottomEnd
+            6 -> ToolbarPosition.TopCenter
+            else -> ToolbarPosition.BottomCenter
         }
     ) { padding ->
         AppHorizontalPager(
@@ -184,7 +305,6 @@ fun UITest(
             colorMode = colorMode,
         )
     }
-
     AnimatedVisibility(
         visible = uiState.showFPSMonitor,
         enter = fadeIn() + expandHorizontally(),
@@ -349,10 +469,24 @@ fun AppHorizontalPager(
                     onShowFPSMonitorChange = { onUiStateChange(uiState.copy(showFPSMonitor = it)) },
                     showTopAppBar = uiState.showTopAppBar,
                     onShowTopAppBarChange = { onUiStateChange(uiState.copy(showTopAppBar = it)) },
-                    showBottomBar = uiState.showBottomBar,
-                    onShowBottomBarChange = { onUiStateChange(uiState.copy(showBottomBar = it)) },
+                    showNavigationBar = uiState.showNavigationBar,
+                    onShowNavigationBarChange = { onUiStateChange(uiState.copy(showNavigationBar = it)) },
+                    showFloatingToolbar = uiState.showFloatingToolbar,
+                    onShowFloatingToolbarChange = { onUiStateChange(uiState.copy(showFloatingToolbar = it)) },
+                    useFloatingNavigationBar = uiState.useFloatingNavigationBar,
+                    onUseFloatingNavigationBarChange = { onUiStateChange(uiState.copy(useFloatingNavigationBar = it)) },
+                    floatingNavigationBarMode = uiState.floatingNavigationBarMode,
+                    onFloatingNavigationBarModeChange = { onUiStateChange(uiState.copy(floatingNavigationBarMode = it)) },
+                    floatingNavigationBarPosition = uiState.floatingNavigationBarPosition,
+                    onFloatingNavigationBarPositionChange = { onUiStateChange(uiState.copy(floatingNavigationBarPosition = it)) },
+                    floatingToolbarPosition = uiState.floatingToolbarPosition,
+                    onFloatingToolbarPositionChange = { onUiStateChange(uiState.copy(floatingToolbarPosition = it)) },
+                    floatingToolbarOrientation = uiState.floatingToolbarOrientation,
+                    onFloatingToolbarOrientationChange = { onUiStateChange(uiState.copy(floatingToolbarOrientation = it)) },
                     showFloatingActionButton = uiState.showFloatingActionButton,
                     onShowFloatingActionButtonChange = { onUiStateChange(uiState.copy(showFloatingActionButton = it)) },
+                    fabPosition = uiState.floatingActionButtonPosition,
+                    onFabPositionChange = { onUiStateChange(uiState.copy(floatingActionButtonPosition = it)) },
                     enablePageUserScroll = uiState.enablePageUserScroll,
                     onEnablePageUserScrollChange = { onUiStateChange(uiState.copy(enablePageUserScroll = it)) },
                     colorMode = colorMode

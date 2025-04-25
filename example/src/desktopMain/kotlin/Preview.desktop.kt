@@ -1,7 +1,7 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.Scaffold
@@ -28,7 +28,6 @@ fun MainPagePreview() {
     }
 }
 
-
 @Composable
 @Preview
 fun SecondPagePreview() {
@@ -38,7 +37,6 @@ fun SecondPagePreview() {
         }
     }
 }
-
 
 @Composable
 @Preview
@@ -56,9 +54,23 @@ fun ThirdPagePreview() {
                 {},
                 false,
                 {},
+                0,
+                {},
+                0,
+                {},
                 false,
                 {},
-                remember { mutableStateOf(0) }
+                1,
+                {},
+                1,
+                {},
+                false,
+                {},
+                2,
+                {},
+                false,
+                {},
+                remember { mutableIntStateOf(0) }
             )
         }
     }

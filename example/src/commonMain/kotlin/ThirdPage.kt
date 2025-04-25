@@ -1,3 +1,5 @@
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,10 +33,24 @@ fun ThirdPage(
     onShowFPSMonitorChange: (Boolean) -> Unit,
     showTopAppBar: Boolean,
     onShowTopAppBarChange: (Boolean) -> Unit,
-    showBottomBar: Boolean,
-    onShowBottomBarChange: (Boolean) -> Unit,
+    showNavigationBar: Boolean,
+    onShowNavigationBarChange: (Boolean) -> Unit,
+    useFloatingNavigationBar: Boolean,
+    onUseFloatingNavigationBarChange: (Boolean) -> Unit,
+    floatingNavigationBarMode: Int,
+    onFloatingNavigationBarModeChange: (Int) -> Unit,
+    floatingNavigationBarPosition: Int,
+    onFloatingNavigationBarPositionChange: (Int) -> Unit,
+    showFloatingToolbar: Boolean,
+    onShowFloatingToolbarChange: (Boolean) -> Unit,
+    floatingToolbarPosition: Int,
+    onFloatingToolbarPositionChange: (Int) -> Unit,
+    floatingToolbarOrientation: Int,
+    onFloatingToolbarOrientationChange: (Int) -> Unit,
     showFloatingActionButton: Boolean,
     onShowFloatingActionButtonChange: (Boolean) -> Unit,
+    fabPosition: Int,
+    onFabPositionChange: (Int) -> Unit,
     enablePageUserScroll: Boolean,
     onEnablePageUserScrollChange: (Boolean) -> Unit,
     colorMode: MutableState<Int>
@@ -58,20 +74,98 @@ fun ThirdPage(
                     onCheckedChange = onShowFPSMonitorChange
                 )
                 SuperSwitch(
-                    title = "Show Top App Bar",
+                    title = "Show TopAppBar",
                     checked = showTopAppBar,
                     onCheckedChange = onShowTopAppBarChange
                 )
                 SuperSwitch(
-                    title = "Show Bottom Bar",
-                    checked = showBottomBar,
-                    onCheckedChange = onShowBottomBarChange
+                    title = "Show NavigationBar",
+                    checked = showNavigationBar,
+                    onCheckedChange = onShowNavigationBarChange
                 )
+                AnimatedVisibility(
+                    visible = showNavigationBar
+                ) {
+                    Column {
+                        SuperSwitch(
+                            title = "Use FloatingNavigationBar",
+                            checked = useFloatingNavigationBar,
+                            onCheckedChange = onUseFloatingNavigationBarChange
+                        )
+                        AnimatedVisibility(
+                            visible = useFloatingNavigationBar
+                        ) {
+                            Column {
+                                SuperDropdown(
+                                    title = "FloatingNavigationBar Mode",
+                                    items = listOf("IconOnly", "IconAndText", "TextOnly"),
+                                    selectedIndex = floatingNavigationBarMode,
+                                    onSelectedIndexChange = onFloatingNavigationBarModeChange
+                                )
+                                SuperDropdown(
+                                    title = "FloatingNavigationBar Position",
+                                    items = listOf("Center", "Start", "End"),
+                                    selectedIndex = floatingNavigationBarPosition,
+                                    onSelectedIndexChange = onFloatingNavigationBarPositionChange
+                                )
+                            }
+                        }
+                    }
+                }
                 SuperSwitch(
-                    title = "Show Floating Action Button",
+                    title = "Show FloatingToolbar",
+                    checked = showFloatingToolbar,
+                    onCheckedChange = onShowFloatingToolbarChange
+                )
+                AnimatedVisibility(
+                    visible = showFloatingToolbar
+                ) {
+                    Column {
+                        SuperDropdown(
+                            title = "FloatingToolbar Position",
+                            items = listOf(
+                                "TopStart",
+                                "CenterStart",
+                                "BottomStart",
+                                "TopEnd",
+                                "CenterEnd",
+                                "BottomEnd",
+                                "TopCenter",
+                                "BottomCenter"
+                            ),
+                            selectedIndex = floatingToolbarPosition,
+                            onSelectedIndexChange = onFloatingToolbarPositionChange
+                        )
+                        SuperDropdown(
+                            title = "FloatingToolbar Orientation",
+                            items = listOf("Horizontal", "Vertical"),
+                            selectedIndex = floatingToolbarOrientation,
+                            onSelectedIndexChange = onFloatingToolbarOrientationChange
+                        )
+                    }
+                }
+                SuperSwitch(
+                    title = "Show FloatingActionButton",
                     checked = showFloatingActionButton,
                     onCheckedChange = onShowFloatingActionButtonChange
                 )
+                AnimatedVisibility(
+                    visible = showFloatingActionButton
+                ) {
+                    SuperDropdown(
+                        title = "FloatingActionButton Position",
+                        items = listOf(
+                            "Start",
+                            "Center",
+                            "End",
+                            "EndOverlay",
+                        ),
+                        selectedIndex = fabPosition,
+                        onSelectedIndexChange = { fabPosition ->
+                            onFabPositionChange(fabPosition)
+                        }
+                    )
+                }
                 SuperSwitch(
                     title = "Enable Page User Scroll",
                     checked = enablePageUserScroll,

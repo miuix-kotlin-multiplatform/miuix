@@ -11,7 +11,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.Scaffold
-import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import ui.AppTheme
 
 @Composable
@@ -29,7 +28,7 @@ fun UITestPreview() {
 fun MainPagePreview() {
     AppTheme {
         Scaffold {
-            MainPage(MiuixScrollBehavior(rememberTopAppBarState()), PaddingValues())
+            MainPage(MiuixScrollBehavior(), PaddingValues())
         }
     }
 }
@@ -39,7 +38,7 @@ fun MainPagePreview() {
 fun SecondPagePreview() {
     AppTheme {
         Scaffold {
-            SecondPage(MiuixScrollBehavior(rememberTopAppBarState()), PaddingValues())
+            SecondPage(MiuixScrollBehavior(), PaddingValues())
         }
     }
 }
@@ -50,7 +49,7 @@ fun ThirdPagePreview() {
     AppTheme {
         Scaffold {
             ThirdPage(
-                MiuixScrollBehavior(rememberTopAppBarState()),
+                MiuixScrollBehavior(),
                 PaddingValues(),
                 false,
                 {},
@@ -59,6 +58,20 @@ fun ThirdPagePreview() {
                 false,
                 {},
                 false,
+                {},
+                0,
+                {},
+                0,
+                {},
+                false,
+                {},
+                1,
+                {},
+                1,
+                {},
+                false,
+                {},
+                2,
                 {},
                 false,
                 {},

@@ -32,6 +32,7 @@ Scaffold 组件为跨平台提供了一个合适的弹出窗口的容器。`Supe
 | [ProgressIndicator](../components/progressindicator)       | 展示操作进度状态       | 加载中、进度展示     |
 | [Icon](../components/icon)                                 | 图标展示组件           | 图标按钮、状态指示   |
 | [FloatingActionButton](../components/floatingactionbutton) | 悬浮操作按钮           | 主要操作、快捷功能   |
+| [FloatingToolbar](../components/floatingtoolbar)           | 悬浮工具栏             | 快捷操作、信息展示   |
 | [Divider](../components/divider)                           | 内容分隔线             | 区块分隔、层次划分   |
 | [PullToRefresh](../components/pulltorefresh)               | 下拉触发刷新操作       | 数据更新、页面刷新   |
 | [SearchBar](../components/searchbar)                       | 执行搜索的输入框       | 内容搜索、快速查找   |

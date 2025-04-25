@@ -83,6 +83,7 @@ export default defineConfig({
                         { text: 'ProgressIndicator', link: '/components/progressindicator' },
                         { text: 'Icon', link: '/components/icon' },
                         { text: 'FloatingActionButton', link: '/components/floatingactionbutton' },
+                        { text: 'FloatingToolbar', link: '/components/floatingtoolbar' },
                         { text: 'Divider', link: '/components/divider' },
                         { text: 'PullToRefresh', link: '/components/pulltorefresh' },
                         { text: 'SearchBar', link: '/components/searchbar' },

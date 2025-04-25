@@ -18,17 +18,21 @@ import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 ### Small TopAppBar
 
 ```kotlin
-SmallTopAppBar(
-    title = "Title",
-    navigationIcon = {
-        IconButton(onClick = { /* Handle click event */ }) {
-            Icon(MiuixIcons.Useful.Back, contentDescription = "Back")
-        }
-    },
-    actions = {
-        IconButton(onClick = { /* Handle click event */ }) {
-            Icon(MiuixIcons.Useful.More, contentDescription = "More")
-        }
+Scaffold(
+    topBar = {
+        SmallTopAppBar(
+            title = "Title",
+            navigationIcon = {
+                IconButton(onClick = { /* Handle click event */ }) {
+                    Icon(MiuixIcons.Useful.Back, contentDescription = "Back")
+                }
+            },
+            actions = {
+                IconButton(onClick = { /* Handle click event */ }) {
+                    Icon(MiuixIcons.Useful.More, contentDescription = "More")
+                }
+            }
+        )
     }
 )
 ```
@@ -36,18 +40,22 @@ SmallTopAppBar(
 ### Large TopAppBar
 
 ```kotlin
-TopAppBar(
-    title = "Title",
-    largeTitle = "Large Title", // If not specified, title value will be used
-    navigationIcon = {
-        IconButton(onClick = { /* Handle click event */ }) {
-            Icon(MiuixIcons.Basic.ArrowLeft, contentDescription = "Back")
-        }
-    },
-    actions = {
-        IconButton(onClick = { /* Handle click event */ }) {
-            Icon(MiuixIcons.Useful.More, contentDescription = "More")
-        }
+Scaffold(
+    topBar = {
+        TopAppBar(
+            title = "Title",
+            largeTitle = "Large Title", // If not specified, title value will be used
+            navigationIcon = {
+                IconButton(onClick = { /* Handle click event */ }) {
+                    Icon(MiuixIcons.Basic.ArrowLeft, contentDescription = "Back")
+                }
+            },
+            actions = {
+                IconButton(onClick = { /* Handle click event */ }) {
+                    Icon(MiuixIcons.Useful.More, contentDescription = "More")
+                }
+            }
+        )
     }
 )
 ```

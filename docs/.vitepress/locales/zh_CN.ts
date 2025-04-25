@@ -103,6 +103,7 @@ export default defineConfig({
                         { text: 'ProgressIndicator', link: '/zh_CN/components/progressindicator' },
                         { text: 'Icon', link: '/zh_CN/components/icon' },
                         { text: 'FloatingActionButton', link: '/zh_CN/components/floatingactionbutton' },
+                        { text: 'FloatingToolbar', link: '/zh_CN/components/floatingtoolbar' },
                         { text: 'Divider', link: '/zh_CN/components/divider' },
                         { text: 'PullToRefresh', link: '/zh_CN/components/pulltorefresh' },
                         { text: 'SearchBar', link: '/zh_CN/components/searchbar' },
