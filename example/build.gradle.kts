@@ -171,8 +171,6 @@ compose.desktop {
         mainClass = "Main_desktopKt"
         buildTypes.release.proguard {
             configurationFiles.from("proguard-rules-jvm.pro")
-            version.set("7.6.1")
-            optimize.set(false)
         }
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
