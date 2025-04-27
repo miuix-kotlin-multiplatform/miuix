@@ -54,6 +54,7 @@ fun SecondPage(
                 .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
                 .height(getWindowSize().height.dp),
             contentPadding = PaddingValues(top = padding.calculateTopPadding()),
+            overscrollEffect = null
         ) {
             item {
                 Card(

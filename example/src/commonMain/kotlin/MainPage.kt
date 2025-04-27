@@ -85,7 +85,8 @@ fun MainPage(
                 modifier = Modifier
                     .overScrollVertical()
                     .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-                contentPadding = PaddingValues(top = padding.calculateTopPadding())
+                contentPadding = PaddingValues(top = padding.calculateTopPadding()),
+                overscrollEffect = null
             ) {
                 item {
                     SmallTitle(text = "SearchBar")
