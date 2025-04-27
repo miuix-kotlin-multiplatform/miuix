@@ -74,18 +74,32 @@ LazyRow(
 
 ### 自定义越界回弹参数
 
+您可以自定义越界回弹效果的参数，以满足特定的需求。
+
 ```kotlin
 LazyColumn(
     modifier = Modifier.overScrollVertical(
-        nestedScrollToParent = true,
-        springStiff = 150f, // 弹性系数
-        springDamp = 0.8f,  // 阻尼系数
-        isEnabled = { true } // 是否启用
-    )
+        nestedScrollToParent = true, // 是否将嵌套滚动事件分发给父级，默认为 true
+        scrollEasing = { currentOffset, newOffset -> // 自定义滚动缓动函数
+            parabolaScrollEasing(currentOffset, newOffset, p = 25f, density = LocalDensity.current.density)
+        },
+        springStiff = 200f, // 回弹动画的弹簧刚度，默认为 200f
+        springDamp = 1f,  // 回弹动画的弹簧阻尼，默认为 1f
+        isEnabled = { platform() == Platform.Android || platform() == Platform.IOS } // 是否启用越界回弹效果，默认在 Android 和 iOS 上启用
+    ), 
+    overscrollEffect = null // 建议将此参数设置为 null，禁用默认效果
 ) {
     // 列表内容
 }
 ```
+
+**参数说明:**
+
+*   `nestedScrollToParent`: 布尔值，控制是否将嵌套滚动事件（如父级滚动容器）传递给父级。默认为 `true`。
+*   `scrollEasing`: 一个函数，用于定义滚动超出边界时的缓动效果。它接收当前偏移量 (`currentOffset`) 和新的偏移量增量 (`newOffset`) 作为参数，并返回计算后的新偏移量。默认使用 `parabolaScrollEasing`，提供类似 iOS 的阻尼效果。
+*   `springStiff`: 浮点数，定义回弹动画的弹簧刚度。值越高，回弹越快越硬。默认为 `200f`。
+*   `springDamp`: 浮点数，定义回弹动画的弹簧阻尼。值越高，振荡越小。默认为 `1f`。
+*   `isEnabled`: 一个返回布尔值的 Lambda 表达式，用于动态控制是否启用越界回弹效果。默认情况下，仅在 Android 和 iOS 平台上启用。
 
 ## 平滑圆角 (SmoothRoundedCornerShape)
 
