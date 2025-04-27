@@ -26,9 +26,10 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -102,8 +103,12 @@ fun UITest(
     val topAppBarScrollBehaviorList = List(3) { MiuixScrollBehavior() }
     val pagerState = rememberPagerState(pageCount = { 3 })
     val coroutineScope = rememberCoroutineScope()
-    val selectedPage by remember { derivedStateOf { pagerState.currentPage } }
+    var selectedPage by remember { mutableIntStateOf(pagerState.currentPage) }
     val currentScrollBehavior = topAppBarScrollBehaviorList[selectedPage]
+
+    LaunchedEffect(pagerState.settledPage) {
+        if (selectedPage != pagerState.settledPage) selectedPage = pagerState.settledPage
+    }
 
     val navigationItem = remember {
         listOf(
@@ -142,6 +147,7 @@ fun UITest(
                     showTopPopup = showTopPopup,
                     onPopupExpandedChange = { uiState = uiState.copy(isTopPopupExpanded = it) },
                     onPageSelected = { page ->
+                        selectedPage = page
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(page)
                         }
@@ -167,9 +173,11 @@ fun UITest(
                                 blurRadius = 25.dp
                                 noiseFactor = 0f
                             },
+                        color = Color.Transparent,
                         items = navigationItem,
                         selected = selectedPage,
                         onClick = { index ->
+                            selectedPage = index
                             coroutineScope.launch {
                                 pagerState.animateScrollToPage(index)
                             }
@@ -188,6 +196,7 @@ fun UITest(
                                 blurRadius = 25.dp
                                 noiseFactor = 0f
                             },
+                        color = Color.Transparent,
                         items = navigationItem,
                         selected = selectedPage,
                         mode = when (uiState.floatingNavigationBarMode) {
@@ -201,6 +210,7 @@ fun UITest(
                             else -> Alignment.End
                         },
                         onClick = { index ->
+                            selectedPage = index
                             coroutineScope.launch {
                                 pagerState.animateScrollToPage(index)
                             }
