@@ -8,11 +8,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
@@ -62,16 +61,19 @@ fun SuperArrow(
     enabled: Boolean = true
 ) {
     val updatedOnClick by rememberUpdatedState(onClick)
-    val coroutineScope = rememberCoroutineScope()
     val interactionSource = remember { MutableInteractionSource() }
     val holdDown = remember { mutableStateOf<HoldDownInteraction.HoldDown?>(null) }
 
-    if (!holdDownState) {
-        holdDown.value?.let { oldValue ->
-            coroutineScope.launch {
+    LaunchedEffect(holdDownState) {
+        if (holdDownState) {
+            interactionSource.emit(HoldDownInteraction.HoldDown().also {
+                holdDown.value = it
+            })
+        } else {
+            holdDown.value?.let { oldValue ->
                 interactionSource.emit(HoldDownInteraction.Release(oldValue))
+                holdDown.value = null
             }
-            holdDown.value = null
         }
     }
 
@@ -107,11 +109,6 @@ fun SuperArrow(
         onClick = {
             if (enabled) {
                 updatedOnClick?.invoke()
-                coroutineScope.launch {
-                    interactionSource.emit(HoldDownInteraction.HoldDown().also {
-                        holdDown.value = it
-                    })
-                }
             }
         },
         enabled = enabled,
@@ -120,7 +117,6 @@ fun SuperArrow(
 }
 
 object SuperArrowDefaults {
-
     /**
      * The default color of the arrow.
      */
@@ -129,7 +125,6 @@ object SuperArrowDefaults {
         color = MiuixTheme.colorScheme.onSurfaceVariantActions,
         disabledColor = MiuixTheme.colorScheme.disabledOnSecondaryVariant
     )
-
 }
 
 

@@ -223,7 +223,7 @@ fun MainPage(
                 LazyColumn(
                     modifier = Modifier
                         .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
-                        .padding(end = 12.dp)
+                        .padding(end = 12.dp, bottom = 12.dp)
                         .weight(1f),
                     contentPadding = PaddingValues(top = padding.calculateTopPadding())
                 ) {
@@ -231,7 +231,7 @@ fun MainPage(
                         key = "text"
                     ) {
                         textComponent()
-                        Spacer(modifier = Modifier.height(12.dp + padding.calculateBottomPadding()))
+                        Spacer(modifier = Modifier.height(padding.calculateBottomPadding()))
                     }
                 }
             }

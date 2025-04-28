@@ -7,10 +7,10 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
@@ -51,18 +50,22 @@ fun IconButton(
     content: @Composable () -> Unit
 ) {
     val shape = remember { derivedStateOf { SmoothRoundedCornerShape(cornerRadius) } }
-    val coroutineScope = rememberCoroutineScope()
     val interactionSource = remember { MutableInteractionSource() }
     val holdDown = remember { mutableStateOf<HoldDownInteraction.HoldDown?>(null) }
 
-    if (!holdDownState) {
-        holdDown.value?.let { oldValue ->
-            coroutineScope.launch {
+    LaunchedEffect(holdDownState) {
+        if (holdDownState) {
+            interactionSource.emit(HoldDownInteraction.HoldDown().also {
+                holdDown.value = it
+            })
+        } else {
+            holdDown.value?.let { oldValue ->
                 interactionSource.emit(HoldDownInteraction.Release(oldValue))
+                holdDown.value = null
             }
-            holdDown.value = null
         }
     }
+
     Box(
         modifier = modifier
             .defaultMinSize(minWidth = minWidth, minHeight = minHeight)
@@ -75,11 +78,6 @@ fun IconButton(
                 interactionSource = interactionSource
             ) {
                 onClick.invoke()
-                coroutineScope.launch {
-                    interactionSource.emit(HoldDownInteraction.HoldDown().also {
-                        holdDown.value = it
-                    })
-                }
             },
         contentAlignment = Alignment.Center
     ) {

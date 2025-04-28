@@ -1,6 +1,7 @@
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -66,8 +67,7 @@ fun ThirdPage(
     ) {
         item {
             Card(
-                modifier = Modifier
-                    .padding(12.dp)
+                modifier = Modifier.padding(12.dp)
             ) {
                 SuperSwitch(
                     title = "Show FPS Monitor",
@@ -182,6 +182,7 @@ fun ThirdPage(
             Card(
                 modifier = Modifier
                     .padding(horizontal = 12.dp)
+                    .padding(bottom = 12.dp)
             ) {
                 SuperArrow(
                     title = "About",
@@ -191,6 +192,7 @@ fun ThirdPage(
                     }
                 )
             }
+            Spacer(modifier = Modifier.height(padding.calculateBottomPadding()))
         }
     }
     dialog(showDialog)
