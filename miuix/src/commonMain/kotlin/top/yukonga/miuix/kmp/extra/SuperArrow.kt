@@ -1,18 +1,14 @@
 package top.yukonga.miuix.kmp.extra
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,56 +22,40 @@ import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.basic.ArrowRight
-import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**
  * A arrow with a title and a summary.
  *
  * @param title The title of the [SuperArrow].
- * @param modifier The modifier to be applied to the [SuperArrow].
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperArrow].
  * @param summaryColor The color of the summary.
  * @param leftAction The [Composable] content that on the left side of the [SuperArrow].
  * @param rightText The text on the right side of the [SuperArrow].
  * @param rightActionColor The color of the right action.
+ * @param modifier The modifier to be applied to the [SuperArrow].
+ * @param insideMargin The margin inside the [SuperArrow].
  * @param onClick The callback when the [SuperArrow] is clicked.
  * @param holdDownState Used to determine whether it is in the pressed state.
- * @param insideMargin The margin inside the [SuperArrow].
  * @param enabled Whether the [SuperArrow] is clickable.
  */
 @Composable
 fun SuperArrow(
     title: String,
-    modifier: Modifier = Modifier,
     titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
     summary: String? = null,
     summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
     leftAction: @Composable (() -> Unit)? = null,
     rightText: String? = null,
     rightActionColor: RightActionColors = SuperArrowDefaults.rightActionColors(),
+    modifier: Modifier = Modifier,
+    insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     onClick: (() -> Unit)? = null,
     holdDownState: Boolean = false,
-    insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     enabled: Boolean = true
 ) {
     val updatedOnClick by rememberUpdatedState(onClick)
-    val interactionSource = remember { MutableInteractionSource() }
-    val holdDown = remember { mutableStateOf<HoldDownInteraction.HoldDown?>(null) }
-
-    LaunchedEffect(holdDownState) {
-        if (holdDownState) {
-            interactionSource.emit(HoldDownInteraction.HoldDown().also {
-                holdDown.value = it
-            })
-        } else {
-            holdDown.value?.let { oldValue ->
-                interactionSource.emit(HoldDownInteraction.Release(oldValue))
-                holdDown.value = null
-            }
-        }
-    }
 
     BasicComponent(
         modifier = modifier,
@@ -111,8 +91,8 @@ fun SuperArrow(
                 updatedOnClick?.invoke()
             }
         },
-        enabled = enabled,
-        interactionSource = interactionSource
+        holdDownState = holdDownState,
+        enabled = enabled
     )
 }
 

@@ -74,16 +74,16 @@ Scaffold {
 | 属性名           | 类型                      | 说明                     | 默认值                                 | 是否必须 |
 | ---------------- | ------------------------- | ------------------------ | -------------------------------------- | -------- |
 | title            | String                    | 箭头项的标题             | -                                      | 是       |
-| modifier         | Modifier                  | 应用于组件的修饰符       | Modifier                               | 否       |
 | titleColor       | BasicComponentColors      | 标题文本的颜色配置       | BasicComponentDefaults.titleColor()    | 否       |
 | summary          | String?                   | 箭头项的摘要说明         | null                                   | 否       |
 | summaryColor     | BasicComponentColors      | 摘要文本的颜色配置       | BasicComponentDefaults.summaryColor()  | 否       |
 | leftAction       | @Composable (() -> Unit)? | 左侧自定义内容           | null                                   | 否       |
 | rightText        | String?                   | 右侧文本内容             | null                                   | 否       |
 | rightActionColor | RightActionColors         | 右侧文本和箭头的颜色配置 | SuperArrowDefaults.rightActionColors() | 否       |
+| modifier         | Modifier                  | 应用于组件的修饰符       | Modifier                               | 否       |
+| insideMargin     | PaddingValues             | 组件内部内容的边距       | BasicComponentDefaults.InsideMargin    | 否       |
 | onClick          | (() -> Unit)?             | 点击箭头时触发的回调     | null                                   | 否       |
 | holdDownState    | Boolean                   | 组件是否处于按下状态     | false                                  | 否       |
-| insideMargin     | PaddingValues             | 组件内部内容的边距       | BasicComponentDefaults.InsideMargin    | 否       |
 | enabled          | Boolean                   | 组件是否可交互           | true                                   | 否       |
 
 ### SuperArrowDefaults 对象

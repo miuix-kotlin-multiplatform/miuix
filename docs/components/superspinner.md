@@ -173,32 +173,45 @@ Scaffold {
 
 ## Properties
 
-### SuperSpinner Properties (Dropdown List Form)
+### SuperSpinner Properties (Dropdown Mode)
 
 | Property Name         | Type                      | Description                 | Default Value                         | Required |
 | --------------------- | ------------------------- | --------------------------- | ------------------------------------- | -------- |
-| title                 | String                    | Selector title              | -                                     | Yes      |
 | items                 | List\<SpinnerEntry>       | Options list                | -                                     | Yes      |
 | selectedIndex         | Int                       | Current selected item index | -                                     | Yes      |
-| onSelectedIndexChange | ((Int) -> Unit)?          | Selection change callback   | -                                     | Yes      |
-| modifier              | Modifier                  | Component modifier          | Modifier                              | No       |
+| title                 | String                    | Selector title              | -                                     | Yes      |
 | titleColor            | BasicComponentColors      | Title text color config     | BasicComponentDefaults.titleColor()   | No       |
 | summary               | String?                   | Selector description        | null                                  | No       |
 | summaryColor          | BasicComponentColors      | Summary text color config   | BasicComponentDefaults.summaryColor() | No       |
-| mode                  | SpinnerMode               | Display mode                | SpinnerMode.Normal                    | No       |
 | leftAction            | @Composable (() -> Unit)? | Custom left content         | null                                  | No       |
+| mode                  | SpinnerMode               | Display mode                | SpinnerMode.Normal                    | No       |
+| modifier              | Modifier                  | Component modifier          | Modifier                              | No       |
 | insideMargin          | PaddingValues             | Internal content padding    | BasicComponentDefaults.InsideMargin   | No       |
 | maxHeight             | Dp?                       | Maximum dropdown height     | null                                  | No       |
 | enabled               | Boolean                   | Interactive state           | true                                  | No       |
 | showValue             | Boolean                   | Show current selected value | true                                  | No       |
 | onClick               | (() -> Unit)?             | Additional click callback   | null                                  | No       |
+| onSelectedIndexChange | ((Int) -> Unit)?          | Selection change callback   | -                                     | Yes      |
 
-### SuperSpinner Dialog Mode Additional Properties
+### SuperSpinner Properties (Dialog Mode)
 
-| Property Name      | Type     | Description               | Default Value | Required |
-| ------------------ | -------- | ------------------------- | ------------- | -------- |
-| dialogButtonString | String   | Dialog bottom button text | -             | Yes      |
-| popupModifier      | Modifier | Dialog popup modifier     | Modifier      | No       |
+| Property Name         | Type                      | Description                 | Default Value                         | Required |
+| --------------------- | ------------------------- | --------------------------- | ------------------------------------- | -------- |
+| items                 | List\<SpinnerEntry>       | Options list                | -                                     | Yes      |
+| selectedIndex         | Int                       | Current selected item index | -                                     | Yes      |
+| title                 | String                    | Selector title              | -                                     | Yes      |
+| titleColor            | BasicComponentColors      | Title text color config     | BasicComponentDefaults.titleColor()   | No       |
+| summary               | String?                   | Selector description        | null                                  | No       |
+| summaryColor          | BasicComponentColors      | Summary text color config   | BasicComponentDefaults.summaryColor() | No       |
+| leftAction            | @Composable (() -> Unit)? | Custom left content         | null                                  | No       |
+| dialogButtonString    | String                    | Dialog bottom button text   | -                                     | Yes      |
+| popupModifier         | Modifier                  | Dialog popup modifier       | Modifier                              | No       |
+| modifier              | Modifier                  | Component modifier          | Modifier                              | No       |
+| insideMargin          | PaddingValues             | Internal content padding    | BasicComponentDefaults.InsideMargin   | No       |
+| enabled               | Boolean                   | Interactive state           | true                                  | No       |
+| showValue             | Boolean                   | Show current selected value | true                                  | No       |
+| onClick               | (() -> Unit)?             | Additional click callback   | null                                  | No       |
+| onSelectedIndexChange | ((Int) -> Unit)?          | Selection change callback   | -                                     | Yes      |
 
 ### SpinnerEntry Properties
 

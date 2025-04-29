@@ -74,16 +74,16 @@ Scaffold {
 | Property Name    | Type                      | Description                       | Default Value                          | Required |
 | ---------------- | ------------------------- | --------------------------------- | -------------------------------------- | -------- |
 | title            | String                    | Arrow item title                  | -                                      | Yes      |
-| modifier         | Modifier                  | Modifier applied to component     | Modifier                               | No       |
 | titleColor       | BasicComponentColors      | Title text color configuration    | BasicComponentDefaults.titleColor()    | No       |
 | summary          | String?                   | Arrow item summary description    | null                                   | No       |
 | summaryColor     | BasicComponentColors      | Summary text color configuration  | BasicComponentDefaults.summaryColor()  | No       |
 | leftAction       | @Composable (() -> Unit)? | Custom left content               | null                                   | No       |
 | rightText        | String?                   | Right text content                | null                                   | No       |
 | rightActionColor | RightActionColors         | Right text and arrow color config | SuperArrowDefaults.rightActionColors() | No       |
+| modifier         | Modifier                  | Modifier applied to component     | Modifier                               | No       |
+| insideMargin     | PaddingValues             | Internal content padding          | BasicComponentDefaults.InsideMargin    | No       |
 | onClick          | (() -> Unit)?             | Callback triggered on click       | null                                   | No       |
 | holdDownState    | Boolean                   | Whether component is held down    | false                                  | No       |
-| insideMargin     | PaddingValues             | Internal content padding          | BasicComponentDefaults.InsideMargin    | No       |
 | enabled          | Boolean                   | Whether component is interactive  | true                                   | No       |
 
 ### SuperArrowDefaults Object

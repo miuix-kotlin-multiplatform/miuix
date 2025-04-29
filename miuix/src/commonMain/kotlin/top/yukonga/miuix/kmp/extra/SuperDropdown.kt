@@ -16,7 +16,6 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -34,7 +33,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
@@ -45,21 +43,21 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.basic.ArrowUpDownIntegrated
 import top.yukonga.miuix.kmp.icon.icons.basic.Check
-import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup
 
 /**
  * A dropdown with a title and a summary.
  *
- * @param title The title of the [SuperDropdown].
  * @param items The options of the [SuperDropdown].
  * @param selectedIndex The index of the selected option.
- * @param modifier The modifier to be applied to the [SuperDropdown].
+ * @param title The title of the [SuperDropdown].
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperDropdown].
  * @param summaryColor The color of the summary.
+ * @param dropdownColors The [DropdownColors] of the [SuperDropdown].
  * @param mode The dropdown show mode of the [SuperDropdown].
+ * @param modifier The modifier to be applied to the [SuperDropdown].
  * @param insideMargin The margin inside the [SuperDropdown].
  * @param maxHeight The maximum height of the [ListPopup].
  * @param enabled Whether the [SuperDropdown] is enabled.
@@ -69,46 +67,33 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup
  */
 @Composable
 fun SuperDropdown(
-    title: String,
     items: List<String>,
     selectedIndex: Int,
-    modifier: Modifier = Modifier,
+    title: String,
     titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
     summary: String? = null,
     summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
+    dropdownColors: DropdownColors = DropdownDefaults.dropdownColors(),
     mode: DropDownMode = DropDownMode.Normal,
+    modifier: Modifier = Modifier,
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     maxHeight: Dp? = null,
     enabled: Boolean = true,
     showValue: Boolean = true,
-    dropdownColors: DropdownColors = DropdownDefaults.dropdownColors(),
     onClick: (() -> Unit)? = null,
     onSelectedIndexChange: ((Int) -> Unit)?,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isDropdownExpanded = remember { mutableStateOf(false) }
     val showPopup = remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
-    val isHoldDown = remember { mutableStateOf<HoldDownInteraction.HoldDown?>(null) }
     val hapticFeedback = LocalHapticFeedback.current
-    val actionColor =
-        if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
-
+    val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     var alignLeft by rememberSaveable { mutableStateOf(true) }
 
     DisposableEffect(Unit) {
         onDispose {
             dismissPopup(showPopup)
             isDropdownExpanded.value = false
-        }
-    }
-
-    if (!isDropdownExpanded.value) {
-        isHoldDown.value?.let { oldValue ->
-            coroutineScope.launch {
-                interactionSource.emit(HoldDownInteraction.Release(oldValue))
-            }
-            isHoldDown.value = null
         }
     }
 
@@ -194,13 +179,9 @@ fun SuperDropdown(
                 onClick?.invoke()
                 isDropdownExpanded.value = enabled
                 hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)
-                coroutineScope.launch {
-                    interactionSource.emit(HoldDownInteraction.HoldDown().also {
-                        isHoldDown.value = it
-                    })
-                }
             }
         },
+        holdDownState = isDropdownExpanded.value,
         enabled = enabled
     )
 }

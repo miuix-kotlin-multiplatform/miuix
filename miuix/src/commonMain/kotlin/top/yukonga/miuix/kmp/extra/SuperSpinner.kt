@@ -63,15 +63,15 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup
 /**
  * A spinner component with Miuix style.
  *
- * @param title The title of the [SuperSpinner].
  * @param items The list of [SpinnerEntry] to be shown in the [SuperSpinner].
  * @param selectedIndex The index of the selected item in the [SuperSpinner].
- * @param modifier The [Modifier] to be applied to the [SuperSpinner].
+ * @param title The title of the [SuperSpinner].
  * @param titleColor The color of the title of the [SuperSpinner].
  * @param summary The summary of the [SuperSpinner].
  * @param summaryColor The color of the summary of the [SuperSpinner].
- * @param mode The mode of the [SuperSpinner].
  * @param leftAction The action to be shown at the left side of the [SuperSpinner].
+ * @param mode The mode of the [SuperSpinner].
+ * @param modifier The [Modifier] to be applied to the [SuperSpinner].
  * @param insideMargin The [PaddingValues] to be applied inside the [SuperSpinner].
  * @param maxHeight The maximum height of the [ListPopup].
  * @param enabled Whether the [SuperSpinner] is enabled.
@@ -81,15 +81,15 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup
  */
 @Composable
 fun SuperSpinner(
-    title: String,
     items: List<SpinnerEntry>,
     selectedIndex: Int,
-    modifier: Modifier = Modifier,
+    title: String,
     titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
     summary: String? = null,
     summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
-    mode: SpinnerMode = SpinnerMode.Normal,
     leftAction: @Composable (() -> Unit)? = null,
+    mode: SpinnerMode = SpinnerMode.Normal,
+    modifier: Modifier = Modifier,
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     maxHeight: Dp? = null,
     enabled: Boolean = true,
@@ -100,26 +100,14 @@ fun SuperSpinner(
     val interactionSource = remember { MutableInteractionSource() }
     val isDropdownExpanded = remember { mutableStateOf(false) }
     val showPopup = remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
-    val isHoldDown = remember { mutableStateOf<HoldDownInteraction.HoldDown?>(null) }
     val hapticFeedback = LocalHapticFeedback.current
     val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
-
     var alignLeft by rememberSaveable { mutableStateOf(true) }
 
     DisposableEffect(Unit) {
         onDispose {
             dismissPopup(showPopup)
             isDropdownExpanded.value = false
-        }
-    }
-
-    if (!isDropdownExpanded.value) {
-        isHoldDown.value?.let { oldValue ->
-            coroutineScope.launch {
-                interactionSource.emit(HoldDownInteraction.Release(oldValue))
-            }
-            isHoldDown.value = null
         }
     }
 
@@ -205,13 +193,9 @@ fun SuperSpinner(
                 onClick?.invoke()
                 isDropdownExpanded.value = enabled
                 hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)
-                coroutineScope.launch {
-                    interactionSource.emit(HoldDownInteraction.HoldDown().also {
-                        isHoldDown.value = it
-                    })
-                }
             }
         },
+        holdDownState = isDropdownExpanded.value,
         enabled = enabled
     )
 }
@@ -219,16 +203,16 @@ fun SuperSpinner(
 /**
  * A [SuperSpinner] component with Miuix style, show Spinner as dialog.
  *
- * @param title the title of the [SuperSpinner].
  * @param items the list of [SpinnerEntry] to be shown in the [SuperSpinner].
  * @param selectedIndex the index of the selected item in the [SuperSpinner].
- * @param dialogButtonString the string of the button in the dialog.
- * @param modifier the [Modifier] to be applied to the [SuperSpinner].
- * @param popupModifier the [Modifier] to be applied to the popup of the [SuperSpinner].
+ * @param title the title of the [SuperSpinner].
  * @param titleColor the color of the title of the [SuperSpinner].
  * @param summary the summary of the [SuperSpinner].
  * @param summaryColor the color of the summary of the [SuperSpinner].
  * @param leftAction the action to be shown at the left side of the [SuperSpinner].
+ * @param dialogButtonString the string of the button in the dialog.
+ * @param popupModifier the [Modifier] to be applied to the popup of the [SuperSpinner].
+ * @param modifier the [Modifier] to be applied to the [SuperSpinner].
  * @param insideMargin the [PaddingValues] to be applied inside the [SuperSpinner].
  * @param enabled whether the [SuperSpinner] is enabled.
  * @param showValue whether to show the value of the [SuperSpinner].
@@ -237,16 +221,16 @@ fun SuperSpinner(
  */
 @Composable
 fun SuperSpinner(
-    title: String,
     items: List<SpinnerEntry>,
     selectedIndex: Int,
-    dialogButtonString: String,
-    modifier: Modifier = Modifier,
-    popupModifier: Modifier = Modifier,
+    title: String,
     titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
     summary: String? = null,
     summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
     leftAction: @Composable (() -> Unit)? = null,
+    dialogButtonString: String,
+    popupModifier: Modifier = Modifier,
+    modifier: Modifier = Modifier,
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     enabled: Boolean = true,
     showValue: Boolean = true,

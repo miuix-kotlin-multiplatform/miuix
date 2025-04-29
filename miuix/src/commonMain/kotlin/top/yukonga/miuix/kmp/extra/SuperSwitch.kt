@@ -19,34 +19,36 @@ import top.yukonga.miuix.kmp.basic.SwitchDefaults
 /**
  * A switch with a title and a summary.
  *
- * @param title The title of the [SuperSwitch].
  * @param checked The checked state of the [SuperSwitch].
  * @param onCheckedChange The callback when the checked state of the [SuperSwitch] is changed.
- * @param modifier The modifier to be applied to the [SuperSwitch].
+ * @param title The title of the [SuperSwitch].
  * @param titleColor The color of the title.
  * @param summary The summary of the [SuperSwitch].
  * @param summaryColor The color of the summary.
- * @param switchColors The [SwitchColors] of the [SuperSwitch].
  * @param leftAction The [Composable] content that on the left side of the [SuperSwitch].
  * @param rightActions The [Composable] content on the right side of the [SuperSwitch].
+ * @param switchColors The [SwitchColors] of the [SuperSwitch].
+ * @param modifier The modifier to be applied to the [SuperSwitch].
  * @param insideMargin The margin inside the [SuperSwitch].
  * @param onClick The callback when the [SuperSwitch] is clicked.
+ * @param holdDownState Used to determine whether it is in the pressed state.
  * @param enabled Whether the [SuperSwitch] is clickable.
  */
 @Composable
 fun SuperSwitch(
-    title: String,
     checked: Boolean,
     onCheckedChange: ((Boolean) -> Unit)?,
-    modifier: Modifier = Modifier,
+    title: String,
     titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
     summary: String? = null,
     summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
-    switchColors: SwitchColors = SwitchDefaults.switchColors(),
     leftAction: @Composable (() -> Unit)? = null,
     rightActions: @Composable RowScope.() -> Unit = {},
+    switchColors: SwitchColors = SwitchDefaults.switchColors(),
+    modifier: Modifier = Modifier,
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     onClick: (() -> Unit)? = null,
+    holdDownState: Boolean = false,
     enabled: Boolean = true
 ) {
     var isChecked by remember { mutableStateOf(checked) }
@@ -78,6 +80,7 @@ fun SuperSwitch(
                 updatedOnCheckedChange?.invoke(isChecked)
             }
         },
+        holdDownState = holdDownState,
         enabled = enabled
     )
 }

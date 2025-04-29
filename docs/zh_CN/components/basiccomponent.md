@@ -85,15 +85,16 @@ BasicComponent(
 
 | 属性名            | 类型                            | 说明                 | 默认值                                   | 是否必须 |
 | ----------------- | ------------------------------- | -------------------- | ---------------------------------------- | -------- |
-| modifier          | Modifier                        | 应用于组件的修饰符   | Modifier                                 | 否       |
-| insideMargin      | PaddingValues                   | 组件内部边距         | BasicComponentDefaults.InsideMargin      | 否       |
 | title             | String?                         | 组件标题             | null                                     | 否       |
 | titleColor        | BasicComponentColors            | 标题颜色配置         | BasicComponentDefaults.titleColor()      | 否       |
 | summary           | String?                         | 组件摘要             | null                                     | 否       |
 | summaryColor      | BasicComponentColors            | 摘要颜色配置         | BasicComponentDefaults.summaryColor()    | 否       |
 | leftAction        | @Composable (() -> Unit?)?      | 组件左侧的可组合内容 | null                                     | 否       |
 | rightActions      | @Composable RowScope.() -> Unit | 组件右侧的可组合内容 | {}                                       | 否       |
+| modifier          | Modifier                        | 应用于组件的修饰符   | Modifier                                 | 否       |
+| insideMargin      | PaddingValues                   | 组件内部边距         | BasicComponentDefaults.InsideMargin      | 否       |
 | onClick           | (() -> Unit)?                   | 点击组件时触发的回调 | null                                     | 否       |
+| holdDownState     | Boolean                         | 组件是否处于按下状态 | false                                    | 否       |
 | enabled           | Boolean                         | 组件是否可用         | true                                     | 否       |
 | interactionSource | MutableInteractionSource        | 组件的交互源         | remember \{ MutableInteractionSource() } | 否       |
 

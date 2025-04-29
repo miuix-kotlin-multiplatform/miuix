@@ -75,9 +75,8 @@ fun TextComponent(
 ) {
     val dropdownOptions = listOf("Option 1", "Option 2", "Option 3", "Option 4")
     val dropdownOptions2 = listOf(
-        "Option 1", "Option 2", "Option 3", "Option 4",
-        "Option 5", "Option 6", "Option 7", "Option 8",
-        "Option 9", "Option 10", "Option 11", "Option 12 (this is a longest option)"
+        "Option 1", "Option 2 (long)", "Option 3 (long long)", "Option 4 (long long long)",
+        "Option 5 (long long long long)", "Option 6 (long long long long long)"
     )
     val spinnerOptions = listOf(
         SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFF5B29)) }, "Option 1", "Red"),

@@ -107,21 +107,21 @@ Scaffold {
 
 | Property Name         | Type                 | Description                       | Default Value                         | Required |
 | --------------------- | -------------------- | --------------------------------- | ------------------------------------- | -------- |
-| title                 | String               | Title of the dropdown menu        | -                                     | Yes      |
 | items                 | List\<String>        | List of dropdown options          | -                                     | Yes      |
 | selectedIndex         | Int                  | Index of currently selected item  | -                                     | Yes      |
-| onSelectedIndexChange | ((Int) -> Unit)?     | Callback when selection changes   | -                                     | Yes      |
-| modifier              | Modifier             | Modifier applied to the component | Modifier                              | No       |
+| title                 | String               | Title of the dropdown menu        | -                                     | Yes      |
 | titleColor            | BasicComponentColors | Title text color configuration    | BasicComponentDefaults.titleColor()   | No       |
 | summary               | String?              | Summary description of dropdown   | null                                  | No       |
 | summaryColor          | BasicComponentColors | Summary text color configuration  | BasicComponentDefaults.summaryColor() | No       |
+| dropdownColors        | DropdownColors       | Color configuration for dropdown  | DropdownDefaults.dropdownColors()     | No       |
 | mode                  | DropDownMode         | Display mode of dropdown menu     | DropDownMode.Normal                   | No       |
+| modifier              | Modifier             | Modifier applied to the component | Modifier                              | No       |
 | insideMargin          | PaddingValues        | Internal content padding          | BasicComponentDefaults.InsideMargin   | No       |
 | maxHeight             | Dp?                  | Maximum height of dropdown menu   | null                                  | No       |
 | enabled               | Boolean              | Whether component is interactive  | true                                  | No       |
 | showValue             | Boolean              | Whether to show selected value    | true                                  | No       |
-| dropdownColors        | DropdownColors       | Color configuration for dropdown  | DropdownDefaults.dropdownColors()     | No       |
 | onClick               | (() -> Unit)?        | Additional callback on click      | null                                  | No       |
+| onSelectedIndexChange | ((Int) -> Unit)?     | Callback when selection changes   | -                                     | Yes      |
 
 ### DropdownColors Properties
 

@@ -14,44 +14,64 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**
  * A basic component with Miuix style. Widely used in other extension components.
  *
- * @param modifier The modifier to be applied to the [BasicComponent].
- * @param insideMargin The margin inside the [BasicComponent].
  * @param title The title of the [BasicComponent].
  * @param titleColor The color of the title.
  * @param summary The summary of the [BasicComponent].
  * @param summaryColor The color of the summary.
  * @param leftAction The [Composable] content that on the left side of the [BasicComponent].
  * @param rightActions The [Composable] content on the right side of the [BasicComponent].
+ * @param modifier The modifier to be applied to the [BasicComponent].
+ * @param insideMargin The margin inside the [BasicComponent].
  * @param onClick The callback when the [BasicComponent] is clicked.
+ * @param holdDownState Used to determine whether it is in the pressed state.
  * @param enabled Whether the [BasicComponent] is enabled.
  * @param interactionSource The [MutableInteractionSource] for the [BasicComponent].
  */
 @Composable
 fun BasicComponent(
-    modifier: Modifier = Modifier,
-    insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     title: String? = null,
     titleColor: BasicComponentColors = BasicComponentDefaults.titleColor(),
     summary: String? = null,
     summaryColor: BasicComponentColors = BasicComponentDefaults.summaryColor(),
     leftAction: @Composable (() -> Unit?)? = null,
     rightActions: @Composable RowScope.() -> Unit = {},
+    modifier: Modifier = Modifier,
+    insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     onClick: (() -> Unit)? = null,
+    holdDownState: Boolean = false,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
+    val holdDown = remember { mutableStateOf<HoldDownInteraction.HoldDown?>(null) }
+
+    LaunchedEffect(holdDownState) {
+        if (holdDownState) {
+            interactionSource.emit(HoldDownInteraction.HoldDown().also {
+                holdDown.value = it
+            })
+        } else {
+            holdDown.value?.let { oldValue ->
+                interactionSource.emit(HoldDownInteraction.Release(oldValue))
+                holdDown.value = null
+            }
+        }
+    }
+
     Row(
         modifier = if (onClick != null && enabled) {
             modifier
