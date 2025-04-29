@@ -1,7 +1,9 @@
 @file:Suppress("UnstableApiUsage")
 
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import java.util.Properties
 
@@ -10,12 +12,14 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.shadow)
 }
 
 val appName = "Miuix"
 val pkgName = "top.yukonga.miuix.uitest"
 val verName = "1.0.4"
 val verCode = getVersionCode()
+val javaMainClass = "Main_desktopKt"
 val generatedSrcDir = layout.buildDirectory.dir("generated").get().asFile.resolve("miuix-example")
 
 java {
@@ -55,7 +59,23 @@ kotlin {
         }
     }
 
-    jvm("desktop")
+    jvm("desktop") {
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        mainRun {
+            mainClass = javaMainClass
+        }
+
+        tasks.register<ShadowJar>("jvmShadowJar") {
+            val mainCompilation = compilations["main"]
+            val jvmRuntimeConfiguration = mainCompilation
+                .runtimeDependencyConfigurationName
+                .let { project.configurations[it] }
+            from(mainCompilation.output.allOutputs)
+            configurations = listOf(jvmRuntimeConfiguration)
+            archiveClassifier.set("fatjar")
+            manifest.attributes("Main-Class" to javaMainClass)
+        }
+    }
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
@@ -168,7 +188,7 @@ android {
 
 compose.desktop {
     application {
-        mainClass = "Main_desktopKt"
+        mainClass = javaMainClass
         buildTypes.release.proguard {
             configurationFiles.from("proguard-rules-jvm.pro")
         }
