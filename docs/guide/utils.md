@@ -6,11 +6,16 @@ Miuix provides a series of utility functions to help you develop applications mo
 
 `MiuixPopupUtils` is a utility class for displaying popups and dialogs. This class is already integrated into the `Scaffold` component and can be used directly.
 
+If you use multiple `Scaffold`s, you need to set the `popupHost` parameter in the subordinate `Scaffold` to `null`.
+
 ### Show Dialog
 
 ```kotlin
-showDialog {
-    // Dialog content
+// Requires a MutableState<Boolean> to control the display state
+val showDialogState = remember { mutableStateOf(false) }
+
+showDialog(showDialogState) {
+    // Dialog content Composable
 }
 ```
 See the [SuperDialog](../components/superdialog.md) documentation for details.
@@ -18,7 +23,8 @@ See the [SuperDialog](../components/superdialog.md) documentation for details.
 ### Dismiss Dialog
 
 ```kotlin
-dismissDialog(showDialog) 
+// Pass the same MutableState<Boolean> used when creating the dialog
+dismissDialog(showDialogState)
 ```
 
 See the [SuperDialog](../components/superdialog.md) documentation for details.
@@ -26,11 +32,14 @@ See the [SuperDialog](../components/superdialog.md) documentation for details.
 ### Show Popup
 
 ```kotlin
+// Requires a MutableState<Boolean> to control the display state
+val showPopupState = remember { mutableStateOf(false) }
+
 showPopup(
-    transformOrigin = { TransformOrigin(0.5f, 0f) }, // Expand from the top center
+    show = showPopupState,
     windowDimming = true // Dim the background
 ) {
-    // Popup content
+    // Popup content Composable
 }
 ```
 
@@ -39,7 +48,8 @@ See the [ListPopup](../components/listpopup.md) documentation for details.
 ### Dismiss Popup
 
 ```kotlin
-dismissPopup(showPopup) 
+// Pass the same MutableState<Boolean> used when creating the popup
+dismissPopup(showPopupState)
 ```
 
 See the [ListPopup](../components/listpopup.md) documentation for details.

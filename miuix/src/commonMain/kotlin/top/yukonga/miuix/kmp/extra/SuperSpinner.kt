@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -57,11 +58,11 @@ import top.yukonga.miuix.kmp.icon.icons.basic.ArrowUpDownIntegrated
 import top.yukonga.miuix.kmp.icon.icons.basic.Check
 import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog // Add back if needed
+import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup // Add back if needed
 
 /**
- * A spinner component with Miuix style.
+ * A spinner component with Miuix style. (Popup Mode)
  *
  * @param items The list of [SpinnerEntry] to be shown in the [SuperSpinner].
  * @param selectedIndex The index of the selected item in the [SuperSpinner].
@@ -104,6 +105,10 @@ fun SuperSpinner(
     val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     var alignLeft by rememberSaveable { mutableStateOf(true) }
 
+    LaunchedEffect(isDropdownExpanded.value) {
+        showPopup.value = isDropdownExpanded.value
+    }
+
     DisposableEffect(Unit) {
         onDispose {
             dismissPopup(showPopup)
@@ -133,36 +138,34 @@ fun SuperSpinner(
         summary = summary,
         summaryColor = summaryColor,
         leftAction = {
-            if (isDropdownExpanded.value) {
-                ListPopup(
-                    show = showPopup,
-                    alignment = if ((mode == SpinnerMode.AlwaysOnRight || !alignLeft))
-                        PopupPositionProvider.Align.Right
-                    else
-                        PopupPositionProvider.Align.Left,
-                    onDismissRequest = {
-                        isDropdownExpanded.value = false
-                    },
-                    maxHeight = maxHeight
-                ) {
-                    ListPopupColumn {
-                        items.forEachIndexed { index, spinnerEntry ->
-                            SpinnerItemImpl(
-                                entry = spinnerEntry,
-                                entryCount = items.size,
-                                isSelected = selectedIndex == index,
-                                index = index,
-                                dialogMode = false
-                            ) {
-                                hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
-                                onSelectedIndexChange?.let { it1 -> it1(it) }
-                                dismissPopup(showPopup)
-                                isDropdownExpanded.value = false
-                            }
+            ListPopup(
+                show = showPopup,
+                alignment = if ((mode == SpinnerMode.AlwaysOnRight || !alignLeft))
+                    PopupPositionProvider.Align.Right
+                else
+                    PopupPositionProvider.Align.Left,
+                onDismissRequest = {
+                    showPopup.value = false
+                    isDropdownExpanded.value = false
+                },
+                maxHeight = maxHeight
+            ) {
+                ListPopupColumn {
+                    items.forEachIndexed { index, spinnerEntry ->
+                        SpinnerItemImpl(
+                            entry = spinnerEntry,
+                            entryCount = items.size,
+                            isSelected = selectedIndex == index,
+                            index = index,
+                            dialogMode = false
+                        ) { selectedIdx ->
+                            hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
+                            onSelectedIndexChange?.invoke(selectedIdx)
+                            showPopup.value = false
+                            isDropdownExpanded.value = false
                         }
                     }
                 }
-                showPopup.value = true
             }
             leftAction?.invoke()
         },
@@ -191,8 +194,10 @@ fun SuperSpinner(
         onClick = {
             if (enabled) {
                 onClick?.invoke()
-                isDropdownExpanded.value = enabled
-                hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)
+                isDropdownExpanded.value = !isDropdownExpanded.value
+                if (isDropdownExpanded.value) {
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)
+                }
             }
         },
         holdDownState = isDropdownExpanded.value,
@@ -201,7 +206,7 @@ fun SuperSpinner(
 }
 
 /**
- * A [SuperSpinner] component with Miuix style, show Spinner as dialog.
+ * A [SuperSpinner] component with Miuix style, show Spinner as dialog. (Dialog Mode)
  *
  * @param items the list of [SpinnerEntry] to be shown in the [SuperSpinner].
  * @param selectedIndex the index of the selected item in the [SuperSpinner].
@@ -251,18 +256,21 @@ fun SuperSpinner(
 
     DisposableEffect(Unit) {
         onDispose {
-            dismissPopup(isDropdownExpanded)
+            dismissDialog(isDropdownExpanded)
         }
     }
 
-    if (!isDropdownExpanded.value) {
-        isHoldDown.value?.let { oldValue ->
-            coroutineScope.launch {
-                interactionSource.emit(HoldDownInteraction.Release(oldValue))
+    LaunchedEffect(isDropdownExpanded.value) {
+        if (!isDropdownExpanded.value) {
+            isHoldDown.value?.let { oldValue ->
+                coroutineScope.launch {
+                    interactionSource.emit(HoldDownInteraction.Release(oldValue))
+                }
+                isHoldDown.value = null
             }
-            isHoldDown.value = null
         }
     }
+
 
     BasicComponent(
         modifier = modifier
@@ -330,56 +338,54 @@ fun SuperSpinner(
         enabled = enabled
     )
 
-    if (isDropdownExpanded.value) {
-        SuperDialog(
-            modifier = popupModifier,
-            title = title,
-            show = isDropdownExpanded,
-            onDismissRequest = {
-                dismissDialog(isDropdownExpanded)
-            },
-            insideMargin = DpSize(0.dp, 24.dp)
-        ) {
-            Layout(
-                content = {
-                    LazyColumn {
-                        items(items.size) { index ->
-                            SpinnerItemImpl(
-                                entry = items[index],
-                                entryCount = items.size,
-                                isSelected = selectedIndex == index,
-                                index = index,
-                                dialogMode = true
-                            ) {
-                                hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
-                                onSelectedIndexChange?.let { it1 -> it1(it) }
-                                dismissDialog(isDropdownExpanded)
-                            }
+    SuperDialog(
+        modifier = popupModifier,
+        title = title,
+        show = isDropdownExpanded,
+        onDismissRequest = {
+            isDropdownExpanded.value = false
+        },
+        insideMargin = DpSize(0.dp, 24.dp)
+    ) {
+        Layout(
+            content = {
+                LazyColumn {
+                    items(items.size) { index ->
+                        SpinnerItemImpl(
+                            entry = items[index],
+                            entryCount = items.size,
+                            isSelected = selectedIndex == index,
+                            index = index,
+                            dialogMode = true
+                        ) { selectedIdx ->
+                            hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
+                            onSelectedIndexChange?.let { it1 -> it1(selectedIdx) }
+                            isDropdownExpanded.value = false
                         }
                     }
-                    TextButton(
-                        modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp).fillMaxWidth(),
-                        text = dialogButtonString,
-                        minHeight = 50.dp,
-                        onClick = {
-                            dismissDialog(isDropdownExpanded)
-                        }
-                    )
                 }
-            ) { measurables, constraints ->
-                if (measurables.size != 2) {
-                    layout(0, 0) { }
-                }
-                val button = measurables[1].measure(constraints)
-                val lazyList = measurables[0].measure(
-                    constraints.copy(
-                        maxHeight = constraints.maxHeight - button.height
-                    )
+                TextButton(
+                    modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp).fillMaxWidth(),
+                    text = dialogButtonString,
+                    minHeight = 50.dp,
+                    onClick = {
+                        isDropdownExpanded.value = false
+                    }
                 )
-                layout(constraints.maxWidth, lazyList.height + button.height) {
-                    lazyList.place(0, 0)
-                    button.place(0, lazyList.height)
-                }
+            }
+        ) { measurables, constraints ->
+            if (measurables.size != 2) {
+                layout(0, 0) { }
+            }
+            val button = measurables[1].measure(constraints)
+            val lazyList = measurables[0].measure(
+                constraints.copy(
+                    maxHeight = constraints.maxHeight - button.height
+                )
+            )
+            layout(constraints.maxWidth, lazyList.height + button.height) {
+                lazyList.place(0, 0)
+                button.place(0, lazyList.height)
             }
         }
     }

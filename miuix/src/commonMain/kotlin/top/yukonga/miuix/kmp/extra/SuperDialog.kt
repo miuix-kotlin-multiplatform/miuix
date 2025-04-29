@@ -15,7 +15,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
@@ -67,34 +66,33 @@ fun SuperDialog(
     defaultWindowInsetsPadding: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    if (!show.value) {
-        dialogStates.remove(show)
-        onDismissRequest?.invoke()
-    } else {
-        if (!dialogStates.contains(show)) dialogStates.add(show)
-        LaunchedEffect(show.value) {
-            if (show.value) {
-                dialogStates.forEach { state -> if (state != show) state.value = false }
-            }
-        }
+    LaunchedEffect(show.value) {
+        if (show.value) {
+            val dialogContentLambda: @Composable () -> Unit = {
+                val currentContent by rememberUpdatedState(content)
+                val currentModifier by rememberUpdatedState(modifier)
+                val currentTitle by rememberUpdatedState(title)
+                val currentTitleColor by rememberUpdatedState(titleColor)
+                val currentSummary by rememberUpdatedState(summary)
+                val currentSummaryColor by rememberUpdatedState(summaryColor)
+                val currentBackgroundColor by rememberUpdatedState(backgroundColor)
+                val currentOnDismissRequest by rememberUpdatedState(onDismissRequest)
+                val currentOutsideMargin by rememberUpdatedState(outsideMargin)
+                val currentInsideMargin by rememberUpdatedState(insideMargin)
+                val currentDefaultWindowInsetsPadding by rememberUpdatedState(defaultWindowInsetsPadding)
 
-        val density = LocalDensity.current
-        val getWindowSize by rememberUpdatedState(getWindowSize())
-        val windowWidth by rememberUpdatedState(getWindowSize.width.dp / density.density)
-        val windowHeight by rememberUpdatedState(getWindowSize.height.dp / density.density)
-        val paddingModifier = remember(outsideMargin) { Modifier.padding(horizontal = outsideMargin.width).padding(bottom = outsideMargin.height) }
-        val roundedCorner by rememberUpdatedState(getRoundedCorner())
-        val bottomCornerRadius by remember { derivedStateOf { if (roundedCorner != 0.dp) roundedCorner - outsideMargin.width else 32.dp } }
-        val contentAlignment by remember { derivedStateOf { if (windowHeight >= 480.dp && windowWidth >= 840.dp) Alignment.Center else Alignment.BottomCenter } }
+                val density = LocalDensity.current
+                val getWindowSize by rememberUpdatedState(getWindowSize())
+                val windowWidth by rememberUpdatedState(getWindowSize.width.dp / density.density)
+                val windowHeight by rememberUpdatedState(getWindowSize.height.dp / density.density)
+                val paddingModifier =
+                    remember(currentOutsideMargin) { Modifier.padding(horizontal = currentOutsideMargin.width).padding(bottom = currentOutsideMargin.height) }
+                val roundedCorner by rememberUpdatedState(getRoundedCorner())
+                val bottomCornerRadius by remember { derivedStateOf { if (roundedCorner != 0.dp) roundedCorner - currentOutsideMargin.width else 32.dp } }
+                val contentAlignment by remember { derivedStateOf { if (windowHeight >= 480.dp && windowWidth >= 840.dp) Alignment.Center else Alignment.BottomCenter } }
 
-        BackHandler(enabled = show.value) {
-            onDismissRequest?.invoke()
-        }
-
-        showDialog(
-            content = {
                 Box(
-                    modifier = if (defaultWindowInsetsPadding) {
+                    modifier = if (currentDefaultWindowInsetsPadding) {
                         Modifier
                             .imePadding()
                             .navigationBarsPadding()
@@ -105,14 +103,15 @@ fun SuperDialog(
                         .pointerInput(Unit) {
                             detectTapGestures(
                                 onTap = {
-                                    onDismissRequest?.invoke()
+                                    show.value = false
+                                    currentOnDismissRequest?.invoke()
                                 }
                             )
                         }
                         .then(paddingModifier)
                 ) {
                     Column(
-                        modifier = modifier
+                        modifier = currentModifier
                             .widthIn(max = 420.dp)
                             .pointerInput(Unit) {
                                 detectTapGestures { /* Do nothing to consume the click */ }
@@ -123,15 +122,15 @@ fun SuperDialog(
                                 clip = false
                             )
                             .background(
-                                color = backgroundColor,
+                                color = currentBackgroundColor,
                                 shape = SmoothRoundedCornerShape(bottomCornerRadius)
                             )
                             .padding(
-                                horizontal = insideMargin.width,
-                                vertical = insideMargin.height
+                                horizontal = currentInsideMargin.width,
+                                vertical = currentInsideMargin.height
                             ),
                     ) {
-                        title?.let {
+                        currentTitle?.let {
                             Text(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -140,10 +139,10 @@ fun SuperDialog(
                                 fontSize = MiuixTheme.textStyles.title4.fontSize,
                                 fontWeight = FontWeight.Medium,
                                 textAlign = TextAlign.Center,
-                                color = titleColor
+                                color = currentTitleColor
                             )
                         }
-                        summary?.let {
+                        currentSummary?.let {
                             Text(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -151,14 +150,24 @@ fun SuperDialog(
                                 text = it,
                                 fontSize = MiuixTheme.textStyles.body1.fontSize,
                                 textAlign = TextAlign.Center,
-                                color = summaryColor
+                                color = currentSummaryColor
                             )
                         }
-                        content()
+                        currentContent()
                     }
                 }
             }
-        )
+
+            showDialog(
+                show = show,
+                content = dialogContentLambda
+            )
+        }
+    }
+
+    BackHandler(enabled = show.value) {
+        show.value = false
+        onDismissRequest?.invoke()
     }
 }
 
@@ -192,8 +201,3 @@ object SuperDialogDefaults {
      */
     val insideMargin = DpSize(24.dp, 24.dp)
 }
-
-/**
- * Only one dialog is allowed to be displayed at a time.
- */
-val dialogStates = mutableStateListOf<MutableState<Boolean>>()

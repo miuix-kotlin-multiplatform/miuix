@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -90,6 +91,10 @@ fun SuperDropdown(
     val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     var alignLeft by rememberSaveable { mutableStateOf(true) }
 
+    LaunchedEffect(isDropdownExpanded.value) {
+        showPopup.value = isDropdownExpanded.value
+    }
+
     DisposableEffect(Unit) {
         onDispose {
             dismissPopup(showPopup)
@@ -119,37 +124,35 @@ fun SuperDropdown(
         summary = summary,
         summaryColor = summaryColor,
         leftAction = {
-            if (isDropdownExpanded.value) {
-                ListPopup(
-                    show = showPopup,
-                    alignment = if ((mode == DropDownMode.AlwaysOnRight || !alignLeft))
-                        PopupPositionProvider.Align.Right
-                    else
-                        PopupPositionProvider.Align.Left,
-                    onDismissRequest = {
-                        isDropdownExpanded.value = false
-                    },
-                    maxHeight = maxHeight
-                ) {
-                    ListPopupColumn {
-                        items.forEachIndexed { index, string ->
-                            DropdownImpl(
-                                text = string,
-                                optionSize = items.size,
-                                isSelected = selectedIndex == index,
-                                dropdownColors = dropdownColors,
-                                onSelectedIndexChange = {
-                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
-                                    onSelectedIndexChange?.let { it1 -> it1(it) }
-                                    dismissPopup(showPopup)
-                                    isDropdownExpanded.value = false
-                                },
-                                index = index
-                            )
-                        }
+            ListPopup(
+                show = showPopup,
+                alignment = if ((mode == DropDownMode.AlwaysOnRight || !alignLeft))
+                    PopupPositionProvider.Align.Right
+                else
+                    PopupPositionProvider.Align.Left,
+                onDismissRequest = {
+                    showPopup.value = false
+                    isDropdownExpanded.value = false
+                },
+                maxHeight = maxHeight
+            ) {
+                ListPopupColumn {
+                    items.forEachIndexed { index, string ->
+                        DropdownImpl(
+                            text = string,
+                            optionSize = items.size,
+                            isSelected = selectedIndex == index,
+                            dropdownColors = dropdownColors,
+                            onSelectedIndexChange = { selectedIdx ->
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
+                                onSelectedIndexChange?.invoke(selectedIdx)
+                                showPopup.value = false
+                                isDropdownExpanded.value = false
+                            },
+                            index = index
+                        )
                     }
                 }
-                showPopup.value = true
             }
         },
         rightActions = {
@@ -177,8 +180,10 @@ fun SuperDropdown(
         onClick = {
             if (enabled) {
                 onClick?.invoke()
-                isDropdownExpanded.value = enabled
-                hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)
+                isDropdownExpanded.value = !isDropdownExpanded.value
+                if (isDropdownExpanded.value) {
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)
+                }
             }
         },
         holdDownState = isDropdownExpanded.value,
@@ -242,6 +247,11 @@ fun DropdownImpl(
     } else {
         dropdownColors.containerColor
     }
+    val checkColor = if (isSelected) {
+        dropdownColors.selectedContentColor
+    } else {
+        Color.Transparent
+    }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -254,23 +264,18 @@ fun DropdownImpl(
             .padding(top = additionalTopPadding, bottom = additionalBottomPadding)
     ) {
         Text(
-            modifier = Modifier.widthIn(max = 216.dp),
+            modifier = Modifier.widthIn(max = 200.dp),
             text = text,
             fontSize = MiuixTheme.textStyles.body1.fontSize,
             fontWeight = FontWeight.Medium,
             color = textColor,
         )
-        if (isSelected) {
-            Image(
-                modifier = Modifier.padding(start = 12.dp).size(20.dp),
-                imageVector = MiuixIcons.Basic.Check,
-                colorFilter = BlendModeColorFilter(
-                    dropdownColors.selectedContentColor,
-                    BlendMode.SrcIn
-                ),
-                contentDescription = null,
-            )
-        }
+        Image(
+            modifier = Modifier.padding(start = 12.dp).size(20.dp),
+            imageVector = MiuixIcons.Basic.Check,
+            colorFilter = BlendModeColorFilter(checkColor, BlendMode.SrcIn),
+            contentDescription = null,
+        )
     }
 }
 

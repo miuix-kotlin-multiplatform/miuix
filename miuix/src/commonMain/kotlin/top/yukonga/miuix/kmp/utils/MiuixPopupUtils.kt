@@ -13,10 +13,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -35,71 +39,91 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  */
 class MiuixPopupUtils {
 
+    @Immutable
+    private data class PopupState(
+        val content: @Composable () -> Unit,
+        val transformOrigin: () -> TransformOrigin,
+        val windowDimming: Boolean
+    )
+
+    @Immutable
+    private data class DialogState(
+        val content: @Composable () -> Unit
+    )
+
     companion object {
-        private var isPopupShowing = mutableStateOf(false)
-        private var isDialogShowing = mutableStateOf(false)
-        private var isWindowDimming = mutableStateOf(false)
-        private var popupContext = mutableStateOf<(@Composable () -> Unit)?>(null)
-        private var dialogContext = mutableStateOf<(@Composable () -> Unit)?>(null)
-        private var popupTransformOrigin = mutableStateOf({ TransformOrigin.Center })
+        private val popupStates = mutableStateMapOf<MutableState<Boolean>, PopupState>()
+        private val dialogStates = mutableStateMapOf<MutableState<Boolean>, DialogState>()
+
+        private val isAnyPopupShowing by derivedStateOf { popupStates.keys.any { it.value } }
+        private val isAnyDialogShowing by derivedStateOf { dialogStates.keys.any { it.value } }
+        private val isWindowDimmingNeeded by derivedStateOf {
+            popupStates.entries.any { it.key.value && it.value.windowDimming }
+        }
 
         /**
          * Show a dialog.
          *
+         * @param show The show state controller for this specific dialog.
          * @param content The [Composable] content of the dialog.
          */
-        @Composable
         fun showDialog(
+            show: MutableState<Boolean>,
             content: (@Composable () -> Unit)? = null,
         ) {
-            if (isDialogShowing.value) return
-            isDialogShowing.value = true
-            dialogContext.value = content
+            if (content == null) {
+                dismissDialog(show)
+                return
+            }
+            dialogStates[show] = DialogState(content)
+            if (!show.value) show.value = true
         }
 
         /**
-         * Dismiss the dialog.
+         * Dismiss the dialog. Only sets the state to false to trigger animation.
+         * Removal from the map is handled by DisposableEffect in MiuixPopupHost.
          *
-         * @param show The show state of the dialog.
+         * @param show The show state controller of the dialog to dismiss.
          */
         fun dismissDialog(
             show: MutableState<Boolean>,
         ) {
-            isDialogShowing.value = false
-            show.value = false
+            if (show.value) show.value = false
         }
 
         /**
          * Show a popup.
          *
+         * @param show The show state controller for this specific popup.
          * @param transformOrigin The pivot point in terms of fraction of the overall size,
          *   used for scale transformations. By default it's [TransformOrigin.Center].
          * @param windowDimming Whether to dim the window when the popup is showing.
          * @param content The [Composable] content of the popup.
          */
-        @Composable
         fun showPopup(
+            show: MutableState<Boolean>,
             transformOrigin: (() -> TransformOrigin) = { TransformOrigin.Center },
             windowDimming: Boolean = true,
             content: (@Composable () -> Unit)? = null,
         ) {
-            if (isPopupShowing.value) return
-            popupTransformOrigin.value = transformOrigin
-            isPopupShowing.value = true
-            isWindowDimming.value = windowDimming
-            popupContext.value = content
+            if (content == null) {
+                dismissPopup(show)
+                return
+            }
+            popupStates[show] = PopupState(content, transformOrigin, windowDimming)
+            if (!show.value) show.value = true
         }
 
         /**
-         * Dismiss the popup.
+         * Dismiss the popup. Only sets the state to false to trigger animation.
+         * Removal from the map is handled by DisposableEffect in MiuixPopupHost.
          *
-         * @param show The show state of the popup.
+         * @param show The show state controller of the popup to dismiss.
          */
         fun dismissPopup(
             show: MutableState<Boolean>,
         ) {
-            isPopupShowing.value = false
-            show.value = false
+            if (show.value) show.value = false
         }
 
         /**
@@ -111,18 +135,26 @@ class MiuixPopupUtils {
             val getWindowSize by rememberUpdatedState(getWindowSize())
             val windowWidth by rememberUpdatedState(getWindowSize.width.dp / density.density)
             val windowHeight by rememberUpdatedState(getWindowSize.height.dp / density.density)
-            val largeScreen by rememberUpdatedState { derivedStateOf { (windowHeight >= 480.dp && windowWidth >= 840.dp) } }
-            var dimEnterDuration by remember { mutableIntStateOf(0) }
-            var dimExitDuration by remember { mutableIntStateOf(0) }
-            if (isDialogShowing.value) {
-                dimEnterDuration = 300
-                dimExitDuration = 250
-            } else if (isPopupShowing.value) {
-                dimEnterDuration = 150
-                dimExitDuration = 150
+            val largeScreen by remember { derivedStateOf { (windowHeight >= 480.dp && windowWidth >= 840.dp) } }
+
+            val dimEnterDuration = remember(isAnyDialogShowing, isAnyPopupShowing) {
+                when {
+                    isAnyDialogShowing -> 300
+                    isAnyPopupShowing -> 150
+                    else -> 150
+                }
             }
+            val dimExitDuration = remember(isAnyDialogShowing, isAnyPopupShowing) {
+                when {
+                    isAnyDialogShowing -> 250
+                    isAnyPopupShowing -> 150
+                    else -> 150
+                }
+            }
+
+            // Dimming Layer (zIndex 1f)
             AnimatedVisibility(
-                visible = isDialogShowing.value || (isPopupShowing.value && isWindowDimming.value),
+                visible = isAnyDialogShowing || isWindowDimmingNeeded,
                 modifier = Modifier.zIndex(1f).fillMaxSize(),
                 enter = fadeIn(animationSpec = tween(dimEnterDuration, easing = DecelerateEasing(1.5f))),
                 exit = fadeOut(animationSpec = tween(dimExitDuration, easing = DecelerateEasing(1.5f)))
@@ -133,74 +165,117 @@ class MiuixPopupUtils {
                         .background(MiuixTheme.colorScheme.windowDimming)
                 )
             }
-            AnimatedVisibility(
-                visible = isDialogShowing.value,
-                modifier = Modifier.zIndex(2f).fillMaxSize(),
-                enter = if (largeScreen.invoke().value) {
-                    fadeIn(
-                        animationSpec = spring(0.9f, 900f)
-                    ) + scaleIn(
-                        initialScale = 0.8f,
-                        animationSpec = spring(0.73f, 900f)
-                    )
-                } else {
-                    slideInVertically(
-                        initialOffsetY = { fullHeight -> fullHeight },
-                        animationSpec = spring(0.92f, 400f)
-                    )
-                },
-                exit = if (largeScreen.invoke().value) {
-                    fadeOut(
-                        animationSpec = tween(200, easing = DecelerateEasing(1.5f))
-                    ) + scaleOut(
-                        targetScale = 0.8f,
-                        animationSpec = tween(200, easing = DecelerateEasing(1.5f))
-                    )
-                } else {
-                    slideOutVertically(
-                        targetOffsetY = { fullHeight -> fullHeight },
-                        animationSpec = tween(200, easing = DecelerateEasing(1.5f))
-                    )
-                }
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    dialogContext.value?.invoke()
-                }
-                AnimatedVisibility(
-                    visible = isPopupShowing.value && isDialogShowing.value && isWindowDimming.value,
-                    modifier = Modifier.zIndex(1f).fillMaxSize(),
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(MiuixTheme.colorScheme.windowDimming)
-                    )
+
+            // Dialogs Layer (zIndex 2f)
+            dialogStates.entries.forEach { (showState, dialogState) ->
+                key(showState) {
+                    var internalVisible by remember { mutableStateOf(false) }
+
+                    LaunchedEffect(showState.value) {
+                        internalVisible = showState.value
+                    }
+
+                    AnimatedVisibility(
+                        visible = internalVisible,
+                        modifier = Modifier.zIndex(2f).fillMaxSize(),
+                        enter = if (largeScreen) {
+                            fadeIn(
+                                animationSpec = spring(0.9f, 900f)
+                            ) + scaleIn(
+                                initialScale = 0.8f,
+                                animationSpec = spring(0.73f, 900f)
+                            )
+                        } else {
+                            slideInVertically(
+                                initialOffsetY = { fullHeight -> fullHeight },
+                                animationSpec = spring(0.92f, 400f)
+                            )
+                        },
+                        exit = if (largeScreen) {
+                            fadeOut(
+                                animationSpec = tween(200, easing = DecelerateEasing(1.5f))
+                            ) + scaleOut(
+                                targetScale = 0.8f,
+                                animationSpec = tween(200, easing = DecelerateEasing(1.5f))
+                            )
+                        } else {
+                            slideOutVertically(
+                                targetOffsetY = { fullHeight -> fullHeight },
+                                animationSpec = tween(200, easing = DecelerateEasing(1.5f))
+                            )
+                        }
+                    ) {
+                        Box(
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            dialogState.content()
+                        }
+                        val shouldDimForPopup = popupStates.entries.any { it.key.value && it.value.windowDimming }
+                        AnimatedVisibility(
+                            visible = shouldDimForPopup,
+                            modifier = Modifier.zIndex(1f).fillMaxSize(),
+                            enter = fadeIn(animationSpec = tween(150, easing = DecelerateEasing(1.5f))),
+                            exit = fadeOut(animationSpec = tween(150, easing = DecelerateEasing(1.5f)))
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(MiuixTheme.colorScheme.windowDimming.copy(alpha = 0.5f))
+                            )
+                        }
+
+                        DisposableEffect(showState) {
+                            onDispose {
+                                if (!showState.value) {
+                                    dialogStates.remove(showState)
+                                }
+                            }
+                        }
+                    }
                 }
             }
-            AnimatedVisibility(
-                visible = isPopupShowing.value,
-                modifier = Modifier.zIndex(2f).fillMaxSize(),
-                enter = fadeIn(
-                    animationSpec = tween(150, easing = DecelerateEasing(1.5f))
-                ) + scaleIn(
-                    initialScale = 0.8f,
-                    animationSpec = tween(150, easing = DecelerateEasing(1.5f)),
-                    transformOrigin = popupTransformOrigin.value.invoke()
-                ),
-                exit = fadeOut(
-                    animationSpec = tween(150, easing = DecelerateEasing(1.5f))
-                ) + scaleOut(
-                    targetScale = 0.8f,
-                    animationSpec = tween(150, easing = DecelerateEasing(1.5f)),
-                    transformOrigin = popupTransformOrigin.value.invoke()
-                )
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    popupContext.value?.invoke()
+
+            // Popups Layer (zIndex 3f)
+            popupStates.entries.forEach { (showState, popupState) ->
+                key(showState) {
+                    var internalVisible by remember { mutableStateOf(false) }
+
+                    LaunchedEffect(showState.value) {
+                        internalVisible = showState.value
+                    }
+
+                    AnimatedVisibility(
+                        visible = internalVisible,
+                        modifier = Modifier.zIndex(3f).fillMaxSize(),
+                        enter = fadeIn(
+                            animationSpec = tween(150, easing = DecelerateEasing(1.5f))
+                        ) + scaleIn(
+                            initialScale = 0.8f,
+                            animationSpec = tween(150, easing = DecelerateEasing(1.5f)),
+                            transformOrigin = popupState.transformOrigin()
+                        ),
+                        exit = fadeOut(
+                            animationSpec = tween(150, easing = DecelerateEasing(1.5f))
+                        ) + scaleOut(
+                            targetScale = 0.8f,
+                            animationSpec = tween(150, easing = DecelerateEasing(1.5f)),
+                            transformOrigin = popupState.transformOrigin()
+                        )
+                    ) {
+                        Box(
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            popupState.content()
+                        }
+
+                        DisposableEffect(showState) {
+                            onDispose {
+                                if (!showState.value) {
+                                    popupStates.remove(showState)
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

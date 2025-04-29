@@ -1,45 +1,56 @@
 # 工具函数
 
-Miuix 提供了一系列实用的工具函数，帮助您更高效地开发应用。以下是主要工具函数的详细介绍与使用示例。
+Miuix 提供了一系列工具函数，帮助您更高效地开发应用程序。以下是主要工具函数的详细介绍和使用示例。
 
-## 弹窗工具 (MiuixPopupUtils)
+## 弹出窗口工具 (MiuixPopupUtils)
 
-`MiuixPopupUtils` 是一个用于显示弹窗和对话框的工具类。该类已经集成到 `Scaffold` 组件中，可以直接使用。
+`MiuixPopupUtils` 是一个用于显示弹出窗口和对话框的工具类。此类已默认集成到 `Scaffold` 组件中，可以直接使用。
+
+如果你使用多个 `Scaffold`，则需要将下属 `Scaffold` 中的 `popupHost` 参数设为 `null`。
 
 ### 显示对话框
 
 ```kotlin
-showDialog {
-    // 对话框内容
+// 需要一个 MutableState<Boolean> 来控制显示状态
+val showDialogState = remember { mutableStateOf(false) }
+
+showDialog(showDialogState) {
+    // 对话框内容 Composable
 }
 ```
+
 详见 [SuperDialog](../components/superdialog.md) 文档。
 
 ### 关闭对话框
 
 ```kotlin
-dismissDialog(showDialog) 
+// 传入创建对话框时使用的同一个 MutableState<Boolean>
+dismissDialog(showDialogState)
 ```
 
 详见 [SuperDialog](../components/superdialog.md) 文档。
 
-### 显示弹窗
+### 显示弹出窗口
 
 ```kotlin
+// 需要一个 MutableState<Boolean> 来控制显示状态
+val showPopupState = remember { mutableStateOf(false) }
+
 showPopup(
-    transformOrigin = { TransformOrigin(0.5f, 0f) }, // 从顶部中间展开
-    windowDimming = true // 背景变暗
+    show = showPopupState,
+    windowDimming = true // 背景压暗
 ) {
-    // 弹窗内容
+    // 弹出窗口内容 Composable
 }
 ```
 
 详见 [ListPopup](../components/listpopup.md) 文档。
 
-### 关闭弹窗
+### 关闭弹出窗口
 
 ```kotlin
-dismissPopup(showPopup) 
+// 传入创建弹出窗口时使用的同一个 MutableState<Boolean>
+dismissPopup(showPopupState)
 ```
 
 详见 [ListPopup](../components/listpopup.md) 文档。

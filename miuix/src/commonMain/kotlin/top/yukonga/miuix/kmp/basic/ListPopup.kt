@@ -18,12 +18,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
@@ -77,12 +75,10 @@ fun ListPopup(
     content: @Composable () -> Unit
 ) {
     var offset by remember { mutableStateOf(IntOffset.Zero) }
-
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
     val getWindowSize = rememberUpdatedState(getWindowSize())
     var windowSize by remember { mutableStateOf(IntSize(getWindowSize.value.width, getWindowSize.value.height)) }
-
     var parentBounds by remember { mutableStateOf(IntRect.Zero) }
     val windowBounds by rememberUpdatedState(with(density) {
         IntRect(
@@ -97,26 +93,16 @@ fun ListPopup(
     })
     var popupContentSize = IntSize.Zero
     var popupMargin by remember { mutableStateOf(IntRect.Zero) }
-
     var transformOrigin by remember { mutableStateOf(TransformOrigin.Center) }
-
-    if (!listPopupStates.contains(show)) listPopupStates.add(show)
-
-    LaunchedEffect(show.value) {
-        if (show.value) {
-            listPopupStates.forEach { state -> if (state != show) state.value = false }
-        }
-    }
 
     BackHandler(enabled = show.value) {
         dismissPopup(show)
-        onDismissRequest?.let { it1 -> it1() }
+        onDismissRequest?.invoke()
     }
 
     DisposableEffect(Unit) {
         onDispose {
             dismissPopup(show)
-            onDismissRequest?.let { it1 -> it1() }
         }
     }
 
@@ -143,60 +129,67 @@ fun ListPopup(
         onDispose {}
     }
 
-    if (show.value) {
-        val dropdownElevation by rememberUpdatedState(with(density) { shadowElevation.toPx() })
-        showPopup(
-            transformOrigin = { transformOrigin },
-            windowDimming = windowDimming,
-        ) {
-            Box(
-                modifier = popupModifier
-                    .pointerInput(Unit) {
-                        detectTapGestures {
-                            dismissPopup(show)
-                            onDismissRequest?.let { it1 -> it1() }
-                        }
-                    }
-                    .layout { measurable, constraints ->
-                        val placeable = measurable.measure(
-                            constraints.copy(
-                                minWidth = if (minWidth.roundToPx() <= windowSize.width) minWidth.roundToPx() else windowSize.width,
-                                minHeight = if (50.dp.roundToPx() <= windowSize.height) 50.dp.roundToPx() else windowSize.height,
-                                maxHeight = maxHeight?.roundToPx()?.coerceAtLeast(50.dp.roundToPx())
-                                    ?: (windowBounds.height - popupMargin.top - popupMargin.bottom).coerceAtLeast(50.dp.roundToPx()),
-                                maxWidth = if (minWidth.roundToPx() <= windowSize.width) windowSize.width else minWidth.roundToPx()
-                            )
-                        )
-                        popupContentSize = IntSize(placeable.width, placeable.height)
-                        offset = popupPositionProvider.calculatePosition(
-                            parentBounds,
-                            windowBounds,
-                            layoutDirection,
-                            popupContentSize,
-                            popupMargin,
-                            alignment
-                        )
-                        layout(constraints.maxWidth, constraints.maxHeight) {
-                            placeable.place(offset)
-                        }
-                    }
-            ) {
+    LaunchedEffect(show.value) {
+        if (show.value) {
+            val popupContentLambda: @Composable () -> Unit = {
+                val currentContent by rememberUpdatedState(content)
+                val currentOffset by rememberUpdatedState(offset)
                 val shape = remember { derivedStateOf { SmoothRoundedCornerShape(16.dp) } }
+                val elevationPx = with(density) { shadowElevation.toPx() }
                 Box(
-                    Modifier
-                        .align(AbsoluteAlignment.TopLeft)
-                        .graphicsLayer(
-                            clip = true,
-                            shape = shape.value,
-                            shadowElevation = dropdownElevation,
-                            ambientShadowColor = MiuixTheme.colorScheme.windowDimming,
-                            spotShadowColor = MiuixTheme.colorScheme.windowDimming
-                        )
-                        .background(MiuixTheme.colorScheme.surface)
+                    modifier = popupModifier
+                        .pointerInput(Unit) {
+                            detectTapGestures {
+                                dismissPopup(show)
+                                onDismissRequest?.invoke()
+                            }
+                        }
+                        .layout { measurable, constraints ->
+                            val placeable = measurable.measure(
+                                constraints.copy(
+                                    minWidth = if (minWidth.roundToPx() <= windowSize.width) minWidth.roundToPx() else windowSize.width,
+                                    minHeight = if (50.dp.roundToPx() <= windowSize.height) 50.dp.roundToPx() else windowSize.height,
+                                    maxHeight = maxHeight?.roundToPx()?.coerceAtLeast(50.dp.roundToPx())
+                                        ?: (windowBounds.height - popupMargin.top - popupMargin.bottom).coerceAtLeast(50.dp.roundToPx()),
+                                    maxWidth = if (minWidth.roundToPx() <= windowSize.width) windowSize.width else minWidth.roundToPx()
+                                )
+                            )
+                            popupContentSize = IntSize(placeable.width, placeable.height)
+                            offset = popupPositionProvider.calculatePosition(
+                                parentBounds,
+                                windowBounds,
+                                layoutDirection,
+                                popupContentSize,
+                                popupMargin,
+                                alignment
+                            )
+                            layout(constraints.maxWidth, constraints.maxHeight) {
+                                placeable.place(currentOffset)
+                            }
+                        }
                 ) {
-                    content.invoke()
+                    Box(
+                        Modifier
+                            .graphicsLayer(
+                                clip = true,
+                                shape = shape.value,
+                                shadowElevation = elevationPx,
+                                ambientShadowColor = MiuixTheme.colorScheme.windowDimming,
+                                spotShadowColor = MiuixTheme.colorScheme.windowDimming
+                            )
+                            .background(MiuixTheme.colorScheme.surface)
+                    ) {
+                        currentContent()
+                    }
                 }
             }
+
+            showPopup(
+                show = show,
+                transformOrigin = { transformOrigin },
+                windowDimming = windowDimming,
+                content = popupContentLambda
+            )
         }
     }
 
@@ -409,8 +402,6 @@ object ListPopupDefaults {
         }
     }
 }
-
-val listPopupStates = mutableStateListOf<MutableState<Boolean>>()
 
 /**
  * Ensure TransformOrigin is available.
