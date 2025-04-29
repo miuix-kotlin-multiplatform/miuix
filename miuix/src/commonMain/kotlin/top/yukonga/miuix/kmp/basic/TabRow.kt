@@ -69,7 +69,8 @@ fun TabRow(
             .clip(config.shape)
             .overScrollHorizontal(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(9.dp)
+        horizontalArrangement = Arrangement.spacedBy(9.dp),
+        overscrollEffect = null
     ) {
         itemsIndexed(tabs) { index, tabText ->
             Surface(
@@ -135,7 +136,8 @@ fun TabRowWithContour(
             .clip(SmoothRoundedCornerShape(cornerRadius))
             .overScrollHorizontal(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(5.dp)
+        horizontalArrangement = Arrangement.spacedBy(5.dp),
+        overscrollEffect = null
     ) {
         itemsIndexed(tabs) { index, tabText ->
             val isSelected = index == selectedTabIndex
