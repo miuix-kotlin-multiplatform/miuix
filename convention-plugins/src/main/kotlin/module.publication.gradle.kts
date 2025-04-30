@@ -1,20 +1,30 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     `maven-publish`
     signing
+}
+
+val javadocJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("javadoc")
 }
 
 val githubUrl = "https://github.com"
 val projectUrl = "$githubUrl/miuix-kotlin-multiplatform/miuix"
 
 publishing {
+    // Configure the publication repository
+    repositories {
+        maven {
+            url = uri(layout.buildDirectory.dir("repo"))
+        }
+    }
+    // Configure all publications
     publications.withType<MavenPublication> {
         // Stub javadoc.jar artifact
-        artifact(tasks.register("${name}JavadocJar", Jar::class) {
-            archiveClassifier.set("javadoc")
-            archiveAppendix.set(this@withType.name)
-        })
-
-        // Provide artifacts information required by Maven Central
+        artifact(javadocJar.get())
+        // Provide artifacts information required
         pom {
             name.set("miuix")
             description.set("A UI library for Compose MultiPlatform")
@@ -52,15 +62,24 @@ publishing {
             }
         }
     }
-
-    repositories {
-        maven {
-            url = uri(layout.buildDirectory.dir("repo"))
-        }
-    }
 }
 
+// Signing artifacts. Signing.* extra properties values will be used
 signing {
-    useGpgCmd()
+    val localPropertiesFile = project.rootProject.file("local.properties")
+    val localProperties = Properties()
+    if (localPropertiesFile.exists()) {
+        FileInputStream(localPropertiesFile).use { fis ->
+            localProperties.load(fis)
+        }
+    }
+    val signingKey = localProperties.getProperty("GPG_SIGNING_KEY") ?: System.getenv("GPG_SIGNING_KEY")
+    val signingPassword = localProperties.getProperty("GPG_SIGNING_KEY") ?: System.getenv("GPG_PASSPHRASE")
+    useInMemoryPgpKeys(signingKey, signingPassword)
     sign(publishing.publications)
+}
+
+// Ensure all publish tasks depend on corresponding sign tasks
+tasks.withType<PublishToMavenRepository>().configureEach {
+    dependsOn(tasks.withType<Sign>())
 }
