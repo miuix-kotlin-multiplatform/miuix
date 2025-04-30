@@ -43,23 +43,23 @@ class MiuixPopupUtils {
     private data class PopupState(
         val content: @Composable () -> Unit,
         val transformOrigin: () -> TransformOrigin,
-        val windowDimming: Boolean
+        val windowDimming: Boolean,
+        val zIndex: Float
     )
 
     @Immutable
     private data class DialogState(
-        val content: @Composable () -> Unit
+        val content: @Composable () -> Unit,
+        val zIndex: Float
     )
 
     companion object {
         private val popupStates = mutableStateMapOf<MutableState<Boolean>, PopupState>()
         private val dialogStates = mutableStateMapOf<MutableState<Boolean>, DialogState>()
+        private var nextZIndex = 1f
 
         private val isAnyPopupShowing by derivedStateOf { popupStates.keys.any { it.value } }
         private val isAnyDialogShowing by derivedStateOf { dialogStates.keys.any { it.value } }
-        private val isWindowDimmingNeeded by derivedStateOf {
-            popupStates.entries.any { it.key.value && it.value.windowDimming }
-        }
 
         /**
          * Show a dialog.
@@ -75,7 +75,12 @@ class MiuixPopupUtils {
                 dismissDialog(show)
                 return
             }
-            dialogStates[show] = DialogState(content)
+            val currentZIndex = if (!show.value) {
+                nextZIndex++
+            } else {
+                dialogStates[show]?.zIndex ?: nextZIndex++
+            }
+            dialogStates[show] = DialogState(content, currentZIndex)
             if (!show.value) show.value = true
         }
 
@@ -110,7 +115,12 @@ class MiuixPopupUtils {
                 dismissPopup(show)
                 return
             }
-            popupStates[show] = PopupState(content, transformOrigin, windowDimming)
+            val currentZIndex = if (!show.value) {
+                nextZIndex++
+            } else {
+                popupStates[show]?.zIndex ?: nextZIndex++
+            }
+            popupStates[show] = PopupState(content, transformOrigin, windowDimming, currentZIndex)
             if (!show.value) show.value = true
         }
 
@@ -152,21 +162,6 @@ class MiuixPopupUtils {
                 }
             }
 
-            // Dimming Layer (zIndex 1f)
-            AnimatedVisibility(
-                visible = isAnyDialogShowing || isWindowDimmingNeeded,
-                modifier = Modifier.zIndex(1f).fillMaxSize(),
-                enter = fadeIn(animationSpec = tween(dimEnterDuration, easing = DecelerateEasing(1.5f))),
-                exit = fadeOut(animationSpec = tween(dimExitDuration, easing = DecelerateEasing(1.5f)))
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MiuixTheme.colorScheme.windowDimming)
-                )
-            }
-
-            // Dialogs Layer (zIndex 2f)
             dialogStates.entries.forEach { (showState, dialogState) ->
                 key(showState) {
                     var internalVisible by remember { mutableStateOf(false) }
@@ -175,9 +170,24 @@ class MiuixPopupUtils {
                         internalVisible = showState.value
                     }
 
+                    // Dimming layer for the dialog
                     AnimatedVisibility(
                         visible = internalVisible,
-                        modifier = Modifier.zIndex(2f).fillMaxSize(),
+                        modifier = Modifier.zIndex(dialogState.zIndex).fillMaxSize(),
+                        enter = fadeIn(animationSpec = tween(dimEnterDuration, easing = DecelerateEasing(1.5f))),
+                        exit = fadeOut(animationSpec = tween(dimExitDuration, easing = DecelerateEasing(1.5f)))
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(MiuixTheme.colorScheme.windowDimming)
+                        )
+                    }
+
+                    // Content layer for the dialog
+                    AnimatedVisibility(
+                        visible = internalVisible,
+                        modifier = Modifier.zIndex(dialogState.zIndex).fillMaxSize(),
                         enter = if (largeScreen) {
                             fadeIn(
                                 animationSpec = spring(0.9f, 900f)
@@ -210,19 +220,6 @@ class MiuixPopupUtils {
                         ) {
                             dialogState.content()
                         }
-                        val shouldDimForPopup = popupStates.entries.any { it.key.value && it.value.windowDimming }
-                        AnimatedVisibility(
-                            visible = shouldDimForPopup,
-                            modifier = Modifier.zIndex(1f).fillMaxSize(),
-                            enter = fadeIn(animationSpec = tween(150, easing = DecelerateEasing(1.5f))),
-                            exit = fadeOut(animationSpec = tween(150, easing = DecelerateEasing(1.5f)))
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(MiuixTheme.colorScheme.windowDimming.copy(alpha = 0.5f))
-                            )
-                        }
 
                         DisposableEffect(showState) {
                             onDispose {
@@ -235,7 +232,6 @@ class MiuixPopupUtils {
                 }
             }
 
-            // Popups Layer (zIndex 3f)
             popupStates.entries.forEach { (showState, popupState) ->
                 key(showState) {
                     var internalVisible by remember { mutableStateOf(false) }
@@ -244,9 +240,31 @@ class MiuixPopupUtils {
                         internalVisible = showState.value
                     }
 
+                    // Dimming layer for the popup
+                    if (popupState.windowDimming) {
+                        AnimatedVisibility(
+                            visible = internalVisible,
+                            modifier = Modifier.zIndex(popupState.zIndex).fillMaxSize(),
+                            enter = fadeIn(
+                                animationSpec = tween(
+                                    durationMillis = dimEnterDuration,
+                                    easing = DecelerateEasing(1.5f)
+                                )
+                            ),
+                            exit = fadeOut(animationSpec = tween(dimExitDuration, easing = DecelerateEasing(1.5f)))
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(MiuixTheme.colorScheme.windowDimming)
+                            )
+                        }
+                    }
+
+                    // Content layer for the popup
                     AnimatedVisibility(
                         visible = internalVisible,
-                        modifier = Modifier.zIndex(3f).fillMaxSize(),
+                        modifier = Modifier.zIndex(popupState.zIndex).fillMaxSize(),
                         enter = fadeIn(
                             animationSpec = tween(150, easing = DecelerateEasing(1.5f))
                         ) + scaleIn(
