@@ -77,7 +77,6 @@ import top.yukonga.miuix.kmp.icon.icons.useful.NavigatorSwitch
 import top.yukonga.miuix.kmp.icon.icons.useful.Order
 import top.yukonga.miuix.kmp.icon.icons.useful.Settings
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup
 import utils.FPSMonitor
 
 data class UIState(
@@ -420,7 +419,7 @@ private fun TopAppBarActions(
                         onSelectedIndexChange = {
                             onPageSelected(index)
                             hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
-                            dismissPopup(showTopPopup)
+                            showTopPopup.value = false
                             onPopupExpandedChange(false)
                         },
                         index = index

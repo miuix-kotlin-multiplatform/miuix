@@ -47,7 +47,6 @@ import top.yukonga.miuix.kmp.extra.SuperSwitch
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.useful.Personal
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog
 
 @Composable
 fun TextComponent(
@@ -413,7 +412,7 @@ fun dialog(
         summary = "Summary",
         show = showDialog,
         onDismissRequest = {
-            dismissDialog(showDialog)
+            showDialog.value = false
         }
     ) {
         TextField(
@@ -428,7 +427,7 @@ fun dialog(
             TextButton(
                 text = "Cancel",
                 onClick = {
-                    dismissDialog(showDialog)
+                    showDialog.value = false
                 },
                 modifier = Modifier.weight(1f)
             )
@@ -436,7 +435,7 @@ fun dialog(
             TextButton(
                 text = "Confirm",
                 onClick = {
-                    dismissDialog(showDialog)
+                    showDialog.value = false
                 },
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.textButtonColorsPrimary()
@@ -456,7 +455,7 @@ fun dialog2(
         title = "Dialog 2",
         show = showDialog,
         onDismissRequest = {
-            dismissDialog(showDialog)
+            showDialog.value = false
         }
     ) {
         Card(
@@ -483,7 +482,7 @@ fun dialog2(
             TextButton(
                 text = "Cancel",
                 onClick = {
-                    dismissDialog(showDialog)
+                    showDialog.value = false
                 },
                 modifier = Modifier.weight(1f)
             )
@@ -491,7 +490,7 @@ fun dialog2(
             TextButton(
                 text = "Confirm",
                 onClick = {
-                    dismissDialog(showDialog)
+                    showDialog.value = false
                 },
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.textButtonColorsPrimary()

@@ -62,78 +62,56 @@ class MiuixPopupUtils {
         private val isAnyDialogShowing by derivedStateOf { dialogStates.keys.any { it.value } }
 
         /**
-         * Show a dialog.
+         * Create a dialog layout.
          *
-         * @param show The show state controller for this specific dialog.
+         * @param visible The show state controller for this specific dialog.
          * @param content The [Composable] content of the dialog.
          */
-        fun showDialog(
-            show: MutableState<Boolean>,
+        @Suppress("FunctionName")
+        fun DialogLayout(
+            visible: MutableState<Boolean>,
             content: (@Composable () -> Unit)? = null,
         ) {
             if (content == null) {
-                dismissDialog(show)
+                if (visible.value) visible.value = false
                 return
             }
-            val currentZIndex = if (!show.value) {
+            val currentZIndex = if (!visible.value) {
                 nextZIndex++
             } else {
-                dialogStates[show]?.zIndex ?: nextZIndex++
+                dialogStates[visible]?.zIndex ?: nextZIndex++
             }
-            dialogStates[show] = DialogState(content, currentZIndex)
-            if (!show.value) show.value = true
+            dialogStates[visible] = DialogState(content, currentZIndex)
+            if (!visible.value) visible.value = true
         }
 
         /**
-         * Dismiss the dialog. Only sets the state to false to trigger animation.
-         * Removal from the map is handled by DisposableEffect in MiuixPopupHost.
+         * Create a popup layout.
          *
-         * @param show The show state controller of the dialog to dismiss.
-         */
-        fun dismissDialog(
-            show: MutableState<Boolean>,
-        ) {
-            if (show.value) show.value = false
-        }
-
-        /**
-         * Show a popup.
-         *
-         * @param show The show state controller for this specific popup.
+         * @param visible The show state controller for this specific popup.
          * @param transformOrigin The pivot point in terms of fraction of the overall size,
          *   used for scale transformations. By default it's [TransformOrigin.Center].
          * @param windowDimming Whether to dim the window when the popup is showing.
          * @param content The [Composable] content of the popup.
          */
-        fun showPopup(
-            show: MutableState<Boolean>,
+        @Suppress("FunctionName")
+        fun PopupLayout(
+            visible: MutableState<Boolean>,
             transformOrigin: (() -> TransformOrigin) = { TransformOrigin.Center },
             windowDimming: Boolean = true,
             content: (@Composable () -> Unit)? = null,
         ) {
             if (content == null) {
-                dismissPopup(show)
+                if (visible.value) visible.value = false
                 return
             }
-            val currentZIndex = if (!show.value) {
+            val currentZIndex = if (!visible.value) {
                 nextZIndex++
             } else {
-                popupStates[show]?.zIndex ?: nextZIndex++
+                popupStates[visible]?.zIndex ?: nextZIndex++
             }
-            popupStates[show] = PopupState(content, transformOrigin, windowDimming, currentZIndex)
-            if (!show.value) show.value = true
-        }
-
-        /**
-         * Dismiss the popup. Only sets the state to false to trigger animation.
-         * Removal from the map is handled by DisposableEffect in MiuixPopupHost.
-         *
-         * @param show The show state controller of the popup to dismiss.
-         */
-        fun dismissPopup(
-            show: MutableState<Boolean>,
-        ) {
-            if (show.value) show.value = false
+            popupStates[visible] = PopupState(content, transformOrigin, windowDimming, currentZIndex)
+            if (!visible.value) visible.value = true
         }
 
         /**

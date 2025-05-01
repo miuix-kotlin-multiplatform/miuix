@@ -176,7 +176,7 @@ Scaffold {
     SuperDialog(
         title = "高级设置",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) }
+        onDismissRequest = { showDialog.value = false }
     ) {
         Card {
             SuperSwitch(
@@ -192,13 +192,13 @@ Scaffold {
         ) {
             TextButton(
                 text = "取消",
-                onClick = { dismissDialog(showDialog) }, // 关闭对话框
+                onClick = { showDialog.value = false }, // 关闭对话框
                 modifier = Modifier.weight(1f)
             )
             Spacer(Modifier.width(16.dp))
             TextButton(
                 text = "确认",
-                onClick = { dismissDialog(showDialog) }, // 关闭对话框
+                onClick = { showDialog.value = false }, // 关闭对话框
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.textButtonColorsPrimary() // 使用主题颜色
             )

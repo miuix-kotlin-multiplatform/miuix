@@ -4,55 +4,40 @@ Miuix provides a series of utility functions to help you develop applications mo
 
 ## Popup Utilities (MiuixPopupUtils)
 
-`MiuixPopupUtils` is a utility class for displaying popups and dialogs. This class is already integrated into the `Scaffold` component and can be used directly.
+`MiuixPopupUtils` is a utility class for displaying popup layout and dialog layout. This class is already integrated into the `Scaffold` component and can be used directly.
 
-If you use multiple `Scaffold`s, you need to set the `popupHost` parameter in the subordinate `Scaffold` to `null`.
+If you use multiple Scaffolds, you need to set the `popupHost` parameter in the subordinate `Scaffold` to `null`.
 
-### Show Dialog
+### DialogLayout
 
 ```kotlin
 // Requires a MutableState<Boolean> to control the display state
 val showDialogState = remember { mutableStateOf(false) }
 
-showDialog(showDialogState) {
-    // Dialog content Composable
+DialogLayout(
+    visible = showDialogState
+) {
+    // Dialog content
 }
 ```
-See the [SuperDialog](../components/superdialog.md) documentation for details.
+Normally, you don't need to use it actively. See the [SuperDialog](../components/superdialog.md) documentation for details.
 
-### Dismiss Dialog
-
-```kotlin
-// Pass the same MutableState<Boolean> used when creating the dialog
-dismissDialog(showDialogState)
-```
-
-See the [SuperDialog](../components/superdialog.md) documentation for details.
-
-### Show Popup
+### PopupLayout
 
 ```kotlin
 // Requires a MutableState<Boolean> to control the display state
 val showPopupState = remember { mutableStateOf(false) }
 
-showPopup(
-    show = showPopupState,
+PopupLayout(
+    visible = showPopupState,
+    transformOrigin = { TransformOrigin.Center }, // Transform origin for the popup
     windowDimming = true // Dim the background
 ) {
-    // Popup content Composable
+    // Popup content
 }
 ```
 
-See the [ListPopup](../components/listpopup.md) documentation for details.
-
-### Dismiss Popup
-
-```kotlin
-// Pass the same MutableState<Boolean> used when creating the popup
-dismissPopup(showPopupState)
-```
-
-See the [ListPopup](../components/listpopup.md) documentation for details.
+Normally, you don't need to use it actively. See the [ListPopup](../components/listpopup.md) documentation for details.
 
 ## Overscroll Effects
 
@@ -96,7 +81,7 @@ LazyColumn(
         springStiff = 200f, // Spring stiffness for the rebound animation, default is 200f
         springDamp = 1f,  // Spring damping for the rebound animation, default is 1f
         isEnabled = { platform() == Platform.Android || platform() == Platform.IOS } // Whether to enable the overscroll effect, enabled by default on Android and iOS
-        )
+        ),
     overscrollEffect = null // It is recommended to set this parameter to null to disable the default effect
 ) {
     // List content

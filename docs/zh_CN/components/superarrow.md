@@ -60,7 +60,7 @@ Scaffold {
     SuperDialog(
         title = "对话框",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) } // 关闭对话框
+        onDismissRequest = { showDialog.value = false } // 关闭对话框
     ) {
         // 对话框内容
     }
@@ -151,7 +151,7 @@ Scaffold {
     SuperDialog(
         title = "选择语言",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) } // 关闭对话框
+        onDismissRequest = { showDialog.value = false } // 关闭对话框
     ) {
         // 对话框内容
         Card {
@@ -159,14 +159,14 @@ Scaffold {
                 title = "简体中文",
                 onClick = {
                     language = "简体中文"
-                    dismissDialog(showDialog) // 关闭对话框
+                    showDialog.value = false // 关闭对话框
                 }
             )
             SuperArrow(
                 title = "English",
                 onClick = {
                     language = "English"
-                    dismissDialog(showDialog) // 关闭对话框
+                    showDialog.value = false // 关闭对话框
                 }
             )
         }
@@ -175,7 +175,7 @@ Scaffold {
         ) {
             TextButton(
                 text = "取消",
-                onClick = { dismissDialog(showDialog) },  // 关闭对话框
+                onClick = { showDialog.value = false },  // 关闭对话框
                 modifier = Modifier.weight(1f).padding(top = 8.dp)
             )
         }

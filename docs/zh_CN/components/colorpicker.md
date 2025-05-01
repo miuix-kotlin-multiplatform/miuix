@@ -186,7 +186,7 @@ Scaffold {
     SuperDialog(
         title = "选择颜色",
         show = showColorDialog,
-        onDismissRequest = { dismissDialog(showColorDialog) } // 关闭对话框
+        onDismissRequest = { showColorDialog.value = false } // 关闭对话框
     ) {
         Column {
             ColorPicker(
@@ -201,14 +201,14 @@ Scaffold {
                 TextButton(
                     modifier = Modifier.weight(1f),
                     text = "取消",
-                    onClick = { dismissDialog(showColorDialog) } // 关闭对话框
+                    onClick = { showColorDialog.value = false } // 关闭对话框
                 )
                 TextButton(
                     modifier = Modifier.weight(1f),
                     text = "确认",
                     colors = ButtonDefaults.textButtonColorsPrimary(), // 使用主题颜色
                     onClick = {
-                        dismissDialog(showColorDialog) // 关闭对话框
+                        showColorDialog.value = false // 关闭对话框
                         // 处理确认逻辑
                         // 例如：保存选中的颜色
                     })

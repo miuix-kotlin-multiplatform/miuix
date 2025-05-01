@@ -3,14 +3,13 @@
 `SuperDialog` is a dialog component in Miuix used to display important information, collect user input, or confirm user actions. The dialog appears above the current interface and supports custom styles and content layouts.
 
 ::: warning
-`SuperDialog` must be used within a `Scaffold` component! Please use the `dismissDialog(show)` function to close the dialog.
+`SuperDialog` must be used within a `Scaffold` component!
 :::
 
 ## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.extra.SuperDialog
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog
 ```
 
 ## Basic Usage
@@ -30,11 +29,11 @@ Scaffold {
         title = "Dialog Title",
         summary = "This is a basic dialog example that can contain various content.",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) } // Close dialog
+        onDismissRequest = { showDialog.value = false } // Close dialog
     ) {
         TextButton(
             text = "Confirm",
-            onClick = { dismissDialog(showDialog) }, // Close dialog
+            onClick = { showDialog.value = false }, // Close dialog
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -96,7 +95,7 @@ Scaffold {
         title = "Custom Style",
         summary = "This dialog uses custom colors and margins",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) }, // Close dialog
+        onDismissRequest = { showDialog.value = false }, // Close dialog
         titleColor = Color.Blue,
         summaryColor = Color.Gray,
         backgroundColor = Color(0xFFF5F5F5),
@@ -110,7 +109,7 @@ Scaffold {
         
         TextButton(
             text = "Close",
-            onClick = { dismissDialog(showDialog) }, // Close dialog
+            onClick = { showDialog.value = false }, // Close dialog
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -137,7 +136,7 @@ Scaffold {
         title = "Confirm Action",
         summary = "This action is irreversible, do you want to proceed?",
         show = showConfirmDialog,
-        onDismissRequest = { dismissDialog(showConfirmDialog) } // Close dialog
+        onDismissRequest = { showConfirmDialog.value = false } // Close dialog
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween
@@ -146,7 +145,7 @@ Scaffold {
                 text = "Cancel",
                 onClick = { 
                     result = "User cancelled the action"
-                    dismissDialog(showConfirmDialog) // Close dialog
+                    showConfirmDialog.value = false // Close dialog
                 },
                 modifier = Modifier.weight(1f)
             )
@@ -155,7 +154,7 @@ Scaffold {
                 text = "Confirm",
                 onClick = { 
                     result = "User confirmed the action"
-                    dismissDialog(showConfirmDialog) // Close dialog 
+                    showConfirmDialog.value = false // Close dialog 
                 },
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.textButtonColorsPrimary()
@@ -180,7 +179,7 @@ Scaffold {
     SuperDialog(
         title = "Please Enter Content",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) } // Close dialog
+        onDismissRequest = { showDialog.value = false } // Close dialog
     ) {
         TextField(
             modifier = Modifier.padding(bottom = 16.dp),
@@ -194,13 +193,13 @@ Scaffold {
         ) {
             TextButton(
                 text = "Cancel",
-                onClick = { dismissDialog(showDialog) }, // Close dialog
+                onClick = { showDialog.value = false }, // Close dialog
                 modifier = Modifier.weight(1f)
             )
             Spacer(Modifier.width(20.dp))
             TextButton(
                 text = "Confirm",
-                onClick = { dismissDialog(showDialog) }, // Close dialog
+                onClick = { showDialog.value = false }, // Close dialog
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.textButtonColorsPrimary() // Use theme color
             )
@@ -226,7 +225,7 @@ Scaffold {
     SuperDialog(
         title = "Form Dialog",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) } // Close dialog
+        onDismissRequest = { showDialog.value = false } // Close dialog
     ) {
         Card(
             color = MiuixTheme.colorScheme.secondaryContainer,
@@ -252,13 +251,13 @@ Scaffold {
         ) {
             TextButton(
                 text = "Cancel",
-                onClick = { dismissDialog(showDialog) }, // Close dialog
+                onClick = { showDialog.value = false }, // Close dialog
                 modifier = Modifier.weight(1f)
             )
             Spacer(Modifier.width(20.dp))
             TextButton(
                 text = "Confirm",
-                onClick = { dismissDialog(showDialog) }, // Close dialog
+                onClick = { showDialog.value = false }, // Close dialog
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.textButtonColorsPrimary() // Use theme color
             )
@@ -282,7 +281,7 @@ Scaffold {
     SuperDialog(
         title = "Select Color",
         show = showColorDialog,
-        onDismissRequest = { dismissDialog(showColorDialog) } // Close dialog
+        onDismissRequest = { showColorDialog.value = false } // Close dialog
     ) {
         Column {
             ColorPicker(
@@ -297,14 +296,14 @@ Scaffold {
                 TextButton(
                     modifier = Modifier.weight(1f),
                     text = "Cancel",
-                    onClick = { dismissDialog(showColorDialog) } // Close dialog
+                    onClick = { showColorDialog.value = false } // Close dialog
                 )
                 TextButton(
                     modifier = Modifier.weight(1f),
                     text = "Confirm",
                     colors = ButtonDefaults.textButtonColorsPrimary(), // Use theme color
                     onClick = {
-                        dismissDialog(showColorDialog) // Close dialog
+                        showColorDialog.value = false // Close dialog
                         // Handle confirm logic
                     }
                 )

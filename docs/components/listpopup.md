@@ -3,7 +3,7 @@
 `ListPopup` is a popup list component in Miuix used to display a popup menu with multiple options. It provides a lightweight, floating temporary list suitable for various dropdown menus, context menus, and similar scenarios.
 
 ::: warning
-`ListPopup` must be used within a `Scaffold` component! Please use the `dismissPopup(show)` function to close the popup menu.
+`ListPopup` must be used within a `Scaffold` component!
 :::
 
 ## Import
@@ -11,7 +11,6 @@
 ```kotlin
 import top.yukonga.miuix.kmp.basic.ListPopup
 import top.yukonga.miuix.kmp.basic.ListPopupColumn
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup
 ```
 
 ## Basic Usage
@@ -31,7 +30,7 @@ Scaffold {
         )
         ListPopup(
             show = showPopup,
-            onDismissRequest = { dismissPopup(showPopup) } // Close the popup menu
+            onDismissRequest = { showPopup.value = false } // Close the popup menu
         ) {
             ListPopupColumn {
                 items.forEachIndexed { index, string ->
@@ -41,7 +40,7 @@ Scaffold {
                         isSelected = selectedIndex == index,
                         onSelectedIndexChange = {
                             selectedIndex = index
-                            dismissPopup(showPopup) // Close the popup menu
+                            showPopup.value = false // Close the popup menu
                         },
                         index = index
                     )
@@ -63,7 +62,7 @@ var showPopup = remember { mutableStateOf(false) }
 
 ListPopup(
     show = showPopup,
-    onDismissRequest = { dismissPopup(showPopup) } // Close the popup menu
+    onDismissRequest = { showPopup.value = false } // Close the popup menu
     alignment = PopupPositionProvider.Align.Left
 ) {
     ListPopupColumn {
@@ -79,7 +78,7 @@ var showPopup = remember { mutableStateOf(false) }
 
 ListPopup(
     show = showPopup,
-    onDismissRequest = { dismissPopup(showPopup) } // Close the popup menu
+    onDismissRequest = { showPopup.value = false } // Close the popup menu
     windowDimming = false
 ) {
     ListPopupColumn {
@@ -148,7 +147,7 @@ Scaffold {
             show = showPopup,
             minWidth = 250.dp,
             maxHeight = 300.dp,
-            onDismissRequest = { dismissPopup(showPopup) } // Close the popup menu
+            onDismissRequest = { showPopup.value = false } // Close the popup menu
             alignment = PopupPositionProvider.Align.BottomRight,
         ) {
             ListPopupColumn {
@@ -167,7 +166,7 @@ Scaffold {
                     ) {
                         TextButton(
                             text = "Confirm",
-                            onClick = { dismissPopup(showPopup) } // Close the popup menu
+                            onClick = { showPopup.value = false } // Close the popup menu
                         )
                     }
                 }

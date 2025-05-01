@@ -349,7 +349,7 @@ Scaffold {
     SuperDialog(
         title = "Theme Color Settings",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) } // Close dialog
+        onDismissRequest = { showDialog.value = false } // Close dialog
     ) {
         Card {
             SuperSpinner(
@@ -367,13 +367,13 @@ Scaffold {
         ) {
             TextButton(
                 text = "Cancel",
-                onClick = { dismissDialog(showDialog) }, // Close dialog
+                onClick = { showDialog.value = false }, // Close dialog
                 modifier = Modifier.weight(1f)
             )
             Spacer(Modifier.width(16.dp))
             TextButton(
                 text = "Confirm",
-                onClick = { dismissDialog(showDialog) }, // Close dialog
+                onClick = { showDialog.value = false }, // Close dialog
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.textButtonColorsPrimary() // Use theme color
             )

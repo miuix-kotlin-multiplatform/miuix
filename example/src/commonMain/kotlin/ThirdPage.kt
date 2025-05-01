@@ -22,7 +22,6 @@ import top.yukonga.miuix.kmp.extra.SuperDialog
 import top.yukonga.miuix.kmp.extra.SuperDropdown
 import top.yukonga.miuix.kmp.extra.SuperSwitch
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import top.yukonga.miuix.kmp.utils.overScrollVertical
 
@@ -203,7 +202,9 @@ fun dialog(showDialog: MutableState<Boolean>) {
     SuperDialog(
         title = "About",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) },
+        onDismissRequest = {
+            showDialog.value = false
+        },
         content = {
             val uriHandler = LocalUriHandler.current
             Text(

@@ -60,7 +60,7 @@ Scaffold {
     SuperDialog(
         title = "对话框",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) } // 关闭对话框
+        onDismissRequest = { showDialog.value = false } // 关闭对话框
     ) {
         // 对话框内容
     }

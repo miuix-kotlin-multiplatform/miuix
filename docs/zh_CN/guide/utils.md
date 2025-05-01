@@ -4,56 +4,41 @@ Miuix 提供了一系列工具函数，帮助您更高效地开发应用程序�
 
 ## 弹出窗口工具 (MiuixPopupUtils)
 
-`MiuixPopupUtils` 是一个用于显示弹出窗口和对话框的工具类。此类已默认集成到 `Scaffold` 组件中，可以直接使用。
+`MiuixPopupUtils` 是一个用于显示对话框布局和弹出窗口布局的工具类。该类已经集成到 `Scaffold` 组件中，可以直接使用。
 
-如果你使用多个 `Scaffold`，则需要将下属 `Scaffold` 中的 `popupHost` 参数设为 `null`。
+如果你使用多个 Scaffold，则需要将下属 `Scaffold` 中的 `popupHost` 参数设为 `null`。
 
-### 显示对话框
+### 对话框布局
 
 ```kotlin
 // 需要一个 MutableState<Boolean> 来控制显示状态
 val showDialogState = remember { mutableStateOf(false) }
 
-showDialog(showDialogState) {
-    // 对话框内容 Composable
+DialogLayout(
+    visible = showDialogState
+) {
+    // 对话框内容
 }
 ```
 
-详见 [SuperDialog](../components/superdialog.md) 文档。
+正常情况下无需主动使用。详见 [SuperDialog](../components/superdialog.md) 文档。
 
-### 关闭对话框
-
-```kotlin
-// 传入创建对话框时使用的同一个 MutableState<Boolean>
-dismissDialog(showDialogState)
-```
-
-详见 [SuperDialog](../components/superdialog.md) 文档。
-
-### 显示弹出窗口
+### 弹出窗口布局
 
 ```kotlin
 // 需要一个 MutableState<Boolean> 来控制显示状态
 val showPopupState = remember { mutableStateOf(false) }
 
-showPopup(
-    show = showPopupState,
+PopupLayout(
+    visible = showPopupState,
+    transformOrigin = { TransformOrigin.Center }, // 弹出窗口的起始位置
     windowDimming = true // 背景压暗
 ) {
-    // 弹出窗口内容 Composable
+    // 弹出窗口内容
 }
 ```
 
-详见 [ListPopup](../components/listpopup.md) 文档。
-
-### 关闭弹出窗口
-
-```kotlin
-// 传入创建弹出窗口时使用的同一个 MutableState<Boolean>
-dismissPopup(showPopupState)
-```
-
-详见 [ListPopup](../components/listpopup.md) 文档。
+正常情况下无需主动使用。详见 [ListPopup](../components/listpopup.md) 文档。
 
 ## 越界回弹效果 (Overscroll)
 

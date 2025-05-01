@@ -177,7 +177,7 @@ Scaffold {
     SuperDialog(
         title = "Advanced Settings",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) }
+        onDismissRequest = { showDialog.value = false }
     ) {
         Card {
             SuperSwitch(
@@ -193,13 +193,13 @@ Scaffold {
         ) {
             TextButton(
                 text = "Cancel",
-                onClick = { dismissDialog(showDialog) },
+                onClick = { showDialog.value = false },
                 modifier = Modifier.weight(1f)
             )
             Spacer(Modifier.width(16.dp))
             TextButton(
                 text = "Confirm",
-                onClick = { dismissDialog(showDialog) },
+                onClick = { showDialog.value = false },
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.textButtonColorsPrimary()
             )

@@ -58,8 +58,6 @@ import top.yukonga.miuix.kmp.icon.icons.basic.ArrowUpDownIntegrated
 import top.yukonga.miuix.kmp.icon.icons.basic.Check
 import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog // Add back if needed
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup // Add back if needed
 
 /**
  * A spinner component with Miuix style. (Popup Mode)
@@ -111,7 +109,6 @@ fun SuperSpinner(
 
     DisposableEffect(Unit) {
         onDispose {
-            dismissPopup(showPopup)
             isDropdownExpanded.value = false
         }
     }
@@ -254,12 +251,6 @@ fun SuperSpinner(
     var componentHeightPx by remember { mutableIntStateOf(0) }
     var componentWidthPx by remember { mutableIntStateOf(0) }
 
-    DisposableEffect(Unit) {
-        onDispose {
-            dismissDialog(isDropdownExpanded)
-        }
-    }
-
     LaunchedEffect(isDropdownExpanded.value) {
         if (!isDropdownExpanded.value) {
             isHoldDown.value?.let { oldValue ->
@@ -270,7 +261,6 @@ fun SuperSpinner(
             }
         }
     }
-
 
     BasicComponent(
         modifier = modifier

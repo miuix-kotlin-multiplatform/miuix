@@ -3,14 +3,13 @@
 `SuperDialog` 是 Miuix 中的对话框组件，用于显示重要信息、收集用户输入或确认用户操作。对话框会在当前界面上层显示，并支持自定义样式和内容布局。
 
 ::: warning 注意
-`SuperDialog` 需要在 `Scaffold` 组件内使用！请使用 `dismissDialog(show)` 函数关闭对话框。
+`SuperDialog` 需要在 `Scaffold` 组件内使用！
 :::
 
 ## 引入
 
 ```kotlin
 import top.yukonga.miuix.kmp.extra.SuperDialog
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissDialog
 ```
 
 ## 基本用法
@@ -30,11 +29,11 @@ Scaffold {
         title = "对话框标题",
         summary = "这是一个基本的对话框示例，可以包含各种内容。",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) } // 关闭对话框
+        onDismissRequest = { showDialog.value = false } // 关闭对话框
     ) {
         TextButton(
             text = "确定",
-            onClick = { dismissDialog(showDialog) }, // 关闭对话框
+            onClick = { showDialog.value = false }, // 关闭对话框
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -96,7 +95,7 @@ Scaffold {
         title = "自定义样式",
         summary = "这个对话框使用了自定义颜色和边距",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) }, // 关闭对话框
+        onDismissRequest = { showDialog.value = false }, // 关闭对话框
         titleColor = Color.Blue,
         summaryColor = Color.Gray,
         backgroundColor = Color(0xFFF5F5F5),
@@ -110,7 +109,7 @@ Scaffold {
         
         TextButton(
             text = "关闭",
-            onClick = { dismissDialog(showDialog) }, // 关闭对话框
+            onClick = { showDialog.value = false }, // 关闭对话框
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -137,7 +136,7 @@ Scaffold {
         title = "确认操作",
         summary = "此操作不可撤销，是否继续？",
         show = showConfirmDialog,
-        onDismissRequest = { dismissDialog(showConfirmDialog) } // 关闭对话框
+        onDismissRequest = { showConfirmDialog.value = false } // 关闭对话框
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween
@@ -146,7 +145,7 @@ Scaffold {
                 text = "取消",
                 onClick = { 
                     result = "用户取消了操作"
-                    dismissDialog(showConfirmDialog) // 关闭对话框
+                    showConfirmDialog.value = false // 关闭对话框
                 },
                 modifier = Modifier.weight(1f)
             )
@@ -155,7 +154,7 @@ Scaffold {
                 text = "确认",
                 onClick = { 
                     result = "用户确认了操作"
-                    dismissDialog(showConfirmDialog) // 关闭对话框
+                    showConfirmDialog.value = false // 关闭对话框
                 },
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.textButtonColorsPrimary() // 使用主题颜色
@@ -180,7 +179,7 @@ Scaffold {
     SuperDialog(
         title = "请输入内容",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) } // 关闭对话框
+        onDismissRequest = { showDialog.value = false } // 关闭对话框
     ) {
         TextField(
             modifier = Modifier.padding(bottom = 16.dp),
@@ -194,13 +193,13 @@ Scaffold {
         ) {
             TextButton(
                 text = "取消",
-                onClick = { dismissDialog(showDialog) }, // 关闭对话框
+                onClick = { showDialog.value = false }, // 关闭对话框
                 modifier = Modifier.weight(1f)
             )
             Spacer(Modifier.width(20.dp))
             TextButton(
                 text = "确认",
-                onClick = { dismissDialog(showDialog) }, // 关闭对话框
+                onClick = { showDialog.value = false }, // 关闭对话框
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.textButtonColorsPrimary() // 使用主题颜色
             )
@@ -226,7 +225,7 @@ Scaffold {
     SuperDialog(
         title = "表单对话框",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) } // 关闭对话框
+        onDismissRequest = { showDialog.value = false } // 关闭对话框
     ) {
         Card(
             color = MiuixTheme.colorScheme.secondaryContainer,
@@ -252,13 +251,13 @@ Scaffold {
         ) {
             TextButton(
                 text = "取消",
-                onClick = { dismissDialog(showDialog) }, // 关闭对话框
+                onClick = { showDialog.value = false }, // 关闭对话框
                 modifier = Modifier.weight(1f)
             )
             Spacer(Modifier.width(20.dp))
             TextButton(
                 text = "确认",
-                onClick = { dismissDialog(showDialog) }, // 关闭对话框
+                onClick = { showDialog.value = false }, // 关闭对话框
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.textButtonColorsPrimary() // 使用主题颜色
             )
@@ -282,7 +281,7 @@ Scaffold {
     SuperDialog(
         title = "选择颜色",
         show = showColorDialog,
-        onDismissRequest = { dismissDialog(showColorDialog) } // 关闭对话框
+        onDismissRequest = { showColorDialog.value = false } // 关闭对话框
     ) {
         Column {
             ColorPicker(
@@ -297,14 +296,14 @@ Scaffold {
                 TextButton(
                     modifier = Modifier.weight(1f),
                     text = "取消",
-                    onClick = { dismissDialog(showColorDialog) } // 关闭对话框
+                    onClick = { showColorDialog.value = false } // 关闭对话框
                 )
                 TextButton(
                     modifier = Modifier.weight(1f),
                     text = "确认",
                     colors = ButtonDefaults.textButtonColorsPrimary(), // 使用主题颜色
                     onClick = {
-                        dismissDialog(showColorDialog) // 关闭对话框
+                        showColorDialog.value = false // 关闭对话框
                         // 处理确认逻辑
                     }
                 )

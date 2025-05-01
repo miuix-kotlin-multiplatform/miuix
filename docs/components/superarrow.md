@@ -60,7 +60,7 @@ Scaffold {
     SuperDialog(
         title = "Dialog",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) }
+        onDismissRequest = { showDialog.value = false }
     ) {
         // Dialog content
     }
@@ -151,7 +151,7 @@ Scaffold {
     SuperDialog(
         title = "Select Language",
         show = showDialog,
-        onDismissRequest = { dismissDialog(showDialog) }
+        onDismissRequest = { showDialog.value = false }
     ) {
         // Dialog content
         Card {
@@ -159,14 +159,14 @@ Scaffold {
                 title = "Simplified Chinese",
                 onClick = {
                     language = "Simplified Chinese"
-                    dismissDialog(showDialog)
+                    showDialog.value = false
                 }
             )
             SuperArrow(
                 title = "English",
                 onClick = {
                     language = "English"
-                    dismissDialog(showDialog)
+                    showDialog.value = false
                 }
             )
         }
@@ -175,7 +175,7 @@ Scaffold {
         ) {
             TextButton(
                 text = "Cancel",
-                onClick = { dismissDialog(showDialog) },
+                onClick = { showDialog.value = false },
                 modifier = Modifier.weight(1f).padding(top = 8.dp)
             )
         }

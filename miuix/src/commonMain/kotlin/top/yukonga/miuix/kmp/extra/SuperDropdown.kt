@@ -45,7 +45,6 @@ import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.basic.ArrowUpDownIntegrated
 import top.yukonga.miuix.kmp.icon.icons.basic.Check
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup
 
 /**
  * A dropdown with a title and a summary.
@@ -97,7 +96,6 @@ fun SuperDropdown(
 
     DisposableEffect(Unit) {
         onDispose {
-            dismissPopup(showPopup)
             isDropdownExpanded.value = false
         }
     }

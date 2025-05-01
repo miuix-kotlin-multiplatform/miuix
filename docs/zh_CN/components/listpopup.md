@@ -3,7 +3,7 @@
 `ListPopup` 是 Miuix 中的弹出列表组件，用于显示一个包含多个选项的弹出菜单。它提供了一个轻量级的、悬浮在界面上的临时列表，适用于各种下拉菜单、上下文菜单等场景。
 
 ::: warning 注意
-`ListPopup` 需要在 `Scaffold` 组件内使用！请使用 `dismissPopup(show)` 函数关闭弹出菜单。
+`ListPopup` 需要在 `Scaffold` 组件内使用！
 :::
 
 ## 引入
@@ -11,7 +11,6 @@
 ```kotlin
 import top.yukonga.miuix.kmp.basic.ListPopup
 import top.yukonga.miuix.kmp.basic.ListPopupColumn
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.dismissPopup
 ```
 
 ## 基本用法
@@ -31,7 +30,7 @@ Scaffold {
         )
         ListPopup(
             show = showPopup,
-            onDismissRequest = { dismissPopup(showPopup) } // 关闭弹出菜单
+            onDismissRequest = { showPopup.value = false } // 关闭弹出菜单
         ) {
             ListPopupColumn {
                 items.forEachIndexed { index, string ->
@@ -41,7 +40,7 @@ Scaffold {
                         isSelected = selectedIndex == index,
                         onSelectedIndexChange = {
                             selectedIndex = index
-                            dismissPopup(showPopup) // 关闭弹出菜单
+                            showPopup.value = false // 关闭弹出菜单
                         },
                         index = index
                     )
@@ -63,7 +62,7 @@ var showPopup = remember { mutableStateOf(false) }
 
 ListPopup(
     show = showPopup,
-    onDismissRequest = { dismissPopup(showPopup) } // 关闭弹出菜单
+    onDismissRequest = { showPopup.value = false } // 关闭弹出菜单
     alignment = PopupPositionProvider.Align.Left
 ) {
     ListPopupColumn {
@@ -80,7 +79,7 @@ var showPopup = remember { mutableStateOf(false) }
 
 ListPopup(
     show = showPopup,
-    onDismissRequest = { dismissPopup(showPopup) } // 关闭弹出菜单
+    onDismissRequest = { showPopup.value = false } // 关闭弹出菜单
     windowDimming = false
 ) {
     ListPopupColumn {
@@ -149,7 +148,7 @@ Scaffold {
             show = showPopup,
             minWidth = 250.dp,
             maxHeight = 300.dp,
-            onDismissRequest = { dismissPopup(showPopup) } // 关闭弹出菜单
+            onDismissRequest = { showPopup.value = false } // 关闭弹出菜单
             alignment = PopupPositionProvider.Align.BottomRight,
         ) {
             ListPopupColumn {
@@ -168,7 +167,7 @@ Scaffold {
                     ) {
                         TextButton(
                             text = "确定",
-                            onClick = { dismissPopup(showPopup) } // 关闭弹出菜单
+                            onClick = { showPopup.value = false } // 关闭弹出菜单
                         )
                     }
                 }
