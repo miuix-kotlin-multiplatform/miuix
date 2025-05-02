@@ -17,10 +17,10 @@ val showDialogState = remember { mutableStateOf(false) }
 DialogLayout(
     visible = showDialogState,          // 控制对话框显示状态
     enterTransition = fadeIn(),         // 可选，自定义对话框进入动画
-    exitTransition = fadeOut(),          // 可选，自定义对话框对话框退出动画
-    enableWindowDim = true,           // 可选，是否启用遮罩层
+    exitTransition = fadeOut(),         // 可选，自定义对话框对话框退出动画
+    enableWindowDim = true,             // 可选，是否启用遮罩层
     dimEnterTransition = fadeIn(),      // 可选，自定义遮罩层进入动画
-    dimExitTransition = fadeOut()        // 可选，自定义遮罩层退出动画
+    dimExitTransition = fadeOut()       // 可选，自定义遮罩层退出动画
 ) {
     // 对话框内容
 }
@@ -36,8 +36,12 @@ val showPopupState = remember { mutableStateOf(false) }
 
 PopupLayout(
     visible = showPopupState,
+    enterTransition = fadeIn(),         // 可选，自定义对话框进入动画
+    exitTransition = fadeOut(),         // 可选，自定义对话框对话框退出动画
+    enableWindowDim = true,             // 可选，是否启用遮罩层
+    dimEnterTransition = fadeIn(),      // 可选，自定义遮罩层进入动画
+    dimExitTransition = fadeOut()       // 可选，自定义遮罩层退出动画
     transformOrigin = { TransformOrigin.Center }, // 弹出窗口的起始位置
-    windowDimming = true // 背景压暗
 ) {
     // 弹出窗口内容
 }

@@ -35,8 +35,12 @@ val showPopupState = remember { mutableStateOf(false) }
 
 PopupLayout(
     visible = showPopupState,
+    enterTransition = fadeIn(),    // Optional, custom enter animation for dialog content
+    exitTransition = fadeOut(),    // Optional, custom exit animation for dialog content
+    enableWindowDim = true,        // Optional, whether to enable dimming layer
+    dimEnterTransition = fadeIn(), // Optional, custom enter animation for dim layer
+    dimExitTransition = fadeOut()  // Optional, custom exit animation for dim layer
     transformOrigin = { TransformOrigin.Center }, // Transform origin for the popup
-    windowDimming = true // Dim the background
 ) {
     // Popup content
 }
