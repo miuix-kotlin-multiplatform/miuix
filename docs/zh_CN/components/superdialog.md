@@ -53,6 +53,7 @@ Scaffold {
 | summary                    | String?                | 对话框的摘要说明             | null                                  | 否       |
 | summaryColor               | Color                  | 摘要文本的颜色               | SuperDialogDefaults.summaryColor()    | 否       |
 | backgroundColor            | Color                  | 对话框背景色                 | SuperDialogDefaults.backgroundColor() | 否       |
+| enableWindowDim            | Boolean                | 是否启用遮罩层               | true                                  | 否       |
 | onDismissRequest           | (() -> Unit)?          | 对话框关闭时的回调函数       | null                                  | 否       |
 | outsideMargin              | DpSize                 | 对话框外部边距               | SuperDialogDefaults.outsideMargin     | 否       |
 | insideMargin               | DpSize                 | 对话框内部内容的边距         | SuperDialogDefaults.insideMargin      | 否       |

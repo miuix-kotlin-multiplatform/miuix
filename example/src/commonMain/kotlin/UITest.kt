@@ -407,8 +407,10 @@ private fun TopAppBarActions(
             popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
             alignment = PopupPositionProvider.Align.TopRight,
             onDismissRequest = {
+                showTopPopup.value = false
                 onPopupExpandedChange(false)
-            }
+            },
+            enableWindowDim = false
         ) {
             ListPopupColumn {
                 items.take(3).forEachIndexed { index, navigationItem ->

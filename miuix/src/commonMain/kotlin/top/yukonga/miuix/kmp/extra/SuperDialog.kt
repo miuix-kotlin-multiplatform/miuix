@@ -59,13 +59,17 @@ fun SuperDialog(
     summary: String? = null,
     summaryColor: Color = SuperDialogDefaults.summaryColor(),
     backgroundColor: Color = SuperDialogDefaults.backgroundColor(),
+    enableWindowDim: Boolean = true,
     onDismissRequest: (() -> Unit)? = null,
     outsideMargin: DpSize = SuperDialogDefaults.outsideMargin,
     insideMargin: DpSize = SuperDialogDefaults.insideMargin,
     defaultWindowInsetsPadding: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    DialogLayout(show) {
+    DialogLayout(
+        visible = show,
+        enableWindowDim = enableWindowDim,
+    ) {
         val currentContent by rememberUpdatedState(content)
         val currentModifier by rememberUpdatedState(modifier)
         val currentTitle by rememberUpdatedState(title)

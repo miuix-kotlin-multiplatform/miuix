@@ -80,7 +80,7 @@ var showPopup = remember { mutableStateOf(false) }
 ListPopup(
     show = showPopup,
     onDismissRequest = { showPopup.value = false } // 关闭弹出菜单
-    windowDimming = false
+    enableWindowDim = false // 禁用遮罩层
 ) {
     ListPopupColumn {
         // 自定义内容
@@ -98,7 +98,7 @@ ListPopup(
 | popupModifier         | Modifier                    | 应用于弹出列表的修饰符         | Modifier                                   | 否       |
 | popupPositionProvider | PopupPositionProvider       | 弹出列表的位置提供者           | ListPopupDefaults.DropdownPositionProvider | 否       |
 | alignment             | PopupPositionProvider.Align | 弹出列表的对齐方式             | PopupPositionProvider.Align.Right          | 否       |
-| windowDimming         | Boolean                     | 是否在显示弹出列表时使窗口变暗 | true                                       | 否       |
+| enableWindowDim       | Boolean                     | 是否启用遮罩层                 | true                                       | 否       |
 | shadowElevation       | Dp                          | 弹出列表的阴影高度             | 11.dp                                      | 否       |
 | onDismissRequest      | (() -> Unit)?               | 弹出列表消失时的回调函数       | null                                       | 否       |
 | maxHeight             | Dp?                         | 弹出列表的最大高度             | null (自动计算)                            | 否       |

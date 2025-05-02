@@ -18,6 +18,7 @@ DialogLayout(
     visible = showDialogState,     // MutableState<Boolean> to control dialog visibility
     enterTransition = fadeIn(),    // Optional, custom enter animation for dialog content
     exitTransition = fadeOut(),    // Optional, custom exit animation for dialog content
+    enableWindowDim = true,        // Optional, whether to enable dimming layer
     dimEnterTransition = fadeIn(), // Optional, custom enter animation for dim layer
     dimExitTransition = fadeOut()  // Optional, custom exit animation for dim layer
 ) {
