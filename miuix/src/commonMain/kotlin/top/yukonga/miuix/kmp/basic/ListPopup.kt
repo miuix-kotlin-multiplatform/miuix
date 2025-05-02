@@ -52,7 +52,7 @@ import kotlin.math.min
  * @param popupModifier The modifier to be applied to the [ListPopup].
  * @param popupPositionProvider The [PopupPositionProvider] of the [ListPopup].
  * @param alignment The alignment of the [ListPopup].
- * @param windowDimming Whether to dim the window when the [ListPopup] is shown.
+ * @param enableWindowDim Whether to enable window dimming when the [ListPopup] is shown.
  * @param shadowElevation The elevation of the shadow of the [ListPopup].
  * @param onDismissRequest The callback when the [ListPopup] is dismissed.
  * @param maxHeight The maximum height of the [ListPopup]. If null, the height will be calculated automatically.
@@ -65,7 +65,7 @@ fun ListPopup(
     popupModifier: Modifier = Modifier,
     popupPositionProvider: PopupPositionProvider = ListPopupDefaults.DropdownPositionProvider,
     alignment: PopupPositionProvider.Align = PopupPositionProvider.Align.Right,
-    windowDimming: Boolean = true,
+    enableWindowDim: Boolean = true,
     shadowElevation: Dp = 11.dp,
     onDismissRequest: (() -> Unit)? = null,
     maxHeight: Dp? = null,
@@ -93,10 +93,6 @@ fun ListPopup(
     var popupMargin by remember { mutableStateOf(IntRect.Zero) }
     var transformOrigin by remember { mutableStateOf(TransformOrigin.Center) }
 
-    BackHandler(enabled = show.value) {
-        onDismissRequest?.invoke()
-    }
-
     DisposableEffect(popupPositionProvider, alignment) {
         val popupMargins = popupPositionProvider.getMargins()
         popupMargin = with(density) {
@@ -120,66 +116,7 @@ fun ListPopup(
         onDispose {}
     }
 
-    if (show.value) {
-        PopupLayout(
-            visible = show,
-            transformOrigin = { transformOrigin },
-            windowDimming = windowDimming
-        ) {
-            val currentContent by rememberUpdatedState(content)
-            val currentOffset by rememberUpdatedState(offset)
-            val shape = remember { derivedStateOf { SmoothRoundedCornerShape(16.dp) } }
-            val elevationPx = with(density) { shadowElevation.toPx() }
-            Box(
-                modifier = popupModifier
-                    .pointerInput(Unit) {
-                        detectTapGestures {
-                            onDismissRequest?.invoke()
-                        }
-                    }
-                    .layout { measurable, constraints ->
-                        val placeable = measurable.measure(
-                            constraints.copy(
-                                minWidth = if (minWidth.roundToPx() <= windowSize.width) minWidth.roundToPx() else windowSize.width,
-                                minHeight = if (50.dp.roundToPx() <= windowSize.height) 50.dp.roundToPx() else windowSize.height,
-                                maxHeight = maxHeight?.roundToPx()?.coerceAtLeast(50.dp.roundToPx())
-                                    ?: (windowBounds.height - popupMargin.top - popupMargin.bottom).coerceAtLeast(50.dp.roundToPx()),
-                                maxWidth = if (minWidth.roundToPx() <= windowSize.width) windowSize.width else minWidth.roundToPx()
-                            )
-                        )
-                        popupContentSize = IntSize(placeable.width, placeable.height)
-                        offset = popupPositionProvider.calculatePosition(
-                            parentBounds,
-                            windowBounds,
-                            layoutDirection,
-                            popupContentSize,
-                            popupMargin,
-                            alignment
-                        )
-                        layout(constraints.maxWidth, constraints.maxHeight) {
-                            placeable.place(currentOffset)
-                        }
-                    }
-            ) {
-                Box(
-                    Modifier
-                        .graphicsLayer(
-                            clip = true,
-                            shape = shape.value,
-                            shadowElevation = elevationPx,
-                            ambientShadowColor = MiuixTheme.colorScheme.windowDimming,
-                            spotShadowColor = MiuixTheme.colorScheme.windowDimming
-                        )
-                        .background(MiuixTheme.colorScheme.surface)
-                ) {
-                    currentContent()
-                }
-            }
-        }
-    }
-
     Layout(
-        content = {},
         modifier = Modifier.onGloballyPositioned { childCoordinates ->
             val parentCoordinates = childCoordinates.parentLayoutCoordinates!!
             val positionInWindow = parentCoordinates.positionInWindow()
@@ -211,6 +148,66 @@ fun ListPopup(
         }
     ) { _, _ ->
         layout(0, 0) {}
+    }
+
+    PopupLayout(
+        visible = show,
+        enableWindowDim = enableWindowDim,
+        transformOrigin = { transformOrigin },
+    ) {
+        val currentContent by rememberUpdatedState(content)
+        val currentOffset by rememberUpdatedState(offset)
+        val shape = remember { derivedStateOf { SmoothRoundedCornerShape(16.dp) } }
+        val elevationPx = with(density) { shadowElevation.toPx() }
+        Box(
+            modifier = popupModifier
+                .pointerInput(Unit) {
+                    detectTapGestures {
+                        onDismissRequest?.invoke()
+                    }
+                }
+                .layout { measurable, constraints ->
+                    val placeable = measurable.measure(
+                        constraints.copy(
+                            minWidth = if (minWidth.roundToPx() <= windowSize.width) minWidth.roundToPx() else windowSize.width,
+                            minHeight = if (50.dp.roundToPx() <= windowSize.height) 50.dp.roundToPx() else windowSize.height,
+                            maxHeight = maxHeight?.roundToPx()?.coerceAtLeast(50.dp.roundToPx())
+                                ?: (windowBounds.height - popupMargin.top - popupMargin.bottom).coerceAtLeast(50.dp.roundToPx()),
+                            maxWidth = if (minWidth.roundToPx() <= windowSize.width) windowSize.width else minWidth.roundToPx()
+                        )
+                    )
+                    popupContentSize = IntSize(placeable.width, placeable.height)
+                    offset = popupPositionProvider.calculatePosition(
+                        parentBounds,
+                        windowBounds,
+                        layoutDirection,
+                        popupContentSize,
+                        popupMargin,
+                        alignment
+                    )
+                    layout(constraints.maxWidth, constraints.maxHeight) {
+                        placeable.place(currentOffset)
+                    }
+                }
+        ) {
+            Box(
+                Modifier
+                    .graphicsLayer(
+                        clip = true,
+                        shape = shape.value,
+                        shadowElevation = elevationPx,
+                        ambientShadowColor = MiuixTheme.colorScheme.windowDimming,
+                        spotShadowColor = MiuixTheme.colorScheme.windowDimming
+                    )
+                    .background(MiuixTheme.colorScheme.surface)
+            ) {
+                currentContent()
+            }
+        }
+    }
+
+    BackHandler(enabled = show.value) {
+        onDismissRequest?.invoke()
     }
 }
 

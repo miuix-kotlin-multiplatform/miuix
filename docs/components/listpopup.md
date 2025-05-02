@@ -79,7 +79,7 @@ var showPopup = remember { mutableStateOf(false) }
 ListPopup(
     show = showPopup,
     onDismissRequest = { showPopup.value = false } // Close the popup menu
-    windowDimming = false
+    enableWindowDim = false // Disable dimming layer
 ) {
     ListPopupColumn {
         // Custom content
@@ -97,7 +97,7 @@ ListPopup(
 | popupModifier         | Modifier                    | Modifier applied to the popup list        | Modifier                                   | No       |
 | popupPositionProvider | PopupPositionProvider       | Position provider for the popup           | ListPopupDefaults.DropdownPositionProvider | No       |
 | alignment             | PopupPositionProvider.Align | Alignment of the popup list               | PopupPositionProvider.Align.Right          | No       |
-| windowDimming         | Boolean                     | Enable window dimming when showing popup  | true                                       | No       |
+| enableWindowDim       | Boolean                     | Whether to enable dimming layer           | true                                       | No       |
 | shadowElevation       | Dp                          | Shadow elevation of the popup             | 11.dp                                      | No       |
 | onDismissRequest      | (() -> Unit)?               | Callback when popup is dismissed          | null                                       | No       |
 | maxHeight             | Dp?                         | Maximum height of the popup list          | null (auto-calculated)                     | No       |

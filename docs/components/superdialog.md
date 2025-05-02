@@ -53,6 +53,7 @@ Scaffold {
 | summary                    | String?                | Dialog summary text                            | null                                  | No       |
 | summaryColor               | Color                  | Summary text color                             | SuperDialogDefaults.summaryColor()    | No       |
 | backgroundColor            | Color                  | Dialog background color                        | SuperDialogDefaults.backgroundColor() | No       |
+| enableWindowDim            | Boolean                | Whether to enable dimming layer                | true                                  | No       |
 | onDismissRequest           | (() -> Unit)?          | Callback when dialog is closed                 | null                                  | No       |
 | outsideMargin              | DpSize                 | Dialog external margin                         | SuperDialogDefaults.outsideMargin     | No       |
 | insideMargin               | DpSize                 | Dialog internal content margin                 | SuperDialogDefaults.insideMargin      | No       |

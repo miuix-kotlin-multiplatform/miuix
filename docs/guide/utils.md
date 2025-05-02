@@ -15,7 +15,12 @@ If you use multiple Scaffolds, you need to set the `popupHost` parameter in the 
 val showDialogState = remember { mutableStateOf(false) }
 
 DialogLayout(
-    visible = showDialogState
+    visible = showDialogState,     // MutableState<Boolean> to control dialog visibility
+    enterTransition = fadeIn(),    // Optional, custom enter animation for dialog content
+    exitTransition = fadeOut(),    // Optional, custom exit animation for dialog content
+    enableWindowDim = true,        // Optional, whether to enable dimming layer
+    dimEnterTransition = fadeIn(), // Optional, custom enter animation for dim layer
+    dimExitTransition = fadeOut()  // Optional, custom exit animation for dim layer
 ) {
     // Dialog content
 }
@@ -29,9 +34,13 @@ Normally, you don't need to use it actively. See the [SuperDialog](../components
 val showPopupState = remember { mutableStateOf(false) }
 
 PopupLayout(
-    visible = showPopupState,
+    visible = showPopupState,      // MutableState<Boolean> to control popup visibility
+    enterTransition = fadeIn(),    // Optional, custom enter animation for dialog content
+    exitTransition = fadeOut(),    // Optional, custom exit animation for dialog content
+    enableWindowDim = true,        // Optional, whether to enable dimming layer
+    dimEnterTransition = fadeIn(), // Optional, custom enter animation for dim layer
+    dimExitTransition = fadeOut()  // Optional, custom exit animation for dim layer
     transformOrigin = { TransformOrigin.Center }, // Transform origin for the popup
-    windowDimming = true // Dim the background
 ) {
     // Popup content
 }
