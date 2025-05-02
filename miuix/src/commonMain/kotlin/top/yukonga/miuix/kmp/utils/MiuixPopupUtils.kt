@@ -1,6 +1,8 @@
 package top.yukonga.miuix.kmp.utils
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -50,7 +52,11 @@ class MiuixPopupUtils {
     @Immutable
     private data class DialogState(
         val content: @Composable () -> Unit,
-        val zIndex: Float
+        val zIndex: Float,
+        val enterTransition: EnterTransition?,
+        val exitTransition: ExitTransition?,
+        val dimEnterTransition: EnterTransition?,
+        val dimExitTransition: ExitTransition?
     )
 
     companion object {
@@ -58,20 +64,66 @@ class MiuixPopupUtils {
         private val dialogStates = mutableStateMapOf<MutableState<Boolean>, DialogState>()
         private var nextZIndex = 1f
 
-        private val isAnyPopupShowing by derivedStateOf { popupStates.keys.any { it.value } }
-        private val isAnyDialogShowing by derivedStateOf { dialogStates.keys.any { it.value } }
+        private val isAnyPopupShowing by derivedStateOf {
+            popupStates.isNotEmpty() && popupStates.keys.any { it.value }
+        }
+        private val isAnyDialogShowing by derivedStateOf {
+            dialogStates.isNotEmpty() && dialogStates.keys.any { it.value }
+        }
+
+        private fun defaultMiuixDialogEnterTransition(largeScreen: Boolean = true): EnterTransition {
+            return if (largeScreen) {
+                fadeIn(
+                    animationSpec = spring(0.9f, 900f)
+                ) + scaleIn(
+                    initialScale = 0.8f,
+                    animationSpec = spring(0.73f, 900f)
+                )
+            } else {
+                slideInVertically(
+                    initialOffsetY = { fullHeight -> fullHeight },
+                    animationSpec = spring(0.92f, 400f)
+                )
+            }
+        }
+
+        private fun defaultMiuixDialogExitTransition(largeScreen: Boolean = true): ExitTransition {
+            return if (largeScreen) {
+                fadeOut(
+                    animationSpec = tween(200, easing = DecelerateEasing(1.5f))
+                ) + scaleOut(
+                    targetScale = 0.8f,
+                    animationSpec = tween(200, easing = DecelerateEasing(1.5f))
+                )
+            } else {
+                slideOutVertically(
+                    targetOffsetY = { fullHeight -> fullHeight },
+                    animationSpec = tween(200, easing = DecelerateEasing(1.5f))
+                )
+            }
+        }
 
         /**
          * Create a dialog layout.
          *
          * @param visible The show state controller for this specific dialog.
+         * @param enterTransition Optional, custom enter animation for dialog content
+         * @param exitTransition Optional, custom exit animation for dialog content
+         * @param dimEnterTransition Optional, custom enter animation for dim layer
+         * @param dimExitTransition Optional, custom exit animation for dim layer
          * @param content The [Composable] content of the dialog.
          */
+        @Composable
         @Suppress("FunctionName")
         fun DialogLayout(
-            visible: MutableState<Boolean>,
+            visible: MutableState<Boolean> = mutableStateOf(true),
+            enterTransition: EnterTransition? = null,
+            exitTransition: ExitTransition? = null,
+            dimEnterTransition: EnterTransition? = null,
+            dimExitTransition: ExitTransition? = null,
             content: (@Composable () -> Unit)? = null,
         ) {
+            if (visible.value == false) return
             if (content == null) {
                 if (visible.value) visible.value = false
                 return
@@ -81,8 +133,14 @@ class MiuixPopupUtils {
             } else {
                 dialogStates[visible]?.zIndex ?: nextZIndex++
             }
-            dialogStates[visible] = DialogState(content, currentZIndex)
-            if (!visible.value) visible.value = true
+            dialogStates[visible] = DialogState({
+                content() },
+                currentZIndex,
+                enterTransition,
+                exitTransition,
+                dimEnterTransition,
+                dimExitTransition
+            )
         }
 
         /**
@@ -152,8 +210,8 @@ class MiuixPopupUtils {
                     AnimatedVisibility(
                         visible = internalVisible,
                         modifier = Modifier.zIndex(dialogState.zIndex).fillMaxSize(),
-                        enter = fadeIn(animationSpec = tween(dimEnterDuration, easing = DecelerateEasing(1.5f))),
-                        exit = fadeOut(animationSpec = tween(dimExitDuration, easing = DecelerateEasing(1.5f)))
+                        enter = dialogState.dimEnterTransition?:fadeIn(animationSpec = tween(dimEnterDuration, easing = DecelerateEasing(1.5f))),
+                        exit = dialogState.dimExitTransition?:fadeOut(animationSpec = tween(dimExitDuration, easing = DecelerateEasing(1.5f)))
                     ) {
                         Box(
                             modifier = Modifier
@@ -166,32 +224,8 @@ class MiuixPopupUtils {
                     AnimatedVisibility(
                         visible = internalVisible,
                         modifier = Modifier.zIndex(dialogState.zIndex).fillMaxSize(),
-                        enter = if (largeScreen) {
-                            fadeIn(
-                                animationSpec = spring(0.9f, 900f)
-                            ) + scaleIn(
-                                initialScale = 0.8f,
-                                animationSpec = spring(0.73f, 900f)
-                            )
-                        } else {
-                            slideInVertically(
-                                initialOffsetY = { fullHeight -> fullHeight },
-                                animationSpec = spring(0.92f, 400f)
-                            )
-                        },
-                        exit = if (largeScreen) {
-                            fadeOut(
-                                animationSpec = tween(200, easing = DecelerateEasing(1.5f))
-                            ) + scaleOut(
-                                targetScale = 0.8f,
-                                animationSpec = tween(200, easing = DecelerateEasing(1.5f))
-                            )
-                        } else {
-                            slideOutVertically(
-                                targetOffsetY = { fullHeight -> fullHeight },
-                                animationSpec = tween(200, easing = DecelerateEasing(1.5f))
-                            )
-                        }
+                        enter = dialogState.enterTransition?:defaultMiuixDialogEnterTransition(largeScreen),
+                        exit = dialogState.exitTransition?:defaultMiuixDialogExitTransition(largeScreen)
                     ) {
                         Box(
                             modifier = Modifier.fillMaxSize()
@@ -264,10 +298,10 @@ class MiuixPopupUtils {
                             popupState.content()
                         }
 
-                        DisposableEffect(showState) {
+                        DisposableEffect(showState.value) {
                             onDispose {
                                 if (!showState.value) {
-                                    popupStates.remove(showState)
+                                    dialogStates.remove(showState)
                                 }
                             }
                         }

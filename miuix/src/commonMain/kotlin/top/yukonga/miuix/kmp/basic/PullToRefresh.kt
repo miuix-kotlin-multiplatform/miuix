@@ -185,7 +185,7 @@ fun RefreshHeader(
             when (pullToRefreshState.refreshState) {
                 RefreshState.Idle -> 0f
                 RefreshState.Pulling -> if (pullToRefreshState.pullProgress > 0.6f) (pullToRefreshState.pullProgress - 0.5f) * 2f else 0f
-                RefreshState.RefreshComplete -> (1f - refreshCompleteAnimProgress * 1.8f).coerceAtLeast(0f)
+                RefreshState.RefreshComplete -> (1f - refreshCompleteAnimProgress * 1.95f).coerceAtLeast(0f)
                 else -> 1f
             }
         }
@@ -422,11 +422,12 @@ private fun DrawScope.drawRefreshCompleteState(
     refreshCompleteProgress: Float
 ) {
     val animatedRadius = radius * ((1f - refreshCompleteProgress).coerceAtLeast(0.9f))
-    val alphaColor = color.copy(alpha = (1f - refreshCompleteProgress - 0.2f).coerceAtLeast(0f))
+    val alphaColor = color.copy(alpha = (1f - refreshCompleteProgress - 0.35f).coerceAtLeast(0f))
+    val y = center.y - radius - strokeWidth + animatedRadius
     drawCircle(
         color = alphaColor,
         radius = animatedRadius,
-        center = center,
+        center = Offset(center.x,y),
         style = Stroke(strokeWidth, cap = StrokeCap.Round)
     )
 }

@@ -15,7 +15,11 @@ If you use multiple Scaffolds, you need to set the `popupHost` parameter in the 
 val showDialogState = remember { mutableStateOf(false) }
 
 DialogLayout(
-    visible = showDialogState
+    visible = showDialogState,     // MutableState<Boolean> to control dialog visibility
+    enterTransition = fadeIn(),    // Optional, custom enter animation for dialog content
+    exitTransition = fadeOut(),    // Optional, custom exit animation for dialog content
+    dimEnterTransition = fadeIn(), // Optional, custom enter animation for dim layer
+    dimExitTransition = fadeOut()  // Optional, custom exit animation for dim layer
 ) {
     // Dialog content
 }
