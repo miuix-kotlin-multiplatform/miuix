@@ -22,13 +22,17 @@ Card {
 
 ### Card 属性
 
-| 属性名       | 类型                               | 说明                     | 默认值                      | 是否必须 |
-| ------------ | ---------------------------------- | ------------------------ | --------------------------- | -------- |
-| modifier     | Modifier                           | 应用于卡片的修饰符       | Modifier                    | 否       |
-| cornerRadius | Dp                                 | 卡片圆角半径             | CardDefaults.CornerRadius   | 否       |
-| insideMargin | PaddingValues                      | 卡片内部边距             | CardDefaults.InsideMargin   | 否       |
-| color        | Color                              | 卡片背景颜色             | CardDefaults.DefaultColor() | 否       |
-| content      | @Composable ColumnScope.() -> Unit | 卡片内容区域的可组合函数 | -                           | 是       |
+| 属性名           | 类型                               | 说明                     | 默认值                      | 是否必须 |
+| ---------------- | ---------------------------------- | ------------------------ | --------------------------- | -------- |
+| modifier         | Modifier                           | 应用于卡片的修饰符       | Modifier                    | 否       |
+| cornerRadius     | Dp                                 | 卡片圆角半径             | CardDefaults.CornerRadius   | 否       |
+| insideMargin     | PaddingValues                      | 卡片内部边距             | CardDefaults.InsideMargin   | 否       |
+| color            | Color                              | 卡片背景颜色             | CardDefaults.DefaultColor() | 否       |
+| pressFeedbackType| PressFeedbackType                  | 按压反馈类型             | PressFeedbackType.None      | 否       |
+| showIndication   | Boolean?                           | 是否显示点击指示效果     | false                       | 否       |
+| onClick          | (() -> Unit)?                     | 点击事件回调             | null                        | 否       |
+| onLongPress      | (() -> Unit)?                     | 长按事件回调             | null                        | 否       |
+| content          | @Composable ColumnScope.() -> Unit | 卡片内容区域的可组合函数 | -                           | 是       |
 
 ### CardDefaults 对象
 
@@ -89,7 +93,7 @@ Card(
         TextButton(
             text = "确定",
             colors = ButtonDefaults.textButtonColorsPrimary(), // 使用主题颜色
-            onClick = { /* 处理取消事件 */ }
+            onClick = { /* 处理确认事件 */ }
         )
     }
 }
@@ -111,3 +115,22 @@ LazyColumn {
     }
 }
 ```
+
+### 可交互的卡片
+
+```kotlin
+Card(
+    modifier = Modifier.padding(16.dp),
+    pressFeedbackType = PressFeedbackType.Sink,
+    showIndication = true,
+    onClick = { /* 处理点击事件 */ },
+    onLongPress = { /* 处理长按事件 */ }
+) {
+    Text("可交互的卡片")
+}
+```
+
+在这个示例中：
+- `pressFeedbackType = PressFeedbackType.Sink` 表示按下时会有一个下沉动画。
+- `showIndication = true` 表示启用交互时的视觉反馈。
+- `onClick` 和 `onLongPress` 分别定义了点击和长按的回调。

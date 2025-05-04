@@ -28,7 +28,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
@@ -91,6 +93,7 @@ import top.yukonga.miuix.kmp.icon.icons.useful.Unlike
 import top.yukonga.miuix.kmp.icon.icons.useful.Unstick
 import top.yukonga.miuix.kmp.icon.icons.useful.Update
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.PressFeedbackType
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import kotlin.math.round
 
@@ -100,6 +103,7 @@ fun OtherComponent(padding: PaddingValues) {
     var submitButtonText by remember { mutableStateOf("Submit") }
     var clickCount by remember { mutableStateOf(0) }
     var submitClickCount by remember { mutableStateOf(0) }
+    val hapticFeedback = LocalHapticFeedback.current
     val focusManager = LocalFocusManager.current
     var text1 by remember { mutableStateOf("") }
     var text2 by remember { mutableStateOf(TextFieldValue("")) }
@@ -378,15 +382,15 @@ fun OtherComponent(padding: PaddingValues) {
         ) {
             Text(
                 text = "Selected Color:\nRGBA: " +
-                        "${(selectedColor.red * 255).toInt()}," +
-                        "${(selectedColor.green * 255).toInt()}," +
-                        "${(selectedColor.blue * 255).toInt()}," +
-                        "${(round(selectedColor.alpha * 100) / 100.0)}" +
-                        "\nHEX: #" +
-                        (selectedColor.alpha * 255).toInt().toString(16).padStart(2, '0').uppercase() +
-                        (selectedColor.red * 255).toInt().toString(16).padStart(2, '0').uppercase() +
-                        (selectedColor.green * 255).toInt().toString(16).padStart(2, '0').uppercase() +
-                        (selectedColor.blue * 255).toInt().toString(16).padStart(2, '0').uppercase(),
+                       "${(selectedColor.red * 255).toInt()}," +
+                       "${(selectedColor.green * 255).toInt()}," +
+                       "${(selectedColor.blue * 255).toInt()}," +
+                       "${(round(selectedColor.alpha * 100) / 100.0)}" +
+                       "\nHEX: #" +
+                       (selectedColor.alpha * 255).toInt().toString(16).padStart(2, '0').uppercase() +
+                       (selectedColor.red * 255).toInt().toString(16).padStart(2, '0').uppercase() +
+                       (selectedColor.green * 255).toInt().toString(16).padStart(2, '0').uppercase() +
+                       (selectedColor.blue * 255).toInt().toString(16).padStart(2, '0').uppercase(),
                 modifier = Modifier.weight(1f)
             )
             Spacer(Modifier.width(12.dp))
@@ -415,7 +419,10 @@ fun OtherComponent(padding: PaddingValues) {
             .padding(horizontal = 12.dp)
             .padding(bottom = 12.dp),
         color = MiuixTheme.colorScheme.primaryVariant,
-        insideMargin = PaddingValues(16.dp)
+        insideMargin = PaddingValues(16.dp),
+        pressFeedbackType = PressFeedbackType.None,
+        showIndication = true,
+        onClick = { }
     ) {
         Text(
             color = MiuixTheme.colorScheme.onPrimary,
@@ -423,19 +430,62 @@ fun OtherComponent(padding: PaddingValues) {
             fontSize = 19.sp,
             fontWeight = FontWeight.SemiBold
         )
+        Text(
+            color = MiuixTheme.colorScheme.onPrimaryVariant,
+            text = "ShowIndication: true",
+            fontSize = 17.sp,
+            fontWeight = FontWeight.Normal
+        )
     }
 
-    Card(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
-            .padding(bottom = 12.dp + padding.calculateBottomPadding()),
-        insideMargin = PaddingValues(16.dp)
+            .padding(bottom = 12.dp + padding.calculateBottomPadding() + 80.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text(
-            color = MiuixTheme.colorScheme.onSurface,
-            text = "Card\nCardCard\nCardCardCard",
-            style = MiuixTheme.textStyles.paragraph
+        Card(
+            modifier = Modifier
+                .weight(1f),
+            insideMargin = PaddingValues(16.dp),
+            pressFeedbackType = PressFeedbackType.Sink,
+            showIndication = true,
+            onClick = { },
+            content = {
+                Text(
+                    color = MiuixTheme.colorScheme.onSurface,
+                    text = "Card",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
+                    text = "PressFeedback\nType: Sink",
+                    style = MiuixTheme.textStyles.paragraph
+                )
+            }
+        )
+
+        Card(
+            modifier = Modifier
+                .weight(1f),
+            insideMargin = PaddingValues(16.dp),
+            pressFeedbackType = PressFeedbackType.Tilt,
+            onLongPress = { hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress) },
+            content = {
+                Text(
+                    color = MiuixTheme.colorScheme.onSurface,
+                    text = "Card",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
+                    text = "PressFeedback\nType: Tilt",
+                    style = MiuixTheme.textStyles.paragraph
+                )
+            }
         )
     }
 }

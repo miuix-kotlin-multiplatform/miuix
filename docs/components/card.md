@@ -28,6 +28,10 @@ Card {
 | cornerRadius  | Dp                                 | Card corner radius       | CardDefaults.CornerRadius   | No       |
 | insideMargin  | PaddingValues                      | Card inner padding       | CardDefaults.InsideMargin   | No       |
 | color         | Color                              | Card background color    | CardDefaults.DefaultColor() | No       |
+| pressFeedbackType | PressFeedbackType                | The type of feedback when the card is pressed | PressFeedbackType.None | No       |
+| showIndication | Boolean?                          | Whether to show indication on interaction | false | No       |
+| onClick       | (() -> Unit)?                    | Callback invoked when the card is clicked | null | No       |
+| onLongPress   | (() -> Unit)?                    | Callback invoked when the card is long pressed | null | No       |
 | content       | @Composable ColumnScope.() -> Unit | Composable function for card content area | - | Yes |
 
 ### CardDefaults Object
@@ -111,3 +115,22 @@ LazyColumn {
     }
 }
 ```
+
+### Interactive Card
+
+```kotlin
+Card(
+    modifier = Modifier.padding(16.dp),
+    pressFeedbackType = PressFeedbackType.Sink,
+    showIndication = true,
+    onClick = { /* Handle click event */ },
+    onLongPress = { /* Handle long press event */ }
+) {
+    Text("Interactive Card")
+}
+```
+
+In this example:
+- `pressFeedbackType = PressFeedbackType.Sink` adds a sink animation when pressing the card.
+- `showIndication = true` enables visual indication during interactions.
+- `onClick` and `onLongPress` define the respective callbacks.
