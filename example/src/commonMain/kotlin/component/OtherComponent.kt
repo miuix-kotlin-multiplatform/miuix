@@ -382,15 +382,15 @@ fun OtherComponent(padding: PaddingValues) {
         ) {
             Text(
                 text = "Selected Color:\nRGBA: " +
-                       "${(selectedColor.red * 255).toInt()}," +
-                       "${(selectedColor.green * 255).toInt()}," +
-                       "${(selectedColor.blue * 255).toInt()}," +
-                       "${(round(selectedColor.alpha * 100) / 100.0)}" +
-                       "\nHEX: #" +
-                       (selectedColor.alpha * 255).toInt().toString(16).padStart(2, '0').uppercase() +
-                       (selectedColor.red * 255).toInt().toString(16).padStart(2, '0').uppercase() +
-                       (selectedColor.green * 255).toInt().toString(16).padStart(2, '0').uppercase() +
-                       (selectedColor.blue * 255).toInt().toString(16).padStart(2, '0').uppercase(),
+                        "${(selectedColor.red * 255).toInt()}," +
+                        "${(selectedColor.green * 255).toInt()}," +
+                        "${(selectedColor.blue * 255).toInt()}," +
+                        "${(round(selectedColor.alpha * 100) / 100.0)}" +
+                        "\nHEX: #" +
+                        (selectedColor.alpha * 255).toInt().toString(16).padStart(2, '0').uppercase() +
+                        (selectedColor.red * 255).toInt().toString(16).padStart(2, '0').uppercase() +
+                        (selectedColor.green * 255).toInt().toString(16).padStart(2, '0').uppercase() +
+                        (selectedColor.blue * 255).toInt().toString(16).padStart(2, '0').uppercase(),
                 modifier = Modifier.weight(1f)
             )
             Spacer(Modifier.width(12.dp))
@@ -442,12 +442,11 @@ fun OtherComponent(padding: PaddingValues) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
-            .padding(bottom = 12.dp + padding.calculateBottomPadding() + 80.dp),
+            .padding(bottom = 12.dp + padding.calculateBottomPadding()),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Card(
-            modifier = Modifier
-                .weight(1f),
+            modifier = Modifier.weight(1f),
             insideMargin = PaddingValues(16.dp),
             pressFeedbackType = PressFeedbackType.Sink,
             showIndication = true,
@@ -468,8 +467,7 @@ fun OtherComponent(padding: PaddingValues) {
         )
 
         Card(
-            modifier = Modifier
-                .weight(1f),
+            modifier = Modifier.weight(1f),
             insideMargin = PaddingValues(16.dp),
             pressFeedbackType = PressFeedbackType.Tilt,
             onLongPress = { hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress) },

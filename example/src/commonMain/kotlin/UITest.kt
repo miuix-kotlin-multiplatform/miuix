@@ -89,7 +89,7 @@ data class UIState(
     val showFloatingToolbar: Boolean = false,
     val floatingToolbarPosition: Int = 1,
     val floatingToolbarOrientation: Int = 1,
-    val showFloatingActionButton: Boolean = true,
+    val showFloatingActionButton: Boolean = false,
     val floatingActionButtonPosition: Int = 2,
     val enablePageUserScroll: Boolean = false,
     val isTopPopupExpanded: Boolean = false
