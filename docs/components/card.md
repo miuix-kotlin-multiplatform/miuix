@@ -1,16 +1,17 @@
 # Card
 
-`Card` is a basic container component in Miuix, used to hold related content and actions. It provides a card container with Miuix style, suitable for scenarios such as information display and content grouping.
+`Card` is a basic container component in Miuix, used to hold related content and actions. It provides a card container with Miuix style, suitable for scenarios such as information display and content grouping. Supports both static display and interactive modes.
 
 ## Import
 
 ```kotlin
 import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.utils.PressFeedbackType // If using interactive card
 ```
 
 ## Basic Usage
 
-The Card component can be used to wrap and organize content:
+The Card component can be used to wrap and organize content (static card):
 
 ```kotlin
 Card {
@@ -22,17 +23,21 @@ Card {
 
 ### Card Properties
 
-| Property Name | Type                               | Description              | Default Value               | Required |
-| ------------- | ---------------------------------- | ------------------------ | --------------------------- | -------- |
-| modifier      | Modifier                           | Modifier applied to card | Modifier                    | No       |
-| cornerRadius  | Dp                                 | Card corner radius       | CardDefaults.CornerRadius   | No       |
-| insideMargin  | PaddingValues                      | Card inner padding       | CardDefaults.InsideMargin   | No       |
-| color         | Color                              | Card background color    | CardDefaults.DefaultColor() | No       |
-| pressFeedbackType | PressFeedbackType                | The type of feedback when the card is pressed | PressFeedbackType.None | No       |
-| showIndication | Boolean?                          | Whether to show indication on interaction | false | No       |
-| onClick       | (() -> Unit)?                    | Callback invoked when the card is clicked | null | No       |
-| onLongPress   | (() -> Unit)?                    | Callback invoked when the card is long pressed | null | No       |
-| content       | @Composable ColumnScope.() -> Unit | Composable function for card content area | - | Yes |
+| Property Name     | Type                               | Description                               | Default Value               | Required | Applies To  |
+| ----------------- | ---------------------------------- | ----------------------------------------- | --------------------------- | -------- | ----------- |
+| modifier          | Modifier                           | Modifier applied to the card              | Modifier                    | No       | All         |
+| cornerRadius      | Dp                                 | Card corner radius                        | CardDefaults.CornerRadius   | No       | All         |
+| insideMargin      | PaddingValues                      | Card inner padding                        | CardDefaults.InsideMargin   | No       | All         |
+| color             | Color                              | Card background color                     | CardDefaults.DefaultColor() | No       | All         |
+| pressFeedbackType | PressFeedbackType                  | Feedback type when pressed                | PressFeedbackType.None      | No       | Interactive |
+| showIndication    | Boolean?                           | Show indication on interaction            | false                       | No       | Interactive |
+| onClick           | (() -> Unit)?                      | Callback when clicked                     | null                        | No       | Interactive |
+| onLongPress       | (() -> Unit)?                      | Callback when long pressed                | null                        | No       | Interactive |
+| content           | @Composable ColumnScope.() -> Unit | Composable function for card content area | -                           | Yes      | All         |
+
+::: warning
+Some properties are only available when creating an interactive card!
+:::
 
 ### CardDefaults Object
 
@@ -40,16 +45,16 @@ The CardDefaults object provides default values and color configurations for the
 
 #### Constants
 
-| Constant Name | Type          | Description        | Default Value         |
-| ------------- | ------------- | ------------------ | --------------------- |
-| CornerRadius  | Dp            | Card corner radius | 16.dp                 |
-| InsideMargin  | PaddingValues | Card inner padding | PaddingValues(0.dp)   |
+| Constant Name | Type          | Description        | Default Value       |
+| ------------- | ------------- | ------------------ | ------------------- |
+| CornerRadius  | Dp            | Card corner radius | 16.dp               |
+| InsideMargin  | PaddingValues | Card inner padding | PaddingValues(0.dp) |
 
 #### Methods
 
-| Method Name    | Type  | Description               |
-| -------------- | ----- | ------------------------- |
-| DefaultColor() | Color | Creates the default color for the card |
+| Method Name    | Type  | Description                               |
+| -------------- | ----- | ----------------------------------------- |
+| DefaultColor() | Color | The default background color for the card |
 
 ## Advanced Usage
 
@@ -121,16 +126,11 @@ LazyColumn {
 ```kotlin
 Card(
     modifier = Modifier.padding(16.dp),
-    pressFeedbackType = PressFeedbackType.Sink,
-    showIndication = true,
-    onClick = { /* Handle click event */ },
-    onLongPress = { /* Handle long press event */ }
+    pressFeedbackType = PressFeedbackType.Sink, // Set press feedback to sink effect
+    showIndication = true, // Show indication on click
+    onClick = {/* Handle click event */ },
+    onLongPress = {/* Handle long press event */ }
 ) {
     Text("Interactive Card")
 }
 ```
-
-In this example:
-- `pressFeedbackType = PressFeedbackType.Sink` adds a sink animation when pressing the card.
-- `showIndication = true` enables visual indication during interactions.
-- `onClick` and `onLongPress` define the respective callbacks.
