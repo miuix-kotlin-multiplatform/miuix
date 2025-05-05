@@ -1,16 +1,17 @@
 # Card
 
-`Card` 是 Miuix 中的基础容器组件，用于承载相关内容和操作。它提供了具有 Miuix 风格的卡片容器，适用于信息展示、内容分组等场景。
+`Card` 是 Miuix 中的基础容器组件，用于承载相关内容和操作。它提供了具有 Miuix 风格的卡片容器，适用于信息展示、内容分组等场景。支持静态显示和交互式两种模式。
 
 ## 引入
 
 ```kotlin
 import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.utils.PressFeedbackType // 如果使用交互式卡片
 ```
 
 ## 基本用法
 
-Card 组件可以用于包装和组织内容：
+Card 组件可以用于包装和组织内容（静态卡片）：
 
 ```kotlin
 Card {
@@ -22,13 +23,22 @@ Card {
 
 ### Card 属性
 
-| 属性名       | 类型                               | 说明                     | 默认值                      | 是否必须 |
-| ------------ | ---------------------------------- | ------------------------ | --------------------------- | -------- |
-| modifier     | Modifier                           | 应用于卡片的修饰符       | Modifier                    | 否       |
-| cornerRadius | Dp                                 | 卡片圆角半径             | CardDefaults.CornerRadius   | 否       |
-| insideMargin | PaddingValues                      | 卡片内部边距             | CardDefaults.InsideMargin   | 否       |
-| color        | Color                              | 卡片背景颜色             | CardDefaults.DefaultColor() | 否       |
-| content      | @Composable ColumnScope.() -> Unit | 卡片内容区域的可组合函数 | -                           | 是       |
+
+| 属性名            | 类型                               | 说明                     | 默认值                      | 是否必须 | 适用范围 |
+| ----------------- | ---------------------------------- | ------------------------ | --------------------------- | -------- | -------- |
+| modifier          | Modifier                           | 应用于卡片的修饰符       | Modifier                    | 否       | 所有     |
+| cornerRadius      | Dp                                 | 卡片圆角半径             | CardDefaults.CornerRadius   | 否       | 所有     |
+| insideMargin      | PaddingValues                      | 卡片内部边距             | CardDefaults.InsideMargin   | 否       | 所有     |
+| color             | Color                              | 卡片背景颜色             | CardDefaults.DefaultColor() | 否       | 所有     |
+| pressFeedbackType | PressFeedbackType                  | 按压反馈类型             | PressFeedbackType.None      | 否       | 交互式   |
+| showIndication    | Boolean?                           | 显示点击指示效果         | false                       | 否       | 交互式   |
+| onClick           | (() -> Unit)?                      | 点击事件回调             | null                        | 否       | 交互式   |
+| onLongPress       | (() -> Unit)?                      | 长按事件回调             | null                        | 否       | 交互式   |
+| content           | @Composable ColumnScope.() -> Unit | 卡片内容区域的可组合函数 | -                           | 是       | 所有     |
+
+::: warning 注意
+部分属性仅在创建可交互的卡片时可用！
+:::
 
 ### CardDefaults 对象
 
@@ -45,7 +55,7 @@ CardDefaults 对象提供了卡片组件的默认值和颜色配置。
 
 | 方法名         | 类型  | 说明               |
 | -------------- | ----- | ------------------ |
-| DefaultColor() | Color | 创建卡片的默认颜色 |
+| DefaultColor() | Color | 卡片的默认背景颜色 |
 
 ## 进阶用法
 
@@ -89,7 +99,7 @@ Card(
         TextButton(
             text = "确定",
             colors = ButtonDefaults.textButtonColorsPrimary(), // 使用主题颜色
-            onClick = { /* 处理取消事件 */ }
+            onClick = { /* 处理确认事件 */ }
         )
     }
 }
@@ -109,5 +119,19 @@ LazyColumn {
             Text("列表项 ${index + 1}")
         }
     }
+}
+```
+
+### 可交互的卡片
+
+```kotlin
+Card(
+    modifier = Modifier.padding(16.dp),
+    pressFeedbackType = PressFeedbackType.Sink, // 设置按压反馈为下沉动画效果
+    showIndication = true, // 显示点击时的视觉反馈效果
+    onClick = { /* 处理点击事件 */ },
+    onLongPress = { /* 处理长按事件 */ }
+) {
+    Text("可交互的卡片")
 }
 ```

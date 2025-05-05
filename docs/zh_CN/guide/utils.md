@@ -106,6 +106,82 @@ LazyColumn(
 *   `springDamp`: 浮点数，定义回弹动画的弹簧阻尼。值越高，振荡越小。默认为 `1f`。
 *   `isEnabled`: 一个返回布尔值的 Lambda 表达式，用于动态控制是否启用越界回弹效果。默认情况下，仅在 Android 和 iOS 平台上启用。
 
+## 按压反馈效果 (PressFeedback)
+
+Miuix 提供了视觉反馈效果来增强用户交互体验，通过类似触觉的响应提升操作感。
+
+### 下沉效果
+
+`pressSink` 修饰符会在组件被按下时应用一种“下沉”视觉效果，通过平滑缩放组件实现。
+
+```kotlin
+val interactionSource = remember { MutableInteractionSource() }
+
+Box(
+    modifier = Modifier
+        .clickable(interactionSource = interactionSource, indication = null)
+        .pressSink(interactionSource)
+        .background(Color.Blue)
+        .size(100.dp)
+)
+```
+
+### 倾斜效果
+
+`pressTilt` 修饰符会根据用户按压组件的位置应用一种“倾斜”效果。倾斜方向由触摸偏移决定，使一角“下沉”而另一角保持“静止”。
+
+```kotlin
+val interactionSource = remember { MutableInteractionSource() }
+
+Box(
+    modifier = Modifier
+        .clickable(interactionSource = interactionSource, indication = null)
+        .pressTilt(interactionSource)
+        .background(Color.Green)
+        .size(100.dp)
+)
+```
+
+### 触发按压反馈效果的前提
+
+按压反馈效果需要检测 `interactionSource.collectIsPressedAsState()` 以触发。
+
+可以使用 `Modifier.clickable()` 等响应式修饰符来为 `interactionSource` 添加 `PressInteraction.Press` 以触发按压反馈效果。
+
+但更推荐使用下面的方法来为 `interactionSource` 添加 `PressInteraction.Press` 以获得更快响应的触发按压反馈效果。
+
+```kotlin
+val interactionSource = remember { MutableInteractionSource() }
+
+Box(
+    modifier = Modifier
+        .pointerInput(Unit) {
+            awaitEachGesture {
+                val pressInteraction: PressInteraction.Press
+                awaitFirstDown().also {
+                    pressInteraction = PressInteraction.Press(it.position)
+                    interactionSource.tryEmit(pressInteraction)
+                }
+                if (waitForUpOrCancellation() == null) {
+                    interactionSource.tryEmit(PressInteraction.Cancel(pressInteraction))
+                } else {
+                    interactionSource.tryEmit(PressInteraction.Release(pressInteraction))
+                }
+            }
+        }
+)
+```
+
+### 按压反馈类型 (PressFeedbackType)
+
+`PressFeedbackType` 枚举定义了组件被按下时可以应用的不同类型的视觉反馈。
+
+| 类型 | 说明 |
+|------|-------------|
+| None | 无视觉反馈 |
+| Sink | 应用下沉效果，组件在按下时轻微缩小 |
+| Tilt | 应用倾斜效果，组件根据触摸位置轻微倾斜 |
+
 ## 平滑圆角 (SmoothRoundedCornerShape)
 
 `SmoothRoundedCornerShape` 提供了比标准 `RoundedCornerShape` 更加平滑的圆角效果。

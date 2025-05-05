@@ -105,6 +105,82 @@ LazyColumn(
 *   `springDamp`: Float, defines the spring damping for the rebound animation. Higher values result in less oscillation. Defaults to `1f`.
 *   `isEnabled`: A lambda expression returning a Boolean, used to dynamically control whether the overscroll effect is enabled. By default, it is enabled only on Android and iOS platforms.
 
+## Press Feedback Effects
+
+Miuix provides visual feedback effects to enhance user interaction experience, improving operability through tactile-like responses.
+
+### Sink Effect
+
+The `pressSink` modifier applies a "sink" visual feedback when the component is pressed, by smoothly scaling down the component.
+
+```kotlin
+val interactionSource = remember { MutableInteractionSource() }
+
+Box(
+    modifier = Modifier
+        .clickable(interactionSource = interactionSource, indication = null)
+        .pressSink(interactionSource)
+        .background(Color.Blue)
+        .size(100.dp)
+)
+```
+
+### Tilt Effect
+
+The `pressTilt` modifier applies a "tilt" effect based on the position where the user pressed the component. The tilt direction is determined by touch offset, giving the effect that one corner "sinks" while the other "static".
+
+```kotlin
+val interactionSource = remember { MutableInteractionSource() }
+
+Box(
+    modifier = Modifier
+        .clickable(interactionSource = interactionSource, indication = null)
+        .pressTilt(interactionSource)
+        .background(Color.Green)
+        .size(100.dp)
+)
+```
+
+### Prerequisites for Triggering Press Feedback
+
+Press feedback effects require detecting `interactionSource.collectIsPressedAsState()` to be triggered.
+
+You can use responsive modifiers like `Modifier.clickable()` to add `PressInteraction.Press` to the `interactionSource` and trigger press feedback effects.
+
+However, it's recommended to use the method below to add `PressInteraction.Press` to the `interactionSource` for faster response triggering of press feedback effects.
+
+```kotlin
+val interactionSource = remember { MutableInteractionSource() }
+
+Box(
+    modifier = Modifier
+        .pointerInput(Unit) {
+            awaitEachGesture {
+                val pressInteraction: PressInteraction.Press
+                awaitFirstDown().also {
+                    pressInteraction = PressInteraction.Press(it.position)
+                    interactionSource.tryEmit(pressInteraction)
+                }
+                if (waitForUpOrCancellation() == null) {
+                    interactionSource.tryEmit(PressInteraction.Cancel(pressInteraction))
+                } else {
+                    interactionSource.tryEmit(PressInteraction.Release(pressInteraction))
+                }
+            }
+        }
+)
+```
+
+### Press Feedback Type (`PressFeedbackType`)
+
+The `PressFeedbackType` enum defines different types of visual feedback that can be applied when the component is pressed.
+
+| Type | Description |
+|------|-------------|
+| None | No visual feedback |
+| Sink | Applies a sink effect, where the component scales down slightly when pressed |
+| Tilt | Applies a tilt effect, where the component tilts slightly based on the touch position |
+
 ## Smooth Rounded Corners (SmoothRoundedCornerShape)
 
 `SmoothRoundedCornerShape` provides smoother rounded corners compared to the standard `RoundedCornerShape`.
