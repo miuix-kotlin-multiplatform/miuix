@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextLayoutResult
@@ -51,6 +52,7 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
  * @param cornerRadius The corner radius of the [TextField].
  * @param label The label to be displayed when the [TextField] is empty.
  * @param labelColor The color of the label.
+ * @param borderColor The color of the border when the [TextField] is focused.
  * @param useLabelAsPlaceholder Whether to use the label as a placeholder.
  * @param enabled Whether the [TextField] is enabled.
  * @param readOnly Whether the [TextField] is read-only.
@@ -66,6 +68,7 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
  * @param visualTransformation The visual transformation to be applied to the [TextField].
  * @param onTextLayout The callback to be called when the text layout changes.
  * @param interactionSource The interaction source to be applied to the [TextField].
+ * @param cursorBrush The brush to be used for the cursor.
  */
 @Composable
 fun TextField(
@@ -74,9 +77,10 @@ fun TextField(
     modifier: Modifier = Modifier,
     insideMargin: DpSize = DpSize(16.dp, 16.dp),
     backgroundColor: Color = MiuixTheme.colorScheme.secondaryContainer,
-    cornerRadius: Dp = 18.dp,
+    cornerRadius: Dp = 16.dp,
     label: String = "",
     labelColor: Color = MiuixTheme.colorScheme.onSecondaryContainer,
+    borderColor: Color = MiuixTheme.colorScheme.primary,
     useLabelAsPlaceholder: Boolean = false,
     enabled: Boolean = true,
     readOnly: Boolean = false,
@@ -90,7 +94,8 @@ fun TextField(
     minLines: Int = 1,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     onTextLayout: (TextLayoutResult) -> Unit = {},
-    interactionSource: MutableInteractionSource? = null
+    interactionSource: MutableInteractionSource? = null,
+    cursorBrush: Brush = SolidColor(MiuixTheme.colorScheme.primary)
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
@@ -102,7 +107,7 @@ fun TextField(
     }
     val isFocused by interactionSource.collectIsFocusedAsState()
     val borderWidth by animateDpAsState(if (isFocused) 2.dp else 0.dp)
-    val borderColor by animateColorAsState(if (isFocused) MiuixTheme.colorScheme.primary else backgroundColor)
+    val borderColor by animateColorAsState(if (isFocused) borderColor else backgroundColor)
     val labelOffsetY by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) -(insideMargin.height / 2) else 0.dp)
     val innerTextOffsetY by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) (insideMargin.height / 2) else 0.dp)
     val labelFontSize by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) 10.dp else 17.dp)
@@ -125,7 +130,7 @@ fun TextField(
         visualTransformation = visualTransformation,
         onTextLayout = onTextLayout,
         interactionSource = interactionSource,
-        cursorBrush = SolidColor(MiuixTheme.colorScheme.primary),
+        cursorBrush = cursorBrush,
         decorationBox =
             @Composable { innerTextField ->
                 val shape = remember { derivedStateOf { SmoothRoundedCornerShape(cornerRadius) } }
@@ -196,6 +201,7 @@ fun TextField(
  * @param cornerRadius The corner radius of the [TextField].
  * @param label The label to be displayed when the [TextField] is empty.
  * @param labelColor The color of the label.
+ * @param borderColor The color of the border when the [TextField] is focused.
  * @param useLabelAsPlaceholder Whether to use the label as a placeholder.
  * @param enabled Whether the [TextField] is enabled.
  * @param readOnly Whether the [TextField] is read-only.
@@ -211,6 +217,7 @@ fun TextField(
  * @param visualTransformation The visual transformation to be applied to the [TextField].
  * @param onTextLayout The callback to be called when the text layout changes.
  * @param interactionSource The interaction source to be applied to the [TextField].
+ * @param cursorBrush The brush to be used for the cursor.
  */
 @Composable
 fun TextField(
@@ -222,6 +229,7 @@ fun TextField(
     cornerRadius: Dp = 16.dp,
     label: String = "",
     labelColor: Color = MiuixTheme.colorScheme.onSecondaryContainer,
+    borderColor: Color = MiuixTheme.colorScheme.primary,
     useLabelAsPlaceholder: Boolean = false,
     enabled: Boolean = true,
     readOnly: Boolean = false,
@@ -235,7 +243,8 @@ fun TextField(
     minLines: Int = 1,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     onTextLayout: (TextLayoutResult) -> Unit = {},
-    interactionSource: MutableInteractionSource? = null
+    interactionSource: MutableInteractionSource? = null,
+    cursorBrush: Brush = SolidColor(MiuixTheme.colorScheme.primary)
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
@@ -247,7 +256,7 @@ fun TextField(
     }
     val isFocused by interactionSource.collectIsFocusedAsState()
     val borderWidth by animateDpAsState(if (isFocused) 2.0.dp else 0.dp)
-    val borderColor by animateColorAsState(if (isFocused) MiuixTheme.colorScheme.primary else backgroundColor)
+    val borderColor by animateColorAsState(if (isFocused) borderColor else backgroundColor)
     val labelOffsetY by animateDpAsState(if (value.isNotEmpty() && !useLabelAsPlaceholder) -(insideMargin.height / 2) else 0.dp)
     val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty() && !useLabelAsPlaceholder) (insideMargin.height / 2) else 0.dp)
     val labelFontSize by animateDpAsState(if (value.isNotEmpty() && !useLabelAsPlaceholder) 10.dp else 17.dp)
@@ -270,7 +279,7 @@ fun TextField(
         visualTransformation = visualTransformation,
         onTextLayout = onTextLayout,
         interactionSource = interactionSource,
-        cursorBrush = SolidColor(MiuixTheme.colorScheme.primary),
+        cursorBrush = cursorBrush,
         decorationBox =
             @Composable { innerTextField ->
                 Box(

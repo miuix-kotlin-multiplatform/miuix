@@ -92,6 +92,7 @@ TextField(
 | cornerRadius          | Dp                                           | 输入框圆角半径         | 16.dp                                                | 否       |
 | label                 | String                                       | 输入框标签文本         | ""                                                   | 否       |
 | labelColor            | Color                                        | 标签文本颜色           | MiuixTheme.colorScheme.onSecondaryContainer          | 否       |
+| borderColor           | Color                                        | 输入框聚焦时的边框颜色 | MiuixTheme.colorScheme.primary                       | 否       |
 | useLabelAsPlaceholder | Boolean                                      | 是否使用标签作为占位符 | false                                                | 否       |
 | enabled               | Boolean                                      | 输入框是否可用         | true                                                 | 否       |
 | readOnly              | Boolean                                      | 输入框是否只读         | false                                                | 否       |
@@ -106,6 +107,7 @@ TextField(
 | visualTransformation  | VisualTransformation                         | 视觉转换器             | VisualTransformation.None                            | 否       |
 | onTextLayout          | (TextLayoutResult) -> Unit                   | 文本布局变化回调       | {}                                                   | 否       |
 | interactionSource     | MutableInteractionSource?                    | 交互源                 | null                                                 | 否       |
+| cursorBrush           | Brush                                        | 光标画刷               | SolidColor(MiuixTheme.colorScheme.primary)           | 否       |
 
 ## 进阶用法
 

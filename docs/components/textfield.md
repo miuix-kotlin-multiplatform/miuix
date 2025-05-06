@@ -92,6 +92,7 @@ TextField(
 | cornerRadius          | Dp                                           | Corner radius                       | 16.dp                                            | No       |
 | label                 | String                                       | Label text                          | ""                                               | No       |
 | labelColor            | Color                                        | Label text color                    | MiuixTheme.colorScheme.onSecondaryContainer      | No       |
+| borderColor           | Color                                        | Border color when focused           | MiuixTheme.colorScheme.primary                   | No       |
 | useLabelAsPlaceholder | Boolean                                      | Use label as placeholder            | false                                            | No       |
 | enabled               | Boolean                                      | Whether input field is enabled      | true                                             | No       |
 | readOnly              | Boolean                                      | Whether input field is read-only    | false                                            | No       |
@@ -106,6 +107,7 @@ TextField(
 | visualTransformation  | VisualTransformation                         | Visual transformation               | VisualTransformation.None                        | No       |
 | onTextLayout          | (TextLayoutResult) -> Unit                   | Text layout callback                | {}                                               | No       |
 | interactionSource     | MutableInteractionSource?                    | Interaction source                  | null                                             | No       |
+| cursorBrush           | Brush                                        | Cursor brush                        | SolidColor(MiuixTheme.colorScheme.primary)       | No       |
 
 ## Advanced Usage
 
