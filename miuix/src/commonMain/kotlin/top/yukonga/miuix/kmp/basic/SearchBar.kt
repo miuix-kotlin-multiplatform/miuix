@@ -171,6 +171,7 @@ fun InputField(
         ) {
             Box(
                 modifier = Modifier.padding(start = 8.dp, end = 16.dp),
+                contentAlignment = Alignment.CenterStart
             ) {
                 Icon(
                     modifier = Modifier.clip(CircleShape).clickable { onQueryChange("") },
@@ -213,7 +214,8 @@ fun InputField(
                         .background(
                             color = MiuixTheme.colorScheme.surfaceContainerHigh,
                             shape = shape.value
-                        )
+                        ),
+                    contentAlignment = Alignment.CenterStart
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),

@@ -95,7 +95,7 @@ fun TextField(
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
     val paddingModifier = remember(insideMargin, leadingIcon, trailingIcon) {
-        if (leadingIcon == null && trailingIcon == null) Modifier.padding(insideMargin.width, vertical = insideMargin.height)
+        if (leadingIcon == null && trailingIcon == null) Modifier.padding(horizontal = insideMargin.width, vertical = insideMargin.height)
         else if (leadingIcon == null) Modifier.padding(start = insideMargin.width).padding(vertical = insideMargin.height)
         else if (trailingIcon == null) Modifier.padding(end = insideMargin.width).padding(vertical = insideMargin.height)
         else Modifier.padding(vertical = insideMargin.height)
@@ -105,7 +105,7 @@ fun TextField(
     val borderColor by animateColorAsState(if (isFocused) MiuixTheme.colorScheme.primary else backgroundColor)
     val labelOffsetY by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) -(insideMargin.height / 2) else 0.dp)
     val innerTextOffsetY by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) (insideMargin.height / 2) else 0.dp)
-    val labelFontSize by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) 10.dp else 16.dp)
+    val labelFontSize by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) 10.dp else 17.dp)
     val border = Modifier.border(borderWidth, borderColor, RoundedCornerShape(cornerRadius))
     val labelOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = labelOffsetY) else Modifier
     val innerTextOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = innerTextOffsetY) else Modifier
@@ -126,60 +126,62 @@ fun TextField(
         onTextLayout = onTextLayout,
         interactionSource = interactionSource,
         cursorBrush = SolidColor(MiuixTheme.colorScheme.primary),
-        decorationBox = { innerTextField ->
-            val shape = remember { derivedStateOf { SmoothRoundedCornerShape(cornerRadius) } }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = backgroundColor,
-                        shape = shape.value
-                    )
-                    .then(border)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+        decorationBox =
+            @Composable { innerTextField ->
+                val shape = remember { derivedStateOf { SmoothRoundedCornerShape(cornerRadius) } }
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = backgroundColor,
+                            shape = shape.value
+                        )
+                        .then(border),
+                    contentAlignment = Alignment.CenterStart
                 ) {
-                    if (leadingIcon != null) {
-                        leadingIcon()
-                    }
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .then(paddingModifier)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        androidx.compose.animation.AnimatedVisibility(
-                            visible = if (useLabelAsPlaceholder) value.text.isEmpty() else true,
-                            enter = fadeIn(
-                                spring(stiffness = 2500f)
-                            ),
-                            exit = fadeOut(
-                                spring(stiffness = 5000f)
-                            )
-                        ) {
-                            Text(
-                                text = label,
-                                textAlign = TextAlign.Start,
-                                fontWeight = FontWeight.Medium,
-                                fontSize = labelFontSize.value.sp,
-                                modifier = Modifier.then(labelOffset),
-                                color = labelColor
-                            )
+                        if (leadingIcon != null) {
+                            leadingIcon()
                         }
                         Box(
-                            modifier = Modifier.then(innerTextOffset),
-                            contentAlignment = Alignment.BottomStart
+                            modifier = Modifier
+                                .weight(1f)
+                                .then(paddingModifier),
+                            contentAlignment = Alignment.CenterStart
                         ) {
-                            innerTextField()
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = if (useLabelAsPlaceholder) value.text.isEmpty() else true,
+                                enter = fadeIn(
+                                    spring(stiffness = 2500f)
+                                ),
+                                exit = fadeOut(
+                                    spring(stiffness = 5000f)
+                                )
+                            ) {
+                                Text(
+                                    text = label,
+                                    textAlign = TextAlign.Start,
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = labelFontSize.value.sp,
+                                    modifier = Modifier.then(labelOffset),
+                                    color = labelColor
+                                )
+                            }
+                            Box(
+                                modifier = Modifier.then(innerTextOffset),
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                innerTextField()
+                            }
                         }
-                    }
-                    if (trailingIcon != null) {
-                        trailingIcon()
+                        if (trailingIcon != null) {
+                            trailingIcon()
+                        }
                     }
                 }
             }
-        }
     )
 }
 
@@ -248,7 +250,7 @@ fun TextField(
     val borderColor by animateColorAsState(if (isFocused) MiuixTheme.colorScheme.primary else backgroundColor)
     val labelOffsetY by animateDpAsState(if (value.isNotEmpty() && !useLabelAsPlaceholder) -(insideMargin.height / 2) else 0.dp)
     val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty() && !useLabelAsPlaceholder) (insideMargin.height / 2) else 0.dp)
-    val labelFontSize by animateDpAsState(if (value.isNotEmpty() && !useLabelAsPlaceholder) 10.dp else 16.dp)
+    val labelFontSize by animateDpAsState(if (value.isNotEmpty() && !useLabelAsPlaceholder) 10.dp else 17.dp)
     val border = Modifier.border(borderWidth, borderColor, RoundedCornerShape(cornerRadius))
     val labelOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = labelOffsetY) else Modifier
     val innerTextOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = innerTextOffsetY) else Modifier
@@ -269,58 +271,60 @@ fun TextField(
         onTextLayout = onTextLayout,
         interactionSource = interactionSource,
         cursorBrush = SolidColor(MiuixTheme.colorScheme.primary),
-        decorationBox = { innerTextField ->
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = backgroundColor,
-                        shape = SmoothRoundedCornerShape(cornerRadius)
-                    )
-                    .then(border)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+        decorationBox =
+            @Composable { innerTextField ->
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = backgroundColor,
+                            shape = SmoothRoundedCornerShape(cornerRadius)
+                        )
+                        .then(border),
+                    contentAlignment = Alignment.CenterStart
                 ) {
-                    if (leadingIcon != null) {
-                        leadingIcon()
-                    }
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .then(paddingModifier)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        androidx.compose.animation.AnimatedVisibility(
-                            visible = if (useLabelAsPlaceholder) value.isEmpty() else true,
-                            enter = fadeIn(
-                                spring(stiffness = 2500f)
-                            ),
-                            exit = fadeOut(
-                                spring(stiffness = 5000f)
-                            )
-                        ) {
-                            Text(
-                                text = label,
-                                textAlign = TextAlign.Start,
-                                fontWeight = FontWeight.Medium,
-                                fontSize = labelFontSize.value.sp,
-                                modifier = Modifier.then(labelOffset),
-                                color = labelColor
-                            )
+                        if (leadingIcon != null) {
+                            leadingIcon()
                         }
                         Box(
-                            modifier = Modifier.then(innerTextOffset),
-                            contentAlignment = Alignment.BottomStart
+                            modifier = Modifier
+                                .weight(1f)
+                                .then(paddingModifier),
+                            contentAlignment = Alignment.CenterStart
                         ) {
-                            innerTextField()
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = if (useLabelAsPlaceholder) value.isEmpty() else true,
+                                enter = fadeIn(
+                                    spring(stiffness = 2500f)
+                                ),
+                                exit = fadeOut(
+                                    spring(stiffness = 5000f)
+                                )
+                            ) {
+                                Text(
+                                    text = label,
+                                    textAlign = TextAlign.Start,
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = labelFontSize.value.sp,
+                                    modifier = Modifier.then(labelOffset),
+                                    color = labelColor
+                                )
+                            }
+                            Box(
+                                modifier = Modifier.then(innerTextOffset),
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                innerTextField()
+                            }
                         }
-                    }
-                    if (trailingIcon != null) {
-                        trailingIcon()
+                        if (trailingIcon != null) {
+                            trailingIcon()
+                        }
                     }
                 }
             }
-        }
     )
 }
