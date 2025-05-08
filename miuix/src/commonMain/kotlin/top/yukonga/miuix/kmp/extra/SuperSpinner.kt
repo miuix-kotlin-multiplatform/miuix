@@ -16,13 +16,10 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -44,7 +41,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
@@ -56,7 +52,6 @@ import top.yukonga.miuix.kmp.basic.TextButton
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.basic.ArrowUpDownIntegrated
 import top.yukonga.miuix.kmp.icon.icons.basic.Check
-import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**
@@ -98,20 +93,9 @@ fun SuperSpinner(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isDropdownExpanded = remember { mutableStateOf(false) }
-    val showPopup = remember { mutableStateOf(false) }
     val hapticFeedback = LocalHapticFeedback.current
-    val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
+    val actionColor = if (enabled && items.isNotEmpty()) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     var alignLeft by rememberSaveable { mutableStateOf(true) }
-
-    LaunchedEffect(isDropdownExpanded.value) {
-        showPopup.value = isDropdownExpanded.value
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            isDropdownExpanded.value = false
-        }
-    }
 
     BasicComponent(
         modifier = modifier
@@ -135,31 +119,31 @@ fun SuperSpinner(
         summary = summary,
         summaryColor = summaryColor,
         leftAction = {
-            ListPopup(
-                show = showPopup,
-                alignment = if ((mode == SpinnerMode.AlwaysOnRight || !alignLeft))
-                    PopupPositionProvider.Align.Right
-                else
-                    PopupPositionProvider.Align.Left,
-                onDismissRequest = {
-                    showPopup.value = false
-                    isDropdownExpanded.value = false
-                },
-                maxHeight = maxHeight
-            ) {
-                ListPopupColumn {
-                    items.forEachIndexed { index, spinnerEntry ->
-                        SpinnerItemImpl(
-                            entry = spinnerEntry,
-                            entryCount = items.size,
-                            isSelected = selectedIndex == index,
-                            index = index,
-                            dialogMode = false
-                        ) { selectedIdx ->
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
-                            onSelectedIndexChange?.invoke(selectedIdx)
-                            showPopup.value = false
-                            isDropdownExpanded.value = false
+            if (items.isNotEmpty()) {
+                ListPopup(
+                    show = isDropdownExpanded,
+                    alignment = if ((mode == SpinnerMode.AlwaysOnRight || !alignLeft))
+                        PopupPositionProvider.Align.Right
+                    else
+                        PopupPositionProvider.Align.Left,
+                    onDismissRequest = {
+                        isDropdownExpanded.value = false
+                    },
+                    maxHeight = maxHeight
+                ) {
+                    ListPopupColumn {
+                        items.forEachIndexed { index, spinnerEntry ->
+                            SpinnerItemImpl(
+                                entry = spinnerEntry,
+                                entryCount = items.size,
+                                isSelected = selectedIndex == index,
+                                index = index,
+                                dialogMode = false
+                            ) { selectedIdx ->
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
+                                onSelectedIndexChange?.invoke(selectedIdx)
+                                isDropdownExpanded.value = false
+                            }
                         }
                     }
                 }
@@ -167,7 +151,7 @@ fun SuperSpinner(
             leftAction?.invoke()
         },
         rightActions = {
-            if (showValue) {
+            if (showValue && items.isNotEmpty()) {
                 Text(
                     modifier = Modifier.widthIn(max = 130.dp),
                     text = items[selectedIndex].title ?: "",
@@ -189,7 +173,7 @@ fun SuperSpinner(
             )
         },
         onClick = {
-            if (enabled) {
+            if (enabled && items.isNotEmpty()) {
                 onClick?.invoke()
                 isDropdownExpanded.value = !isDropdownExpanded.value
                 if (isDropdownExpanded.value) {
@@ -198,7 +182,7 @@ fun SuperSpinner(
             }
         },
         holdDownState = isDropdownExpanded.value,
-        enabled = enabled
+        enabled = enabled && items.isNotEmpty()
     )
 }
 
@@ -241,8 +225,6 @@ fun SuperSpinner(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isDropdownExpanded = remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
-    val isHoldDown = remember { mutableStateOf<HoldDownInteraction.HoldDown?>(null) }
     val hapticFeedback = LocalHapticFeedback.current
     val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     var alignLeft by rememberSaveable { mutableStateOf(true) }
@@ -250,17 +232,6 @@ fun SuperSpinner(
     var dropdownOffsetYPx by remember { mutableIntStateOf(0) }
     var componentHeightPx by remember { mutableIntStateOf(0) }
     var componentWidthPx by remember { mutableIntStateOf(0) }
-
-    LaunchedEffect(isDropdownExpanded.value) {
-        if (!isDropdownExpanded.value) {
-            isHoldDown.value?.let { oldValue ->
-                coroutineScope.launch {
-                    interactionSource.emit(HoldDownInteraction.Release(oldValue))
-                }
-                isHoldDown.value = null
-            }
-        }
-    }
 
     BasicComponent(
         modifier = modifier
@@ -292,7 +263,7 @@ fun SuperSpinner(
         summaryColor = summaryColor,
         leftAction = leftAction,
         rightActions = {
-            if (showValue) {
+            if (showValue && items.isNotEmpty()) {
                 Text(
                     modifier = Modifier.widthIn(max = 130.dp),
                     text = items[selectedIndex].title ?: "",
@@ -314,18 +285,14 @@ fun SuperSpinner(
             )
         },
         onClick = {
-            if (enabled) {
+            if (enabled && items.isNotEmpty()) {
                 onClick?.invoke()
                 isDropdownExpanded.value = true
                 hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)
-                coroutineScope.launch {
-                    interactionSource.emit(HoldDownInteraction.HoldDown().also {
-                        isHoldDown.value = it
-                    })
-                }
             }
         },
-        enabled = enabled
+        holdDownState = isDropdownExpanded.value,
+        enabled = enabled && items.isNotEmpty(),
     )
 
     SuperDialog(

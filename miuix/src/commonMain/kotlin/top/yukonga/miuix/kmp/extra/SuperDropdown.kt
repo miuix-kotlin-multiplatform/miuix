@@ -11,9 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -85,20 +83,9 @@ fun SuperDropdown(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isDropdownExpanded = remember { mutableStateOf(false) }
-    val showPopup = remember { mutableStateOf(false) }
     val hapticFeedback = LocalHapticFeedback.current
-    val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
+    val actionColor = if (enabled && items.isNotEmpty()) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
     var alignLeft by rememberSaveable { mutableStateOf(true) }
-
-    LaunchedEffect(isDropdownExpanded.value) {
-        showPopup.value = isDropdownExpanded.value
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            isDropdownExpanded.value = false
-        }
-    }
 
     BasicComponent(
         modifier = modifier
@@ -122,39 +109,39 @@ fun SuperDropdown(
         summary = summary,
         summaryColor = summaryColor,
         leftAction = {
-            ListPopup(
-                show = showPopup,
-                alignment = if ((mode == DropDownMode.AlwaysOnRight || !alignLeft))
-                    PopupPositionProvider.Align.Right
-                else
-                    PopupPositionProvider.Align.Left,
-                onDismissRequest = {
-                    showPopup.value = false
-                    isDropdownExpanded.value = false
-                },
-                maxHeight = maxHeight
-            ) {
-                ListPopupColumn {
-                    items.forEachIndexed { index, string ->
-                        DropdownImpl(
-                            text = string,
-                            optionSize = items.size,
-                            isSelected = selectedIndex == index,
-                            dropdownColors = dropdownColors,
-                            onSelectedIndexChange = { selectedIdx ->
-                                hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
-                                onSelectedIndexChange?.invoke(selectedIdx)
-                                showPopup.value = false
-                                isDropdownExpanded.value = false
-                            },
-                            index = index
-                        )
+            if (items.isNotEmpty()) {
+                ListPopup(
+                    show = isDropdownExpanded,
+                    alignment = if ((mode == DropDownMode.AlwaysOnRight || !alignLeft))
+                        PopupPositionProvider.Align.Right
+                    else
+                        PopupPositionProvider.Align.Left,
+                    onDismissRequest = {
+                        isDropdownExpanded.value = false
+                    },
+                    maxHeight = maxHeight
+                ) {
+                    ListPopupColumn {
+                        items.forEachIndexed { index, string ->
+                            DropdownImpl(
+                                text = string,
+                                optionSize = items.size,
+                                isSelected = selectedIndex == index,
+                                dropdownColors = dropdownColors,
+                                onSelectedIndexChange = { selectedIdx ->
+                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
+                                    onSelectedIndexChange?.invoke(selectedIdx)
+                                    isDropdownExpanded.value = false
+                                },
+                                index = index
+                            )
+                        }
                     }
                 }
             }
         },
         rightActions = {
-            if (showValue) {
+            if (showValue && items.isNotEmpty()) {
                 Text(
                     modifier = Modifier.widthIn(max = 130.dp),
                     text = items[selectedIndex],
@@ -176,7 +163,7 @@ fun SuperDropdown(
             )
         },
         onClick = {
-            if (enabled) {
+            if (enabled && items.isNotEmpty()) {
                 onClick?.invoke()
                 isDropdownExpanded.value = !isDropdownExpanded.value
                 if (isDropdownExpanded.value) {
@@ -185,7 +172,7 @@ fun SuperDropdown(
             }
         },
         holdDownState = isDropdownExpanded.value,
-        enabled = enabled
+        enabled = enabled && items.isNotEmpty()
     )
 }
 

@@ -73,7 +73,7 @@ fun TextComponent(
     miuixSuperSwitchAnimState: MutableState<Boolean>,
 ) {
     val dropdownOptions = listOf("Option 1", "Option 2", "Option 3", "Option 4")
-    val dropdownOptions2 = listOf(
+    val dropdownLongOptions = listOf(
         "Option 1", "Option 2 (long)", "Option 3 (long long)", "Option 4 (long long long)",
         "Option 5 (long long long long)", "Option 6 (long long long long long)"
     )
@@ -83,13 +83,8 @@ fun TextComponent(
         SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFF3482FF)) }, "Option 3", "Blue"),
         SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFFB21D)) }, "Option 4", "Yellow"),
     )
-    val spinnerOptions2 = listOf(
-        SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFF5B29)) }, "Option 1", "Red"),
-        SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFF36D167)) }, "Option 2", "Green"),
-        SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFF3482FF)) }, "Option 3", "Blue"),
-        SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFFB21D)) }, "Option 4", "Yellow"),
-    )
-    SmallTitle(text = "Basic")
+
+    SmallTitle(text = "Basic Component")
     Card(
         modifier = Modifier
             .padding(horizontal = 12.dp)
@@ -341,7 +336,7 @@ fun TextComponent(
         SuperDropdown(
             title = "Dropdown",
             summary = "Popup always on right",
-            items = dropdownOptions2,
+            items = dropdownLongOptions,
             selectedIndex = dropdownOptionSelectedRight.value,
             onSelectedIndexChange = { newOption -> dropdownOptionSelectedRight.value = newOption },
             mode = DropDownMode.AlwaysOnRight,
@@ -374,7 +369,7 @@ fun TextComponent(
         SuperSpinner(
             title = "Spinner",
             summary = "Spinner always on right",
-            items = spinnerOptions2,
+            items = spinnerOptions,
             selectedIndex = spinnerOptionSelectedRight.value,
             onSelectedIndexChange = { newOption -> spinnerOptionSelectedRight.value = newOption },
             mode = SpinnerMode.AlwaysOnRight,
