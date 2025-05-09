@@ -413,10 +413,10 @@ private fun TopAppBarActions(
             enableWindowDim = false
         ) {
             ListPopupColumn {
-                items.take(3).forEachIndexed { index, navigationItem ->
+                items.forEachIndexed { index, navigationItem ->
                     DropdownImpl(
                         text = navigationItem.label,
-                        optionSize = items.take(3).size,
+                        optionSize = items.size,
                         isSelected = index == selectedPage,
                         onSelectedIndexChange = {
                             onPageSelected(index)
