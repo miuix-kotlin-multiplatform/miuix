@@ -109,12 +109,8 @@ dependencies {
 
 android {
     namespace = pkgName
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-
     defaultConfig {
         applicationId = pkgName
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = verCode
         versionName = verName
     }

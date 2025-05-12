@@ -268,7 +268,6 @@ fun OtherComponent(padding: PaddingValues) {
     TextField(
         value = text2,
         onValueChange = { text2 = it },
-        backgroundColor = MiuixTheme.colorScheme.secondaryContainer,
         label = "Text Field",
         modifier = Modifier
             .padding(horizontal = 12.dp)
@@ -280,7 +279,6 @@ fun OtherComponent(padding: PaddingValues) {
     TextField(
         value = text3,
         onValueChange = { text3 = it },
-        backgroundColor = MiuixTheme.colorScheme.secondaryContainer,
         label = "Placeholder & SingleLine",
         useLabelAsPlaceholder = true,
         singleLine = true,
