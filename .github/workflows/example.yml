@@ -1,0 +1,98 @@
+name: Build Example App
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'README.md'
+      - 'docs/**'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ macos-latest, ubuntu-latest, windows-latest ]
+        include:
+          - os: windows-latest
+            platform: windows x64
+            build-command: ./gradlew createReleaseDistributable
+            artifact-path: example/build/compose/binaries/main-release/app/Miuix
+            artifact-name: Miuix-windows-x64-exe
+          - os: macos-latest
+            platform: macos arm64
+            build-command: ./gradlew packageDmgNativeReleaseMacosArm64
+            artifact-path: example/build/compose/binaries/main/native-macosArm64-release-dmg
+            artifact-name: Miuix-darwin-arm64-dmg
+          - os: ubuntu-latest
+            platform: linux x64
+            platformEx: android aarch64
+            build-command: ./gradlew createReleaseDistributable
+            build-commandEx: ./gradlew assembleDebug && ./gradlew assembleRelease
+            artifact-path: example/build/compose/binaries/main-release/app/Miuix
+            artifact-pathEx: example/build/outputs/apk/release
+            artifact-name: Miuix-linux-x64-bin
+            artifact-nameEx: Miuix-android-aarch64-apk
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '21'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Decode android signing key
+        if: matrix.platformEx == 'android aarch64'
+        run: echo ${{ secrets.SIGNING_KEY }} | base64 -d > keystore.jks
+
+      - name: Build ${{ matrix.platform }} platform
+        run: ${{ matrix.build-command }}
+
+      - name: Build ${{ matrix.platformEx }} platform
+        if: matrix.platformEx == 'android aarch64'
+        run: ${{ matrix.build-commandEx }}
+        env:
+          KEYSTORE_PATH: "../keystore.jks"
+          KEYSTORE_PASS: ${{ secrets.KEY_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Upload Miuix ${{ matrix.platform }} artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact-name }}
+          path: ${{ matrix.artifact-path }}
+
+      - name: Upload Miuix ${{ matrix.platformEx }} artifact
+        if: matrix.platformEx == 'android aarch64'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact-nameEx }}
+          path: ${{ matrix.artifact-pathEx }}
+
+      - name: Post to Telegram ci channel
+        if: ${{ success() && matrix.platformEx == 'android aarch64' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && github.ref_type != 'tag' }}
+        env:
+          CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          COMMIT_MESSAGE: |+
+            New CI from miuix\-kotlin\-multiplatform
+
+            ```
+            ${{ github.event.head_commit.message }}
+            ```
+        run: |
+          if [ ! -z "${{ secrets.BOT_TOKEN }}" ]; then
+            export RELEASE=$(find ./example/build/outputs/apk/release -name "*.apk")
+            export DEBUG=$(find ./example/build/outputs/apk/debug -name "*.apk")
+            ESCAPED=`python3 -c 'import json,os,urllib.parse; print(urllib.parse.quote(json.dumps(os.environ["COMMIT_MESSAGE"])))'`
+            curl -v "https://api.telegram.org/bot${BOT_TOKEN}/sendMediaGroup?chat_id=${CHANNEL_ID}&media=%5B%7B%22type%22%3A%22document%22%2C%20%22media%22%3A%22attach%3A%2F%2Frelease%22%7D%2C%7B%22type%22%3A%22document%22%2C%20%22media%22%3A%22attach%3A%2F%2Fdebug%22%2C%22parse_mode%22%3A%22MarkdownV2%22%2C%22caption%22%3A${ESCAPED}%7D%5D" -F release="@$RELEASE" -F debug="@$DEBUG"
+          fi
