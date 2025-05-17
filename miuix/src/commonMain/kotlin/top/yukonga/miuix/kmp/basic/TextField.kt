@@ -36,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
@@ -108,12 +109,14 @@ fun TextField(
     val isFocused by interactionSource.collectIsFocusedAsState()
     val borderWidth by animateDpAsState(if (isFocused) 2.dp else 0.dp)
     val borderColor by animateColorAsState(if (isFocused) borderColor else backgroundColor)
-    val labelOffsetY by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) -(insideMargin.height / 2) else 0.dp)
-    val innerTextOffsetY by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) (insideMargin.height / 2) else 0.dp)
-    val labelFontSize by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) 10.dp else 17.dp)
+    val labelOffsetY by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) -(insideMargin.height / 2.2f) else 0.dp)
+    val innerTextOffsetY by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) (insideMargin.height / 1.8f) else 0.dp)
     val border = Modifier.border(borderWidth, borderColor, RoundedCornerShape(cornerRadius))
     val labelOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = labelOffsetY) else Modifier
     val innerTextOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = innerTextOffsetY) else Modifier
+    val labelFontSize by animateDpAsState(
+        if (value.text.isNotEmpty() && !useLabelAsPlaceholder) max(textStyle.fontSize.value.dp - 7.dp, 0.dp) else textStyle.fontSize.value.dp
+    )
 
     BasicTextField(
         value = value,
@@ -154,7 +157,7 @@ fun TextField(
                             modifier = Modifier
                                 .weight(1f)
                                 .then(paddingModifier),
-                            contentAlignment = Alignment.CenterStart
+                            contentAlignment = Alignment.TopStart
                         ) {
                             androidx.compose.animation.AnimatedVisibility(
                                 visible = if (useLabelAsPlaceholder) value.text.isEmpty() else true,
