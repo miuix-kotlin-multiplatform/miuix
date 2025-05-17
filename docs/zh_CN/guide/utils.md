@@ -51,7 +51,7 @@ PopupLayout(
 
 ## 越界回弹效果 (Overscroll)
 
-Miuix 提供了易于使用的越界回弹效果，让滚动体验更加流畅自然。
+Miuix 提供了易于使用的越界回弹效果修饰符，让滚动体验更加流畅自然。
 
 ### 垂直越界回弹
 
@@ -105,6 +105,27 @@ LazyColumn(
 *   `springStiff`: 浮点数，定义回弹动画的弹簧刚度。值越高，回弹越快越硬。默认为 `200f`。
 *   `springDamp`: 浮点数，定义回弹动画的弹簧阻尼。值越高，振荡越小。默认为 `1f`。
 *   `isEnabled`: 一个返回布尔值的 Lambda 表达式，用于动态控制是否启用越界回弹效果。默认情况下，仅在 Android 和 iOS 平台上启用。
+
+## 滚动到边界触觉反馈
+
+Miuix 提供了用于在可滚动容器快速滑动到其开始或结束边界时触发触觉反馈的修饰符，通过触觉反馈确认已到达边界增强用户的交互体验。
+
+```kotlin
+LazyColumn(
+    modifier = Modifier
+        .fillMaxSize()
+        // 添加滚动到边界触觉反馈
+        .scrollEndHaptic(
+            hapticFeedbackType = HapticFeedbackType.TextHandleMove // 默认值
+        )
+) {
+    // 列表内容
+}
+```
+
+**参数说明:**
+
+*   `hapticFeedbackType`: 指定滚动到达末端时要执行的触觉反馈类型。默认为 `HapticFeedbackType.TextHandleMove`。您可以使用 `androidx.compose.ui.hapticfeedback.HapticFeedbackType` 中可用的其他类型。
 
 ## 按压反馈效果 (PressFeedback)
 
@@ -176,10 +197,10 @@ Box(
 
 `PressFeedbackType` 枚举定义了组件被按下时可以应用的不同类型的视觉反馈。
 
-| 类型 | 说明 |
-|------|-------------|
-| None | 无视觉反馈 |
-| Sink | 应用下沉效果，组件在按下时轻微缩小 |
+| 类型 | 说明                                   |
+| ---- | -------------------------------------- |
+| None | 无视觉反馈                             |
+| Sink | 应用下沉效果，组件在按下时轻微缩小     |
 | Tilt | 应用倾斜效果，组件根据触摸位置轻微倾斜 |
 
 ## 平滑圆角 (SmoothRoundedCornerShape)

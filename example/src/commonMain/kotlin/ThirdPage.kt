@@ -24,6 +24,7 @@ import top.yukonga.miuix.kmp.extra.SuperSwitch
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import top.yukonga.miuix.kmp.utils.overScrollVertical
+import top.yukonga.miuix.kmp.utils.scrollEndHaptic
 
 @Composable
 fun ThirdPage(
@@ -58,6 +59,7 @@ fun ThirdPage(
     val showDialog = remember { mutableStateOf(false) }
     LazyColumn(
         modifier = Modifier
+            .scrollEndHaptic()
             .overScrollVertical()
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
             .height(getWindowSize().height.dp),

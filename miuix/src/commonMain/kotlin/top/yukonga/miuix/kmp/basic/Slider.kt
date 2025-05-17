@@ -207,14 +207,17 @@ internal class SliderHapticState {
 object SliderDefaults {
     val MinHeight = 30.dp
 
+    /**
+     * The type of haptic feedback to be used for the slider.
+     */
     enum class SliderHapticEffect {
-        /** No haptic feedback */
+        /** No haptic feedback. */
         None,
 
-        /** Haptic feedback at 0% and 100% */
+        /** Haptic feedback at 0% and 100%. */
         Edge,
 
-        /** Haptic feedback at steps */
+        /** Haptic feedback at steps. */
         Step
     }
 

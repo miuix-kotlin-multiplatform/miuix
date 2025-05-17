@@ -50,7 +50,7 @@ Normally, you don't need to use it actively. See the [ListPopup](../components/l
 
 ## Overscroll Effects
 
-Miuix provides easy-to-use overscroll effects for smoother and more natural scrolling experiences.
+Miuix provides easy-to-use overscroll effects modifier for smoother and more natural scrolling experiences.
 
 ### Vertical Overscroll
 
@@ -104,6 +104,28 @@ LazyColumn(
 *   `springStiff`: Float, defines the spring stiffness for the rebound animation. Higher values result in a faster and stiffer rebound. Defaults to `200f`.
 *   `springDamp`: Float, defines the spring damping for the rebound animation. Higher values result in less oscillation. Defaults to `1f`.
 *   `isEnabled`: A lambda expression returning a Boolean, used to dynamically control whether the overscroll effect is enabled. By default, it is enabled only on Android and iOS platforms.
+
+
+## Scroll End Haptic Feedback
+
+Miuix provides a `scrollEndHaptic` modifier to trigger haptic feedback when a scrollable container is flung to its start or end boundaries. This enhances the user experience by providing a tactile confirmation that the end of the list has been reached.
+
+```kotlin
+LazyColumn(
+    modifier = Modifier
+        .fillMaxSize()
+        // Add scroll end haptic feedback
+        .scrollEndHaptic(
+            hapticFeedbackType = HapticFeedbackType.LongPress // Default value
+        )
+) {
+    // List content
+}
+```
+
+**Parameter Explanation:**
+
+*   `hapticFeedbackType`: Specifies the type of haptic feedback to be performed when the scroll reaches its end. Defaults to `HapticFeedbackType.TextHandleMove`. You can use other types available in `androidx.compose.ui.hapticfeedback.HapticFeedbackType`.
 
 ## Press Feedback Effects
 
@@ -175,10 +197,10 @@ Box(
 
 The `PressFeedbackType` enum defines different types of visual feedback that can be applied when the component is pressed.
 
-| Type | Description |
-|------|-------------|
-| None | No visual feedback |
-| Sink | Applies a sink effect, where the component scales down slightly when pressed |
+| Type | Description                                                                           |
+| ---- | ------------------------------------------------------------------------------------- |
+| None | No visual feedback                                                                    |
+| Sink | Applies a sink effect, where the component scales down slightly when pressed          |
 | Tilt | Applies a tilt effect, where the component tilts slightly based on the touch position |
 
 ## Smooth Rounded Corners (SmoothRoundedCornerShape)

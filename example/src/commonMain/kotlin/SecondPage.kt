@@ -20,6 +20,7 @@ import top.yukonga.miuix.kmp.basic.rememberPullToRefreshState
 import top.yukonga.miuix.kmp.extra.SuperDropdown
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import top.yukonga.miuix.kmp.utils.overScrollVertical
+import top.yukonga.miuix.kmp.utils.scrollEndHaptic
 
 @Composable
 fun SecondPage(
@@ -50,6 +51,7 @@ fun SecondPage(
     ) {
         LazyColumn(
             modifier = Modifier
+                .scrollEndHaptic()
                 .overScrollVertical()
                 .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
                 .height(getWindowSize().height.dp),

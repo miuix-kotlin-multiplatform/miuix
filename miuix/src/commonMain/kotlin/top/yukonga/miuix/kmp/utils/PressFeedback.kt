@@ -16,28 +16,17 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import top.yukonga.miuix.kmp.utils.PressFeedbackType.None
-import top.yukonga.miuix.kmp.utils.PressFeedbackType.Sink
-import top.yukonga.miuix.kmp.utils.PressFeedbackType.Tilt
 
-/**
- * Default sink amount for the press sink effect.
- */
+/** Default sink amount for the press sink effect. */
 internal const val SinkAmount: Float = 0.94f
 
-/**
- * Default tilt amount for the press tilt effect.
- */
+/** Default tilt amount for the press tilt effect. */
 internal const val TiltAmount: Float = 8f
 
-/**
- * Default damping ratio for the press feedback spring animations.
- */
+/** Default damping ratio for the press feedback spring animations. */
 internal const val DampingRatio: Float = 0.6f
 
-/**
- * Default stiffness for the press feedback spring animations.
- */
+/** Default stiffness for the press feedback spring animations. */
 internal const val Stiffness: Float = 400f
 
 /**
@@ -130,13 +119,14 @@ fun Modifier.pressTilt(
 
 /**
  * The type of visual feedback to apply when the component is pressed.
- *
- * @property None No visual feedback.
- * @property Sink Sink effect, where the component scales down slightly when pressed.
- * @property Tilt Tilt effect, where the component tilts slightly based on the touch position.
  */
 enum class PressFeedbackType {
+    /** No feedback effect. */
     None,
+
+    /** Sinks slightly when pressed. */
     Sink,
+
+    /** Tilts based on touch position when pressed. */
     Tilt
 }

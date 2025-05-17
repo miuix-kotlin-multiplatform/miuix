@@ -36,6 +36,7 @@ import top.yukonga.miuix.kmp.basic.SmallTitle
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.overScrollVertical
+import top.yukonga.miuix.kmp.utils.scrollEndHaptic
 
 @Composable
 fun MainPage(
@@ -83,6 +84,7 @@ fun MainPage(
         if (maxWidth < 840.dp) {
             LazyColumn(
                 modifier = Modifier
+                    .scrollEndHaptic()
                     .overScrollVertical()
                     .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
                 contentPadding = PaddingValues(top = padding.calculateTopPadding()),
@@ -160,6 +162,7 @@ fun MainPage(
                 LazyColumn(
                     modifier = Modifier
                         .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
+                        .scrollEndHaptic()
                         .weight(1f),
                     contentPadding = PaddingValues(top = padding.calculateTopPadding())
                 ) {
@@ -223,6 +226,7 @@ fun MainPage(
                 LazyColumn(
                     modifier = Modifier
                         .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
+                        .scrollEndHaptic()
                         .padding(end = 12.dp, bottom = 12.dp)
                         .weight(1f),
                     contentPadding = PaddingValues(top = padding.calculateTopPadding())
