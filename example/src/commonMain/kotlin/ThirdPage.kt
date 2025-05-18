@@ -54,12 +54,16 @@ fun ThirdPage(
     onFabPositionChange: (Int) -> Unit,
     enablePageUserScroll: Boolean,
     onEnablePageUserScrollChange: (Boolean) -> Unit,
+    scrollEndHaptic: Boolean,
+    onScrollEndHapticChange: (Boolean) -> Unit,
     colorMode: MutableState<Int>
 ) {
     val showDialog = remember { mutableStateOf(false) }
     LazyColumn(
         modifier = Modifier
-            .scrollEndHaptic()
+            .then(
+                if (scrollEndHaptic) Modifier.scrollEndHaptic() else Modifier
+            )
             .overScrollVertical()
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
             .height(getWindowSize().height.dp),
@@ -168,6 +172,11 @@ fun ThirdPage(
                         }
                     )
                 }
+                SuperSwitch(
+                    title = "Enable Scroll End Haptic",
+                    checked = scrollEndHaptic,
+                    onCheckedChange = onScrollEndHapticChange
+                )
                 SuperSwitch(
                     title = "Enable Page User Scroll",
                     checked = enablePageUserScroll,

@@ -25,7 +25,8 @@ import top.yukonga.miuix.kmp.utils.scrollEndHaptic
 @Composable
 fun SecondPage(
     topAppBarScrollBehavior: ScrollBehavior,
-    padding: PaddingValues
+    padding: PaddingValues,
+    scrollEndHaptic: Boolean
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
     var isRefreshing by remember { mutableStateOf(false) }
@@ -51,7 +52,9 @@ fun SecondPage(
     ) {
         LazyColumn(
             modifier = Modifier
-                .scrollEndHaptic()
+                .then(
+                    if (scrollEndHaptic) Modifier.scrollEndHaptic() else Modifier
+                )
                 .overScrollVertical()
                 .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
                 .height(getWindowSize().height.dp),

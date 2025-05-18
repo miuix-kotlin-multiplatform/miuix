@@ -23,7 +23,7 @@ fun UITestPreview() {
 fun MainPagePreview() {
     AppTheme {
         Scaffold {
-            MainPage(MiuixScrollBehavior(rememberTopAppBarState()), PaddingValues())
+            MainPage(MiuixScrollBehavior(rememberTopAppBarState()), PaddingValues(), true)
         }
     }
 }
@@ -33,7 +33,7 @@ fun MainPagePreview() {
 fun SecondPagePreview() {
     AppTheme {
         Scaffold {
-            SecondPage(MiuixScrollBehavior(rememberTopAppBarState()), PaddingValues())
+            SecondPage(MiuixScrollBehavior(rememberTopAppBarState()), PaddingValues(), true)
         }
     }
 }
@@ -69,6 +69,8 @@ fun ThirdPagePreview() {
                 2,
                 {},
                 false,
+                {},
+                true,
                 {},
                 remember { mutableIntStateOf(0) }
             )

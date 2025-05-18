@@ -92,7 +92,8 @@ data class UIState(
     val showFloatingActionButton: Boolean = false,
     val floatingActionButtonPosition: Int = 2,
     val enablePageUserScroll: Boolean = false,
-    val isTopPopupExpanded: Boolean = false
+    val isTopPopupExpanded: Boolean = false,
+    val scrollEndHaptic: Boolean = true
 )
 
 @Composable
@@ -465,12 +466,14 @@ fun AppHorizontalPager(
             when (page) {
                 0 -> MainPage(
                     topAppBarScrollBehavior = topAppBarScrollBehaviorList[0],
-                    padding = padding
+                    padding = padding,
+                    scrollEndHaptic = uiState.scrollEndHaptic,
                 )
 
                 1 -> SecondPage(
                     topAppBarScrollBehavior = topAppBarScrollBehaviorList[1],
-                    padding = padding
+                    padding = padding,
+                    scrollEndHaptic = uiState.scrollEndHaptic,
                 )
 
                 else -> ThirdPage(
@@ -500,6 +503,8 @@ fun AppHorizontalPager(
                     onFabPositionChange = { onUiStateChange(uiState.copy(floatingActionButtonPosition = it)) },
                     enablePageUserScroll = uiState.enablePageUserScroll,
                     onEnablePageUserScrollChange = { onUiStateChange(uiState.copy(enablePageUserScroll = it)) },
+                    scrollEndHaptic = uiState.scrollEndHaptic,
+                    onScrollEndHapticChange = { onUiStateChange(uiState.copy(scrollEndHaptic = it)) },
                     colorMode = colorMode
                 )
             }

@@ -25,45 +25,44 @@ private class ScrollEndHapticConnection(
     private val hapticFeedbackType: HapticFeedbackType
 ) : NestedScrollConnection {
 
-    private enum class OverscrollState {
-        /** No overscroll detected. */
+    private enum class ScrollEndHapticState {
+        /** Not scrolled to the boundary. */
         Idle,
 
-        /** Overscroll detected at the top boundary. */
+        /** Scrolled to the top boundary. */
         TopBoundaryHit,
 
-        /** Overscroll detected at the bottom boundary. */
+        /** Scrolled to the bottom boundary. */
         BottomBoundaryHit
     }
 
-    private var overscrollState: OverscrollState = OverscrollState.Idle
+    private var scrollEndHapticState = ScrollEndHapticState.Idle
 
     private fun Float.filter(tolerance: Float): Boolean = abs(this) < tolerance
 
     override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
         // Reset state when scrolling from a boundary into content.
-        if (overscrollState == OverscrollState.TopBoundaryHit && available.y < -1f) {
-            overscrollState = OverscrollState.Idle
-        } else if (overscrollState == OverscrollState.BottomBoundaryHit && available.y > 1f) {
-            overscrollState = OverscrollState.Idle
+        if (scrollEndHapticState == ScrollEndHapticState.TopBoundaryHit && available.y < -1f) {
+            scrollEndHapticState = ScrollEndHapticState.Idle
+        } else if (scrollEndHapticState == ScrollEndHapticState.BottomBoundaryHit && available.y > 1f) {
+            scrollEndHapticState = ScrollEndHapticState.Idle
         }
         return Offset.Zero
     }
 
     override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
-        println("overScrollState: $overscrollState")
         // Flinging beyond the bottom boundary.
-        if (available.y > 1f && !consumed.y.filter(5f)) {
-            if (overscrollState != OverscrollState.TopBoundaryHit) {
+        if (available.y > 1f && !consumed.y.filter(25f)) {
+            if (scrollEndHapticState != ScrollEndHapticState.TopBoundaryHit) {
                 hapticFeedback.performHapticFeedback(hapticFeedbackType)
-                overscrollState = OverscrollState.TopBoundaryHit
+                scrollEndHapticState = ScrollEndHapticState.TopBoundaryHit
             }
         }
         // Flinging beyond the top boundary.
-        else if (available.y < -1f && !consumed.y.filter(5f)) {
-            if (overscrollState != OverscrollState.BottomBoundaryHit) {
+        else if (available.y < -1f && !consumed.y.filter(25f)) {
+            if (scrollEndHapticState != ScrollEndHapticState.BottomBoundaryHit) {
                 hapticFeedback.performHapticFeedback(hapticFeedbackType)
-                overscrollState = OverscrollState.BottomBoundaryHit
+                scrollEndHapticState = ScrollEndHapticState.BottomBoundaryHit
             }
         }
         return Velocity.Zero

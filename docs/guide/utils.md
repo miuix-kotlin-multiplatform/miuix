@@ -39,7 +39,7 @@ PopupLayout(
     exitTransition = fadeOut(),    // Optional, custom exit animation for dialog content
     enableWindowDim = true,        // Optional, whether to enable dimming layer
     dimEnterTransition = fadeIn(), // Optional, custom enter animation for dim layer
-    dimExitTransition = fadeOut()  // Optional, custom exit animation for dim layer
+    dimExitTransition = fadeOut(), // Optional, custom exit animation for dim layer
     transformOrigin = { TransformOrigin.Center }, // Transform origin for the popup
 ) {
     // Popup content
@@ -116,7 +116,7 @@ LazyColumn(
         .fillMaxSize()
         // Add scroll end haptic feedback
         .scrollEndHaptic(
-            hapticFeedbackType = HapticFeedbackType.LongPress // Default value
+            hapticFeedbackType = HapticFeedbackType.TextHandleMove // Default value
         )
 ) {
     // List content

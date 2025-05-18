@@ -47,7 +47,7 @@ import kotlin.math.sqrt
  * so we need this variable to have the same expectations on different devices.
  */
 @Stable
-fun parabolaScrollEasing(currentOffset: Float, newOffset: Float, p: Float = 25f, density: Float = 4f): Float {
+fun parabolaScrollEasing(currentOffset: Float, newOffset: Float, p: Float = 50f, density: Float): Float {
     val realP = p * density
     val distance = abs(currentOffset + newOffset / 2)
     val ratio = (realP / (sqrt(realP * distance.coerceAtLeast(Float.MIN_VALUE)))).coerceIn(Float.MIN_VALUE, 1f)
@@ -68,8 +68,8 @@ internal val DefaultParabolaScrollEasing: (currentOffset: Float, newOffset: Floa
         }
     }
 
-internal const val OutBoundSpringStiff = 200f
-internal const val OutBoundSpringDamp = 1f
+internal const val OutBoundSpringStiff = 150f
+internal const val OutBoundSpringDamp = 0.86f
 
 /**
  * @see overScrollOutOfBound
@@ -107,7 +107,7 @@ fun Modifier.overScrollHorizontal(
  * and the new offset from the gesture.
  * modify it to cooperate with [springStiff] to customize the sliding damping effect.
  * The current default easing comes from iOS, you don't need to modify it!
- * @param springStiff springStiff for overscroll effect，For better user experience, the new value is not recommended to be higher than[StiffnessMediumLow]
+ * @param springStiff springStiff for overscroll effect，For better user experience, the new value is not recommended to be higher than [StiffnessMediumLow].
  * @param springDamp springDamp for overscroll effect，generally do not need to set.
  * @param isEnabled Whether to enable the overscroll effect, default is enabled on Android and iOS.
  */
@@ -298,10 +298,3 @@ class OverScrollState {
  */
 val LocalOverScrollState = compositionLocalOf<OverScrollState> { OverScrollState() }
 
-/**
- * Remember the [OverScrollState] instance.
- *
- * @see OverScrollState
- */
-@Composable
-fun rememberOverScrollState(): OverScrollState = remember { OverScrollState() }

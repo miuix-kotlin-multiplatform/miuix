@@ -41,9 +41,10 @@ import top.yukonga.miuix.kmp.utils.scrollEndHaptic
 @Composable
 fun MainPage(
     topAppBarScrollBehavior: ScrollBehavior,
-    padding: PaddingValues
+    padding: PaddingValues,
+    scrollEndHaptic : Boolean,
 ) {
-    var miuixSearchValue by remember { mutableStateOf("") }
+    var searchValue by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
 
     val showDialog = remember { mutableStateOf(false) }
@@ -60,20 +61,20 @@ fun MainPage(
     val spinnerOptionSelected = remember { mutableStateOf(0) }
     val spinnerOptionSelectedRight = remember { mutableStateOf(1) }
     val spinnerOptionSelectedDialog = remember { mutableStateOf(2) }
-    val miuixSuperCheckbox = remember { mutableStateOf("State: false") }
-    val miuixSuperCheckboxState = remember { mutableStateOf(false) }
-    val miuixSuperRightCheckbox = remember { mutableStateOf("false") }
-    val miuixSuperRightCheckboxState = remember { mutableStateOf(false) }
-    val miuixSuperSwitch = remember { mutableStateOf("false") }
-    val miuixSuperSwitchState = remember { mutableStateOf(false) }
-    val miuixSuperSwitchAnimState = remember { mutableStateOf(false) }
+    val superCheckbox = remember { mutableStateOf("State: false") }
+    val superCheckboxState = remember { mutableStateOf(false) }
+    val superRightCheckbox = remember { mutableStateOf("false") }
+    val superRightCheckboxState = remember { mutableStateOf(false) }
+    val superSwitch = remember { mutableStateOf("false") }
+    val superSwitchState = remember { mutableStateOf(false) }
+    val superSwitchAnimState = remember { mutableStateOf(false) }
 
     val textComponent = @Composable {
         TextComponent(
             showDialog, dialogTextFieldValue, showDialog2, dialog2dropdownSelectedOption, dialog2SuperSwitchState,
             checkbox, checkboxTrue, switch, switchTrue, dropdownOptionSelected, dropdownOptionSelectedRight, spinnerOptionSelected,
-            spinnerOptionSelectedRight, spinnerOptionSelectedDialog, miuixSuperCheckbox, miuixSuperCheckboxState,
-            miuixSuperRightCheckbox, miuixSuperRightCheckboxState, miuixSuperSwitch, miuixSuperSwitchState, miuixSuperSwitchAnimState
+            spinnerOptionSelectedRight, spinnerOptionSelectedDialog, superCheckbox, superCheckboxState,
+            superRightCheckbox, superRightCheckboxState, superSwitch, superSwitchState, superSwitchAnimState
         )
     }
     val otherComponent = @Composable { OtherComponent(padding) }
@@ -84,7 +85,9 @@ fun MainPage(
         if (maxWidth < 840.dp) {
             LazyColumn(
                 modifier = Modifier
-                    .scrollEndHaptic()
+                    .then(
+                        if (scrollEndHaptic) Modifier.scrollEndHaptic() else Modifier
+                    )
                     .overScrollVertical()
                     .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
                 contentPadding = PaddingValues(top = padding.calculateTopPadding()),
@@ -95,8 +98,8 @@ fun MainPage(
                     SearchBar(
                         inputField = {
                             InputField(
-                                query = miuixSearchValue,
-                                onQueryChange = { miuixSearchValue = it },
+                                query = searchValue,
+                                onQueryChange = { searchValue = it },
                                 onSearch = { expanded = false },
                                 expanded = expanded,
                                 onExpandedChange = { expanded = it },
@@ -112,7 +115,7 @@ fun MainPage(
                                         indication = null
                                     ) {
                                         expanded = false
-                                        miuixSearchValue = ""
+                                        searchValue = ""
                                     },
                                 text = "Cancel",
                                 style = TextStyle(fontSize = 17.sp, fontWeight = FontWeight.Bold),
@@ -132,7 +135,7 @@ fun MainPage(
                                     modifier = Modifier
                                         .fillMaxWidth(),
                                     onClick = {
-                                        miuixSearchValue = resultText
+                                        searchValue = resultText
                                         expanded = false
                                     }
                                 )
@@ -171,8 +174,8 @@ fun MainPage(
                         SearchBar(
                             inputField = {
                                 InputField(
-                                    query = miuixSearchValue,
-                                    onQueryChange = { miuixSearchValue = it },
+                                    query = searchValue,
+                                    onQueryChange = { searchValue = it },
                                     onSearch = { expanded = false },
                                     expanded = expanded,
                                     onExpandedChange = { expanded = it },
@@ -187,7 +190,7 @@ fun MainPage(
                                             indication = null
                                         ) {
                                             expanded = false
-                                            miuixSearchValue = ""
+                                            searchValue = ""
                                         },
                                     text = "Cancel",
                                     color = MiuixTheme.colorScheme.primary
@@ -206,7 +209,7 @@ fun MainPage(
                                         modifier = Modifier
                                             .fillMaxWidth(),
                                         onClick = {
-                                            miuixSearchValue = resultText
+                                            searchValue = resultText
                                             expanded = false
                                         }
                                     )
