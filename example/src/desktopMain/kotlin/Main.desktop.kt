@@ -8,6 +8,9 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import org.jetbrains.compose.resources.painterResource
+import top.yukonga.miuix.kmp.example.generated.resources.Res
+import top.yukonga.miuix.kmp.example.generated.resources.icon
 
 fun main() =
     application {
@@ -20,6 +23,7 @@ fun main() =
             state = state,
             onCloseRequest = ::exitApplication,
             title = "Miuix",
+            icon = painterResource(Res.drawable.icon),
         ) {
             App()
         }
