@@ -1,3 +1,6 @@
+// Copyright 2025, miuix-kotlin-multiplatform contributors
+// SPDX-License-Identifier: Apache-2.0
+
 @file:Suppress("UnstableApiUsage")
 
 pluginManagement {
@@ -30,8 +33,8 @@ dependencyResolutionManagement {
 }
 
 plugins {
-    id("com.android.settings") version("8.10.0")
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.4.0")
+    id("com.android.settings") version ("8.10.0")
+    id("org.gradle.toolchains.foojay-resolver-convention") version ("0.4.0")
 }
 
 android {

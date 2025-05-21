@@ -1,3 +1,6 @@
+// Copyright 2025, miuix-kotlin-multiplatform contributors
+// SPDX-License-Identifier: Apache-2.0
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -42,7 +45,7 @@ import top.yukonga.miuix.kmp.utils.scrollEndHaptic
 fun MainPage(
     topAppBarScrollBehavior: ScrollBehavior,
     padding: PaddingValues,
-    scrollEndHaptic : Boolean,
+    scrollEndHaptic: Boolean,
 ) {
     var searchValue by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }

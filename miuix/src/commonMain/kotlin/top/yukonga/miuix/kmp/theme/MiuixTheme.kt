@@ -1,3 +1,6 @@
+// Copyright 2025, miuix-kotlin-multiplatform contributors
+// SPDX-License-Identifier: Apache-2.0
+
 package top.yukonga.miuix.kmp.theme
 
 import androidx.compose.foundation.LocalIndication

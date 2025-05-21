@@ -35,5 +35,15 @@ jobs:
           java-version: '21'
       - name: Build with Gradle
         uses: gradle/actions/setup-gradle@v4
-      - name: Run the Test
+      - name: Run check
+        if: matrix.os == 'macos-latest'
+        run: ./gradlew check
+      - name: Run test
         run: ./gradlew ${{ matrix.target }}
+      - name: Upload reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports
+          path: |
+            **/build/reports/**

@@ -1,3 +1,6 @@
+// Copyright 2025, miuix-kotlin-multiplatform contributors
+// SPDX-License-Identifier: Apache-2.0
+
 package top.yukonga.miuix.kmp.theme
 
 import androidx.compose.runtime.Immutable
@@ -9,7 +12,6 @@ import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-
 
 /**
  * The default text styles for the Miuix components.
@@ -89,23 +91,24 @@ class TextStyles(
         title1: TextStyle = Title1,
         title2: TextStyle = Title2,
         title3: TextStyle = Title3,
-        title4: TextStyle = Title4
-    ): TextStyles = TextStyles(
-        main,
-        paragraph,
-        body1,
-        body2,
-        button,
-        footnote1,
-        footnote2,
-        headline1,
-        headline2,
-        subtitle,
-        title1,
-        title2,
-        title3,
-        title4,
-    )
+        title4: TextStyle = Title4,
+    ): TextStyles =
+        TextStyles(
+            main,
+            paragraph,
+            body1,
+            body2,
+            button,
+            footnote1,
+            footnote2,
+            headline1,
+            headline2,
+            subtitle,
+            title1,
+            title2,
+            title3,
+            title4,
+        )
 }
 
 fun defaultTextStyles(
@@ -122,94 +125,109 @@ fun defaultTextStyles(
     title1: TextStyle = Title1,
     title2: TextStyle = Title2,
     title3: TextStyle = Title3,
-    title4: TextStyle = Title4
-): TextStyles = TextStyles(
-    main,
-    paragraph,
-    body1,
-    body2,
-    button,
-    footnote1,
-    footnote2,
-    headline1,
-    headline2,
-    subtitle,
-    title1,
-    title2,
-    title3,
-    title4,
-)
+    title4: TextStyle = Title4,
+): TextStyles =
+    TextStyles(
+        main,
+        paragraph,
+        body1,
+        body2,
+        button,
+        footnote1,
+        footnote2,
+        headline1,
+        headline2,
+        subtitle,
+        title1,
+        title2,
+        title3,
+        title4,
+    )
 
 private val Main: TextStyle
-    get() = TextStyle(
-        fontSize = 17.sp,
-    )
+    get() =
+        TextStyle(
+            fontSize = 17.sp,
+        )
 
 private val Paragraph: TextStyle
-    get() = TextStyle(
-        fontSize = 17.sp,
-        lineHeight = 1.2f.em
-    )
+    get() =
+        TextStyle(
+            fontSize = 17.sp,
+            lineHeight = 1.2f.em,
+        )
 
 private val Body1: TextStyle
-    get() = TextStyle(
-        fontSize = 16.sp
-    )
+    get() =
+        TextStyle(
+            fontSize = 16.sp,
+        )
 
 private val Body2: TextStyle
-    get() = TextStyle(
-        fontSize = 14.sp
-    )
+    get() =
+        TextStyle(
+            fontSize = 14.sp,
+        )
 
 private val Button: TextStyle
-    get() = TextStyle(
-        fontSize = 17.sp
-    )
+    get() =
+        TextStyle(
+            fontSize = 17.sp,
+        )
 
 private val Footnote1: TextStyle
-    get() = TextStyle(
-        fontSize = 13.sp
-    )
+    get() =
+        TextStyle(
+            fontSize = 13.sp,
+        )
 
 private val Footnote2: TextStyle
-    get() = TextStyle(
-        fontSize = 11.sp
-    )
+    get() =
+        TextStyle(
+            fontSize = 11.sp,
+        )
 
 private val Headline1: TextStyle
-    get() = TextStyle(
-        fontSize = 17.sp
-    )
+    get() =
+        TextStyle(
+            fontSize = 17.sp,
+        )
 
 private val Headline2: TextStyle
-    get() = TextStyle(
-        fontSize = 16.sp
-    )
+    get() =
+        TextStyle(
+            fontSize = 16.sp,
+        )
 
 private val Subtitle: TextStyle
-    get() = TextStyle(
-        fontSize = 14.sp
-    )
+    get() =
+        TextStyle(
+            fontSize = 14.sp,
+        )
 
 private val Title1: TextStyle
-    get() = TextStyle(
-        fontSize = 32.sp
-    )
+    get() =
+        TextStyle(
+            fontSize = 32.sp,
+        )
 
 private val Title2: TextStyle
-    get() = TextStyle(
-        fontSize = 24.sp
-    )
+    get() =
+        TextStyle(
+            fontSize = 24.sp,
+        )
 
 private val Title3: TextStyle
-    get() = TextStyle(
-        fontSize = 20.sp
-    )
+    get() =
+        TextStyle(
+            fontSize = 20.sp,
+        )
 
 private val Title4: TextStyle
-    get() = TextStyle(
-        fontSize = 18.sp
-    )
+    get() =
+        TextStyle(
+            fontSize = 18.sp,
+        )
 
 internal fun TextStyles.updateColorsFrom(other: Colors) {
     main = main.copy(color = other.onBackground)

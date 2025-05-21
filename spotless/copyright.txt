@@ -1,0 +1,2 @@
+// Copyright $YEAR, miuix-kotlin-multiplatform contributors
+// SPDX-License-Identifier: Apache-2.0

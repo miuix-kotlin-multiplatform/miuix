@@ -1,3 +1,6 @@
+// Copyright 2025, miuix-kotlin-multiplatform contributors
+// SPDX-License-Identifier: Apache-2.0
+
 package top.yukonga.miuix.kmp.interfaces
 
 import androidx.compose.foundation.interaction.Interaction
@@ -32,7 +35,9 @@ interface HoldDownInteraction : Interaction {
      *
      * @see HoldDown
      */
-    class Release(val holdDown: HoldDown) : HoldDownInteraction
+    class Release(
+        val holdDown: HoldDown,
+    ) : HoldDownInteraction
 }
 
 /**

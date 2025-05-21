@@ -1,3 +1,6 @@
+// Copyright 2025, miuix-kotlin-multiplatform contributors
+// SPDX-License-Identifier: Apache-2.0
+
 @file:Suppress("UnstableApiUsage")
 
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
@@ -10,6 +13,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.spotless)
 }
 
 val appName = "Miuix"
@@ -30,28 +34,31 @@ kotlin {
     listOf(
         iosX64(),
         iosArm64(),
-        iosSimulatorArm64()
+        iosSimulatorArm64(),
     ).forEach {
         it.binaries.framework {
             baseName = "shared"
             isStatic = true
-            freeCompilerArgs += listOf(
-                "-linker-option", "-framework", "-linker-option", "Metal",
-                "-linker-option", "-framework", "-linker-option", "CoreText",
-                "-linker-option", "-framework", "-linker-option", "CoreGraphics"
-            )
+            freeCompilerArgs +=
+                listOf(
+                    "-linker-option", "-framework", "-linker-option", "Metal",
+                    "-linker-option", "-framework", "-linker-option", "CoreText",
+                    "-linker-option", "-framework", "-linker-option",
+                    "CoreGraphics",
+                )
         }
     }
 
     listOf(
         macosX64(),
-        macosArm64()
+        macosArm64(),
     ).forEach { macosTarget ->
         macosTarget.binaries.executable {
             entryPoint = "main"
-            freeCompilerArgs += listOf(
-                "-linker-option", "-framework", "-linker-option", "Metal"
-            )
+            freeCompilerArgs +=
+                listOf(
+                    "-linker-option", "-framework", "-linker-option", "Metal",
+                )
         }
     }
 
@@ -190,14 +197,24 @@ compose.desktop {
     }
 }
 
+spotless {
+    kotlin {
+        target("src/**/*.kt")
+        licenseHeaderFile(rootProject.file("/spotless/copyright.txt"), "(^(?![\\/ ]\\**).*$)")
+    }
+
+    kotlinGradle {
+        target("*.kts")
+        licenseHeaderFile(rootProject.file("/spotless/copyright.txt"), "(^(?![\\/ ]\\**).*$)")
+    }
+}
+
 fun getGitCommitCount(): Int {
     val process = Runtime.getRuntime().exec(arrayOf("git", "rev-list", "--count", "HEAD"))
     return process.inputStream.bufferedReader().use { it.readText().trim().toInt() }
 }
 
-fun getVersionCode(): Int {
-    return getGitCommitCount()
-}
+fun getVersionCode(): Int = getGitCommitCount()
 
 val generateVersionInfo by tasks.registering {
     doLast {
@@ -216,7 +233,7 @@ val generateVersionInfo by tasks.registering {
                 const val JDK_VERSION = "${System.getProperty("java.version")}"
 
             }
-            """.trimIndent()
+            """.trimIndent(),
         )
     }
 }

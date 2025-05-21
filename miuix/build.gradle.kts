@@ -1,3 +1,6 @@
+// Copyright 2025, miuix-kotlin-multiplatform contributors
+// SPDX-License-Identifier: Apache-2.0
+
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
@@ -6,7 +9,12 @@ plugins {
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.jetbrains.dokka)
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.spotless)
     id("module.publication")
+}
+
+android {
+    namespace = "top.yukonga.miuix.kmp"
 }
 
 java {
@@ -54,6 +62,14 @@ kotlin {
     }
 }
 
-android {
-    namespace = "top.yukonga.miuix.kmp"
+spotless {
+    kotlin {
+        target("src/**/*.kt")
+        licenseHeaderFile(rootProject.file("/spotless/copyright.txt"), "(^(?![\\/ ]\\**).*$)")
+    }
+
+    kotlinGradle {
+        target("*.kts")
+        licenseHeaderFile(rootProject.file("/spotless/copyright.txt"), "(^(?![\\/ ]\\**).*$)")
+    }
 }

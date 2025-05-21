@@ -1,3 +1,6 @@
+// Copyright 2025, miuix-kotlin-multiplatform contributors
+// SPDX-License-Identifier: Apache-2.0
+
 package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.animation.core.Animatable
@@ -427,7 +430,7 @@ private fun DrawScope.drawRefreshCompleteState(
     drawCircle(
         color = alphaColor,
         radius = animatedRadius,
-        center = Offset(center.x,y),
+        center = Offset(center.x, y),
         style = Stroke(strokeWidth, cap = StrokeCap.Round)
     )
 }

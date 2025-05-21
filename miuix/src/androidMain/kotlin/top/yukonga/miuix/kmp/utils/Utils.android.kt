@@ -1,3 +1,6 @@
+// Copyright 2025, miuix-kotlin-multiplatform contributors
+// SPDX-License-Identifier: Apache-2.0
+
 package top.yukonga.miuix.kmp.utils
 
 import android.annotation.SuppressLint
@@ -14,6 +17,7 @@ import androidx.window.layout.WindowMetricsCalculator
 import kotlin.math.max
 import kotlin.math.min
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 actual fun getWindowSize(): WindowSize {
     val configuration = LocalConfiguration.current

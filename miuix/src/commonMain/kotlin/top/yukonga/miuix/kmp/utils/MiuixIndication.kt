@@ -1,3 +1,6 @@
+// Copyright 2025, miuix-kotlin-multiplatform contributors
+// SPDX-License-Identifier: Apache-2.0
+
 package top.yukonga.miuix.kmp.utils
 
 import androidx.compose.animation.core.Animatable
@@ -21,10 +24,9 @@ import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction
  * Miuix default [Indication] that draws a rectangular overlay when pressed.
  */
 class MiuixIndication(
-    private val color: Color = Color.Black
+    private val color: Color = Color.Black,
 ) : IndicationNodeFactory {
-    override fun create(interactionSource: InteractionSource): DelegatableNode =
-        MiuixIndicationInstance(interactionSource, color)
+    override fun create(interactionSource: InteractionSource): DelegatableNode = MiuixIndicationInstance(interactionSource, color)
 
     override fun hashCode(): Int = -1
 
@@ -32,8 +34,9 @@ class MiuixIndication(
 
     private class MiuixIndicationInstance(
         private val interactionSource: InteractionSource,
-        private val color: Color
-    ) : Modifier.Node(), DrawModifierNode {
+        private val color: Color,
+    ) : Modifier.Node(),
+        DrawModifierNode {
         private var isPressed = false
         private var isHovered = false
         private var isFocused = false
@@ -49,16 +52,18 @@ class MiuixIndication(
             if (isPressed) targetAlpha += 0.1f
             if (isHoldDown) targetAlpha += 0.1f
             if (targetAlpha == 0.0f) {
-                restingAnimation = coroutineScope.launch {
-                    pressedAnimation?.join()
-                    animatedAlpha.animateTo(0f, tween(150))
-                }
+                restingAnimation =
+                    coroutineScope.launch {
+                        pressedAnimation?.join()
+                        animatedAlpha.animateTo(0f, tween(150))
+                    }
             } else {
                 restingAnimation?.cancel()
                 pressedAnimation?.cancel()
-                pressedAnimation = coroutineScope.launch {
-                    animatedAlpha.animateTo(targetAlpha, tween(150))
-                }
+                pressedAnimation =
+                    coroutineScope.launch {
+                        animatedAlpha.animateTo(targetAlpha, tween(150))
+                    }
             }
         }
 
