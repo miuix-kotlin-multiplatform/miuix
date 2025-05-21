@@ -172,6 +172,10 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = appName
             packageVersion = verName
+
+            macOS.iconFile = project.file("src/desktopMain/resources/macos/icon.icns")
+            linux.iconFile = project.file("src/desktopMain/resources/linux/icon.png")
+            windows.iconFile = project.file("src/desktopMain/resources/windows/icon.ico")
         }
     }
     nativeApplication {
@@ -180,6 +184,8 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg)
             packageName = appName
             packageVersion = verName
+
+            macOS.iconFile = project.file("src/macosMain/resources/Miuix.icns")
         }
     }
 }

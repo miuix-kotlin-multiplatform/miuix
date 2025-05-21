@@ -51,14 +51,14 @@ private class ScrollEndHapticConnection(
     }
 
     override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
-        // Flinging beyond the bottom boundary.
+        // Flinging beyond the top boundary.
         if (available.y > 1f && !consumed.y.filter(25f)) {
             if (scrollEndHapticState != ScrollEndHapticState.TopBoundaryHit) {
                 hapticFeedback.performHapticFeedback(hapticFeedbackType)
                 scrollEndHapticState = ScrollEndHapticState.TopBoundaryHit
             }
         }
-        // Flinging beyond the top boundary.
+        // Flinging beyond the bottom boundary.
         else if (available.y < -1f && !consumed.y.filter(25f)) {
             if (scrollEndHapticState != ScrollEndHapticState.BottomBoundaryHit) {
                 hapticFeedback.performHapticFeedback(hapticFeedbackType)
