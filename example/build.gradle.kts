@@ -200,12 +200,12 @@ compose.desktop {
 spotless {
     kotlin {
         target("src/**/*.kt")
-        licenseHeaderFile(rootProject.file("/spotless/copyright.txt"), "(^(?![\\/ ]\\**).*$)")
+        licenseHeaderFile(rootProject.file("./spotless/copyright.txt"), "(^(?![\\/ ]\\**).*$)")
     }
 
     kotlinGradle {
         target("*.kts")
-        licenseHeaderFile(rootProject.file("/spotless/copyright.txt"), "(^(?![\\/ ]\\**).*$)")
+        licenseHeaderFile(rootProject.file("./spotless/copyright.txt"), "(^(?![\\/ ]\\**).*$)")
     }
 }
 
