@@ -5,6 +5,7 @@ package top.yukonga.miuix.kmp.extra
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -60,6 +62,36 @@ fun SuperArrow(
 ) {
     val updatedOnClick by rememberUpdatedState(onClick)
 
+    val rememberedRightActions: @Composable RowScope.() -> Unit =
+        remember(rightText, rightActionColor, enabled) {
+            {
+                val currentRightActionColor = rightActionColor.color(enabled)
+                if (rightText != null) {
+                    val rightTextModifier = remember { Modifier.widthIn(max = 130.dp) }
+                    Text(
+                        modifier = rightTextModifier,
+                        text = rightText,
+                        fontSize = MiuixTheme.textStyles.body2.fontSize,
+                        color = currentRightActionColor,
+                        textAlign = TextAlign.End,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 2
+                    )
+                }
+                val arrowImageModifier = remember {
+                    Modifier
+                        .padding(start = 8.dp)
+                        .size(10.dp, 16.dp)
+                }
+                Image(
+                    modifier = arrowImageModifier,
+                    imageVector = MiuixIcons.Basic.ArrowRight,
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(currentRightActionColor),
+                )
+            }
+        }
+
     BasicComponent(
         modifier = modifier,
         insideMargin = insideMargin,
@@ -68,27 +100,7 @@ fun SuperArrow(
         summary = summary,
         summaryColor = summaryColor,
         leftAction = leftAction,
-        rightActions = {
-            if (rightText != null) {
-                Text(
-                    modifier = Modifier.widthIn(max = 130.dp),
-                    text = rightText,
-                    fontSize = MiuixTheme.textStyles.body2.fontSize,
-                    color = rightActionColor.color(enabled),
-                    textAlign = TextAlign.End,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 2
-                )
-            }
-            Image(
-                modifier = Modifier
-                    .padding(start = 8.dp)
-                    .size(10.dp, 16.dp),
-                imageVector = MiuixIcons.Basic.ArrowRight,
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(rightActionColor.color(enabled)),
-            )
-        },
+        rightActions = rememberedRightActions,
         onClick = {
             if (enabled) {
                 updatedOnClick?.invoke()

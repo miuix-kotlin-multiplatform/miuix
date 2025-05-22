@@ -34,6 +34,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -96,38 +97,47 @@ fun PullToRefresh(
     onRefresh: () -> Unit = {},
     content: @Composable () -> Unit
 ) {
+    val currentOnRefresh by rememberUpdatedState(onRefresh)
+
     LaunchedEffect(pullToRefreshState.rawDragOffset) {
         pullToRefreshState.syncDragOffsetWithRawOffset()
     }
     val overScrollState = LocalOverScrollState.current
-    val nestedScrollConnection = remember(pullToRefreshState) {
+    val nestedScrollConnection = remember(pullToRefreshState, overScrollState) {
         pullToRefreshState.createNestedScrollConnection(overScrollState)
     }
-    val pointerModifier = Modifier.pointerInput(Unit) {
-        awaitPointerEventScope {
-            while (true) {
-                val event = awaitPointerEvent()
-                if (event.changes.all { !it.pressed }) {
-                    pullToRefreshState.onPointerRelease()
-                    continue
-                } else {
-                    pullToRefreshState.resetPointerReleased()
+    val pointerModifier = remember {
+        Modifier.pointerInput(Unit) {
+            awaitPointerEventScope {
+                while (true) {
+                    val event = awaitPointerEvent()
+                    if (event.changes.all { !it.pressed }) {
+                        pullToRefreshState.onPointerRelease()
+                    } else {
+                        pullToRefreshState.resetPointerReleased()
+                    }
                 }
             }
         }
     }
-    LaunchedEffect(pullToRefreshState.pointerReleasedValue, pullToRefreshState.isRefreshing) {
-        pullToRefreshState.handlePointerReleased(onRefresh)
+    LaunchedEffect(pullToRefreshState.pointerReleasedValue, pullToRefreshState.isRefreshing, currentOnRefresh) {
+        pullToRefreshState.handlePointerReleased(currentOnRefresh)
     }
+
+    val boxModifier = remember(modifier, nestedScrollConnection, pointerModifier) {
+        modifier
+            .nestedScroll(nestedScrollConnection)
+            .then(pointerModifier)
+    }
+
     CompositionLocalProvider(LocalPullToRefreshState provides pullToRefreshState) {
-        Box(
-            modifier = modifier
-                .nestedScroll(nestedScrollConnection)
-                .then(pointerModifier)
-        ) {
+        Box(modifier = boxModifier) {
             Column {
+                val headerModifier = remember(contentPadding) {
+                    Modifier.offset(y = contentPadding.calculateTopPadding())
+                }
                 RefreshHeader(
-                    modifier = Modifier.offset(y = contentPadding.calculateTopPadding()),
+                    modifier = headerModifier,
                     pullToRefreshState = pullToRefreshState,
                     circleSize = circleSize,
                     color = color,
@@ -193,33 +203,69 @@ fun RefreshHeader(
             }
         }
     }
-    val sHeight = with(density) {
-        when (pullToRefreshState.refreshState) {
-            RefreshState.Idle -> 0.dp
-            RefreshState.Pulling -> circleSize * pullToRefreshState.pullProgress
-            RefreshState.ThresholdReached -> circleSize + (dragOffset - thresholdOffset).toDp()
-            RefreshState.Refreshing -> circleSize
-            RefreshState.RefreshComplete -> circleSize.coerceIn(0.dp, circleSize - circleSize * refreshCompleteAnimProgress)
+    val sHeight by remember(
+        density,
+        pullToRefreshState.refreshState,
+        circleSize,
+        dragOffset,
+        thresholdOffset,
+        refreshCompleteAnimProgress
+    ) {
+        derivedStateOf {
+            with(density) {
+                when (pullToRefreshState.refreshState) {
+                    RefreshState.Idle -> 0.dp
+                    RefreshState.Pulling -> circleSize * pullToRefreshState.pullProgress
+                    RefreshState.ThresholdReached -> circleSize + (dragOffset - thresholdOffset).toDp()
+                    RefreshState.Refreshing -> circleSize
+                    RefreshState.RefreshComplete -> circleSize.coerceIn(
+                        0.dp,
+                        circleSize - circleSize * refreshCompleteAnimProgress
+                    )
+                }
+            }
         }
     }
-    val headerHeight = with(density) {
-        when (pullToRefreshState.refreshState) {
-            RefreshState.Idle -> 0.dp
-            RefreshState.Pulling -> (circleSize + 36.dp) * pullToRefreshState.pullProgress
-            RefreshState.ThresholdReached -> (circleSize + 36.dp) + (dragOffset - thresholdOffset).toDp()
-            RefreshState.Refreshing -> (circleSize + 36.dp)
-            RefreshState.RefreshComplete -> (circleSize + 36.dp).coerceIn(0.dp, (circleSize + 36.dp) - (circleSize + 36.dp) * refreshCompleteAnimProgress)
+    val headerHeight by remember(
+        density,
+        pullToRefreshState.refreshState,
+        circleSize,
+        dragOffset,
+        thresholdOffset,
+        refreshCompleteAnimProgress
+    ) {
+        derivedStateOf {
+            with(density) {
+                when (pullToRefreshState.refreshState) {
+                    RefreshState.Idle -> 0.dp
+                    RefreshState.Pulling -> (circleSize + 36.dp) * pullToRefreshState.pullProgress
+                    RefreshState.ThresholdReached -> (circleSize + 36.dp) + (dragOffset - thresholdOffset).toDp()
+                    RefreshState.Refreshing -> (circleSize + 36.dp)
+                    RefreshState.RefreshComplete -> (circleSize + 36.dp).coerceIn(
+                        0.dp,
+                        (circleSize + 36.dp) - (circleSize + 36.dp) * refreshCompleteAnimProgress
+                    )
+                }
+            }
         }
     }
-    Column(
-        modifier = modifier
+
+    val columnModifier = remember(modifier, headerHeight) {
+        modifier
             .fillMaxWidth()
-            .height(headerHeight),
+            .height(headerHeight)
+    }
+
+    Column(
+        modifier = columnModifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
+        val refreshContentModifier = remember(sHeight) {
+            Modifier.height(sHeight)
+        }
         RefreshContent(
-            modifier = Modifier.height(sHeight),
+            modifier = refreshContentModifier,
             circleSize = circleSize
         ) {
             val ringStrokeWidthPx = circleSize.toPx() / 11
@@ -264,13 +310,16 @@ fun RefreshHeader(
                 )
             }
         }
+        val textModifier = remember(textAlpha) {
+            Modifier
+                .padding(top = 6.dp)
+                .alpha(textAlpha)
+        }
         Text(
             text = refreshText,
             style = refreshTextStyle,
             color = color,
-            modifier = Modifier
-                .padding(top = 6.dp)
-                .alpha(textAlpha)
+            modifier = textModifier
         )
     }
 }
@@ -288,11 +337,17 @@ private fun RefreshContent(
     circleSize: Dp,
     drawContent: DrawScope.() -> Unit
 ) {
+    val boxModifier = remember(modifier) {
+        modifier.fillMaxSize()
+    }
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = boxModifier,
         contentAlignment = Alignment.TopCenter
     ) {
-        Canvas(modifier = Modifier.size(circleSize)) {
+        val canvasModifier = remember(circleSize) {
+            Modifier.size(circleSize)
+        }
+        Canvas(modifier = canvasModifier) {
             drawContent()
         }
     }
@@ -305,14 +360,15 @@ private fun RefreshContent(
  */
 @Composable
 private fun animateRotation(): State<Float> {
-    val infiniteTransition = rememberInfiniteTransition()
+    val infiniteTransition = rememberInfiniteTransition(label = "rotationAnimation")
     return infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 360f,
         animationSpec = infiniteRepeatable(
             animation = tween(800, easing = LinearEasing),
             repeatMode = RepeatMode.Restart
-        )
+        ),
+        label = "rotationValue"
     )
 }
 
@@ -463,10 +519,11 @@ sealed class RefreshState {
 @Composable
 fun rememberPullToRefreshState(): PullToRefreshState {
     val coroutineScope = rememberCoroutineScope()
-    val screenHeight = getWindowSize().height.toFloat()
-    val maxDragDistancePx = screenHeight * maxDragRatio
-    val refreshThresholdOffset = maxDragDistancePx * thresholdRatio
-    return remember {
+    val currentWindowSize = getWindowSize()
+    return remember(coroutineScope, currentWindowSize.height) {
+        val screenHeight = currentWindowSize.height.toFloat()
+        val maxDragDistancePx = screenHeight * maxDragRatio
+        val refreshThresholdOffset = maxDragDistancePx * thresholdRatio
         PullToRefreshState(
             coroutineScope,
             screenHeight,

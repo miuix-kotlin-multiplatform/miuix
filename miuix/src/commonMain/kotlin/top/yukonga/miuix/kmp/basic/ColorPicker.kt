@@ -21,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,6 +64,8 @@ fun ColorPicker(
     var currentValue by remember { mutableStateOf(0f) }
     var currentAlpha by remember { mutableStateOf(1f) }
 
+    val currentOnColorChanged by rememberUpdatedState(onColorChanged)
+
     val selectedColor = remember(currentHue, currentSaturation, currentValue, currentAlpha) {
         Color.hsv(currentHue, currentSaturation, currentValue, currentAlpha)
     }
@@ -89,20 +92,25 @@ fun ColorPicker(
     LaunchedEffect(selectedColor) {
         if (!initialSetup && selectedColor != previousColor) {
             previousColor = selectedColor
-            onColorChanged(selectedColor)
+            currentOnColorChanged(selectedColor)
         }
     }
     Column(
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         // Color preview
         if (showPreview) {
-            Box(
-                modifier = Modifier
+            val previewShape = remember { SmoothRoundedCornerShape(50.dp) }
+            val previewModifier = remember(selectedColor, previewShape) {
+                Modifier
                     .fillMaxWidth()
                     .height(26.dp)
-                    .clip(SmoothRoundedCornerShape(50.dp))
+                    .clip(previewShape)
                     .background(selectedColor)
+            }
+            Box(
+                modifier = previewModifier
             )
         }
 
@@ -155,10 +163,11 @@ fun HueSlider(
     onHueChanged: (Float) -> Unit,
     hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
 ) {
-    val hueColors = List(36) { i -> Color.hsv(i * 10f, 1f, 1f) }
+    val currentOnHueChanged by rememberUpdatedState(onHueChanged)
+    val hueColors = remember { List(36) { i -> Color.hsv(i * 10f, 1f, 1f) } }
     ColorSlider(
         value = currentHue / 360f,
-        onValueChanged = onHueChanged,
+        onValueChanged = currentOnHueChanged,
         drawBrushColors = hueColors,
         modifier = Modifier.fillMaxWidth(),
         hapticEffect = hapticEffect
@@ -180,10 +189,14 @@ fun SaturationSlider(
     onSaturationChanged: (Float) -> Unit,
     hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
 ) {
+    val currentOnSaturationChanged by rememberUpdatedState(onSaturationChanged)
+    val saturationColors = remember(currentHue) {
+        listOf(Color.hsv(currentHue, 0f, 1f, 1f), Color.hsv(currentHue, 1f, 1f, 1f))
+    }
     ColorSlider(
         value = currentSaturation,
-        onValueChanged = onSaturationChanged,
-        drawBrushColors = listOf(Color.hsv(currentHue, 0f, 1f, 1f), Color.hsv(currentHue, 1f, 1f, 1f)),
+        onValueChanged = currentOnSaturationChanged,
+        drawBrushColors = saturationColors,
         modifier = Modifier.fillMaxWidth(),
         hapticEffect = hapticEffect
     )
@@ -207,10 +220,14 @@ fun ValueSlider(
     onValueChanged: (Float) -> Unit,
     hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
 ) {
+    val currentOnValueChanged by rememberUpdatedState(onValueChanged)
+    val valueColors = remember(currentHue, currentSaturation) {
+        listOf(Color.Black, Color.hsv(currentHue, currentSaturation, 1f))
+    }
     ColorSlider(
         value = currentValue,
-        onValueChanged = onValueChanged,
-        drawBrushColors = listOf(Color.Black, Color.hsv(currentHue, currentSaturation, 1f)),
+        onValueChanged = currentOnValueChanged,
+        drawBrushColors = valueColors,
         modifier = Modifier.fillMaxWidth(),
         hapticEffect = hapticEffect
     )
@@ -235,9 +252,13 @@ fun AlphaSlider(
     onAlphaChanged: (Float) -> Unit,
     hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
 ) {
-    val baseColor = Color.hsv(currentHue, currentSaturation, currentValue)
+    val currentOnAlphaChanged by rememberUpdatedState(onAlphaChanged)
+    val baseColor = remember(currentHue, currentSaturation, currentValue) {
+        Color.hsv(currentHue, currentSaturation, currentValue)
+    }
     val startColor = remember(baseColor) { baseColor.copy(alpha = 0f) }
     val endColor = remember(baseColor) { baseColor.copy(alpha = 1f) }
+    val alphaColors = remember(startColor, endColor) { listOf(startColor, endColor) }
 
     val checkerBrush = remember {
         object {
@@ -272,8 +293,8 @@ fun AlphaSlider(
 
     ColorSlider(
         value = currentAlpha,
-        onValueChanged = onAlphaChanged,
-        drawBrushColors = listOf(startColor, endColor),
+        onValueChanged = currentOnAlphaChanged,
+        drawBrushColors = alphaColors,
         modifier = Modifier.fillMaxWidth(),
         hapticEffect = hapticEffect,
         drawBackground = checkerBrush::draw
@@ -295,28 +316,34 @@ private fun ColorSlider(
     val density = LocalDensity.current
     var sliderWidth by remember { mutableStateOf(0.dp) }
     val indicatorSizeDp = 20.dp
-    val sliderSizePx = with(density) { remember { 26.dp.toPx() } }
-    val halfSliderSizePx = remember(sliderSizePx) { sliderSizePx / 2f }
+    val sliderHeightDp = 26.dp
+    val sliderHeightPx = with(density) { remember(sliderHeightDp) { sliderHeightDp.toPx() } }
+    val halfSliderHeightPx = remember(sliderHeightPx) { sliderHeightPx / 2f }
     val borderShape = remember { SmoothRoundedCornerShape(50.dp) }
     val borderStroke = remember { 0.5.dp }
     val borderColor = remember { Color.Gray.copy(0.1f) }
     val hapticFeedback = LocalHapticFeedback.current
     val hapticState = remember { SliderHapticState() }
+    val currentOnValueChanged by rememberUpdatedState(onValueChanged)
 
-    val dragHandler = remember(onValueChanged, sliderSizePx) {
+    val dragHandler = remember(currentOnValueChanged, sliderHeightPx) {
         { posX: Float, width: Float ->
-            handleSliderInteraction(posX, width, sliderSizePx).coerceIn(0f, 1f)
+            handleSliderInteraction(posX, width, sliderHeightPx).coerceIn(0f, 1f)
         }
     }
 
-    Box(
-        modifier = modifier
-            .height(26.dp)
+    val boxModifier = remember(modifier, borderShape, borderStroke, borderColor, sliderHeightDp) {
+        modifier
+            .height(sliderHeightDp)
             .clip(borderShape)
             .border(borderStroke, borderColor, borderShape)
+    }
+
+    Box(
+        modifier = boxModifier
     ) {
-        Canvas(
-            modifier = Modifier
+        val canvasModifier = remember(dragHandler) {
+            Modifier
                 .fillMaxSize()
                 .onGloballyPositioned { coordinates ->
                     sliderWidth = with(density) { coordinates.size.width.toDp() }
@@ -324,25 +351,28 @@ private fun ColorSlider(
                 .pointerInput(dragHandler) {
                     detectHorizontalDragGestures(
                         onDragStart = { offset ->
-                            val currentValue = dragHandler(offset.x, size.width.toFloat())
-                            onValueChanged(currentValue)
-                            hapticState.reset(currentValue)
+                            val newValue = dragHandler(offset.x, size.width.toFloat())
+                            currentOnValueChanged(newValue)
+                            hapticState.reset(newValue)
                         },
                         onHorizontalDrag = { change, _ ->
                             change.consume()
-                            val currentValue = dragHandler(change.position.x, size.width.toFloat())
-                            onValueChanged(currentValue)
-                            hapticState.handleHapticFeedback(currentValue, hapticEffect, hapticFeedback)
+                            val newValue = dragHandler(change.position.x, size.width.toFloat())
+                            currentOnValueChanged(newValue)
+                            hapticState.handleHapticFeedback(newValue, hapticEffect, hapticFeedback)
                         }
                     )
                 }
+        }
+        Canvas(
+            modifier = canvasModifier
         ) {
             drawBackground?.invoke(this, size.width, size.height)
 
             Brush.horizontalGradient(
                 colors = drawBrushColors,
-                startX = halfSliderSizePx,
-                endX = size.width - halfSliderSizePx,
+                startX = halfSliderHeightPx,
+                endX = size.width - halfSliderHeightPx,
                 tileMode = TileMode.Clamp
             ).let {
                 drawRect(it)
@@ -353,7 +383,7 @@ private fun ColorSlider(
             modifier = Modifier.align(Alignment.CenterStart),
             value = value,
             sliderWidth = sliderWidth,
-            sliderSizePx = sliderSizePx,
+            sliderSizePx = sliderHeightPx,
             indicatorSize = indicatorSizeDp
         )
     }
@@ -368,18 +398,23 @@ private fun SliderIndicator(
     indicatorSize: Dp
 ) {
     val density = LocalDensity.current
-    Box(
-        modifier = modifier
-            .offset(
-                x = with(density) {
-                    val effectiveWidth = sliderWidth.toPx() - sliderSizePx
-                    ((value * effectiveWidth) + sliderSizePx / 2).toDp() - (indicatorSize / 2)
-                }
-            )
+    val indicatorOffsetXDp = with(density) {
+        val sliderWidthPx = sliderWidth.toPx()
+        val effectiveWidthPx = sliderWidthPx - sliderSizePx
+        val indicatorPositionPx = (value * effectiveWidthPx) + (sliderSizePx / 2)
+        indicatorPositionPx.toDp() - (indicatorSize / 2)
+    }
+
+    val indicatorBoxModifier = remember(modifier, indicatorOffsetXDp, indicatorSize) {
+        modifier
+            .offset(x = indicatorOffsetXDp)
             .size(indicatorSize)
             .clip(CircleShape)
             .border(6.dp, Color.White, CircleShape)
             .background(Color.Transparent, CircleShape)
+    }
+    Box(
+        modifier = indicatorBoxModifier
     )
 }
 

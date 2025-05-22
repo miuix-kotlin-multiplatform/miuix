@@ -16,6 +16,10 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.Velocity
 import kotlin.math.abs
 
+private const val PRE_SCROLL_RESET_THRESHOLD = 1.0f
+private const val POST_FLING_AVAILABLE_VELOCITY_THRESHOLD = 1.0f
+private const val POST_FLING_CONSUMED_VELOCITY_THRESHOLD = 25.0f
+
 /**
  * A [NestedScrollConnection] that provides haptic feedback when a scrollable container
  * is flung to its start or end boundaries.
@@ -45,9 +49,9 @@ private class ScrollEndHapticConnection(
 
     override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
         // Reset state when scrolling from a boundary into content.
-        if (scrollEndHapticState == ScrollEndHapticState.TopBoundaryHit && available.y < -1f) {
+        if (scrollEndHapticState == ScrollEndHapticState.TopBoundaryHit && available.y < -PRE_SCROLL_RESET_THRESHOLD) {
             scrollEndHapticState = ScrollEndHapticState.Idle
-        } else if (scrollEndHapticState == ScrollEndHapticState.BottomBoundaryHit && available.y > 1f) {
+        } else if (scrollEndHapticState == ScrollEndHapticState.BottomBoundaryHit && available.y > PRE_SCROLL_RESET_THRESHOLD) {
             scrollEndHapticState = ScrollEndHapticState.Idle
         }
         return Offset.Zero
@@ -55,14 +59,17 @@ private class ScrollEndHapticConnection(
 
     override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
         // Flinging beyond the top boundary.
-        if (available.y > 1f && !consumed.y.filter(25f)) {
+        if (available.y > POST_FLING_AVAILABLE_VELOCITY_THRESHOLD && !consumed.y.filter(POST_FLING_CONSUMED_VELOCITY_THRESHOLD)) {
             if (scrollEndHapticState != ScrollEndHapticState.TopBoundaryHit) {
                 hapticFeedback.performHapticFeedback(hapticFeedbackType)
                 scrollEndHapticState = ScrollEndHapticState.TopBoundaryHit
             }
         }
         // Flinging beyond the bottom boundary.
-        else if (available.y < -1f && !consumed.y.filter(25f)) {
+        else if (available.y < -POST_FLING_AVAILABLE_VELOCITY_THRESHOLD && !consumed.y.filter(
+                POST_FLING_CONSUMED_VELOCITY_THRESHOLD
+            )
+        ) {
             if (scrollEndHapticState != ScrollEndHapticState.BottomBoundaryHit) {
                 hapticFeedback.performHapticFeedback(hapticFeedbackType)
                 scrollEndHapticState = ScrollEndHapticState.BottomBoundaryHit

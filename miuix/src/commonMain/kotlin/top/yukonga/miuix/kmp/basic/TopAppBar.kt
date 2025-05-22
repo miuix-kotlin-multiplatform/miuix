@@ -121,24 +121,32 @@ fun TopAppBar(
                 content = actions
             )
         }
+
+    val dragConsumerModifier = remember { Modifier.pointerInput(Unit) { detectVerticalDragGestures { _, _ -> } } }
+
+    val displayCutoutInsets = WindowInsets.displayCutout
+    val navigationBarsInsets = WindowInsets.navigationBars
+
+    val windowInsetsModifier = remember(defaultWindowInsetsPadding, displayCutoutInsets, navigationBarsInsets) {
+        if (defaultWindowInsetsPadding) {
+            Modifier
+                .windowInsetsPadding(displayCutoutInsets.only(WindowInsetsSides.Horizontal))
+                .windowInsetsPadding(navigationBarsInsets.only(WindowInsetsSides.Horizontal))
+        } else Modifier
+    }
+    val surfaceModifier = remember(modifier, dragConsumerModifier, windowInsetsModifier) {
+        modifier
+            .then(dragConsumerModifier)
+            .then(windowInsetsModifier)
+    }
+
     // Compose a Surface with a TopAppBarLayout content.
     // The surface's background color is animated as specified above.
     // The height of the app bar is determined by subtracting the bar's height offset from the
     // app bar's defined constant height value (i.e. the ContainerHeight token).
     Surface(
         color = color,
-        modifier =
-            modifier
-                .pointerInput(Unit) {
-                    detectVerticalDragGestures { _, _ -> }
-                }
-                .then(
-                    if (defaultWindowInsetsPadding) {
-                        Modifier
-                            .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
-                            .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal))
-                    } else Modifier
-                )
+        modifier = surfaceModifier
     ) {
         TopAppBarLayout(
             title = title,
@@ -180,24 +188,32 @@ fun SmallTopAppBar(
                 content = actions
             )
         }
+
+    val dragConsumerModifier = remember { Modifier.pointerInput(Unit) { detectVerticalDragGestures { _, _ -> } } }
+
+    val displayCutoutInsets = WindowInsets.displayCutout
+    val navigationBarsInsets = WindowInsets.navigationBars
+
+    val windowInsetsModifier = remember(defaultWindowInsetsPadding, displayCutoutInsets, navigationBarsInsets) {
+        if (defaultWindowInsetsPadding) {
+            Modifier
+                .windowInsetsPadding(displayCutoutInsets.only(WindowInsetsSides.Horizontal))
+                .windowInsetsPadding(navigationBarsInsets.only(WindowInsetsSides.Horizontal))
+        } else Modifier
+    }
+    val surfaceModifier = remember(modifier, dragConsumerModifier, windowInsetsModifier) {
+        modifier
+            .then(dragConsumerModifier)
+            .then(windowInsetsModifier)
+    }
+
     // Compose a Surface with a SmallTopAppBarLayout content.
     // The surface's background color is animated as specified above.
     // The height of the app bar is determined by subtracting the bar's height offset from the
     // app bar's defined constant height value (i.e. the ContainerHeight token).
     Surface(
         color = color,
-        modifier =
-            modifier
-                .pointerInput(Unit) {
-                    detectVerticalDragGestures { _, _ -> }
-                }
-                .then(
-                    if (defaultWindowInsetsPadding) {
-                        Modifier
-                            .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
-                            .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal))
-                    } else Modifier
-                )
+        modifier = surfaceModifier
     ) {
         SmallTopAppBarLayout(
             title = title,
@@ -582,6 +598,44 @@ private fun TopAppBarLayout(
         animationSpec = tween(durationMillis = 250)
     )
 
+    val titleModifier = remember(horizontalPadding, alpha, translationY) {
+        Modifier
+            .layoutId("title")
+            .padding(horizontal = horizontalPadding)
+            .graphicsLayer(
+                alpha = alpha,
+                translationY = translationY
+            )
+    }
+    val largeTitleGraphicsAlpha = remember(scrolledOffset.offset(), expandedHeightPx) {
+        1f - (abs(scrolledOffset.offset()) / expandedHeightPx * 2).coerceIn(0f, 1f)
+    }
+    val largeTitleContainerModifier = remember(horizontalPadding, largeTitleGraphicsAlpha) {
+        Modifier
+            .fillMaxWidth()
+            .padding(top = 56.dp)
+            .padding(horizontal = horizontalPadding)
+            .graphicsLayer(alpha = largeTitleGraphicsAlpha)
+    }
+    val largeTitleTextModifier = remember(heightOffset) {
+        Modifier.offset { IntOffset(0, heightOffset) }
+    }
+
+    val statusBarsInsets = WindowInsets.statusBars
+    val captionBarInsets = WindowInsets.captionBar
+
+    val layoutModifier = remember(defaultWindowInsetsPadding, statusBarsInsets, captionBarInsets) {
+        Modifier
+            .then(
+                if (defaultWindowInsetsPadding) {
+                    Modifier
+                        .windowInsetsPadding(statusBarsInsets.only(WindowInsetsSides.Top))
+                        .windowInsetsPadding(captionBarInsets.only(WindowInsetsSides.Top))
+                } else Modifier
+            )
+            .clipToBounds()
+    }
+
     Layout(
         {
             Box(
@@ -590,15 +644,7 @@ private fun TopAppBarLayout(
             ) {
                 navigationIcon()
             }
-            Box(
-                Modifier
-                    .layoutId("title")
-                    .padding(horizontal = horizontalPadding)
-                    .graphicsLayer(
-                        alpha = alpha,
-                        translationY = translationY
-                    )
-            ) {
+            Box(titleModifier) {
                 Text(
                     text = title,
                     maxLines = 1,
@@ -619,34 +665,21 @@ private fun TopAppBarLayout(
                     .layoutId("largeTitle")
                     .fillMaxWidth()
             ) {
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(top = 56.dp)
-                        .padding(horizontal = horizontalPadding)
-                        .graphicsLayer(alpha = 1f - (abs(scrolledOffset.offset()) / expandedHeightPx * 2).coerceIn(0f, 1f))
-                ) {
+                Box(largeTitleContainerModifier) {
                     Text(
-                        modifier = Modifier.offset { IntOffset(0, heightOffset) },
+                        modifier = largeTitleTextModifier,
                         text = largeTitle,
                         fontSize = MiuixTheme.textStyles.title1.fontSize,
                         fontWeight = FontWeight.Normal,
                         onTextLayout = {
                             largeTitleHeight.value = it.size.height
-                        }
-                    )
+                        },
+
+                        )
                 }
             }
         },
-        modifier = Modifier
-            .then(
-                if (defaultWindowInsetsPadding) {
-                    Modifier
-                        .windowInsetsPadding(WindowInsets.statusBars.only(WindowInsetsSides.Top))
-                        .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
-                } else Modifier
-            )
-            .clipToBounds()
+        modifier = layoutModifier
     ) { measurables, constraints ->
         val navigationIconPlaceable =
             measurables
@@ -746,6 +779,27 @@ private fun SmallTopAppBarLayout(
     horizontalPadding: Dp,
     defaultWindowInsetsPadding: Boolean
 ) {
+    val titleModifier = remember(horizontalPadding) {
+        Modifier
+            .layoutId("title")
+            .padding(horizontal = horizontalPadding)
+    }
+
+    val statusBarsInsets = WindowInsets.statusBars
+    val captionBarInsets = WindowInsets.captionBar
+
+    val layoutModifier = remember(defaultWindowInsetsPadding, statusBarsInsets, captionBarInsets) {
+        Modifier
+            .then(
+                if (defaultWindowInsetsPadding) {
+                    Modifier
+                        .windowInsetsPadding(statusBarsInsets.only(WindowInsetsSides.Top))
+                        .windowInsetsPadding(captionBarInsets.only(WindowInsetsSides.Top))
+                } else Modifier
+            )
+            .heightIn(max = 56.dp)
+    }
+
     Layout(
         {
             Box(
@@ -754,11 +808,7 @@ private fun SmallTopAppBarLayout(
             ) {
                 navigationIcon()
             }
-            Box(
-                Modifier
-                    .layoutId("title")
-                    .padding(horizontal = horizontalPadding)
-            ) {
+            Box(titleModifier) {
                 Text(
                     text = title,
                     maxLines = 1,
@@ -775,16 +825,7 @@ private fun SmallTopAppBarLayout(
                 actions()
             }
         },
-        modifier =
-            Modifier
-                .then(
-                    if (defaultWindowInsetsPadding) {
-                        Modifier
-                            .windowInsetsPadding(WindowInsets.statusBars.only(WindowInsetsSides.Top))
-                            .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top))
-                    } else Modifier
-                )
-                .heightIn(max = 56.dp)
+        modifier = layoutModifier
     ) { measurables, constraints ->
         val navigationIconPlaceable =
             measurables

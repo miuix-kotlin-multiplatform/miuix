@@ -28,11 +28,11 @@ fun SmallTitle(
     textColor: Color = MiuixTheme.colorScheme.onBackgroundVariant,
     insideMargin: PaddingValues = PaddingValues(28.dp, 8.dp)
 ) {
-    val paddingModifier = remember(insideMargin) {
-        Modifier.padding(insideMargin)
+    val finalModifier = remember(modifier, insideMargin) {
+        modifier.then(Modifier.padding(insideMargin))
     }
     Text(
-        modifier = modifier.then(paddingModifier),
+        modifier = finalModifier,
         text = text,
         fontSize = MiuixTheme.textStyles.subtitle.fontSize,
         fontWeight = FontWeight.Bold,

@@ -69,42 +69,37 @@ fun SuperDialog(
     defaultWindowInsetsPadding: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    val currentOnDismissRequest by rememberUpdatedState(onDismissRequest)
+
     DialogLayout(
         visible = show,
         enableWindowDim = enableWindowDim,
     ) {
         val currentContent by rememberUpdatedState(content)
-        val currentModifier by rememberUpdatedState(modifier)
-        val currentTitle by rememberUpdatedState(title)
-        val currentTitleColor by rememberUpdatedState(titleColor)
-        val currentSummary by rememberUpdatedState(summary)
-        val currentSummaryColor by rememberUpdatedState(summaryColor)
-        val currentBackgroundColor by rememberUpdatedState(backgroundColor)
-        val currentOnDismissRequest by rememberUpdatedState(onDismissRequest)
-        val currentOutsideMargin by rememberUpdatedState(outsideMargin)
-        val currentInsideMargin by rememberUpdatedState(insideMargin)
-        val currentDefaultWindowInsetsPadding by rememberUpdatedState(defaultWindowInsetsPadding)
 
         val density = LocalDensity.current
-        val getWindowSize by rememberUpdatedState(getWindowSize())
-        val windowWidth by rememberUpdatedState(getWindowSize.width.dp / density.density)
-        val windowHeight by rememberUpdatedState(getWindowSize.height.dp / density.density)
-        val paddingModifier =
-            remember(currentOutsideMargin) { Modifier.padding(horizontal = currentOutsideMargin.width).padding(bottom = currentOutsideMargin.height) }
-        val roundedCorner by rememberUpdatedState(getRoundedCorner())
-        val bottomCornerRadius by remember { derivedStateOf { if (roundedCorner != 0.dp) roundedCorner - currentOutsideMargin.width else 32.dp } }
-        val contentAlignment by remember { derivedStateOf { if (windowHeight >= 480.dp && windowWidth >= 840.dp) Alignment.Center else Alignment.BottomCenter } }
+        val windowSize = getWindowSize()
+        val roundedCorner = getRoundedCorner()
 
-        Box(
-            modifier = if (currentDefaultWindowInsetsPadding) {
-                Modifier
-                    .imePadding()
-                    .navigationBarsPadding()
-            } else {
-                Modifier
-            }
+        val windowWidth by remember(windowSize, density) { derivedStateOf { windowSize.width.dp / density.density } }
+        val windowHeight by remember(windowSize, density) { derivedStateOf { windowSize.height.dp / density.density } }
+
+        val bottomCornerRadius by remember(roundedCorner, outsideMargin.width) {
+            derivedStateOf { if (roundedCorner != 0.dp) roundedCorner - outsideMargin.width else 32.dp }
+        }
+        val contentAlignment by remember(windowHeight, windowWidth) {
+            derivedStateOf { if (windowHeight >= 480.dp && windowWidth >= 840.dp) Alignment.Center else Alignment.BottomCenter }
+        }
+
+        val outsidePaddingModifier = remember(outsideMargin) {
+            Modifier.padding(horizontal = outsideMargin.width).padding(bottom = outsideMargin.height)
+        }
+
+        val rootBoxModifier = remember(defaultWindowInsetsPadding, show, currentOnDismissRequest, outsidePaddingModifier) {
+            Modifier
+                .then(if (defaultWindowInsetsPadding) Modifier.imePadding().navigationBarsPadding() else Modifier)
                 .fillMaxSize()
-                .pointerInput(Unit) {
+                .pointerInput(show, currentOnDismissRequest) {
                     detectTapGestures(
                         onTap = {
                             show.value = false
@@ -112,45 +107,54 @@ fun SuperDialog(
                         }
                     )
                 }
-                .then(paddingModifier)
+                .then(outsidePaddingModifier)
+        }
+
+        val columnShape = remember(bottomCornerRadius) { SmoothRoundedCornerShape(bottomCornerRadius) }
+        val columnPointerInput = remember {
+            Modifier.pointerInput(Unit) {
+                detectTapGestures { /* Do nothing to consume the click */ }
+            }
+        }
+        val columnPadding = remember(insideMargin) {
+            Modifier.padding(horizontal = insideMargin.width, vertical = insideMargin.height)
+        }
+
+        val baseColumnModifier = remember(modifier, columnShape, backgroundColor, columnPointerInput, columnPadding) {
+            modifier
+                .widthIn(max = 420.dp)
+                .then(columnPointerInput)
+                .clip(shape = columnShape)
+                .background(color = backgroundColor)
+                .then(columnPadding)
+        }
+
+        val titleTextModifier = remember { Modifier.fillMaxWidth().padding(bottom = 12.dp) }
+        val summaryTextModifier = remember { Modifier.fillMaxWidth().padding(bottom = 12.dp) }
+
+        Box(
+            modifier = rootBoxModifier
         ) {
             Column(
-                modifier = currentModifier
-                    .widthIn(max = 420.dp)
-                    .pointerInput(Unit) {
-                        detectTapGestures { /* Do nothing to consume the click */ }
-                    }
-                    .align(contentAlignment)
-                    .clip(shape = SmoothRoundedCornerShape(bottomCornerRadius))
-                    .background(
-                        color = currentBackgroundColor,
-                    )
-                    .padding(
-                        horizontal = currentInsideMargin.width,
-                        vertical = currentInsideMargin.height
-                    ),
+                modifier = baseColumnModifier.align(contentAlignment),
             ) {
-                currentTitle?.let {
+                title?.let {
                     Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 12.dp),
+                        modifier = titleTextModifier,
                         text = it,
                         fontSize = MiuixTheme.textStyles.title4.fontSize,
                         fontWeight = FontWeight.Medium,
                         textAlign = TextAlign.Center,
-                        color = currentTitleColor
+                        color = titleColor
                     )
                 }
-                currentSummary?.let {
+                summary?.let {
                     Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 12.dp),
+                        modifier = summaryTextModifier,
                         text = it,
                         fontSize = MiuixTheme.textStyles.body1.fontSize,
                         textAlign = TextAlign.Center,
-                        color = currentSummaryColor
+                        color = summaryColor
                     )
                 }
                 currentContent()
@@ -160,7 +164,7 @@ fun SuperDialog(
 
     BackHandler(enabled = show.value) {
         show.value = false
-        onDismissRequest?.invoke()
+        currentOnDismissRequest?.invoke()
     }
 }
 

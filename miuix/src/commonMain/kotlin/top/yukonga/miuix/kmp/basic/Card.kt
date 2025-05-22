@@ -21,8 +21,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -62,8 +63,11 @@ fun Card(
         cornerRadius = cornerRadius,
         color = color
     ) {
+        val columnModifier = remember(insideMargin) {
+            Modifier.padding(insideMargin)
+        }
         Column(
-            modifier = Modifier.padding(insideMargin),
+            modifier = columnModifier,
             content = content
         )
     }
@@ -98,22 +102,26 @@ fun Card(
     content: @Composable ColumnScope.() -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val currentOnClick by rememberUpdatedState(onClick)
+    val currentOnLongPress by rememberUpdatedState(onLongPress)
 
-    val pressModifier = when (pressFeedbackType) {
-        PressFeedbackType.None -> Modifier
-        PressFeedbackType.Sink -> Modifier.pressSink(interactionSource)
-        PressFeedbackType.Tilt -> Modifier.pressTilt(interactionSource)
+    val pressFeedbackModifier = remember(pressFeedbackType, interactionSource) {
+        when (pressFeedbackType) {
+            PressFeedbackType.None -> Modifier
+            PressFeedbackType.Sink -> Modifier.pressSink(interactionSource)
+            PressFeedbackType.Tilt -> Modifier.pressTilt(interactionSource)
+        }
     }
 
     BasicCard(
         modifier = modifier
             .pointerInput(Unit) {
                 detectTapGestures(
-                    onTap = { onClick?.invoke() },
-                    onLongPress = { onLongPress?.invoke() }
+                    onTap = { currentOnClick?.invoke() },
+                    onLongPress = { currentOnLongPress?.invoke() }
                 )
             }
-            .pointerInput(Unit) {
+            .pointerInput(interactionSource) {
                 awaitEachGesture {
                     val pressInteraction: PressInteraction.Press
                     awaitFirstDown().also {
@@ -127,18 +135,22 @@ fun Card(
                     }
                 }
             }
-            .then(pressModifier),
+            .then(pressFeedbackModifier),
         cornerRadius = cornerRadius,
         color = color
     ) {
-        Column(
-            modifier = Modifier
+        val currentIndication = LocalIndication.current
+        val columnModifier = remember(interactionSource, showIndication, insideMargin, currentIndication) {
+            Modifier
                 .indication(
                     interactionSource = interactionSource,
-                    indication = if (showIndication == true) LocalIndication.current else null
+                    indication = if (showIndication == true) currentIndication else null
                 )
                 .fillMaxSize()
-                .padding(insideMargin),
+                .padding(insideMargin)
+        }
+        Column(
+            modifier = columnModifier,
             content = content
         )
     }
@@ -159,14 +171,19 @@ private fun BasicCard(
     cornerRadius: Dp = CardDefaults.CornerRadius,
     content: @Composable BoxScope.() -> Unit
 ) {
-    val shape = remember { derivedStateOf { SmoothRoundedCornerShape(cornerRadius) } }
-    Box(
-        modifier = modifier
+    val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
+    val clipShape = remember(cornerRadius) { RoundedCornerShape(cornerRadius) }
+
+    val boxModifier = remember(modifier, color, shape, clipShape) {
+        modifier
             .semantics(mergeDescendants = false) {
                 isTraversalGroup = true
             }
-            .background(color = color, shape = shape.value)
-            .clip(RoundedCornerShape(cornerRadius)), // For touch feedback, there is a problem when using SmoothRoundedCornerShape.
+            .background(color = color, shape = shape)
+            .clip(clipShape) // For touch feedback, there is a problem when using SmoothRoundedCornerShape.
+    }
+    Box(
+        modifier = boxModifier,
         propagateMinConstraints = true,
         content = content
     )

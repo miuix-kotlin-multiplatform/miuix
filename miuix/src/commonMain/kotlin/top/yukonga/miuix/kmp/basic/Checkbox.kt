@@ -68,6 +68,7 @@ fun Checkbox(
     enabled: Boolean = true,
 ) {
     val isChecked by rememberUpdatedState(checked)
+    val currentOnCheckedChange by rememberUpdatedState(onCheckedChange)
     var onCheck by remember { mutableStateOf(false) }
     val hapticFeedback = LocalHapticFeedback.current
     val interactionSource = remember { MutableInteractionSource() }
@@ -84,10 +85,12 @@ fun Checkbox(
         onCheck = false
     }
 
-    val springSpec = spring<Float>(
-        dampingRatio = Spring.DampingRatioLowBouncy,
-        stiffness = if (onCheck) Spring.StiffnessHigh else Spring.StiffnessMedium
-    )
+    val springSpec = remember(onCheck) {
+        spring<Float>(
+            dampingRatio = Spring.DampingRatioLowBouncy,
+            stiffness = if (onCheck) Spring.StiffnessHigh else Spring.StiffnessMedium
+        )
+    }
 
     val scale by animateFloatAsState(
         targetValue = when {
@@ -172,32 +175,39 @@ fun Checkbox(
         }
     }
 
-    val toggleableModifier = if (onCheckedChange != null) {
-        Modifier.toggleable(
-            value = isChecked,
-            onValueChange = {
-                onCheckedChange(it)
-                onCheck = true
-                hapticFeedback.performHapticFeedback(
-                    if (it) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff
-                )
-            },
-            enabled = enabled,
-            role = Role.Checkbox,
-            interactionSource = interactionSource,
-            indication = LocalIndication.current
-        )
-    } else {
-        Modifier
+    val currentIndication = LocalIndication.current
+    val toggleableModifier = remember(isChecked, currentOnCheckedChange, enabled, interactionSource, currentIndication) {
+        if (currentOnCheckedChange != null) {
+            Modifier.toggleable(
+                value = isChecked,
+                onValueChange = {
+                    currentOnCheckedChange?.invoke(it)
+                    onCheck = true
+                    hapticFeedback.performHapticFeedback(
+                        if (it) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff
+                    )
+                },
+                enabled = enabled,
+                role = Role.Checkbox,
+                interactionSource = interactionSource,
+                indication = currentIndication
+            )
+        } else {
+            Modifier
+        }
     }
 
-    Box(
-        modifier = modifier
+    val boxModifier = remember(modifier, scale, backgroundColor, toggleableModifier) {
+        modifier
             .size(25.5.dp)
             .scale(scale)
             .clip(CircleShape)
             .background(backgroundColor)
-            .then(toggleableModifier),
+            .then(toggleableModifier)
+    }
+
+    Box(
+        modifier = boxModifier,
         contentAlignment = Alignment.Center
     ) {
         Canvas(modifier = Modifier.size(25.5.dp)) {

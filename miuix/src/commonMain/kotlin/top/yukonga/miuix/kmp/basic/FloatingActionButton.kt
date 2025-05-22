@@ -13,6 +13,9 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,25 +52,38 @@ fun FloatingActionButton(
     defaultWindowInsetsPadding: Boolean = true,
     content: @Composable () -> Unit,
 ) {
-    Surface(
-        onClick = onClick,
-        modifier = if (defaultWindowInsetsPadding) {
+    val currentOnClick by rememberUpdatedState(onClick)
+
+    val displayCutoutInsets = WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal)
+    val navigationBarsInsets = WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
+
+    val surfaceModifier = remember(modifier, defaultWindowInsetsPadding, displayCutoutInsets, navigationBarsInsets) {
+        val baseModifier = if (defaultWindowInsetsPadding) {
             modifier
-                .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
-                .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal))
+                .windowInsetsPadding(displayCutoutInsets)
+                .windowInsetsPadding(navigationBarsInsets)
         } else {
             modifier
-        }.semantics { role = Role.Button },
+        }
+        baseModifier.semantics { role = Role.Button }
+    }
+
+    Surface(
+        onClick = currentOnClick,
+        modifier = surfaceModifier,
         shape = shape,
         color = containerColor,
         shadowElevation = shadowElevation
     ) {
-        Box(
-            modifier = Modifier
+        val boxModifier = remember(minWidth, minHeight) {
+            Modifier
                 .defaultMinSize(
                     minWidth = minWidth,
                     minHeight = minHeight,
-                ),
+                )
+        }
+        Box(
+            modifier = boxModifier,
             contentAlignment = Alignment.Center,
         ) {
             content()

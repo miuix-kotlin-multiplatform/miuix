@@ -100,34 +100,35 @@ fun Icon(
     modifier: Modifier = Modifier,
     tint: Color = IconDefaults.DefaultTint()
 ) {
-    val colorFilter =
-        remember(tint) { if (tint == Color.Unspecified) null else ColorFilter.tint(tint) }
-    val semantics =
-        if (contentDescription != null) {
-            Modifier.semantics {
-                this.contentDescription = contentDescription
-                this.role = Role.Image
+    val colorFilter = remember(tint) { if (tint == Color.Unspecified) null else ColorFilter.tint(tint) }
+    val semanticsModifier =
+        remember(contentDescription) {
+            if (contentDescription != null) {
+                Modifier.semantics {
+                    this.contentDescription = contentDescription
+                    this.role = Role.Image
+                }
+            } else {
+                Modifier
             }
-        } else {
-            Modifier
         }
-    Box(
-        modifier
-            .toolingGraphicsLayer()
-            .defaultSizeFor(painter)
-            .paint(painter, colorFilter = colorFilter, contentScale = ContentScale.Fit)
-            .then(semantics)
-    )
-}
 
-private fun Modifier.defaultSizeFor(painter: Painter) =
-    this.then(
-        if (painter.intrinsicSize == Size.Unspecified || painter.intrinsicSize.isInfinite()) {
-            DefaultIconSizeModifier
-        } else {
-            Modifier
-        }
-    )
+    val iconModifier = remember(modifier, painter, colorFilter, semanticsModifier) {
+        val baseModifier = modifier
+            .toolingGraphicsLayer()
+            .then(
+                if (painter.intrinsicSize == Size.Unspecified || painter.intrinsicSize.isInfinite()) {
+                    DefaultIconSizeModifier
+                } else {
+                    Modifier
+                }
+            )
+            .paint(painter, colorFilter = colorFilter, contentScale = ContentScale.Fit)
+        baseModifier.then(semanticsModifier)
+    }
+
+    Box(iconModifier)
+}
 
 private fun Size.isInfinite() = width.isInfinite() && height.isInfinite()
 

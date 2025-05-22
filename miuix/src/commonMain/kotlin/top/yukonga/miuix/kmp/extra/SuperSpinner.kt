@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -20,9 +21,9 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -35,8 +36,6 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -94,17 +93,33 @@ fun SuperSpinner(
     onClick: (() -> Unit)? = null,
     onSelectedIndexChange: ((Int) -> Unit)?,
 ) {
+    val currentOnClick = rememberUpdatedState(onClick)
+    val currentOnSelectedIndexChange = rememberUpdatedState(onSelectedIndexChange)
+    val currentLeftAction = rememberUpdatedState(leftAction)
+
     val interactionSource = remember { MutableInteractionSource() }
     val isDropdownExpanded = remember { mutableStateOf(false) }
     val hapticFeedback = LocalHapticFeedback.current
-    val actionColor = if (enabled && items.isNotEmpty()) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
+
+    val itemsNotEmpty = items.isNotEmpty()
+    val actualEnabled = enabled && itemsNotEmpty
+
+    val onSurfaceVariantActionsColor = MiuixTheme.colorScheme.onSurfaceVariantActions
+    val disabledOnSecondaryVariantColor = MiuixTheme.colorScheme.disabledOnSecondaryVariant
+
+    val actionColor = remember(actualEnabled, onSurfaceVariantActionsColor, disabledOnSecondaryVariantColor) {
+        if (actualEnabled) onSurfaceVariantActionsColor
+        else disabledOnSecondaryVariantColor
+    }
+
     var alignLeft by rememberSaveable { mutableStateOf(true) }
 
-    BasicComponent(
-        modifier = modifier
-            .pointerInput(Unit) {
+    val basicComponentModifier = remember(modifier, actualEnabled) {
+        modifier
+            .pointerInput(actualEnabled) {
+                if (!actualEnabled) return@pointerInput
                 awaitPointerEventScope {
-                    while (enabled) {
+                    while (true) {
                         val event = awaitPointerEvent()
                         if (event.type != PointerEventType.Move) {
                             val eventChange = event.changes.first()
@@ -114,17 +129,25 @@ fun SuperSpinner(
                         }
                     }
                 }
-            },
-        interactionSource = interactionSource,
-        insideMargin = insideMargin,
-        title = title,
-        titleColor = titleColor,
-        summary = summary,
-        summaryColor = summaryColor,
-        leftAction = {
-            if (items.isNotEmpty()) {
+            }
+    }
+
+    val rememberedLeftActionPopup: @Composable () -> Unit = remember(
+        itemsNotEmpty,
+        isDropdownExpanded,
+        mode,
+        alignLeft,
+        maxHeight,
+        items,
+        selectedIndex,
+        hapticFeedback,
+        currentOnSelectedIndexChange,
+        currentLeftAction
+    ) {
+        @Composable {
+            if (itemsNotEmpty) {
                 ListPopup(
-                    show = isDropdownExpanded,
+                    show = isDropdownExpanded, // Pass the MutableState
                     alignment = if ((mode == SpinnerMode.AlwaysOnRight || !alignLeft))
                         PopupPositionProvider.Align.Right
                     else
@@ -144,48 +167,73 @@ fun SuperSpinner(
                                 dialogMode = false
                             ) { selectedIdx ->
                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
-                                onSelectedIndexChange?.invoke(selectedIdx)
+                                currentOnSelectedIndexChange.value?.invoke(selectedIdx)
                                 isDropdownExpanded.value = false
                             }
                         }
                     }
                 }
             }
-            leftAction?.invoke()
-        },
-        rightActions = {
-            if (showValue && items.isNotEmpty()) {
-                Text(
-                    modifier = Modifier.widthIn(max = 130.dp),
-                    text = items[selectedIndex].title ?: "",
-                    fontSize = MiuixTheme.textStyles.body2.fontSize,
-                    color = actionColor,
-                    textAlign = TextAlign.End,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 2
+            currentLeftAction.value?.invoke()
+        }
+    }
+
+    val rememberedRightActions: @Composable RowScope.() -> Unit =
+        remember(showValue, itemsNotEmpty, items, selectedIndex, actionColor) {
+            @Composable {
+                if (showValue && itemsNotEmpty) {
+                    val valueTextModifier = remember { Modifier.widthIn(max = 130.dp) }
+                    Text(
+                        modifier = valueTextModifier,
+                        text = items[selectedIndex].title ?: "",
+                        fontSize = MiuixTheme.textStyles.body2.fontSize,
+                        color = actionColor,
+                        textAlign = TextAlign.End,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 2
+                    )
+                }
+                val imageColorFilter = remember(actionColor) { ColorFilter.tint(actionColor) }
+                val arrowImageModifier = remember {
+                    Modifier
+                        .padding(start = 8.dp)
+                        .size(10.dp, 16.dp)
+                        .align(Alignment.CenterVertically)
+                }
+                Image(
+                    modifier = arrowImageModifier,
+                    imageVector = MiuixIcons.Basic.ArrowUpDownIntegrated,
+                    colorFilter = imageColorFilter,
+                    contentDescription = null
                 )
             }
-            Image(
-                modifier = Modifier
-                    .padding(start = 8.dp)
-                    .size(10.dp, 16.dp)
-                    .align(Alignment.CenterVertically),
-                imageVector = MiuixIcons.Basic.ArrowUpDownIntegrated,
-                colorFilter = ColorFilter.tint(actionColor),
-                contentDescription = null
-            )
-        },
-        onClick = {
-            if (enabled && items.isNotEmpty()) {
-                onClick?.invoke()
+        }
+
+    val rememberedOnClickPopup: () -> Unit = remember(actualEnabled, currentOnClick, isDropdownExpanded, hapticFeedback) {
+        {
+            if (actualEnabled) {
+                currentOnClick.value?.invoke()
                 isDropdownExpanded.value = !isDropdownExpanded.value
                 if (isDropdownExpanded.value) {
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)
                 }
             }
-        },
+        }
+    }
+
+    BasicComponent(
+        modifier = basicComponentModifier,
+        interactionSource = interactionSource,
+        insideMargin = insideMargin,
+        title = title,
+        titleColor = titleColor,
+        summary = summary,
+        summaryColor = summaryColor,
+        leftAction = rememberedLeftActionPopup,
+        rightActions = rememberedRightActions,
+        onClick = rememberedOnClickPopup,
         holdDownState = isDropdownExpanded.value,
-        enabled = enabled && items.isNotEmpty()
+        enabled = actualEnabled
     )
 }
 
@@ -226,77 +274,139 @@ fun SuperSpinner(
     onClick: (() -> Unit)? = null,
     onSelectedIndexChange: ((Int) -> Unit)?,
 ) {
+    val currentOnClick = rememberUpdatedState(onClick)
+    val currentOnSelectedIndexChange = rememberUpdatedState(onSelectedIndexChange)
+    val currentLeftAction = rememberUpdatedState(leftAction)
+
     val interactionSource = remember { MutableInteractionSource() }
     val isDropdownExpanded = remember { mutableStateOf(false) }
     val hapticFeedback = LocalHapticFeedback.current
-    val actionColor = if (enabled) MiuixTheme.colorScheme.onSurfaceVariantActions else MiuixTheme.colorScheme.disabledOnSecondaryVariant
-    var alignLeft by rememberSaveable { mutableStateOf(true) }
-    var dropdownOffsetXPx by remember { mutableIntStateOf(0) }
-    var dropdownOffsetYPx by remember { mutableIntStateOf(0) }
-    var componentHeightPx by remember { mutableIntStateOf(0) }
-    var componentWidthPx by remember { mutableIntStateOf(0) }
+
+    val itemsNotEmpty = items.isNotEmpty()
+    val actualEnabled = enabled && itemsNotEmpty
+
+    val onSurfaceVariantActionsColor = MiuixTheme.colorScheme.onSurfaceVariantActions
+    val disabledOnSecondaryVariantColor = MiuixTheme.colorScheme.disabledOnSecondaryVariant
+
+    val actionColor = remember(actualEnabled, onSurfaceVariantActionsColor, disabledOnSecondaryVariantColor) {
+        if (actualEnabled) onSurfaceVariantActionsColor
+        else disabledOnSecondaryVariantColor
+    }
+
+    val basicComponentModifier = remember(
+        modifier,
+        actualEnabled
+    ) {
+        modifier
+            .pointerInput(actualEnabled) {
+                if (!actualEnabled) return@pointerInput
+            }
+    }
+    val rememberedRightActionsDialog: @Composable RowScope.() -> Unit =
+        remember(showValue, itemsNotEmpty, items, selectedIndex, actionColor) {
+            @Composable {
+                if (showValue && itemsNotEmpty) {
+                    val valueTextModifier = remember { Modifier.widthIn(max = 130.dp) }
+                    Text(
+                        modifier = valueTextModifier,
+                        text = items[selectedIndex].title ?: "",
+                        fontSize = MiuixTheme.textStyles.body2.fontSize,
+                        color = actionColor,
+                        textAlign = TextAlign.End,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 2
+                    )
+                }
+                val imageColorFilter = remember(actionColor) { ColorFilter.tint(actionColor) }
+                val arrowImageModifier = remember {
+                    Modifier
+                        .padding(start = 8.dp)
+                        .size(10.dp, 16.dp)
+                        .align(Alignment.CenterVertically)
+                }
+                Image(
+                    modifier = arrowImageModifier,
+                    imageVector = MiuixIcons.Basic.ArrowUpDownIntegrated,
+                    colorFilter = imageColorFilter,
+                    contentDescription = null
+                )
+            }
+        }
+
+    val rememberedOnClickDialog: () -> Unit = remember(actualEnabled, currentOnClick, isDropdownExpanded, hapticFeedback) {
+        {
+            if (actualEnabled) {
+                currentOnClick.value?.invoke()
+                isDropdownExpanded.value = true
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)
+            }
+        }
+    }
 
     BasicComponent(
-        modifier = modifier
-            .pointerInput(Unit) {
-                awaitPointerEventScope {
-                    while (enabled) {
-                        val event = awaitPointerEvent()
-                        if (event.type != PointerEventType.Move) {
-                            val eventChange = event.changes.first()
-                            alignLeft = eventChange.position.x < (size.width / 2)
-                        }
-                    }
-                }
-            }
-            .onGloballyPositioned { coordinates ->
-                if (isDropdownExpanded.value) {
-                    val positionInWindow = coordinates.positionInWindow()
-                    dropdownOffsetXPx = positionInWindow.x.toInt()
-                    dropdownOffsetYPx = positionInWindow.y.toInt()
-                    componentHeightPx = coordinates.size.height
-                    componentWidthPx = coordinates.size.width
-                }
-            },
+        modifier = basicComponentModifier,
         interactionSource = interactionSource,
         insideMargin = insideMargin,
         title = title,
         titleColor = titleColor,
         summary = summary,
         summaryColor = summaryColor,
-        leftAction = leftAction,
-        rightActions = {
-            if (showValue && items.isNotEmpty()) {
-                Text(
-                    modifier = Modifier.widthIn(max = 130.dp),
-                    text = items[selectedIndex].title ?: "",
-                    fontSize = MiuixTheme.textStyles.body2.fontSize,
-                    color = actionColor,
-                    textAlign = TextAlign.End,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 2
-                )
-            }
-            Image(
-                modifier = Modifier
-                    .padding(start = 8.dp)
-                    .size(10.dp, 16.dp)
-                    .align(Alignment.CenterVertically),
-                imageVector = MiuixIcons.Basic.ArrowUpDownIntegrated,
-                colorFilter = ColorFilter.tint(actionColor),
-                contentDescription = null
-            )
-        },
-        onClick = {
-            if (enabled && items.isNotEmpty()) {
-                onClick?.invoke()
-                isDropdownExpanded.value = true
-                hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)
-            }
-        },
+        leftAction = currentLeftAction.value,
+        rightActions = rememberedRightActionsDialog,
+        onClick = rememberedOnClickDialog,
         holdDownState = isDropdownExpanded.value,
-        enabled = enabled && items.isNotEmpty(),
+        enabled = actualEnabled,
     )
+
+    val dialogContent =
+        remember(items, selectedIndex, dialogButtonString, hapticFeedback, currentOnSelectedIndexChange, isDropdownExpanded) {
+            @Composable {
+                Layout(
+                    content = {
+                        LazyColumn {
+                            items(items.size) { index ->
+                                SpinnerItemImpl(
+                                    entry = items[index],
+                                    entryCount = items.size,
+                                    isSelected = selectedIndex == index,
+                                    index = index,
+                                    dialogMode = true
+                                ) { selectedIdx ->
+                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
+                                    currentOnSelectedIndexChange.value?.let { it1 -> it1(selectedIdx) }
+                                    isDropdownExpanded.value = false
+                                }
+                            }
+                        }
+                        val textButtonModifier = remember(dialogButtonString) {
+                            Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp).fillMaxWidth()
+                        }
+                        TextButton(
+                            modifier = textButtonModifier,
+                            text = dialogButtonString,
+                            minHeight = 50.dp,
+                            onClick = {
+                                isDropdownExpanded.value = false
+                            }
+                        )
+                    }
+                ) { measurables, constraints ->
+                    if (measurables.size != 2) {
+                        layout(0, 0) { }
+                    }
+                    val button = measurables[1].measure(constraints)
+                    val lazyList = measurables[0].measure(
+                        constraints.copy(
+                            maxHeight = constraints.maxHeight - button.height
+                        )
+                    )
+                    layout(constraints.maxWidth, lazyList.height + button.height) {
+                        lazyList.place(0, 0)
+                        button.place(0, lazyList.height)
+                    }
+                }
+            }
+        }
 
     SuperDialog(
         modifier = popupModifier,
@@ -305,50 +415,9 @@ fun SuperSpinner(
         onDismissRequest = {
             isDropdownExpanded.value = false
         },
-        insideMargin = DpSize(0.dp, 24.dp)
-    ) {
-        Layout(
-            content = {
-                LazyColumn {
-                    items(items.size) { index ->
-                        SpinnerItemImpl(
-                            entry = items[index],
-                            entryCount = items.size,
-                            isSelected = selectedIndex == index,
-                            index = index,
-                            dialogMode = true
-                        ) { selectedIdx ->
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
-                            onSelectedIndexChange?.let { it1 -> it1(selectedIdx) }
-                            isDropdownExpanded.value = false
-                        }
-                    }
-                }
-                TextButton(
-                    modifier = Modifier.padding(start = 24.dp, top = 12.dp, end = 24.dp).fillMaxWidth(),
-                    text = dialogButtonString,
-                    minHeight = 50.dp,
-                    onClick = {
-                        isDropdownExpanded.value = false
-                    }
-                )
-            }
-        ) { measurables, constraints ->
-            if (measurables.size != 2) {
-                layout(0, 0) { }
-            }
-            val button = measurables[1].measure(constraints)
-            val lazyList = measurables[0].measure(
-                constraints.copy(
-                    maxHeight = constraints.maxHeight - button.height
-                )
-            )
-            layout(constraints.maxWidth, lazyList.height + button.height) {
-                lazyList.place(0, 0)
-                button.place(0, lazyList.height)
-            }
-        }
-    }
+        insideMargin = DpSize(0.dp, 24.dp),
+        content = dialogContent
+    )
 }
 
 /**
@@ -370,39 +439,72 @@ fun SpinnerItemImpl(
     dialogMode: Boolean = false,
     onSelectedIndexChange: (Int) -> Unit,
 ) {
+    val currentOnSelectedIndexChange = rememberUpdatedState(onSelectedIndexChange)
     val additionalTopPadding = if (!dialogMode && index == 0) 20f.dp else 12f.dp
     val additionalBottomPadding = if (!dialogMode && index == entryCount - 1) 20f.dp else 12f.dp
-    val titleColor: Color
-    val summaryColor: Color
-    val selectColor: Color
-    val backgroundColor: Color
-    if (isSelected) {
-        titleColor = MiuixTheme.colorScheme.onTertiaryContainer
-        summaryColor = MiuixTheme.colorScheme.onTertiaryContainer
-        selectColor = MiuixTheme.colorScheme.onTertiaryContainer
-        backgroundColor = MiuixTheme.colorScheme.tertiaryContainer
-    } else {
-        titleColor = MiuixTheme.colorScheme.onSurface
-        summaryColor = MiuixTheme.colorScheme.onSurfaceVariantSummary
-        selectColor = Color.Transparent
-        backgroundColor = MiuixTheme.colorScheme.surface
+
+    val onTertiaryContainerColor = MiuixTheme.colorScheme.onTertiaryContainer
+    val tertiaryContainerColor = MiuixTheme.colorScheme.tertiaryContainer
+    val onSurfaceColor = MiuixTheme.colorScheme.onSurface
+    val onSurfaceVariantSummaryColor = MiuixTheme.colorScheme.onSurfaceVariantSummary
+    val surfaceColor = MiuixTheme.colorScheme.surface
+
+    val itemColors = remember(
+        isSelected,
+        onTertiaryContainerColor,
+        tertiaryContainerColor,
+        onSurfaceColor,
+        onSurfaceVariantSummaryColor,
+        surfaceColor
+    ) {
+        if (isSelected) {
+            Triple(onTertiaryContainerColor, onTertiaryContainerColor, tertiaryContainerColor)
+        } else {
+            Triple(onSurfaceColor, onSurfaceVariantSummaryColor, surfaceColor)
+        }
     }
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
+    val titleColor = itemColors.first
+    val summaryColor = itemColors.second
+    val backgroundColor = itemColors.third
+    val selectColor = remember(isSelected, onTertiaryContainerColor) {
+        if (isSelected) onTertiaryContainerColor else Color.Transparent
+    }
+
+
+    val itemModifier = remember(
+        dialogMode,
+        additionalTopPadding,
+        additionalBottomPadding,
+        backgroundColor,
+        currentOnSelectedIndexChange,
+        index
+    ) {
+        Modifier
             .clickable {
-                onSelectedIndexChange(index)
+                currentOnSelectedIndexChange.value(index)
             }
             .background(backgroundColor)
             .then(
-                if (dialogMode) Modifier.heightIn(min = 56.dp).widthIn(min = 200.dp).fillMaxWidth().padding(horizontal = 28.dp)
+                if (dialogMode) Modifier
+                    .heightIn(min = 56.dp)
+                    .widthIn(min = 200.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 28.dp)
                 else Modifier.padding(horizontal = 20.dp)
             )
             .padding(top = additionalTopPadding, bottom = additionalBottomPadding)
+    }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = itemModifier
     ) {
+        val contentRowModifier = remember(dialogMode) {
+            if (dialogMode) Modifier else Modifier.widthIn(max = 216.dp)
+        }
         Row(
-            modifier = if (dialogMode) Modifier else Modifier.widthIn(max = 216.dp),
+            modifier = contentRowModifier,
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
@@ -429,10 +531,12 @@ fun SpinnerItemImpl(
                 }
             }
         }
+        val checkColorFilter = remember(selectColor) { BlendModeColorFilter(selectColor, BlendMode.SrcIn) }
+        val checkImageModifier = remember { Modifier.padding(start = 12.dp).size(20.dp) }
         Image(
-            modifier = Modifier.padding(start = 12.dp).size(20.dp),
+            modifier = checkImageModifier,
             imageVector = MiuixIcons.Basic.Check,
-            colorFilter = BlendModeColorFilter(selectColor, BlendMode.SrcIn),
+            colorFilter = checkColorFilter,
             contentDescription = null,
         )
     }

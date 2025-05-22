@@ -12,8 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,20 +51,24 @@ fun Button(
     insideMargin: PaddingValues = ButtonDefaults.InsideMargin,
     content: @Composable RowScope.() -> Unit
 ) {
-    val shape = remember { derivedStateOf { SmoothRoundedCornerShape(cornerRadius) } }
+    val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
+    val currentOnClick by rememberUpdatedState(onClick)
+    val surfaceColor by colors.colorState(enabled)
+
     Surface(
-        onClick = {
-            onClick()
-        },
+        onClick = currentOnClick,
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
-        shape = shape.value,
-        color = colors.color(enabled)
+        shape = shape,
+        color = surfaceColor
     ) {
-        Row(
+        val rowModifier = remember(minWidth, minHeight, insideMargin) {
             Modifier
                 .defaultMinSize(minWidth = minWidth, minHeight = minHeight)
-                .padding(insideMargin),
+                .padding(insideMargin)
+        }
+        Row(
+            rowModifier,
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             content = content
@@ -94,27 +99,33 @@ fun TextButton(
     cornerRadius: Dp = ButtonDefaults.CornerRadius,
     minWidth: Dp = ButtonDefaults.MinWidth,
     minHeight: Dp = ButtonDefaults.MinHeight,
-    insideMargin: PaddingValues = ButtonDefaults.InsideMargin,
+    insideMargin: PaddingValues = ButtonDefaults.InsideMargin
 ) {
+    val currentOnClick by rememberUpdatedState(onClick)
+    val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
+    val surfaceColor by colors.colorState(enabled)
+    val textColor by colors.textColorState(enabled)
+
     Surface(
-        onClick = {
-            onClick()
-        },
+        onClick = currentOnClick,
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
-        shape = SmoothRoundedCornerShape(cornerRadius),
-        color = colors.color(enabled)
+        shape = shape,
+        color = surfaceColor
     ) {
-        Row(
+        val rowModifier = remember(minWidth, minHeight, insideMargin) {
             Modifier
                 .defaultMinSize(minWidth = minWidth, minHeight = minHeight)
-                .padding(insideMargin),
+                .padding(insideMargin)
+        }
+        Row(
+            rowModifier,
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             content = {
                 Text(
                     text = text,
-                    color = colors.textColor(enabled),
+                    color = textColor,
                     style = MiuixTheme.textStyles.button
                 )
             }
@@ -204,6 +215,9 @@ class ButtonColors(
 ) {
     @Stable
     internal fun color(enabled: Boolean): Color = if (enabled) color else disabledColor
+
+    @Composable
+    internal fun colorState(enabled: Boolean) = rememberUpdatedState(if (enabled) color else disabledColor)
 }
 
 @Immutable
@@ -218,4 +232,10 @@ class TextButtonColors(
 
     @Stable
     internal fun textColor(enabled: Boolean): Color = if (enabled) textColor else disabledTextColor
+
+    @Composable
+    internal fun colorState(enabled: Boolean) = rememberUpdatedState(if (enabled) color else disabledColor)
+
+    @Composable
+    internal fun textColorState(enabled: Boolean) = rememberUpdatedState(if (enabled) textColor else disabledTextColor)
 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -29,15 +30,21 @@ fun HorizontalDivider(
     modifier: Modifier = Modifier,
     thickness: Dp = DividerDefaults.Thickness,
     color: Color = DividerDefaults.DividerColor
-) =
-    Canvas(modifier.fillMaxWidth().height(thickness)) {
+) {
+    val canvasModifier = remember(modifier, thickness) {
+        modifier.fillMaxWidth().height(thickness)
+    }
+    Canvas(canvasModifier) {
+        val strokeWidthPx = thickness.toPx()
+        if (strokeWidthPx <= 0f) return@Canvas
         drawLine(
             color = color,
-            strokeWidth = thickness.toPx(),
-            start = Offset(0f, thickness.toPx() / 2),
-            end = Offset(size.width, thickness.toPx() / 2),
+            strokeWidth = strokeWidthPx,
+            start = Offset(0f, strokeWidthPx / 2),
+            end = Offset(size.width, strokeWidthPx / 2),
         )
     }
+}
 
 /**
  * A divider is a thin line that groups content in lists and layouts.
@@ -52,15 +59,21 @@ fun VerticalDivider(
     modifier: Modifier = Modifier,
     thickness: Dp = DividerDefaults.Thickness,
     color: Color = DividerDefaults.DividerColor
-) =
-    Canvas(modifier.fillMaxHeight().width(thickness)) {
+) {
+    val canvasModifier = remember(modifier, thickness) {
+        modifier.fillMaxHeight().width(thickness)
+    }
+    Canvas(canvasModifier) {
+        val strokeWidthPx = thickness.toPx()
+        if (strokeWidthPx <= 0f) return@Canvas
         drawLine(
             color = color,
-            strokeWidth = thickness.toPx(),
-            start = Offset(thickness.toPx() / 2, 0f),
-            end = Offset(thickness.toPx() / 2, size.height),
+            strokeWidth = strokeWidthPx,
+            start = Offset(strokeWidthPx / 2, 0f),
+            end = Offset(strokeWidthPx / 2, size.height),
         )
     }
+}
 
 object DividerDefaults {
 

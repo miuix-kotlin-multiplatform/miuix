@@ -19,8 +19,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -62,6 +63,7 @@ fun TabRow(
     cornerRadius: Dp = TabRowDefaults.TabRowCornerRadius,
     onTabSelected: ((Int) -> Unit)? = null,
 ) {
+    val currentOnTabSelected by rememberUpdatedState(onTabSelected)
     val config = rememberTabRowConfig(tabs, minWidth, cornerRadius)
 
     LazyRow(
@@ -78,8 +80,8 @@ fun TabRow(
         itemsIndexed(tabs) { index, tabText ->
             Surface(
                 shape = config.shape,
-                onClick = { onTabSelected?.invoke(index) },
-                enabled = onTabSelected != null,
+                onClick = { currentOnTabSelected?.invoke(index) },
+                enabled = currentOnTabSelected != null,
                 color = colors.backgroundColor(selectedTabIndex == index),
                 modifier = Modifier
                     .fillMaxHeight()
@@ -126,17 +128,21 @@ fun TabRowWithContour(
     cornerRadius: Dp = TabRowDefaults.TabRowWithContourCornerRadius,
     onTabSelected: ((Int) -> Unit)? = null,
 ) {
+    val currentOnTabSelected by rememberUpdatedState(onTabSelected)
     val config = rememberTabRowConfig(tabs, minWidth, cornerRadius)
+    val outerClipShape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius + 5.dp) }
+    val innerClipShape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
+
 
     LazyRow(
         state = config.listState,
         modifier = modifier
             .fillMaxWidth()
             .height(height)
-            .clip(SmoothRoundedCornerShape(cornerRadius + 5.dp))
+            .clip(outerClipShape)
             .background(color = colors.backgroundColor(false))
             .padding(5.dp)
-            .clip(SmoothRoundedCornerShape(cornerRadius))
+            .clip(innerClipShape)
             .overScrollHorizontal(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(5.dp),
@@ -151,8 +157,8 @@ fun TabRowWithContour(
                     .width(config.tabWidth)
                     .clip(config.shape)
                     .background(colors.backgroundColor(selectedTabIndex == index))
-                    .clickable(enabled = onTabSelected != null) {
-                        onTabSelected?.invoke(index)
+                    .clickable(enabled = currentOnTabSelected != null) {
+                        currentOnTabSelected?.invoke(index)
                     }
                     .semantics { role = Role.Tab },
                 contentAlignment = Alignment.Center
@@ -186,12 +192,14 @@ private fun rememberTabRowConfig(tabs: List<String>, minWidth: Dp, cornerRadius:
     val listState = rememberLazyListState()
     val windowSize = getWindowSize()
     val density = LocalDensity.current
-    val tabWidth = with(density) {
-        ((windowSize.width.toDp() - (tabs.size - 1) * 9.dp) / tabs.size).coerceAtLeast(minWidth)
+    val tabWidth = remember(tabs.size, minWidth, windowSize.width) {
+        with(density) {
+            ((windowSize.width.toDp() - (tabs.size - 1) * 9.dp) / tabs.size).coerceAtLeast(minWidth)
+        }
     }
-    val shape = remember { derivedStateOf { SmoothRoundedCornerShape(cornerRadius) } }
+    val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
 
-    return TabRowConfig(tabWidth, shape.value, listState)
+    return TabRowConfig(tabWidth, shape, listState)
 }
 
 object TabRowDefaults {

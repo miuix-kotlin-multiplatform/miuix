@@ -19,8 +19,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -61,8 +63,9 @@ fun BasicComponent(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
     val holdDown = remember { mutableStateOf<HoldDownInteraction.HoldDown?>(null) }
+    val currentOnClick by rememberUpdatedState(onClick)
 
-    LaunchedEffect(holdDownState) {
+    LaunchedEffect(holdDownState, interactionSource) {
         if (holdDownState) {
             interactionSource.emit(HoldDownInteraction.HoldDown().also {
                 holdDown.value = it
@@ -75,29 +78,38 @@ fun BasicComponent(
         }
     }
 
-    Row(
-        modifier = if (onClick != null && enabled) {
-            modifier
-                .clickable(
-                    indication = LocalIndication.current,
-                    interactionSource = interactionSource
-                ) {
-                    onClick.invoke()
-                }
-        } else {
-            modifier
-        }
+    val currentLocalIndication = LocalIndication.current
+    val rowModifier = remember(modifier, currentOnClick, enabled, interactionSource, currentLocalIndication, insideMargin) {
+        val baseModifierWithPractices = modifier
             .heightIn(min = 56.dp)
             .fillMaxWidth()
-            .padding(insideMargin),
+        if (currentOnClick != null && enabled) {
+            baseModifierWithPractices
+                .clickable(
+                    indication = currentLocalIndication,
+                    interactionSource = interactionSource,
+                    onClick = { currentOnClick?.invoke() }
+                )
+                .padding(insideMargin)
+        } else {
+            baseModifierWithPractices
+
+                .padding(insideMargin)
+        }
+    }
+
+    Row(
+        modifier = rowModifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         leftAction?.let {
             it()
         }
+
+        val columnModifier = remember { Modifier.weight(1f) }
         Column(
-            modifier = Modifier.weight(1f)
+            modifier = columnModifier
         ) {
             title?.let {
                 Text(
@@ -115,8 +127,10 @@ fun BasicComponent(
                 )
             }
         }
+
+        val rightActionsBoxModifier = remember { Modifier.padding(start = 16.dp) }
         Box(
-            modifier = Modifier.padding(start = 16.dp)
+            modifier = rightActionsBoxModifier
         ) {
             Row(
                 horizontalArrangement = Arrangement.End,

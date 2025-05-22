@@ -76,18 +76,24 @@ fun NavigationBar(
     defaultWindowInsetsPadding: Boolean = true
 ) {
     require(items.size in 2..5) { "BottomBar must have between 2 and 5 items" }
-    val captionBarBottomPadding by rememberUpdatedState(
-        WindowInsets.captionBar.only(WindowInsetsSides.Bottom).asPaddingValues().calculateBottomPadding()
-    )
+
+    val currentOnClick by rememberUpdatedState(onClick)
+
+    val captionBarPaddings = WindowInsets.captionBar.only(WindowInsetsSides.Bottom).asPaddingValues()
+    val captionBarBottomPaddingValue = captionBarPaddings.calculateBottomPadding()
+
     val animatedCaptionBarHeight by animateDpAsState(
-        targetValue = if (captionBarBottomPadding > 0.dp) captionBarBottomPadding else 0.dp,
+        targetValue = if (captionBarBottomPaddingValue > 0.dp) captionBarBottomPaddingValue else 0.dp,
         animationSpec = tween(durationMillis = 300)
     )
-    Column(
-        modifier = modifier
+
+    val columnModifier = remember(modifier, color) {
+        modifier
             .fillMaxWidth()
             .background(color)
-    ) {
+    }
+
+    Column(modifier = columnModifier) {
         if (showDivider) {
             HorizontalDivider()
         }
@@ -99,43 +105,58 @@ fun NavigationBar(
             items.forEachIndexed { index, item ->
                 val isSelected = selected == index
                 var isPressed by remember { mutableStateOf(false) }
+
+                val onSurfaceContainerColor = MiuixTheme.colorScheme.onSurfaceContainer
+                val onSurfaceContainerVariantColor = MiuixTheme.colorScheme.onSurfaceContainerVariant
+
                 val tint by animateColorAsState(
                     targetValue = when {
                         isPressed -> if (isSelected) {
-                            MiuixTheme.colorScheme.onSurfaceContainer.copy(alpha = 0.6f)
+                            onSurfaceContainerColor.copy(alpha = 0.6f)
                         } else {
-                            MiuixTheme.colorScheme.onSurfaceContainerVariant.copy(alpha = 0.6f)
+                            onSurfaceContainerVariantColor.copy(alpha = 0.6f)
                         }
 
-                        isSelected -> MiuixTheme.colorScheme.onSurfaceContainer
-                        else -> MiuixTheme.colorScheme.onSurfaceContainerVariant
-                    }
+                        isSelected -> onSurfaceContainerColor
+                        else -> onSurfaceContainerVariantColor
+                    },
+                    label = "tintAnimation"
                 )
                 val fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                Column(
-                    modifier = Modifier
-                        .height(if (platform() != Platform.IOS) 64.dp else 48.dp)
-                        .weight(1f / items.size)
-                        .pointerInput(Unit) {
+
+                val itemPlatform = platform()
+                val itemHeight = if (itemPlatform != Platform.IOS) 64.dp else 48.dp
+                val itemWeight = 1f / items.size
+
+                val itemModifier = remember(itemHeight, itemWeight, currentOnClick, index) {
+                    Modifier
+                        .height(itemHeight)
+                        .weight(itemWeight)
+                        .pointerInput(currentOnClick, index) {
                             detectTapGestures(
                                 onPress = {
                                     isPressed = true
                                     tryAwaitRelease()
                                     isPressed = false
                                 },
-                                onTap = { onClick(index) }
+                                onTap = { currentOnClick(index) }
                             )
-                        },
+                        }
+                }
+
+                Column(
+                    modifier = itemModifier,
                     horizontalAlignment = CenterHorizontally
                 ) {
+                    val imageColorFilter = remember(tint) { ColorFilter.tint(tint) }
                     Image(
                         modifier = Modifier.size(32.dp).padding(top = 6.dp),
                         imageVector = item.icon,
                         contentDescription = item.label,
-                        colorFilter = ColorFilter.tint(tint)
+                        colorFilter = imageColorFilter
                     )
                     Text(
-                        modifier = Modifier.padding(bottom = if (platform() != Platform.IOS) 12.dp else 0.dp),
+                        modifier = Modifier.padding(bottom = if (itemPlatform != Platform.IOS) 12.dp else 0.dp),
                         text = item.label,
                         color = tint,
                         textAlign = TextAlign.Center,
@@ -146,10 +167,14 @@ fun NavigationBar(
             }
         }
         if (defaultWindowInsetsPadding) {
+            val navigationBarsPadding = WindowInsets.navigationBars.asPaddingValues()
+            val spacerHeight = remember(navigationBarsPadding, animatedCaptionBarHeight) {
+                navigationBarsPadding.calculateBottomPadding() + animatedCaptionBarHeight
+            }
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + animatedCaptionBarHeight)
+                    .height(spacerHeight)
                     .pointerInput(Unit) { detectTapGestures { /* Do nothing to consume the click */ } }
             )
         }
@@ -188,31 +213,62 @@ fun FloatingNavigationBar(
     mode: FloatingNavigationBarMode = FloatingNavigationBarMode.IconOnly,
 ) {
     require(items.size in 2..5) { "FloatingNavigationBar must have between 2 and 5 items" }
-    Column(
-        modifier = Modifier
+
+    val currentOnClick by rememberUpdatedState(onClick)
+    val density = LocalDensity.current
+
+    val statusBarsInsets = WindowInsets.statusBars.only(WindowInsetsSides.Bottom)
+    val captionBarInsets = WindowInsets.captionBar.only(WindowInsetsSides.Bottom)
+    val displayCutoutInsets = WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal)
+    val navigationBarsInsets = WindowInsets.navigationBars
+
+    val dividerLineColor = MiuixTheme.colorScheme.dividerLine
+
+    val platformValue = platform()
+    val bottomPaddingValue = if (platformValue != Platform.IOS) 36.dp else 30.dp
+
+    val rootColumnModifier = remember(horizontalAlignment, horizontalOutSidePadding) {
+        Modifier
             .fillMaxWidth()
             .padding(
                 start = if (horizontalAlignment == Alignment.Start) horizontalOutSidePadding else 0.dp,
                 end = if (horizontalAlignment == Alignment.End) horizontalOutSidePadding else 0.dp,
             )
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(bottom = if (platform() != Platform.IOS) 36.dp else 30.dp)
+    }
+
+    Column(modifier = rootColumnModifier) {
+        val rowModifierInstance = remember(
+            defaultWindowInsetsPadding,
+            statusBarsInsets,
+            captionBarInsets,
+            displayCutoutInsets,
+            navigationBarsInsets,
+            showDivider,
+            dividerLineColor,
+            cornerRadius,
+            shadowElevation,
+            density,
+            color,
+            modifier,
+            horizontalAlignment,
+            bottomPaddingValue
+        ) {
+            Modifier
+                .padding(bottom = bottomPaddingValue)
                 .then(
                     if (defaultWindowInsetsPadding) {
                         Modifier
-                            .windowInsetsPadding(WindowInsets.statusBars.only(WindowInsetsSides.Bottom))
-                            .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Bottom))
-                            .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
-                            .windowInsetsPadding(WindowInsets.navigationBars)
+                            .windowInsetsPadding(statusBarsInsets)
+                            .windowInsetsPadding(captionBarInsets)
+                            .windowInsetsPadding(displayCutoutInsets)
+                            .windowInsetsPadding(navigationBarsInsets)
                     } else Modifier
                 )
                 .then(
                     if (showDivider) {
                         Modifier
                             .background(
-                                color = MiuixTheme.colorScheme.dividerLine,
+                                color = dividerLineColor,
                                 shape = SmoothRoundedCornerShape(cornerRadius)
                             )
                             .padding(0.75.dp)
@@ -221,7 +277,7 @@ fun FloatingNavigationBar(
                 .then(
                     if (shadowElevation > 0.dp) {
                         Modifier.graphicsLayer(
-                            shadowElevation = with(LocalDensity.current) { shadowElevation.toPx() },
+                            shadowElevation = with(density) { shadowElevation.toPx() },
                             shape = SmoothRoundedCornerShape(cornerRadius),
                             clip = cornerRadius > 0.dp
                         )
@@ -235,46 +291,60 @@ fun FloatingNavigationBar(
                 .then(modifier)
                 .padding(horizontal = 12.dp)
                 .align(horizontalAlignment)
-                .pointerInput(Unit) { detectTapGestures { /* Do nothing to consume the click */ } },
+                .pointerInput(Unit) { detectTapGestures { /* Do nothing to consume the click */ } }
+        }
+
+        Row(
+            modifier = rowModifierInstance,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             items.forEachIndexed { index, item ->
                 val isSelected = selected == index
                 var isPressed by remember { mutableStateOf(false) }
+
+                val onSurfaceContainerColor = MiuixTheme.colorScheme.onSurfaceContainer
+                val onSurfaceContainerVariantColor = MiuixTheme.colorScheme.onSurfaceContainerVariant
+
                 val tint by animateColorAsState(
                     targetValue = when {
                         isPressed -> if (isSelected) {
-                            MiuixTheme.colorScheme.onSurfaceContainer.copy(alpha = 0.6f)
+                            onSurfaceContainerColor.copy(alpha = 0.6f)
                         } else {
-                            MiuixTheme.colorScheme.onSurfaceContainerVariant.copy(alpha = 0.6f)
+                            onSurfaceContainerVariantColor.copy(alpha = 0.6f)
                         }
 
-                        isSelected -> MiuixTheme.colorScheme.onSurfaceContainer
-                        else -> MiuixTheme.colorScheme.onSurfaceContainerVariant
-                    }
+                        isSelected -> onSurfaceContainerColor
+                        else -> onSurfaceContainerVariantColor
+                    },
+                    label = "tintAnimation"
                 )
                 val fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                Column(
-                    modifier = Modifier
-                        .pointerInput(Unit) {
+
+                val itemColumnModifier = remember(currentOnClick, index) {
+                    Modifier
+                        .pointerInput(currentOnClick, index) {
                             detectTapGestures(
                                 onPress = {
                                     isPressed = true
                                     tryAwaitRelease()
                                     isPressed = false
                                 },
-                                onTap = { onClick(index) }
+                                onTap = { currentOnClick(index) }
                             )
-                        },
+                        }
+                }
+                Column(
+                    modifier = itemColumnModifier,
                     horizontalAlignment = CenterHorizontally
                 ) {
+                    val imageColorFilter = remember(tint) { ColorFilter.tint(tint) }
                     if (mode == FloatingNavigationBarMode.IconAndText) {
                         Image(
                             modifier = Modifier.padding(top = 6.dp).size(24.dp),
                             imageVector = item.icon,
                             contentDescription = item.label,
-                            colorFilter = ColorFilter.tint(tint)
+                            colorFilter = imageColorFilter
                         )
                         Box(
                             modifier = Modifier.padding(bottom = 6.dp),
@@ -324,7 +394,7 @@ fun FloatingNavigationBar(
                             modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp).size(28.dp),
                             imageVector = item.icon,
                             contentDescription = item.label,
-                            colorFilter = ColorFilter.tint(tint)
+                            colorFilter = imageColorFilter
                         )
                     }
                 }

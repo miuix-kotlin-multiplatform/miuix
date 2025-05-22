@@ -86,9 +86,9 @@ fun Text(
     val textColor by rememberUpdatedState(if (color.isSpecified) color else if (style.color.isSpecified) style.color else MiuixTheme.colorScheme.onBackground)
 
     BasicText(
-        text,
+        text = text,
         modifier = modifier,
-        style.merge(
+        style = style.merge(
             color = textColor,
             fontSize = fontSize,
             fontWeight = fontWeight,
@@ -99,11 +99,11 @@ fun Text(
             fontStyle = fontStyle,
             letterSpacing = letterSpacing
         ),
-        onTextLayout,
-        overflow,
-        softWrap,
-        maxLines,
-        minLines
+        onTextLayout = onTextLayout,
+        overflow = overflow,
+        softWrap = softWrap,
+        maxLines = maxLines,
+        minLines = minLines
     )
 }
 

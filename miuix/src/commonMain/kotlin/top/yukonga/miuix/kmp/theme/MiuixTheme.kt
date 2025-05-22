@@ -23,11 +23,11 @@ fun MiuixTheme(
     textStyles: TextStyles = MiuixTheme.textStyles,
     content: @Composable () -> Unit
 ) {
-    val miuixColors = remember { colors.copy() }.apply {
-        updateColorsFrom(colors)
+    val miuixColors = remember(colors) {
+        colors.copy().apply { updateColorsFrom(colors) }
     }
-    val miuixTextStyles = remember { textStyles.copy() }.apply {
-        updateColorsFrom(colors)
+    val miuixTextStyles = remember(textStyles, colors) {
+        textStyles.copy().apply { updateColorsFrom(colors) }
     }
     val miuixIndication = remember(colors.onBackground) {
         MiuixIndication(color = colors.onBackground)

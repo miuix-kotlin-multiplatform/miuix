@@ -128,11 +128,11 @@ fun Modifier.overScrollOutOfBound(
 
     val overScrollState = LocalOverScrollState.current
     val pullToRefreshState = LocalPullToRefreshState.current
-    val nestedScrollToParent by rememberUpdatedState(nestedScrollToParent)
-    val scrollEasing by rememberUpdatedState(scrollEasing ?: DefaultParabolaScrollEasing)
-    val springStiff by rememberUpdatedState(springStiff)
-    val springDamp by rememberUpdatedState(springDamp)
-    val isVertical by rememberUpdatedState(isVertical)
+    val currentNestedScrollToParent by rememberUpdatedState(nestedScrollToParent)
+    val currentScrollEasing by rememberUpdatedState(scrollEasing ?: DefaultParabolaScrollEasing)
+    val currentSpringStiff by rememberUpdatedState(springStiff)
+    val currentSpringDamp by rememberUpdatedState(springDamp)
+    val currentIsVertical by rememberUpdatedState(isVertical)
     val dispatcher = remember { NestedScrollDispatcher() }
     var offset by remember { mutableFloatStateOf(0f) }
 
@@ -144,12 +144,17 @@ fun Modifier.overScrollOutOfBound(
             val visibilityThreshold = 0.5f
             lateinit var lastFlingAnimator: Animatable<Float, AnimationVector1D>
 
+            private fun shouldBypassForPullToRefresh(availableY: Float): Boolean {
+                return pullToRefreshState != null &&
+                        pullToRefreshState.refreshState != RefreshState.Idle &&
+                        currentIsVertical &&
+                        availableY > 0
+            }
+
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
                 // Check if overScroll should be disabled for drop-down direction
                 overScrollState.isOverScrollActive = abs(offset) > visibilityThreshold
-                if (pullToRefreshState != null && pullToRefreshState.refreshState != RefreshState.Idle &&
-                    isVertical && available.y > 0
-                ) {
+                if (shouldBypassForPullToRefresh(available.y)) {
                     return dispatcher.dispatchPreScroll(available, source)
                 }
                 // Found fling behavior in the wrong direction.
@@ -162,27 +167,27 @@ fun Modifier.overScrollOutOfBound(
                     }
                 }
                 val realAvailable = when {
-                    nestedScrollToParent -> available - dispatcher.dispatchPreScroll(available, source)
+                    currentNestedScrollToParent -> available - dispatcher.dispatchPreScroll(available, source)
                     else -> available
                 }
-                val realOffset = if (isVertical) realAvailable.y else realAvailable.x
+                val realOffset = if (currentIsVertical) realAvailable.y else realAvailable.x
 
                 val isSameDirection = sign(realOffset) == sign(offset)
                 if (abs(offset) <= visibilityThreshold || isSameDirection) {
                     return available - realAvailable
                 }
-                val offsetAtLast = scrollEasing(offset, realOffset)
+                val offsetAtLast = currentScrollEasing(offset, realOffset)
                 // sign changed, coerce to start scrolling and exit
                 return if (sign(offset) != sign(offsetAtLast)) {
                     offset = 0f
-                    if (isVertical) {
+                    if (currentIsVertical) {
                         Offset(x = available.x - realAvailable.x, y = available.y - realAvailable.y + realOffset)
                     } else {
                         Offset(x = available.x - realAvailable.x + realOffset, y = available.y - realAvailable.y)
                     }
                 } else {
                     offset = offsetAtLast
-                    if (isVertical) {
+                    if (currentIsVertical) {
                         Offset(x = available.x - realAvailable.x, y = available.y)
                     } else {
                         Offset(x = available.x, y = available.y - realAvailable.y)
@@ -193,9 +198,7 @@ fun Modifier.overScrollOutOfBound(
             override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
                 // Check if overScroll should be disabled for drop-down direction
                 overScrollState.isOverScrollActive = abs(offset) > visibilityThreshold
-                if (pullToRefreshState != null && pullToRefreshState.refreshState != RefreshState.Idle &&
-                    isVertical && available.y > 0
-                ) {
+                if (shouldBypassForPullToRefresh(available.y)) {
                     return dispatcher.dispatchPostScroll(consumed, available, source)
                 }
                 // Found fling behavior in the wrong direction.
@@ -203,11 +206,11 @@ fun Modifier.overScrollOutOfBound(
                     return dispatcher.dispatchPostScroll(consumed, available, source)
                 }
                 val realAvailable = when {
-                    nestedScrollToParent -> available - dispatcher.dispatchPostScroll(consumed, available, source)
+                    currentNestedScrollToParent -> available - dispatcher.dispatchPostScroll(consumed, available, source)
                     else -> available
                 }
-                offset = scrollEasing(offset, if (isVertical) realAvailable.y else realAvailable.x)
-                return if (isVertical) {
+                offset = currentScrollEasing(offset, if (currentIsVertical) realAvailable.y else realAvailable.x)
+                return if (currentIsVertical) {
                     Offset(x = available.x - realAvailable.x, y = available.y)
                 } else {
                     Offset(x = available.x, y = available.y - realAvailable.y)
@@ -217,20 +220,18 @@ fun Modifier.overScrollOutOfBound(
             override suspend fun onPreFling(available: Velocity): Velocity {
                 // Check if overScroll should be disabled for drop-down direction
                 overScrollState.isOverScrollActive = abs(offset) > visibilityThreshold
-                if (pullToRefreshState != null && pullToRefreshState.refreshState != RefreshState.Idle &&
-                    isVertical && available.y > 0
-                ) {
+                if (shouldBypassForPullToRefresh(available.y)) {
                     return dispatcher.dispatchPreFling(available)
                 }
                 if (::lastFlingAnimator.isInitialized && lastFlingAnimator.isRunning) {
                     lastFlingAnimator.stop()
                 }
                 val parentConsumed = when {
-                    nestedScrollToParent -> dispatcher.dispatchPreFling(available)
+                    currentNestedScrollToParent -> dispatcher.dispatchPreFling(available)
                     else -> Velocity.Zero
                 }
                 val realAvailable = available - parentConsumed
-                var leftVelocity = if (isVertical) realAvailable.y else realAvailable.x
+                var leftVelocity = if (currentIsVertical) realAvailable.y else realAvailable.x
 
                 if (abs(offset) >= visibilityThreshold && sign(leftVelocity) != sign(offset)) {
                     lastFlingAnimator = Animatable(offset).apply {
@@ -239,11 +240,15 @@ fun Modifier.overScrollOutOfBound(
                             leftVelocity > 0 -> updateBounds(upperBound = 0f)
                         }
                     }
-                    leftVelocity = lastFlingAnimator.animateTo(0f, spring(springDamp, springStiff, visibilityThreshold), leftVelocity) {
-                        offset = scrollEasing(offset, value - offset)
+                    leftVelocity = lastFlingAnimator.animateTo(
+                        0f,
+                        spring(currentSpringDamp, currentSpringStiff, visibilityThreshold),
+                        leftVelocity
+                    ) {
+                        offset = currentScrollEasing(offset, value - offset)
                     }.endState.velocity
                 }
-                return if (isVertical) {
+                return if (currentIsVertical) {
                     Velocity(parentConsumed.x, y = available.y - leftVelocity)
                 } else {
                     Velocity(available.x - leftVelocity, y = parentConsumed.y)
@@ -253,20 +258,21 @@ fun Modifier.overScrollOutOfBound(
             override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
                 // Check if overScroll should be disabled for drop-down direction
                 overScrollState.isOverScrollActive = abs(offset) > visibilityThreshold
-                if (pullToRefreshState != null && pullToRefreshState.refreshState != RefreshState.Idle &&
-                    isVertical && available.y > 0
-                ) {
+                if (shouldBypassForPullToRefresh(available.y)) {
                     return dispatcher.dispatchPostFling(consumed, available)
                 }
                 val realAvailable = when {
-                    nestedScrollToParent -> available - dispatcher.dispatchPostFling(consumed, available)
+                    currentNestedScrollToParent -> available - dispatcher.dispatchPostFling(consumed, available)
                     else -> available
                 }
                 lastFlingAnimator = Animatable(offset)
-                lastFlingAnimator.animateTo(0f, spring(springDamp, springStiff, visibilityThreshold), if (isVertical) realAvailable.y else realAvailable.x) {
-                    offset = scrollEasing(offset, value - offset)
+                lastFlingAnimator.animateTo(
+                    0f, spring(currentSpringDamp, currentSpringStiff, visibilityThreshold),
+                    if (currentIsVertical) realAvailable.y else realAvailable.x
+                ) {
+                    offset = currentScrollEasing(offset, value - offset)
                 }
-                return if (isVertical) {
+                return if (currentIsVertical) {
                     Velocity(x = available.x - realAvailable.x, y = available.y)
                 } else {
                     Velocity(x = available.x, y = available.y - realAvailable.y)
@@ -279,7 +285,7 @@ fun Modifier.overScrollOutOfBound(
         .clipToBounds()
         .nestedScroll(nestedConnection, dispatcher)
         .graphicsLayer {
-            if (isVertical) translationY = offset else translationX = offset
+            if (currentIsVertical) translationY = offset else translationX = offset
         }
 }
 

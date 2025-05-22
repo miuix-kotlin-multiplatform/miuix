@@ -152,43 +152,53 @@ fun InputField(
     trailingIcon: @Composable (() -> Unit)? = null,
     interactionSource: MutableInteractionSource? = null,
 ) {
-    @Suppress("NAME_SHADOWING")
-    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
+    val internalInteractionSource = interactionSource ?: remember { MutableInteractionSource() }
 
-    @Suppress("NAME_SHADOWING")
-    val leadingIcon = leadingIcon ?: {
-        Icon(
-            modifier = Modifier.padding(start = 16.dp, end = 8.dp),
-            imageVector = MiuixIcons.Basic.Search,
-            tint = MiuixTheme.colorScheme.onSurfaceContainerHigh,
-            contentDescription = "Search"
-        )
+    val actualLeadingIcon = leadingIcon ?: remember {
+        @Composable {
+            Icon(
+                modifier = Modifier.padding(start = 16.dp, end = 8.dp),
+                imageVector = MiuixIcons.Basic.Search,
+                tint = MiuixTheme.colorScheme.onSurfaceContainerHigh,
+                contentDescription = "Search"
+            )
+        }
     }
 
-    @Suppress("NAME_SHADOWING")
-    val trailingIcon = trailingIcon ?: {
-        AnimatedVisibility(
-            visible = query.isNotEmpty(),
-            enter = fadeIn(),
-            exit = fadeOut(),
-        ) {
-            Box(
-                modifier = Modifier.padding(start = 8.dp, end = 16.dp),
-                contentAlignment = Alignment.CenterStart
+    val actualTrailingIcon = trailingIcon ?: remember(onQueryChange) {
+        @Composable {
+            AnimatedVisibility(
+                visible = query.isNotEmpty(),
+                enter = fadeIn(),
+                exit = fadeOut(),
             ) {
-                Icon(
-                    modifier = Modifier.clip(CircleShape).clickable { onQueryChange("") },
-                    imageVector = MiuixIcons.Basic.SearchCleanup,
-                    tint = MiuixTheme.colorScheme.onSurfaceContainerHighest,
-                    contentDescription = "Search Cleanup"
-                )
+                Box(
+                    modifier = Modifier.padding(start = 8.dp, end = 16.dp),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Icon(
+                        modifier = Modifier.clip(CircleShape).clickable { onQueryChange("") },
+                        imageVector = MiuixIcons.Basic.SearchCleanup,
+                        tint = MiuixTheme.colorScheme.onSurfaceContainerHighest,
+                        contentDescription = "Search Cleanup"
+                    )
+                }
             }
         }
     }
 
-    val focused = interactionSource.collectIsFocusedAsState().value
+    val focused = internalInteractionSource.collectIsFocusedAsState().value
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
+
+    val currentMainTextStyleFromTheme = MiuixTheme.textStyles.main
+    val inputTextStyle = remember(currentMainTextStyleFromTheme) {
+        currentMainTextStyleFromTheme.copy(fontWeight = FontWeight.Bold)
+    }
+    val currentPrimaryColorFromTheme = MiuixTheme.colorScheme.primary
+    val rememberedCursorBrush = remember(currentPrimaryColorFromTheme) {
+        SolidColor(currentPrimaryColorFromTheme)
+    }
 
     BasicTextField(
         value = query,
@@ -204,14 +214,17 @@ fun InputField(
             },
         enabled = enabled,
         singleLine = true,
-        textStyle = MiuixTheme.textStyles.main.copy(fontWeight = FontWeight.Bold),
-        cursorBrush = SolidColor(MiuixTheme.colorScheme.primary),
+        textStyle = inputTextStyle,
+        cursorBrush = rememberedCursorBrush,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(onSearch = { onSearch(query) }),
-        interactionSource = interactionSource,
+        interactionSource = internalInteractionSource,
         decorationBox =
             @Composable { innerTextField ->
                 val shape = remember { derivedStateOf { SmoothRoundedCornerShape(50.dp) } }
+                val labelTextStyle = remember {
+                    TextStyle(fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                }
                 Box(
                     modifier = Modifier
                         .background(
@@ -224,7 +237,7 @@ fun InputField(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        leadingIcon()
+                        actualLeadingIcon()
                         Box(
                             modifier = Modifier
                                 .weight(1f)
@@ -233,12 +246,12 @@ fun InputField(
                         ) {
                             Text(
                                 text = if (!(query.isNotEmpty() || expanded)) label else "",
-                                style = TextStyle(fontSize = 17.sp, fontWeight = FontWeight.Bold),
+                                style = labelTextStyle,
                                 color = MiuixTheme.colorScheme.onSurfaceContainerHigh
                             )
                             innerTextField()
                         }
-                        trailingIcon()
+                        actualTrailingIcon()
                     }
                 }
             }

@@ -11,26 +11,42 @@ import androidx.compose.foundation.interaction.FocusInteraction
 import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.node.DelegatableNode
 import androidx.compose.ui.node.DrawModifierNode
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction
+
+private const val ANIMATION_DURATION_MS = 150
+private const val HOVER_ALPHA_DELTA = 0.06f
+private const val FOCUS_ALPHA_DELTA = 0.08f
+private const val PRESS_ALPHA_DELTA = 0.1f
+private const val HOLD_DOWN_ALPHA_DELTA = 0.1f
 
 /**
  * Miuix default [Indication] that draws a rectangular overlay when pressed.
  */
+@Immutable
 class MiuixIndication(
     private val color: Color = Color.Black,
 ) : IndicationNodeFactory {
-    override fun create(interactionSource: InteractionSource): DelegatableNode = MiuixIndicationInstance(interactionSource, color)
+    override fun create(interactionSource: InteractionSource): DelegatableNode =
+        MiuixIndicationInstance(interactionSource, color)
 
-    override fun hashCode(): Int = -1
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is MiuixIndication) return false
+        return color == other.color
+    }
 
-    override fun equals(other: Any?) = other === this
+    override fun hashCode(): Int {
+        return color.hashCode()
+    }
 
     private class MiuixIndicationInstance(
         private val interactionSource: InteractionSource,
@@ -47,62 +63,55 @@ class MiuixIndication(
 
         private fun updateStates() {
             var targetAlpha = 0.0f
-            if (isHovered) targetAlpha += 0.06f
-            if (isFocused) targetAlpha += 0.08f
-            if (isPressed) targetAlpha += 0.1f
-            if (isHoldDown) targetAlpha += 0.1f
+            if (isHovered) targetAlpha += HOVER_ALPHA_DELTA
+            if (isFocused) targetAlpha += FOCUS_ALPHA_DELTA
+            if (isPressed) targetAlpha += PRESS_ALPHA_DELTA
+            if (isHoldDown) targetAlpha += HOLD_DOWN_ALPHA_DELTA
+
             if (targetAlpha == 0.0f) {
                 restingAnimation =
                     coroutineScope.launch {
-                        pressedAnimation?.join()
-                        animatedAlpha.animateTo(0f, tween(150))
+                        if (coroutineContext.isActive) {
+                            pressedAnimation?.join()
+                            animatedAlpha.animateTo(0f, tween(ANIMATION_DURATION_MS))
+                        }
                     }
             } else {
-                restingAnimation?.cancel()
                 pressedAnimation?.cancel()
+                restingAnimation?.cancel()
                 pressedAnimation =
                     coroutineScope.launch {
-                        animatedAlpha.animateTo(targetAlpha, tween(150))
+                        animatedAlpha.animateTo(targetAlpha, tween(ANIMATION_DURATION_MS))
                     }
             }
         }
 
         override fun onAttach() {
             coroutineScope.launch {
-                var pressed = false
-                var hovered = false
-                var focused = false
-                var hold = false
                 interactionSource.interactions.collect { interaction ->
+                    val previousPressed = isPressed
+                    val previousHovered = isHovered
+                    val previousFocused = isFocused
+                    val previousHoldDown = isHoldDown
+
                     when (interaction) {
-                        is PressInteraction.Press -> pressed = true
-                        is PressInteraction.Release, is PressInteraction.Cancel -> pressed = false
-                        is HoverInteraction.Enter -> hovered = true
-                        is HoverInteraction.Exit -> hovered = false
-                        is FocusInteraction.Focus -> focused = true
-                        is FocusInteraction.Unfocus -> focused = false
-                        is HoldDownInteraction.HoldDown -> hold = true
-                        is HoldDownInteraction.Release -> hold = false
+                        is PressInteraction.Press -> isPressed = true
+                        is PressInteraction.Release, is PressInteraction.Cancel -> isPressed = false
+                        is HoverInteraction.Enter -> isHovered = true
+                        is HoverInteraction.Exit -> isHovered = false
+                        is FocusInteraction.Focus -> isFocused = true
+                        is FocusInteraction.Unfocus -> isFocused = false
+                        is HoldDownInteraction.HoldDown -> isHoldDown = true
+                        is HoldDownInteraction.Release -> isHoldDown = false
                         else -> return@collect
                     }
-                    var invalidateNeeded = false
-                    if (isPressed != pressed) {
-                        isPressed = pressed
-                        invalidateNeeded = true
-                    }
-                    if (isHovered != hovered) {
-                        isHovered = hovered
-                        invalidateNeeded = true
-                    }
-                    if (isFocused != focused) {
-                        isFocused = focused
-                        invalidateNeeded = true
-                    }
-                    if (isHoldDown != hold) {
-                        isHoldDown = hold
-                        invalidateNeeded = true
-                    }
-                    if (invalidateNeeded) {
+
+                    val stateChanged = previousPressed != isPressed ||
+                            previousHovered != isHovered ||
+                            previousFocused != isFocused ||
+                            previousHoldDown != isHoldDown
+
+                    if (stateChanged) {
                         updateStates()
                     }
                 }

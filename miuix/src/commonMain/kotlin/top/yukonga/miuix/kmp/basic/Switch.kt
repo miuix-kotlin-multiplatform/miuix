@@ -69,6 +69,7 @@ fun Switch(
     enabled: Boolean = true
 ) {
     val isChecked by rememberUpdatedState(checked)
+    val currentOnCheckedChange by rememberUpdatedState(onCheckedChange)
 
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -110,12 +111,14 @@ fun Switch(
         animationSpec = tween(durationMillis = 200)
     )
 
+    val trackClipShape = remember { SmoothRoundedCornerShape(50.dp) }
+
     Box(
         modifier = modifier
             .wrapContentSize(Alignment.Center)
             .size(50.dp, 28.5.dp)
             .requiredSize(50.dp, 28.5.dp)
-            .clip(SmoothRoundedCornerShape(50.dp))
+            .clip(trackClipShape)
             .drawBehind { drawRect(backgroundColor) }
             .hoverable(
                 interactionSource = interactionSource,
@@ -142,7 +145,7 @@ fun Switch(
                     } while (event.changes.all { it.pressed })
 
                     if (validHorizontalDrag && !isPressed && !isDragged) {
-                        onCheckedChange?.invoke(!isChecked)
+                        currentOnCheckedChange?.invoke(!isChecked)
                         hapticFeedback.performHapticFeedback(
                             if (isChecked) HapticFeedbackType.ToggleOff
                             else HapticFeedbackType.ToggleOn
@@ -153,8 +156,8 @@ fun Switch(
             .toggleable(
                 value = isChecked,
                 onValueChange = {
-                    if (onCheckedChange == null) return@toggleable
-                    onCheckedChange.invoke(it)
+                    if (currentOnCheckedChange == null) return@toggleable
+                    currentOnCheckedChange?.invoke(it)
                     hapticFeedback.performHapticFeedback(
                         if (it) HapticFeedbackType.ToggleOn
                         else HapticFeedbackType.ToggleOff
@@ -201,7 +204,7 @@ fun Switch(
                             hasVibratedOnce = false
                         },
                         onDragEnd = {
-                            if (dragOffset.absoluteValue > 21f / 2) onCheckedChange?.invoke(!isChecked)
+                            if (dragOffset.absoluteValue > 21f / 2) currentOnCheckedChange?.invoke(!isChecked)
                             if (!hasVibratedOnce && dragOffset.absoluteValue >= 1f) {
                                 if ((isChecked && dragOffset <= -11f) || (!isChecked && dragOffset <= 10f)) {
                                     hapticFeedback.performHapticFeedback(HapticFeedbackType.ToggleOff)

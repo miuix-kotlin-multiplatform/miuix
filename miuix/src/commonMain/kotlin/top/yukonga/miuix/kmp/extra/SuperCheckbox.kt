@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
 import top.yukonga.miuix.kmp.basic.BasicComponentDefaults
@@ -55,19 +55,53 @@ fun SuperCheckbox(
     val updatedOnCheckedChange by rememberUpdatedState(onCheckedChange)
     val updatedOnClick by rememberUpdatedState(onClick)
 
-    val checkbox: @Composable () -> Unit = {
-        Checkbox(
-            modifier = Modifier.padding(
-                end = if (checkboxLocation == CheckboxLocation.Left) {
-                    insideMargin.calculateLeftPadding(LayoutDirection.Ltr)
-                } else 0.dp
-            ),
-            checked = checked,
-            onCheckedChange = updatedOnCheckedChange,
-            enabled = enabled,
-            colors = checkboxColors
-        )
-    }
+    val rememberedOnClick: (() -> Unit)? =
+        remember(enabled, onCheckedChange, checked, updatedOnClick, updatedOnCheckedChange) {
+            if (enabled && onCheckedChange != null) {
+                {
+                    updatedOnClick?.invoke()
+                    updatedOnCheckedChange?.invoke(!checked)
+                }
+            } else {
+                null
+            }
+        }
+
+    val rememberedLeftAction: (@Composable () -> Unit)? =
+        remember(checkboxLocation, insideMargin, checked, updatedOnCheckedChange, enabled, checkboxColors) {
+            if (checkboxLocation == CheckboxLocation.Left) {
+                @Composable {
+                    val leftCheckboxModifier = remember(insideMargin) {
+                        Modifier.padding(end = insideMargin.calculateLeftPadding(LayoutDirection.Ltr))
+                    }
+                    Checkbox(
+                        modifier = leftCheckboxModifier,
+                        checked = checked,
+                        onCheckedChange = updatedOnCheckedChange,
+                        enabled = enabled,
+                        colors = checkboxColors
+                    )
+                }
+            } else {
+                null
+            }
+        }
+
+    val rememberedRightActions: @Composable RowScope.() -> Unit =
+        remember(rightActions, checkboxLocation, checked, updatedOnCheckedChange, enabled, checkboxColors) {
+            @Composable {
+                rightActions()
+                if (checkboxLocation == CheckboxLocation.Right) {
+                    Checkbox(
+                        modifier = Modifier,
+                        checked = checked,
+                        onCheckedChange = updatedOnCheckedChange,
+                        enabled = enabled,
+                        colors = checkboxColors
+                    )
+                }
+            }
+        }
 
     BasicComponent(
         modifier = modifier,
@@ -76,29 +110,9 @@ fun SuperCheckbox(
         titleColor = titleColor,
         summary = summary,
         summaryColor = summaryColor,
-        leftAction = if (checkboxLocation == CheckboxLocation.Left) {
-            {
-                Checkbox(
-                    modifier = Modifier.padding(end = insideMargin.calculateLeftPadding(LayoutDirection.Ltr)),
-                    checked = checked,
-                    onCheckedChange = updatedOnCheckedChange,
-                    enabled = enabled,
-                    colors = checkboxColors
-                )
-            }
-        } else null,
-        rightActions = {
-            rightActions()
-            if (checkboxLocation == CheckboxLocation.Right) {
-                checkbox()
-            }
-        },
-        onClick = if (enabled && onCheckedChange != null) {
-            {
-                updatedOnClick?.invoke()
-                updatedOnCheckedChange?.invoke(!checked)
-            }
-        } else null,
+        leftAction = rememberedLeftAction,
+        rightActions = rememberedRightActions,
+        onClick = rememberedOnClick,
         enabled = enabled
     )
 }

@@ -120,6 +120,26 @@ class MiuixPopupUtils {
             }
         }
 
+        private fun defaultMiuixPopupEnterTransition(transformOrigin: () -> TransformOrigin): EnterTransition {
+            return fadeIn(
+                animationSpec = tween(150, easing = DecelerateEasing(1.5f))
+            ) + scaleIn(
+                initialScale = 0.8f,
+                animationSpec = tween(150, easing = DecelerateEasing(1.5f)),
+                transformOrigin = transformOrigin()
+            )
+        }
+
+        private fun defaultMiuixPopupExitTransition(transformOrigin: () -> TransformOrigin): ExitTransition {
+            return fadeOut(
+                animationSpec = tween(150, easing = DecelerateEasing(1.5f))
+            ) + scaleOut(
+                targetScale = 0.8f,
+                animationSpec = tween(150, easing = DecelerateEasing(1.5f)),
+                transformOrigin = transformOrigin()
+            )
+        }
+
         /**
          * Create a dialog layout.
          *
@@ -209,7 +229,6 @@ class MiuixPopupUtils {
             ) {
                 content()
             }
-            if (!visible.value) visible.value = true
         }
 
         /**
@@ -259,13 +278,11 @@ class MiuixPopupUtils {
                         ) {
                             dialogState.content()
                         }
+                    }
 
-                        DisposableEffect(showState) {
-                            onDispose {
-                                if (!showState.value) {
-                                    dialogStates.remove(showState)
-                                }
-                            }
+                    DisposableEffect(showState) {
+                        onDispose {
+                            dialogStates.remove(showState)
                         }
                     }
                 }
@@ -299,33 +316,19 @@ class MiuixPopupUtils {
                     AnimatedVisibility(
                         visible = internalVisible,
                         modifier = Modifier.zIndex(popupState.zIndex).fillMaxSize(),
-                        enter = fadeIn(
-                            animationSpec = tween(150, easing = DecelerateEasing(1.5f))
-                        ) + scaleIn(
-                            initialScale = 0.8f,
-                            animationSpec = tween(150, easing = DecelerateEasing(1.5f)),
-                            transformOrigin = popupState.transformOrigin()
-                        ),
-                        exit = fadeOut(
-                            animationSpec = tween(150, easing = DecelerateEasing(1.5f))
-                        ) + scaleOut(
-                            targetScale = 0.8f,
-                            animationSpec = tween(150, easing = DecelerateEasing(1.5f)),
-                            transformOrigin = popupState.transformOrigin()
-                        )
+                        enter = popupState.enterTransition ?: defaultMiuixPopupEnterTransition(popupState.transformOrigin),
+                        exit = popupState.exitTransition ?: defaultMiuixPopupExitTransition(popupState.transformOrigin)
                     ) {
                         Box(
                             modifier = Modifier.fillMaxSize()
                         ) {
                             popupState.content()
                         }
+                    }
 
-                        DisposableEffect(showState) {
-                            onDispose {
-                                if (!showState.value) {
-                                    popupStates.remove(showState)
-                                }
-                            }
+                    DisposableEffect(showState) {
+                        onDispose {
+                            popupStates.remove(showState)
                         }
                     }
                 }

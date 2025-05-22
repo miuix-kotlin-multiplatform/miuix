@@ -11,9 +11,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,11 +53,12 @@ fun IconButton(
     minWidth: Dp = IconButtonDefaults.MinWidth,
     content: @Composable () -> Unit
 ) {
-    val shape = remember { derivedStateOf { SmoothRoundedCornerShape(cornerRadius) } }
+    val currentOnClick by rememberUpdatedState(onClick)
+    val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
     val interactionSource = remember { MutableInteractionSource() }
     val holdDown = remember { mutableStateOf<HoldDownInteraction.HoldDown?>(null) }
 
-    LaunchedEffect(holdDownState) {
+    LaunchedEffect(holdDownState, interactionSource) {
         if (holdDownState) {
             interactionSource.emit(HoldDownInteraction.HoldDown().also {
                 holdDown.value = it
@@ -69,19 +71,33 @@ fun IconButton(
         }
     }
 
-    Box(
-        modifier = modifier
+    val currentLocalIndication = LocalIndication.current
+    val boxModifier = remember(
+        modifier,
+        minWidth,
+        minHeight,
+        shape,
+        backgroundColor,
+        enabled,
+        interactionSource,
+        currentLocalIndication,
+        currentOnClick
+    ) {
+        modifier
             .defaultMinSize(minWidth = minWidth, minHeight = minHeight)
-            .clip(shape.value)
+            .clip(shape)
             .background(color = backgroundColor)
             .clickable(
                 enabled = enabled,
                 role = Role.Button,
-                indication = LocalIndication.current,
-                interactionSource = interactionSource
-            ) {
-                onClick.invoke()
-            },
+                indication = currentLocalIndication,
+                interactionSource = interactionSource,
+                onClick = currentOnClick
+            )
+    }
+
+    Box(
+        modifier = boxModifier,
         contentAlignment = Alignment.Center
     ) {
         content()

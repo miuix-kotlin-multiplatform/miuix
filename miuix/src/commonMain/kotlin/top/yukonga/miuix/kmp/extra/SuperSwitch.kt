@@ -7,10 +7,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
@@ -54,10 +52,32 @@ fun SuperSwitch(
     holdDownState: Boolean = false,
     enabled: Boolean = true
 ) {
-    var isChecked by remember { mutableStateOf(checked) }
     val updatedOnCheckedChange by rememberUpdatedState(onCheckedChange)
+    val currentOnClick by rememberUpdatedState(onClick)
 
-    if (isChecked != checked) isChecked = checked
+    val rememberedRightActions: @Composable RowScope.() -> Unit =
+        remember(rightActions, checked, updatedOnCheckedChange, enabled, switchColors) {
+            {
+                rightActions()
+                Switch(
+                    checked = checked,
+                    onCheckedChange = updatedOnCheckedChange,
+                    enabled = enabled,
+                    colors = switchColors
+                )
+            }
+        }
+
+    val rememberedOnClick: (() -> Unit)? = remember(enabled, currentOnClick, updatedOnCheckedChange, checked) {
+        if (enabled) {
+            {
+                currentOnClick?.invoke()
+                updatedOnCheckedChange?.invoke(!checked)
+            }
+        } else {
+            null
+        }
+    }
 
     BasicComponent(
         modifier = modifier,
@@ -67,22 +87,8 @@ fun SuperSwitch(
         summary = summary,
         summaryColor = summaryColor,
         leftAction = leftAction,
-        rightActions = {
-            rightActions()
-            Switch(
-                checked = isChecked,
-                onCheckedChange = updatedOnCheckedChange,
-                enabled = enabled,
-                colors = switchColors
-            )
-        },
-        onClick = {
-            if (enabled) {
-                onClick?.invoke()
-                isChecked = !isChecked
-                updatedOnCheckedChange?.invoke(isChecked)
-            }
-        },
+        rightActions = rememberedRightActions,
+        onClick = rememberedOnClick,
         holdDownState = holdDownState,
         enabled = enabled
     )

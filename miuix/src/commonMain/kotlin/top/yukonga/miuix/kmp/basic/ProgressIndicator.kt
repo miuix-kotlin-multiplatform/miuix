@@ -16,7 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
@@ -47,6 +49,10 @@ fun LinearProgressIndicator(
     colors: ProgressIndicatorColors = ProgressIndicatorDefaults.progressIndicatorColors(),
     height: Dp = ProgressIndicatorDefaults.DefaultLinearProgressIndicatorHeight
 ) {
+    val canvasModifier = remember(modifier, height) {
+        modifier.fillMaxWidth().height(height)
+    }
+
     if (progress == null) {
         val animatedValue = remember { Animatable(initialValue = 0f) }
 
@@ -60,9 +66,12 @@ fun LinearProgressIndicator(
             )
         }
 
-        Canvas(modifier = modifier.fillMaxWidth().height(height)) {
+        Canvas(modifier = canvasModifier) {
+            val currentBackgroundColor = colors.backgroundColor()
+            val currentForegroundColor = colors.foregroundColor(true) // Assuming enabled for indeterminate
+
             drawRoundRect(
-                color = colors.backgroundColor(),
+                color = currentBackgroundColor,
                 size = Size(size.width, size.height),
                 cornerRadius = CornerRadius(size.height / 2)
             )
@@ -85,7 +94,7 @@ fun LinearProgressIndicator(
                     val width = size.width * segmentWidth
 
                     drawRoundRect(
-                        color = colors.foregroundColor(true),
+                        color = currentForegroundColor,
                         topLeft = Offset(startX, 0f),
                         size = Size(width, size.height),
                         cornerRadius = CornerRadius(size.height / 2)
@@ -95,7 +104,7 @@ fun LinearProgressIndicator(
                     val width = size.width * (1f - adjustedPos)
 
                     drawRoundRect(
-                        color = colors.foregroundColor(true),
+                        color = currentForegroundColor,
                         topLeft = Offset(startX, 0f),
                         size = Size(width, size.height),
                         cornerRadius = CornerRadius(size.height / 2)
@@ -104,7 +113,7 @@ fun LinearProgressIndicator(
                     val remainingWidth = adjustedPos + segmentWidth - 1f
                     if (remainingWidth > 0) {
                         drawRoundRect(
-                            color = colors.foregroundColor(true),
+                            color = currentForegroundColor,
                             topLeft = Offset(0f, 0f),
                             size = Size(size.width * remainingWidth, size.height),
                             cornerRadius = CornerRadius(size.height / 2)
@@ -115,12 +124,14 @@ fun LinearProgressIndicator(
         }
     } else {
         val progressValue = progress.coerceIn(0f, 1f)
+        val currentBackgroundColor = colors.backgroundColor()
+        val currentForegroundColor = colors.foregroundColor(true) // Assuming enabled for determinate
 
-        Canvas(modifier = modifier.fillMaxWidth().height(height)) {
+        Canvas(modifier = canvasModifier) {
             val cornerRadius = size.height / 2
 
             drawRoundRect(
-                color = colors.backgroundColor(),
+                color = currentBackgroundColor,
                 size = Size(size.width, size.height),
                 cornerRadius = CornerRadius(cornerRadius)
             )
@@ -133,7 +144,7 @@ fun LinearProgressIndicator(
             }
 
             drawRoundRect(
-                color = colors.foregroundColor(true),
+                color = currentForegroundColor,
                 topLeft = Offset(0f, 0f),
                 size = Size(progressWidth, size.height),
                 cornerRadius = CornerRadius(cornerRadius)
@@ -159,6 +170,10 @@ fun CircularProgressIndicator(
     strokeWidth: Dp = ProgressIndicatorDefaults.DefaultCircularProgressIndicatorStrokeWidth,
     size: Dp = ProgressIndicatorDefaults.DefaultCircularProgressIndicatorSize
 ) {
+    val canvasModifier = remember(modifier, size) {
+        modifier.size(size)
+    }
+
     if (progress == null) {
         val rotationAnim = remember { Animatable(0f) }
         val sweepAnim = remember { Animatable(30f) }
@@ -186,15 +201,16 @@ fun CircularProgressIndicator(
             }
         }
 
-        Canvas(
-            modifier = modifier.size(size)
-        ) {
+        Canvas(modifier = canvasModifier) {
+            val currentBackgroundColor = colors.backgroundColor()
+            val currentForegroundColor = colors.foregroundColor(true) // Assuming enabled
+
             val strokeWidthPx = strokeWidth.toPx()
             val radius = (size.toPx() - strokeWidthPx) / 2
             val center = Offset(size.toPx() / 2, size.toPx() / 2)
 
             drawCircle(
-                color = colors.backgroundColor(),
+                color = currentBackgroundColor,
                 radius = radius,
                 center = center,
                 style = Stroke(width = strokeWidthPx)
@@ -204,7 +220,7 @@ fun CircularProgressIndicator(
             val sweepAngle = sweepAnim.value
 
             drawArc(
-                color = colors.foregroundColor(true),
+                color = currentForegroundColor,
                 startAngle = startAngle,
                 sweepAngle = sweepAngle,
                 useCenter = false,
@@ -228,29 +244,29 @@ fun CircularProgressIndicator(
             )
 
             drawCircle(
-                color = colors.foregroundColor(true),
+                color = currentForegroundColor,
                 radius = halfStroke,
                 center = startCapCenter
             )
 
             drawCircle(
-                color = colors.foregroundColor(true),
+                color = currentForegroundColor,
                 radius = halfStroke,
                 center = endCapCenter
             )
         }
     } else {
         val progressValue = progress.coerceIn(0f, 1f)
+        val currentBackgroundColor = colors.backgroundColor()
+        val currentForegroundColor = colors.foregroundColor(true) // Assuming enabled
 
-        Canvas(
-            modifier = modifier.size(size)
-        ) {
+        Canvas(modifier = canvasModifier) {
             val strokeWidthPx = strokeWidth.toPx()
             val radius = (size.toPx() - strokeWidthPx) / 2
             val center = Offset(size.toPx() / 2, size.toPx() / 2)
 
             drawCircle(
-                color = colors.backgroundColor(),
+                color = currentBackgroundColor,
                 radius = radius,
                 center = center,
                 style = Stroke(width = strokeWidthPx)
@@ -265,7 +281,7 @@ fun CircularProgressIndicator(
             }
 
             drawArc(
-                color = colors.foregroundColor(true),
+                color = currentForegroundColor,
                 startAngle = -90f,
                 sweepAngle = sweepAngle,
                 useCenter = false,
@@ -284,13 +300,13 @@ fun CircularProgressIndicator(
             )
 
             drawCircle(
-                color = colors.foregroundColor(true),
+                color = currentForegroundColor,
                 radius = strokeWidthPx / 2,
                 center = startCapCenter
             )
 
             drawCircle(
-                color = colors.foregroundColor(true),
+                color = currentForegroundColor,
                 radius = strokeWidthPx / 2,
                 center = endCapCenter
             )
@@ -317,6 +333,10 @@ fun InfiniteProgressIndicator(
     orbitingDotSize: Dp = ProgressIndicatorDefaults.DefaultInfiniteProgressIndicatorOrbitingDotSize
 ) {
     val rotationAnim = remember { Animatable(0f) }
+    val canvasModifier = remember(modifier, size) {
+        modifier.size(size)
+    }
+    val rememberedColor by rememberUpdatedState(color)
 
     LaunchedEffect(Unit) {
         rotationAnim.animateTo(
@@ -328,12 +348,12 @@ fun InfiniteProgressIndicator(
         )
     }
 
-    Canvas(modifier = modifier.size(size)) {
+    Canvas(modifier = canvasModifier) {
         val center = Offset(this.size.width / 2, this.size.height / 2)
         val radius = (size.toPx() - strokeWidth.toPx()) / 2
 
         drawCircle(
-            color = color,
+            color = rememberedColor,
             radius = radius,
             center = center,
             style = Stroke(strokeWidth.toPx(), cap = StrokeCap.Round)
@@ -347,7 +367,7 @@ fun InfiniteProgressIndicator(
         )
 
         drawCircle(
-            color = color,
+            color = rememberedColor,
             radius = orbitingDotSize.toPx(),
             center = dotCenter
         )
@@ -382,11 +402,17 @@ object ProgressIndicatorDefaults {
         disabledForegroundColor: Color = MiuixTheme.colorScheme.disabledPrimarySlider,
         backgroundColor: Color = MiuixTheme.colorScheme.tertiaryContainerVariant
     ): ProgressIndicatorColors {
-        return ProgressIndicatorColors(
-            foregroundColor = foregroundColor,
-            disabledForegroundColor = disabledForegroundColor,
-            backgroundColor = backgroundColor
-        )
+        val rememberedForegroundColor by rememberUpdatedState(foregroundColor)
+        val rememberedDisabledForegroundColor by rememberUpdatedState(disabledForegroundColor)
+        val rememberedBackgroundColor by rememberUpdatedState(backgroundColor)
+
+        return remember(rememberedForegroundColor, rememberedDisabledForegroundColor, rememberedBackgroundColor) {
+            ProgressIndicatorColors(
+                foregroundColor = rememberedForegroundColor,
+                disabledForegroundColor = rememberedDisabledForegroundColor,
+                backgroundColor = rememberedBackgroundColor
+            )
+        }
     }
 
     @Immutable

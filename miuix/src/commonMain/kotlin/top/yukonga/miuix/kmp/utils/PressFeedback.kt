@@ -102,7 +102,7 @@ fun Modifier.pressTilt(
             cameraDistance = 12 * density
             this.transformOrigin = transformOrigin
         }
-        .pointerInput(Unit) {
+        .pointerInput(tiltAmount) {
             awaitEachGesture {
                 val down = awaitFirstDown()
                 val w = size.width

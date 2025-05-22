@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -52,24 +53,37 @@ fun FloatingToolbar(
     defaultWindowInsetsPadding: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    Box(
-        modifier = Modifier
+    val density = LocalDensity.current
+    val statusBarsInsets = WindowInsets.statusBars.only(WindowInsetsSides.Vertical)
+    val captionBarInsets = WindowInsets.captionBar.only(WindowInsetsSides.Vertical)
+    val displayCutoutInsets = WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal)
+    val navigationBarsInsets = WindowInsets.navigationBars
+
+    val roundedCornerShape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
+    val dividerColor = MiuixTheme.colorScheme.dividerLine
+
+    val outerBoxModifier = remember(
+        outSidePadding, defaultWindowInsetsPadding, statusBarsInsets, captionBarInsets,
+        displayCutoutInsets, navigationBarsInsets, showDivider, dividerColor, roundedCornerShape,
+        shadowElevation, density, cornerRadius, color
+    ) {
+        Modifier
             .padding(outSidePadding)
             .then(
                 if (defaultWindowInsetsPadding) {
                     Modifier
-                        .windowInsetsPadding(WindowInsets.statusBars.only(WindowInsetsSides.Vertical))
-                        .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Vertical))
-                        .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
-                        .windowInsetsPadding(WindowInsets.navigationBars)
+                        .windowInsetsPadding(statusBarsInsets)
+                        .windowInsetsPadding(captionBarInsets)
+                        .windowInsetsPadding(displayCutoutInsets)
+                        .windowInsetsPadding(navigationBarsInsets)
                 } else Modifier
             )
             .then(
                 if (showDivider) {
                     Modifier
                         .background(
-                            color = MiuixTheme.colorScheme.dividerLine,
-                            shape = SmoothRoundedCornerShape(cornerRadius)
+                            color = dividerColor,
+                            shape = roundedCornerShape
                         )
                         .padding(0.75.dp)
                 } else Modifier
@@ -77,18 +91,22 @@ fun FloatingToolbar(
             .then(
                 if (shadowElevation > 0.dp) {
                     Modifier.graphicsLayer(
-                        shadowElevation = with(LocalDensity.current) { shadowElevation.toPx() },
-                        shape = SmoothRoundedCornerShape(cornerRadius),
+                        shadowElevation = with(density) { shadowElevation.toPx() },
+                        shape = roundedCornerShape,
                         clip = cornerRadius > 0.dp
                     )
                 } else if (cornerRadius > 0.dp) {
-                    Modifier.clip(SmoothRoundedCornerShape(cornerRadius))
+                    Modifier.clip(roundedCornerShape)
                 } else {
                     Modifier
                 }
             )
             .background(color = color)
             .pointerInput(Unit) { detectTapGestures { /* Do nothing to consume the click */ } }
+    }
+
+    Box(
+        modifier = outerBoxModifier
     ) {
         Box(
             modifier = modifier
