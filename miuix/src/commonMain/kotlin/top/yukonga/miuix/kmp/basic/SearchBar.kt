@@ -46,7 +46,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import kotlinx.coroutines.delay
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.basic.Search
@@ -78,35 +77,31 @@ fun SearchBar(
     outsideRightAction: @Composable (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    Surface(
-        modifier = modifier.zIndex(1f),
-    ) {
-        Column {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+    Column {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(vertical = insideMargin.height, horizontal = insideMargin.width)
             ) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(vertical = insideMargin.height, horizontal = insideMargin.width)
-                ) {
-                    inputField()
-                }
-                AnimatedVisibility(
-                    visible = expanded,
-                    enter = expandHorizontally() + slideInHorizontally(initialOffsetX = { it }),
-                    exit = shrinkHorizontally() + slideOutHorizontally(targetOffsetX = { it })
-                ) {
-                    outsideRightAction?.invoke()
-                }
+                inputField()
             }
-
             AnimatedVisibility(
-                visible = expanded
+                visible = expanded,
+                enter = expandHorizontally() + slideInHorizontally(initialOffsetX = { it }),
+                exit = shrinkHorizontally() + slideOutHorizontally(targetOffsetX = { it })
             ) {
-                content()
+                outsideRightAction?.invoke()
             }
+        }
+
+        AnimatedVisibility(
+            visible = expanded
+        ) {
+            content()
         }
     }
 

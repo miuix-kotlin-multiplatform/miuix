@@ -269,13 +269,25 @@ fun UITest(
                         @Composable
                         fun floatingToolbarContent() {
                             IconButton(onClick = { /* Action 1 */ }) {
-                                Icon(MiuixIcons.Useful.Edit, contentDescription = "Edit", tint = MiuixTheme.colorScheme.onPrimaryContainer)
+                                Icon(
+                                    MiuixIcons.Useful.Edit,
+                                    contentDescription = "Edit",
+                                    tint = MiuixTheme.colorScheme.onPrimaryContainer
+                                )
                             }
                             IconButton(onClick = { /* Action 2 */ }) {
-                                Icon(MiuixIcons.Useful.Delete, contentDescription = "Delete", tint = MiuixTheme.colorScheme.onPrimaryContainer)
+                                Icon(
+                                    MiuixIcons.Useful.Delete,
+                                    contentDescription = "Delete",
+                                    tint = MiuixTheme.colorScheme.onPrimaryContainer
+                                )
                             }
                             IconButton(onClick = { /* Action 3 */ }) {
-                                Icon(MiuixIcons.Useful.ImmersionMore, contentDescription = "More", tint = MiuixTheme.colorScheme.onPrimaryContainer)
+                                Icon(
+                                    MiuixIcons.Useful.ImmersionMore,
+                                    contentDescription = "More",
+                                    tint = MiuixTheme.colorScheme.onPrimaryContainer
+                                )
                             }
                         }
                         when (orientation) {
