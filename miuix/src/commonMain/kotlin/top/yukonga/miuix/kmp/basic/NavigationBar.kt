@@ -224,8 +224,15 @@ fun FloatingNavigationBar(
 
     val dividerLineColor = MiuixTheme.colorScheme.dividerLine
 
-    val platformValue = platform()
-    val bottomPaddingValue = if (platformValue != Platform.IOS) 36.dp else 30.dp
+    val platformValue = remember { platform() }
+    val bottomPaddingValue = when (platformValue) {
+        Platform.IOS -> 8.dp
+        Platform.Android -> {
+            val navBarBottomPadding = WindowInsets.navigationBars.only(WindowInsetsSides.Bottom).asPaddingValues().calculateBottomPadding()
+            if (navBarBottomPadding != 0.dp) 8.dp + navBarBottomPadding else 36.dp
+        }
+        else -> 36.dp
+    }
 
     val rootColumnModifier = remember(horizontalAlignment, horizontalOutSidePadding) {
         Modifier
