@@ -278,11 +278,12 @@ class MiuixPopupUtils {
                         ) {
                             dialogState.content()
                         }
-                    }
-
-                    DisposableEffect(showState) {
-                        onDispose {
-                            dialogStates.remove(showState)
+                        DisposableEffect(showState) {
+                            onDispose {
+                                if (!showState.value) {
+                                    dialogStates.remove(showState)
+                                }
+                            }
                         }
                     }
                 }
@@ -324,11 +325,12 @@ class MiuixPopupUtils {
                         ) {
                             popupState.content()
                         }
-                    }
-
-                    DisposableEffect(showState) {
-                        onDispose {
-                            popupStates.remove(showState)
+                        DisposableEffect(showState) {
+                            onDispose {
+                                if (!showState.value) {
+                                    popupStates.remove(showState)
+                                }
+                            }
                         }
                     }
                 }
