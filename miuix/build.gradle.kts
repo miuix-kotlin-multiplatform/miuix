@@ -32,11 +32,17 @@ kotlin {
 
     jvm("desktop")
 
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-    macosArm64()
-    macosX64()
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64(),
+        macosX64(),
+        macosArm64(),
+    ).forEach {
+        it.compilerOptions {
+            freeCompilerArgs.add("-Xbinary=preCodegenInlineThreshold=40")
+        }
+    }
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {

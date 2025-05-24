@@ -36,28 +36,24 @@ kotlin {
         iosArm64(),
         iosSimulatorArm64(),
     ).forEach {
+        it.compilerOptions {
+            freeCompilerArgs.add("-Xbinary=preCodegenInlineThreshold=40")
+        }
         it.binaries.framework {
             baseName = "shared"
             isStatic = true
-            freeCompilerArgs +=
-                listOf(
-                    "-linker-option", "-framework", "-linker-option", "Metal",
-                    "-linker-option", "-framework", "-linker-option", "CoreText",
-                    "-linker-option", "-framework", "-linker-option", "CoreGraphics",
-                )
         }
     }
 
     listOf(
         macosX64(),
         macosArm64(),
-    ).forEach { macosTarget ->
-        macosTarget.binaries.executable {
+    ).forEach {
+        it.compilerOptions {
+            freeCompilerArgs.add("-Xbinary=preCodegenInlineThreshold=40")
+        }
+        it.binaries.executable {
             entryPoint = "main"
-            freeCompilerArgs +=
-                listOf(
-                    "-linker-option", "-framework", "-linker-option", "Metal",
-                )
         }
     }
 
