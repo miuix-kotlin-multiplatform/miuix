@@ -163,7 +163,6 @@ fun SuperDialog(
     }
 
     BackHandler(enabled = show.value) {
-        show.value = false
         currentOnDismissRequest?.invoke()
     }
 }
