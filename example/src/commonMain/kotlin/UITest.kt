@@ -339,7 +339,7 @@ fun UITest(
             modifier = Modifier
                 .statusBarsPadding()
                 .captionBarPadding()
-                .padding(horizontal = 4.dp)
+                .padding(all = 12.dp)
         )
     }
 }

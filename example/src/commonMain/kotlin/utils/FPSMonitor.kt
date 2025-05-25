@@ -12,8 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.coroutineScope
 import top.yukonga.miuix.kmp.basic.Text
 
 /**
@@ -39,13 +38,13 @@ fun FPSMonitor(modifier: Modifier = Modifier) {
     }
 
     Text(
-        text = "FPS: $fps",
         modifier = modifier,
+        text = "FPS: $fps",
         color = color
     )
 
     LaunchedEffect(Unit) {
-        withContext(Dispatchers.Default) {
+        coroutineScope {
             while (true) {
                 withFrameMillis { frameTimeMillis ->
                     if (lastFrameTime != 0L) {
