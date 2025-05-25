@@ -74,10 +74,27 @@ fun MainPage(
 
     val textComponent = @Composable {
         TextComponent(
-            showDialog, dialogTextFieldValue, showDialog2, dialog2dropdownSelectedOption, dialog2SuperSwitchState,
-            checkbox, checkboxTrue, switch, switchTrue, dropdownOptionSelected, dropdownOptionSelectedRight, spinnerOptionSelected,
-            spinnerOptionSelectedRight, spinnerOptionSelectedDialog, superCheckbox, superCheckboxState,
-            superRightCheckbox, superRightCheckboxState, superSwitch, superSwitchState, superSwitchAnimState
+            showDialog,
+            dialogTextFieldValue,
+            showDialog2,
+            dialog2dropdownSelectedOption,
+            dialog2SuperSwitchState,
+            checkbox,
+            checkboxTrue,
+            switch,
+            switchTrue,
+            dropdownOptionSelected,
+            dropdownOptionSelectedRight,
+            spinnerOptionSelected,
+            spinnerOptionSelectedRight,
+            spinnerOptionSelectedDialog,
+            superCheckbox,
+            superCheckboxState,
+            superRightCheckbox,
+            superRightCheckboxState,
+            superSwitch,
+            superSwitchState,
+            superSwitchAnimState
         )
     }
     val otherComponent = @Composable { OtherComponent(padding) }
@@ -129,7 +146,7 @@ fun MainPage(
                         onExpandedChange = { expanded = it }
                     ) {
                         Column(
-                            Modifier.fillMaxSize()
+                            Modifier.fillParentMaxHeight()
                         ) {
                             repeat(4) { idx ->
                                 val resultText = "Suggestion $idx"
