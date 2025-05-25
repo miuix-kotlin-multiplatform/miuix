@@ -102,7 +102,6 @@ fun SuperDialog(
                 .pointerInput(show, currentOnDismissRequest) {
                     detectTapGestures(
                         onTap = {
-                            show.value = false
                             currentOnDismissRequest?.invoke()
                         }
                     )
