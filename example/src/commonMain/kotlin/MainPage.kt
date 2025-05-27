@@ -164,14 +164,8 @@ fun MainPage(
                     }
                 }
                 if (!expanded) {
-                    item(
-                        key = "text"
-                    ) {
+                    item {
                         textComponent()
-                    }
-                    item(
-                        key = "other"
-                    ) {
                         otherComponent()
                     }
                 }

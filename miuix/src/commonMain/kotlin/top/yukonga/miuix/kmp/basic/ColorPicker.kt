@@ -26,10 +26,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.ImageShader
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
@@ -252,6 +254,8 @@ fun AlphaSlider(
     onAlphaChanged: (Float) -> Unit,
     hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
 ) {
+    val density = LocalDensity.current
+
     val currentOnAlphaChanged by rememberUpdatedState(onAlphaChanged)
     val baseColor = remember(currentHue, currentSaturation, currentValue) {
         Color.hsv(currentHue, currentSaturation, currentValue)
@@ -260,35 +264,26 @@ fun AlphaSlider(
     val endColor = remember(baseColor) { baseColor.copy(alpha = 1f) }
     val alphaColors = remember(startColor, endColor) { listOf(startColor, endColor) }
 
-    val checkerBrush = remember {
-        object {
-            val light = Color(0xFFCCCCCC)
-            val dark = Color(0xFFAAAAAA)
-            val checkerSize = 3.dp
+    val actualCheckerBrush = remember(density) {
+        val lightColor = Color(0xFFCCCCCC)
+        val darkColor = Color(0xFFAAAAAA)
+        val checkerSizeDp = 3.dp
 
-            fun draw(drawScope: DrawScope, width: Float, height: Float) {
-                with(drawScope) {
-                    val pixelSize = checkerSize.toPx()
-                    val horizontalCount = (width / pixelSize).toInt() + 1
-                    val verticalCount = (height / pixelSize).toInt() + 1
+        val pixelSize = with(density) { checkerSizeDp.toPx() }
+        val tileBitmapSideLengthPx = (2 * pixelSize).toInt().coerceAtLeast(1)
 
-                    drawRect(light)
+        val imageBitmap = ImageBitmap(tileBitmapSideLengthPx, tileBitmapSideLengthPx)
+        val canvasForBitmap = androidx.compose.ui.graphics.Canvas(imageBitmap)
 
-                    for (y in 0 until verticalCount) {
-                        val isEvenRow = y % 2 == 0
-                        val startX = if (isEvenRow) 0 else 1
+        val lightPaint = Paint().apply { color = lightColor }
+        val darkPaint = Paint().apply { color = darkColor }
 
-                        for (x in startX until horizontalCount step 2) {
-                            drawRect(
-                                color = dark,
-                                topLeft = Offset(x * pixelSize, y * pixelSize),
-                                size = Size(pixelSize, pixelSize)
-                            )
-                        }
-                    }
-                }
-            }
-        }
+        canvasForBitmap.drawRect(0f, 0f, tileBitmapSideLengthPx.toFloat(), tileBitmapSideLengthPx.toFloat(), lightPaint)
+        canvasForBitmap.drawRect(pixelSize, 0f, 2 * pixelSize, pixelSize, darkPaint)
+        canvasForBitmap.drawRect(0f, pixelSize, pixelSize, 2 * pixelSize, darkPaint)
+
+        val shader = ImageShader(imageBitmap, TileMode.Repeated, TileMode.Repeated)
+        ShaderBrush(shader)
     }
 
     ColorSlider(
@@ -297,7 +292,7 @@ fun AlphaSlider(
         drawBrushColors = alphaColors,
         modifier = Modifier.fillMaxWidth(),
         hapticEffect = hapticEffect,
-        drawBackground = checkerBrush::draw
+        drawBackground = { _, _ -> drawRect(brush = actualCheckerBrush) }
     )
 }
 
@@ -318,6 +313,7 @@ private fun ColorSlider(
     val indicatorSizeDp = 20.dp
     val sliderHeightDp = 26.dp
     val sliderHeightPx = with(density) { remember(sliderHeightDp) { sliderHeightDp.toPx() } }
+    val sliderWidthPx = with(density) { sliderWidth.toPx() }
     val halfSliderHeightPx = remember(sliderHeightPx) { sliderHeightPx / 2f }
     val borderShape = remember { SmoothRoundedCornerShape(50.dp) }
     val borderStroke = remember { 0.5.dp }
@@ -325,6 +321,15 @@ private fun ColorSlider(
     val hapticFeedback = LocalHapticFeedback.current
     val hapticState = remember { SliderHapticState() }
     val currentOnValueChanged by rememberUpdatedState(onValueChanged)
+
+    val gradientBrush = remember(drawBrushColors, sliderWidthPx, halfSliderHeightPx) {
+        Brush.horizontalGradient(
+            colors = drawBrushColors,
+            startX = halfSliderHeightPx,
+            endX = sliderWidthPx - halfSliderHeightPx,
+            tileMode = TileMode.Clamp
+        )
+    }
 
     val dragHandler = remember(currentOnValueChanged, sliderHeightPx) {
         { posX: Float, width: Float ->
@@ -368,15 +373,7 @@ private fun ColorSlider(
             modifier = canvasModifier
         ) {
             drawBackground?.invoke(this, size.width, size.height)
-
-            Brush.horizontalGradient(
-                colors = drawBrushColors,
-                startX = halfSliderHeightPx,
-                endX = size.width - halfSliderHeightPx,
-                tileMode = TileMode.Clamp
-            ).let {
-                drawRect(it)
-            }
+            drawRect(gradientBrush)
         }
 
         SliderIndicator(
