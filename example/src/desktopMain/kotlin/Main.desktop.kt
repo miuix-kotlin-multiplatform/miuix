@@ -11,6 +11,7 @@ import androidx.compose.ui.window.rememberWindowState
 import org.jetbrains.compose.resources.painterResource
 import top.yukonga.miuix.kmp.example.generated.resources.Res
 import top.yukonga.miuix.kmp.example.generated.resources.icon
+import java.awt.Dimension
 
 fun main() =
     application {
@@ -25,6 +26,7 @@ fun main() =
             title = "Miuix",
             icon = painterResource(Res.drawable.icon),
         ) {
+            window.minimumSize = Dimension(300, 600)
             App()
         }
     }
