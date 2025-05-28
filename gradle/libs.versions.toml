@@ -7,7 +7,7 @@ compose-plugin = "1.8.1"
 dokka = "2.0.0"
 haze = "1.7.0-SNAPSHOT"
 kotlin = "2.1.21"
-spotless = "7.0.3"
+spotless = "7.0.4"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
