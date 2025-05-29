@@ -178,9 +178,9 @@ fun MainPage(
             ) {
                 LazyColumn(
                     modifier = Modifier
-                        .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
+                        .overScrollVertical()
                         .scrollEndHaptic()
-                        .weight(1f),
+                        .weight(0.5f),
                     contentPadding = PaddingValues(top = padding.calculateTopPadding())
                 ) {
                     item {
@@ -232,9 +232,7 @@ fun MainPage(
                         }
                     }
                     if (!expanded) {
-                        item(
-                            key = "other"
-                        ) {
+                        item {
                             otherComponent()
                             Spacer(modifier = Modifier.height(6.dp))
                         }
@@ -242,15 +240,13 @@ fun MainPage(
                 }
                 LazyColumn(
                     modifier = Modifier
-                        .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
+                        .overScrollVertical()
                         .scrollEndHaptic()
                         .padding(end = 12.dp, bottom = 12.dp)
-                        .weight(1f),
+                        .weight(0.5f),
                     contentPadding = PaddingValues(top = padding.calculateTopPadding())
                 ) {
-                    item(
-                        key = "text"
-                    ) {
+                    item {
                         textComponent()
                         Spacer(modifier = Modifier.height(padding.calculateBottomPadding()))
                     }
