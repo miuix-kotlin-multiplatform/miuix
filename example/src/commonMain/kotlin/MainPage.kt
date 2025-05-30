@@ -39,6 +39,7 @@ import top.yukonga.miuix.kmp.basic.SearchBar
 import top.yukonga.miuix.kmp.basic.SmallTitle
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.getWindowSize
 import top.yukonga.miuix.kmp.utils.overScrollVertical
 import top.yukonga.miuix.kmp.utils.scrollEndHaptic
 
@@ -110,7 +111,8 @@ fun MainPage(
                         if (scrollEndHaptic) Modifier.scrollEndHaptic() else Modifier
                     )
                     .overScrollVertical()
-                    .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+                    .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
+                    .height(getWindowSize().height.dp),
                 contentPadding = PaddingValues(top = padding.calculateTopPadding()),
                 overscrollEffect = null
             ) {
@@ -146,15 +148,11 @@ fun MainPage(
                         expanded = expanded,
                         onExpandedChange = { expanded = it }
                     ) {
-                        Column(
-                            Modifier.fillParentMaxHeight()
-                        ) {
+                        Column {
                             repeat(4) { idx ->
                                 val resultText = "Suggestion $idx"
                                 BasicComponent(
                                     title = resultText,
-                                    modifier = Modifier
-                                        .fillMaxWidth(),
                                     onClick = {
                                         searchValue = resultText
                                         expanded = false

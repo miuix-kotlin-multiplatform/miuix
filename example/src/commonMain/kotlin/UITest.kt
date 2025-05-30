@@ -95,7 +95,6 @@ data class UIState(
     val showFloatingActionButton: Boolean = false,
     val floatingActionButtonPosition: Int = 2,
     val enablePageUserScroll: Boolean = false,
-    val isTopPopupExpanded: Boolean = false,
     val scrollEndHaptic: Boolean = true
 )
 
@@ -146,9 +145,7 @@ fun UITest(
                     hazeStyle = hazeStyle,
                     currentScrollBehavior = currentScrollBehavior,
                     items = navigationItem,
-                    isTopPopupExpanded = uiState.isTopPopupExpanded,
                     showTopPopup = showTopPopup,
-                    onPopupExpandedChange = { uiState = uiState.copy(isTopPopupExpanded = it) },
                     onPageSelected = { page ->
                         selectedPage = page
                         coroutineScope.launch {
@@ -351,13 +348,9 @@ private fun AppTopBar(
     hazeStyle: HazeStyle,
     currentScrollBehavior: ScrollBehavior,
     items: List<NavigationItem>,
-    isTopPopupExpanded: Boolean,
     showTopPopup: MutableState<Boolean>,
-    onPopupExpandedChange: (Boolean) -> Unit,
     onPageSelected: (Int) -> Unit
 ) {
-    LocalHapticFeedback.current
-
     BoxWithConstraints {
         if (maxWidth > 840.dp) {
             SmallTopAppBar(
@@ -373,9 +366,7 @@ private fun AppTopBar(
                     TopAppBarActions(
                         selectedPage = selectedPage,
                         items = items,
-                        isTopPopupExpanded = isTopPopupExpanded,
                         showTopPopup = showTopPopup,
-                        onPopupExpandedChange = onPopupExpandedChange,
                         onPageSelected = onPageSelected
                     )
                 }
@@ -395,9 +386,7 @@ private fun AppTopBar(
                     TopAppBarActions(
                         selectedPage = selectedPage,
                         items = items,
-                        isTopPopupExpanded = isTopPopupExpanded,
                         showTopPopup = showTopPopup,
-                        onPopupExpandedChange = onPopupExpandedChange,
                         onPageSelected = onPageSelected
                     )
                 }
@@ -410,50 +399,43 @@ private fun AppTopBar(
 private fun TopAppBarActions(
     selectedPage: Int,
     items: List<NavigationItem>,
-    isTopPopupExpanded: Boolean,
     showTopPopup: MutableState<Boolean>,
-    onPopupExpandedChange: (Boolean) -> Unit,
     onPageSelected: (Int) -> Unit
 ) {
     val hapticFeedback = LocalHapticFeedback.current
 
-    if (isTopPopupExpanded) {
-        ListPopup(
-            show = showTopPopup,
-            popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
-            alignment = PopupPositionProvider.Align.TopRight,
-            onDismissRequest = {
-                showTopPopup.value = false
-                onPopupExpandedChange(false)
-            },
-            enableWindowDim = false
-        ) {
-            ListPopupColumn {
-                items.forEachIndexed { index, navigationItem ->
-                    DropdownImpl(
-                        text = navigationItem.label,
-                        optionSize = items.size,
-                        isSelected = index == selectedPage,
-                        onSelectedIndexChange = {
-                            onPageSelected(index)
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
-                            showTopPopup.value = false
-                            onPopupExpandedChange(false)
-                        },
-                        index = index
-                    )
-                }
+    ListPopup(
+        show = showTopPopup,
+        popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
+        alignment = PopupPositionProvider.Align.TopRight,
+        onDismissRequest = {
+            showTopPopup.value = false
+        },
+        enableWindowDim = false
+    ) {
+        ListPopupColumn {
+            items.forEachIndexed { index, navigationItem ->
+                DropdownImpl(
+                    text = navigationItem.label,
+                    optionSize = items.size,
+                    isSelected = index == selectedPage,
+                    onSelectedIndexChange = {
+                        onPageSelected(index)
+                        hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
+                        showTopPopup.value = false
+                    },
+                    index = index
+                )
             }
         }
-        showTopPopup.value = true
     }
 
     IconButton(
         modifier = Modifier.padding(end = 20.dp),
         onClick = {
-            onPopupExpandedChange(true)
+            showTopPopup.value = true
         },
-        holdDownState = isTopPopupExpanded
+        holdDownState = showTopPopup.value
     ) {
         Icon(
             imageVector = MiuixIcons.Useful.ImmersionMore,
