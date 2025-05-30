@@ -81,34 +81,23 @@ fun ListPopup(
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
 
-    val displayCutoutPaddings = WindowInsets.displayCutout.asPaddingValues()
-    val statusBarsPaddings = WindowInsets.statusBars.asPaddingValues()
-    val navigationBarsPaddings = WindowInsets.navigationBars.asPaddingValues()
-    val captionBarPaddings = WindowInsets.captionBar.asPaddingValues()
-
     val getWindowSizeState = rememberUpdatedState(getWindowSize())
     var windowSize by remember { mutableStateOf(IntSize(getWindowSizeState.value.width, getWindowSizeState.value.height)) }
     var parentBounds by remember { mutableStateOf(IntRect.Zero) }
 
-    val rememberedWindowBounds = remember(
-        windowSize,
-        layoutDirection,
-        density,
-        displayCutoutPaddings,
-        statusBarsPaddings,
-        navigationBarsPaddings,
-        captionBarPaddings
-    ) {
+    val windowBounds by rememberUpdatedState(
         with(density) {
             IntRect(
-                left = displayCutoutPaddings.calculateLeftPadding(layoutDirection).roundToPx(),
-                top = statusBarsPaddings.calculateTopPadding().roundToPx(),
-                right = windowSize.width - displayCutoutPaddings.calculateRightPadding(layoutDirection).roundToPx(),
-                bottom = windowSize.height - navigationBarsPaddings.calculateBottomPadding()
-                    .roundToPx() - captionBarPaddings.calculateBottomPadding().roundToPx()
+                left = WindowInsets.displayCutout.asPaddingValues(density).calculateLeftPadding(layoutDirection).roundToPx(),
+                top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding().roundToPx(),
+                right = windowSize.width -
+                        WindowInsets.displayCutout.asPaddingValues(density).calculateRightPadding(layoutDirection).roundToPx(),
+                bottom = windowSize.height -
+                        WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().roundToPx() -
+                        WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().roundToPx()
             )
         }
-    }
+    )
 
     var popupContentSize by remember { mutableStateOf(IntSize.Zero) }
 
@@ -181,7 +170,7 @@ fun ListPopup(
             maxHeight,
             popupPositionProvider,
             parentBounds,
-            rememberedWindowBounds,
+            windowBounds,
             layoutDirection,
             rememberedPopupMargin,
             alignment,
@@ -199,7 +188,7 @@ fun ListPopup(
                             minWidth = if (minWidth.roundToPx() <= windowSize.width) minWidth.roundToPx() else windowSize.width,
                             minHeight = if (50.dp.roundToPx() <= windowSize.height) 50.dp.roundToPx() else windowSize.height,
                             maxHeight = maxHeight?.roundToPx()?.coerceAtLeast(50.dp.roundToPx())
-                                ?: (rememberedWindowBounds.height - rememberedPopupMargin.top - rememberedPopupMargin.bottom).coerceAtLeast(
+                                ?: (windowBounds.height - rememberedPopupMargin.top - rememberedPopupMargin.bottom).coerceAtLeast(
                                     50.dp.roundToPx()
                                 ),
                             maxWidth = if (minWidth.roundToPx() <= windowSize.width) windowSize.width else minWidth.roundToPx()
@@ -212,7 +201,7 @@ fun ListPopup(
 
                     val calculatedOffset = popupPositionProvider.calculatePosition(
                         parentBounds,
-                        rememberedWindowBounds,
+                        windowBounds,
                         layoutDirection,
                         measuredSize,
                         rememberedPopupMargin,
