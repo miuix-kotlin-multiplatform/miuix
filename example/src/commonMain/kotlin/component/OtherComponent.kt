@@ -20,9 +20,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,9 +30,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -100,32 +100,7 @@ import top.yukonga.miuix.kmp.utils.PressFeedbackType
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import kotlin.math.round
 
-@Composable
-fun OtherComponent(padding: PaddingValues) {
-    var buttonText by remember { mutableStateOf("Cancel") }
-    var submitButtonText by remember { mutableStateOf("Submit") }
-    var clickCount by remember { mutableStateOf(0) }
-    var submitClickCount by remember { mutableStateOf(0) }
-    val hapticFeedback = LocalHapticFeedback.current
-    val focusManager = LocalFocusManager.current
-    var text1 by remember { mutableStateOf("") }
-    var text2 by remember { mutableStateOf(TextFieldValue("")) }
-    var text3 by remember { mutableStateOf("") }
-    var progress by remember { mutableStateOf(0.5f) }
-    var progressHaptic by remember { mutableStateOf(0.5f) }
-    val animatedProgressValue by rememberInfiniteTransition().animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1000),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
-    val progressValues = remember { listOf(0.0f, 0.25f, 0.5f, 0.75f, 1.0f, null) }
-    val progressDisable by remember { mutableStateOf(0.5f) }
-    val tabTexts = listOf("Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6")
-    var selectedTabIndex by remember { mutableStateOf(0) }
-    var selectedTabIndex1 by remember { mutableStateOf(0) }
+fun LazyListScope.otherComponent(focusManager: FocusManager, padding: PaddingValues) {
     val miuixIconsNormal = listOf(
         MiuixIcons.Useful.AddSecret,
         MiuixIcons.Useful.Back,
@@ -168,323 +143,382 @@ fun OtherComponent(padding: PaddingValues) {
         MiuixIcons.Useful.Unstick,
         MiuixIcons.Useful.Update
     )
-    val miuixColor = MiuixTheme.colorScheme.primary
-    var selectedColor by remember { mutableStateOf(miuixColor) }
 
-    SmallTitle(text = "Button")
-    Row(
-        modifier = Modifier
-            .padding(horizontal = 12.dp)
-            .padding(bottom = 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        TextButton(
-            text = buttonText,
-            onClick = {
-                clickCount++
-                buttonText = "Click: $clickCount"
-            },
-            modifier = Modifier.weight(1f)
-        )
-        Spacer(Modifier.width(12.dp))
-        TextButton(
-            text = submitButtonText,
-            onClick = {
-                submitClickCount++
-                submitButtonText = "Click: $submitClickCount"
-            },
-            modifier = Modifier.weight(1f),
-            colors = ButtonDefaults.textButtonColorsPrimary()
-        )
-    }
+    item {
+        var buttonText by remember { mutableStateOf("Cancel") }
+        var submitButtonText by remember { mutableStateOf("Submit") }
+        var clickCount by remember { mutableStateOf(0) }
+        var submitClickCount by remember { mutableStateOf(0) }
 
-    Row(
-        modifier = Modifier
-            .padding(horizontal = 12.dp)
-            .padding(bottom = 6.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        TextButton(
-            text = "Disabled",
-            onClick = {},
-            modifier = Modifier.weight(1f),
-            enabled = false
-        )
-        Spacer(Modifier.width(12.dp))
-        TextButton(
-            text = "Disabled",
-            onClick = {},
-            enabled = false,
-            modifier = Modifier.weight(1f),
-            colors = ButtonDefaults.textButtonColorsPrimary()
-        )
-    }
-
-    SmallTitle(text = "ProgressIndicator")
-    LinearProgressIndicator(
-        progress = animatedProgressValue,
-        modifier = Modifier
-            .padding(horizontal = 15.dp)
-            .padding(bottom = 12.dp)
-    )
-    progressValues.forEach { progressValue ->
-        LinearProgressIndicator(
-            progress = progressValue,
+        SmallTitle(text = "Button")
+        Row(
             modifier = Modifier
-                .padding(horizontal = 15.dp) // Increased from 12.dp.
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            TextButton(
+                text = buttonText,
+                onClick = {
+                    clickCount++
+                    buttonText = "Click: $clickCount"
+                },
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(Modifier.width(12.dp))
+            TextButton(
+                text = submitButtonText,
+                onClick = {
+                    submitClickCount++
+                    submitButtonText = "Click: $submitClickCount"
+                },
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.textButtonColorsPrimary()
+            )
+        }
+    }
+
+    item {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 6.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            TextButton(
+                text = "Disabled",
+                onClick = {},
+                modifier = Modifier.weight(1f),
+                enabled = false
+            )
+            Spacer(Modifier.width(12.dp))
+            TextButton(
+                text = "Disabled",
+                onClick = {},
+                enabled = false,
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.textButtonColorsPrimary()
+            )
+        }
+    }
+
+    item {
+        SmallTitle(text = "ProgressIndicator")
+        val progressValues = listOf(0.0f, 0.25f, 0.5f, 0.75f, 1.0f, null)
+        val animatedProgressValue by rememberInfiniteTransition().animateFloat(
+            initialValue = 0f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(1000),
+                repeatMode = RepeatMode.Reverse
+            )
+        )
+
+        LinearProgressIndicator(
+            progress = animatedProgressValue,
+            modifier = Modifier
+                .padding(horizontal = 15.dp)
+                .padding(bottom = 12.dp)
+        )
+        progressValues.forEach { progressValue ->
+            LinearProgressIndicator(
+                progress = progressValue,
+                modifier = Modifier
+                    .padding(horizontal = 15.dp) // Increased from 12.dp.
+                    .padding(bottom = 12.dp)
+            )
+        }
+        FlowRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 6.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+        ) {
+            CircularProgressIndicator(
+                progress = animatedProgressValue
+            )
+            progressValues.forEach { progressValue ->
+                CircularProgressIndicator(
+                    progress = progressValue
+                )
+            }
+            InfiniteProgressIndicator(
+                modifier = Modifier
+                    .align(alignment = Alignment.CenterVertically)
+            )
+        }
+    }
+
+    item {
+        var text1 by remember { mutableStateOf("") }
+
+        SmallTitle(text = "TextField")
+        TextField(
+            value = text1,
+            onValueChange = { text1 = it },
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 12.dp),
+            keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
+        )
+    }
+    item {
+        var text2 by remember { mutableStateOf(TextFieldValue("")) }
+
+        TextField(
+            value = text2,
+            onValueChange = { text2 = it },
+            label = "Text Field",
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 12.dp),
+            keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
+        )
+    }
+
+    item {
+        var text3 by remember { mutableStateOf("") }
+
+        TextField(
+            value = text3,
+            onValueChange = { text3 = it },
+            label = "Placeholder & SingleLine",
+            useLabelAsPlaceholder = true,
+            singleLine = true,
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 6.dp),
+            keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
+        )
+    }
+
+    item {
+        SmallTitle(text = "Slider")
+        var progress by remember { mutableStateOf(0.5f) }
+        Slider(
+            progress = progress,
+            onProgressChange = { newProgress -> progress = newProgress },
+            decimalPlaces = 3,
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
                 .padding(bottom = 12.dp)
         )
     }
 
-    FlowRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp)
-            .padding(bottom = 6.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-    ) {
-        CircularProgressIndicator(
-            progress = animatedProgressValue
+    item {
+        var progressHaptic by remember { mutableStateOf(0.5f) }
+        Slider(
+            progress = progressHaptic,
+            onProgressChange = { newProgress -> progressHaptic = newProgress },
+            hapticEffect = SliderDefaults.SliderHapticEffect.Step,
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 12.dp)
         )
-        progressValues.forEach { progressValue ->
-            CircularProgressIndicator(
-                progress = progressValue
+    }
+
+    item {
+        val progressDisable by remember { mutableStateOf(0.5f) }
+        Slider(
+            progress = progressDisable,
+            onProgressChange = {},
+            enabled = false,
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 6.dp)
+        )
+    }
+
+    item {
+        SmallTitle(text = "TabRow")
+        val tabTexts = listOf("Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6")
+        var selectedTabIndex by remember { mutableStateOf(0) }
+        var selectedTabIndex1 by remember { mutableStateOf(0) }
+        TabRow(
+            tabs = tabTexts,
+            selectedTabIndex = selectedTabIndex,
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 12.dp)
+        ) {
+            selectedTabIndex = it
+        }
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 6.dp),
+            insideMargin = PaddingValues(16.dp)
+        ) {
+            TabRowWithContour(
+                tabs = tabTexts,
+                selectedTabIndex = selectedTabIndex1,
+            ) {
+                selectedTabIndex1 = it
+            }
+            Text(
+                text = "Selected Tab: ${tabTexts[selectedTabIndex1]}",
+                modifier = Modifier.padding(top = 12.dp)
             )
         }
-        InfiniteProgressIndicator(
+    }
+
+    item {
+        SmallTitle(text = "Icon")
+        Card(
             modifier = Modifier
-                .align(alignment = Alignment.CenterVertically)
-        )
-    }
-
-    SmallTitle(text = "TextField")
-    TextField(
-        value = text1,
-        onValueChange = { text1 = it },
-        modifier = Modifier
-            .padding(horizontal = 12.dp)
-            .padding(bottom = 12.dp),
-        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
-    )
-
-    TextField(
-        value = text2,
-        onValueChange = { text2 = it },
-        label = "Text Field",
-        modifier = Modifier
-            .padding(horizontal = 12.dp)
-            .padding(bottom = 12.dp),
-        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
-    )
-
-    TextField(
-        value = text3,
-        onValueChange = { text3 = it },
-        label = "Placeholder & SingleLine",
-        useLabelAsPlaceholder = true,
-        singleLine = true,
-        modifier = Modifier
-            .padding(horizontal = 12.dp)
-            .padding(bottom = 6.dp),
-        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
-    )
-
-    SmallTitle(text = "Slider")
-    Slider(
-        progress = progress,
-        onProgressChange = { newProgress -> progress = newProgress },
-        decimalPlaces = 3,
-        modifier = Modifier
-            .padding(horizontal = 12.dp)
-            .padding(bottom = 12.dp)
-    )
-
-    Slider(
-        progress = progressHaptic,
-        onProgressChange = { newProgress -> progressHaptic = newProgress },
-        hapticEffect = SliderDefaults.SliderHapticEffect.Step,
-        modifier = Modifier
-            .padding(horizontal = 12.dp)
-            .padding(bottom = 12.dp)
-    )
-
-    Slider(
-        progress = progressDisable,
-        onProgressChange = {},
-        enabled = false,
-        modifier = Modifier
-            .padding(horizontal = 12.dp)
-            .padding(bottom = 6.dp)
-    )
-
-    SmallTitle(text = "TabRow")
-    TabRow(
-        tabs = tabTexts,
-        selectedTabIndex = selectedTabIndex,
-        modifier = Modifier
-            .padding(horizontal = 12.dp)
-            .padding(bottom = 12.dp)
-    ) {
-        selectedTabIndex = it
-    }
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp)
-            .padding(bottom = 6.dp),
-        insideMargin = PaddingValues(16.dp)
-    ) {
-        TabRowWithContour(
-            tabs = tabTexts,
-            selectedTabIndex = selectedTabIndex1,
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 6.dp),
+            insideMargin = PaddingValues(16.dp)
         ) {
-            selectedTabIndex1 = it
-        }
-        Text(
-            text = "Selected Tab: ${tabTexts[selectedTabIndex1]}",
-            modifier = Modifier.padding(top = 12.dp)
-        )
-    }
-
-    SmallTitle(text = "Icon")
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp)
-            .padding(bottom = 6.dp),
-        insideMargin = PaddingValues(16.dp)
-    ) {
-        FlowRow {
-            miuixIconsNormal.forEach { icon ->
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = if (icon != MiuixIcons.Useful.Like) MiuixTheme.colorScheme.onBackground else Color.Unspecified,
-                    modifier = Modifier.size(24.dp)
-                )
+            FlowRow {
+                miuixIconsNormal.forEach { icon ->
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = if (icon != MiuixIcons.Useful.Like) MiuixTheme.colorScheme.onBackground else Color.Unspecified,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
         }
     }
 
-    SmallTitle(text = "ColorPicker")
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp)
-            .padding(bottom = 6.dp),
-        insideMargin = PaddingValues(16.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(bottom = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
+    item {
+        SmallTitle(text = "ColorPicker")
+        val miuixColor = MiuixTheme.colorScheme.primary
+        var selectedColor by remember { mutableStateOf(miuixColor) }
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 6.dp),
+            insideMargin = PaddingValues(16.dp)
+        ) {
+            Row(
+                modifier = Modifier.padding(bottom = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Selected Color:\nRGBA: " +
+                            "${(selectedColor.red * 255).toInt()}," +
+                            "${(selectedColor.green * 255).toInt()}," +
+                            "${(selectedColor.blue * 255).toInt()}," +
+                            "${(round(selectedColor.alpha * 100) / 100.0)}" +
+                            "\nHEX: #" +
+                            (selectedColor.alpha * 255).toInt().toString(16).padStart(2, '0')
+                                .uppercase() +
+                            (selectedColor.red * 255).toInt().toString(16).padStart(2, '0')
+                                .uppercase() +
+                            (selectedColor.green * 255).toInt().toString(16).padStart(2, '0')
+                                .uppercase() +
+                            (selectedColor.blue * 255).toInt().toString(16).padStart(2, '0')
+                                .uppercase(),
+                    modifier = Modifier.weight(1f)
+                )
+                Spacer(Modifier.width(12.dp))
+                Box(
+                    modifier = Modifier
+                        .height(60.dp)
+                        .width(100.dp)
+                        .align(Alignment.CenterVertically)
+                        .clip(SmoothRoundedCornerShape(12.dp))
+                        .background(selectedColor)
+                )
+            }
+
+            ColorPicker(
+                initialColor = selectedColor,
+                onColorChanged = { selectedColor = it },
+                showPreview = false,
+                hapticEffect = SliderDefaults.SliderHapticEffect.Step
+            )
+        }
+    }
+
+    item {
+        SmallTitle(text = "Card")
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 12.dp),
+            color = MiuixTheme.colorScheme.primaryVariant,
+            insideMargin = PaddingValues(16.dp),
+            pressFeedbackType = PressFeedbackType.None,
+            showIndication = true,
+            onClick = { }
         ) {
             Text(
-                text = "Selected Color:\nRGBA: " +
-                        "${(selectedColor.red * 255).toInt()}," +
-                        "${(selectedColor.green * 255).toInt()}," +
-                        "${(selectedColor.blue * 255).toInt()}," +
-                        "${(round(selectedColor.alpha * 100) / 100.0)}" +
-                        "\nHEX: #" +
-                        (selectedColor.alpha * 255).toInt().toString(16).padStart(2, '0').uppercase() +
-                        (selectedColor.red * 255).toInt().toString(16).padStart(2, '0').uppercase() +
-                        (selectedColor.green * 255).toInt().toString(16).padStart(2, '0').uppercase() +
-                        (selectedColor.blue * 255).toInt().toString(16).padStart(2, '0').uppercase(),
-                modifier = Modifier.weight(1f)
+                color = MiuixTheme.colorScheme.onPrimary,
+                text = "Card",
+                fontSize = 19.sp,
+                fontWeight = FontWeight.SemiBold
             )
-            Spacer(Modifier.width(12.dp))
-            Box(
-                modifier = Modifier
-                    .height(60.dp)
-                    .width(100.dp)
-                    .align(Alignment.CenterVertically)
-                    .clip(SmoothRoundedCornerShape(12.dp))
-                    .background(selectedColor)
+            Text(
+                color = MiuixTheme.colorScheme.onPrimaryVariant,
+                text = "ShowIndication: true",
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Normal
             )
         }
-
-        ColorPicker(
-            initialColor = selectedColor,
-            onColorChanged = { selectedColor = it },
-            showPreview = false,
-            hapticEffect = SliderDefaults.SliderHapticEffect.Step
-        )
     }
 
-    SmallTitle(text = "Card")
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp)
-            .padding(bottom = 12.dp),
-        color = MiuixTheme.colorScheme.primaryVariant,
-        insideMargin = PaddingValues(16.dp),
-        pressFeedbackType = PressFeedbackType.None,
-        showIndication = true,
-        onClick = { }
-    ) {
-        Text(
-            color = MiuixTheme.colorScheme.onPrimary,
-            text = "Card",
-            fontSize = 19.sp,
-            fontWeight = FontWeight.SemiBold
-        )
-        Text(
-            color = MiuixTheme.colorScheme.onPrimaryVariant,
-            text = "ShowIndication: true",
-            fontSize = 17.sp,
-            fontWeight = FontWeight.Normal
-        )
-    }
+    item {
+        val hapticFeedback = LocalHapticFeedback.current
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 12.dp + padding.calculateBottomPadding()),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Card(
+                modifier = Modifier.weight(1f),
+                insideMargin = PaddingValues(16.dp),
+                pressFeedbackType = PressFeedbackType.Sink,
+                showIndication = true,
+                onClick = { },
+                content = {
+                    Text(
+                        color = MiuixTheme.colorScheme.onSurface,
+                        text = "Card",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
+                        text = "PressFeedback\nType: Sink",
+                        style = MiuixTheme.textStyles.paragraph
+                    )
+                }
+            )
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp)
-            .padding(bottom = 12.dp + padding.calculateBottomPadding()),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Card(
-            modifier = Modifier.weight(1f),
-            insideMargin = PaddingValues(16.dp),
-            pressFeedbackType = PressFeedbackType.Sink,
-            showIndication = true,
-            onClick = { },
-            content = {
-                Text(
-                    color = MiuixTheme.colorScheme.onSurface,
-                    text = "Card",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium
-                )
-                Text(
-                    color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
-                    text = "PressFeedback\nType: Sink",
-                    style = MiuixTheme.textStyles.paragraph
-                )
-            }
-        )
-
-        Card(
-            modifier = Modifier.weight(1f),
-            insideMargin = PaddingValues(16.dp),
-            pressFeedbackType = PressFeedbackType.Tilt,
-            onLongPress = { hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress) },
-            content = {
-                Text(
-                    color = MiuixTheme.colorScheme.onSurface,
-                    text = "Card",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium
-                )
-                Text(
-                    color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
-                    text = "PressFeedback\nType: Tilt",
-                    style = MiuixTheme.textStyles.paragraph
-                )
-            }
-        )
+            Card(
+                modifier = Modifier.weight(1f),
+                insideMargin = PaddingValues(16.dp),
+                pressFeedbackType = PressFeedbackType.Tilt,
+                onLongPress = { hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress) },
+                content = {
+                    Text(
+                        color = MiuixTheme.colorScheme.onSurface,
+                        text = "Card",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
+                        text = "PressFeedback\nType: Tilt",
+                        style = MiuixTheme.textStyles.paragraph
+                    )
+                }
+            )
+        }
     }
 }

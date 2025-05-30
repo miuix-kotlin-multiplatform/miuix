@@ -6,7 +6,10 @@ package top.yukonga.miuix.kmp.basic
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -137,11 +140,7 @@ fun LinearProgressIndicator(
             )
 
             val minWidth = cornerRadius * 2
-            val progressWidth = if (progressValue == 0f) {
-                minWidth
-            } else {
-                minWidth + (size.width - minWidth) * progressValue
-            }
+            val progressWidth = minWidth + (size.width - minWidth) * progressValue
 
             drawRoundRect(
                 color = currentForegroundColor,
@@ -175,31 +174,28 @@ fun CircularProgressIndicator(
     }
 
     if (progress == null) {
-        val rotationAnim = remember { Animatable(0f) }
-        val sweepAnim = remember { Animatable(30f) }
+        val transition = rememberInfiniteTransition()
 
-        LaunchedEffect(Unit) {
-            rotationAnim.animateTo(
-                targetValue = 360f,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(1000, easing = LinearEasing),
-                    repeatMode = RepeatMode.Restart
-                )
+        val rotationAnim by transition.animateFloat(
+            initialValue = 0f,
+            targetValue = 360f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(1000, easing = LinearEasing),
+                repeatMode = RepeatMode.Restart
             )
-        }
-
-        LaunchedEffect(Unit) {
-            while (true) {
-                sweepAnim.animateTo(
-                    targetValue = 120f,
-                    animationSpec = tween(800, easing = LinearEasing)
-                )
-                sweepAnim.animateTo(
-                    targetValue = 30f,
-                    animationSpec = tween(800, easing = LinearEasing)
-                )
-            }
-        }
+        )
+        val sweepAnim by transition.animateFloat(
+            initialValue = 30f,
+            targetValue = 120f,
+            animationSpec = infiniteRepeatable(
+                animation = keyframes {
+                    durationMillis = 1600
+                    120f at 800 using LinearEasing
+                    30f at 1600 using LinearEasing
+                },
+                repeatMode = RepeatMode.Restart
+            )
+        )
 
         Canvas(modifier = canvasModifier) {
             val currentBackgroundColor = colors.backgroundColor()
@@ -216,43 +212,14 @@ fun CircularProgressIndicator(
                 style = Stroke(width = strokeWidthPx)
             )
 
-            val startAngle = rotationAnim.value
-            val sweepAngle = sweepAnim.value
-
             drawArc(
                 color = currentForegroundColor,
-                startAngle = startAngle,
-                sweepAngle = sweepAngle,
+                startAngle = rotationAnim,
+                sweepAngle = sweepAnim,
                 useCenter = false,
                 topLeft = Offset(strokeWidthPx / 2, strokeWidthPx / 2),
                 size = Size(2 * radius, 2 * radius),
-                style = Stroke(width = strokeWidthPx)
-            )
-
-            val halfStroke = strokeWidthPx / 2
-
-            val startRadians = startAngle * (PI / 180f).toFloat()
-            val startCapCenter = Offset(
-                center.x + radius * cos(startRadians),
-                center.y + radius * sin(startRadians)
-            )
-
-            val endRadians = (startAngle + sweepAngle) * (PI / 180f).toFloat()
-            val endCapCenter = Offset(
-                center.x + radius * cos(endRadians),
-                center.y + radius * sin(endRadians)
-            )
-
-            drawCircle(
-                color = currentForegroundColor,
-                radius = halfStroke,
-                center = startCapCenter
-            )
-
-            drawCircle(
-                color = currentForegroundColor,
-                radius = halfStroke,
-                center = endCapCenter
+                style = Stroke(width = strokeWidthPx, cap = StrokeCap.Round),
             )
         }
     } else {
@@ -274,11 +241,7 @@ fun CircularProgressIndicator(
 
             val minSweepAngle = 0.1f
 
-            val sweepAngle = if (progressValue == 0f) {
-                minSweepAngle
-            } else {
-                minSweepAngle + (360f - minSweepAngle) * progressValue
-            }
+            val sweepAngle = minSweepAngle + (360f - minSweepAngle) * progressValue
 
             drawArc(
                 color = currentForegroundColor,
@@ -287,28 +250,7 @@ fun CircularProgressIndicator(
                 useCenter = false,
                 topLeft = Offset(strokeWidthPx / 2, strokeWidthPx / 2),
                 size = Size(2 * radius, 2 * radius),
-                style = Stroke(width = strokeWidthPx)
-            )
-
-            // Draw start and end caps
-            val startCapCenter = Offset(center.x, center.y - radius)
-
-            val endRadians = (-90f + sweepAngle) * (PI / 180f).toFloat()
-            val endCapCenter = Offset(
-                center.x + radius * cos(endRadians),
-                center.y + radius * sin(endRadians)
-            )
-
-            drawCircle(
-                color = currentForegroundColor,
-                radius = strokeWidthPx / 2,
-                center = startCapCenter
-            )
-
-            drawCircle(
-                color = currentForegroundColor,
-                radius = strokeWidthPx / 2,
-                center = endCapCenter
+                style = Stroke(width = strokeWidthPx, cap = StrokeCap.Round)
             )
         }
     }

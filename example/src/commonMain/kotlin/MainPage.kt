@@ -25,12 +25,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import component.OtherComponent
 import component.TextComponent
+import component.otherComponent
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.InputField
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
@@ -97,11 +98,11 @@ fun MainPage(
             superSwitchAnimState
         )
     }
-    val otherComponent = @Composable { OtherComponent(padding) }
 
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize()
     ) {
+        val focusManager = LocalFocusManager.current
         if (maxWidth < 840.dp) {
             LazyColumn(
                 modifier = Modifier
@@ -166,8 +167,8 @@ fun MainPage(
                 if (!expanded) {
                     item {
                         textComponent()
-                        otherComponent()
                     }
+                    otherComponent(focusManager, padding)
                 }
             }
         } else {
@@ -232,8 +233,8 @@ fun MainPage(
                         }
                     }
                     if (!expanded) {
+                        otherComponent(focusManager, padding)
                         item {
-                            otherComponent()
                             Spacer(modifier = Modifier.height(6.dp))
                         }
                     }
