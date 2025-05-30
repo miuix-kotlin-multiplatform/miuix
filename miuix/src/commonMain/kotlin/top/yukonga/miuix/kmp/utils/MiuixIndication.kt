@@ -4,6 +4,7 @@
 package top.yukonga.miuix.kmp.utils
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Indication
 import androidx.compose.foundation.IndicationNodeFactory
@@ -22,11 +23,11 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction
 
-private const val ANIMATION_DURATION_MS = 150
+private const val ANIM_DURATION_MS = 120
 private const val HOVER_ALPHA_DELTA = 0.06f
 private const val FOCUS_ALPHA_DELTA = 0.08f
-private const val PRESS_ALPHA_DELTA = 0.1f
-private const val HOLD_DOWN_ALPHA_DELTA = 0.1f
+private const val PRESS_ALPHA_DELTA = 0.10f
+private const val HOLD_DOWN_ALPHA_DELTA = 0.10f
 
 /**
  * Miuix default [Indication] that draws a rectangular overlay when pressed.
@@ -73,7 +74,10 @@ class MiuixIndication(
                     coroutineScope.launch {
                         if (coroutineContext.isActive) {
                             pressedAnimation?.join()
-                            animatedAlpha.animateTo(0f, tween(ANIMATION_DURATION_MS))
+                            animatedAlpha.animateTo(
+                                targetValue = targetAlpha.coerceIn(0f, 0.10f),
+                                animationSpec = tween(durationMillis = ANIM_DURATION_MS, easing = LinearEasing)
+                            )
                         }
                     }
             } else {
@@ -81,7 +85,10 @@ class MiuixIndication(
                 restingAnimation?.cancel()
                 pressedAnimation =
                     coroutineScope.launch {
-                        animatedAlpha.animateTo(targetAlpha, tween(ANIMATION_DURATION_MS))
+                        animatedAlpha.animateTo(
+                            targetValue = targetAlpha.coerceIn(0f, 0.10f),
+                            animationSpec = tween(durationMillis = ANIM_DURATION_MS, easing = LinearEasing)
+                        )
                     }
             }
         }
