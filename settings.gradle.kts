@@ -28,7 +28,6 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
-        maven("https://raw.githubusercontent.com/miuix-kotlin-multiplatform/maven-repository/main/repository/snapshots")
     }
 }
 
