@@ -36,7 +36,7 @@ fun SecondPage(
 
     val dropdownOptions = listOf("Option 1", "Option 2", "Option 3", "Option 4")
     val dropdownSelectedOption = remember { mutableStateOf(0) }
-    var ii = remember { mutableStateOf(10) }
+    var ii = remember { mutableStateOf(8) }
 
     LaunchedEffect(pullToRefreshState.isRefreshing) {
         if (pullToRefreshState.isRefreshing) {
@@ -50,7 +50,7 @@ fun SecondPage(
 
     PullToRefresh(
         pullToRefreshState = pullToRefreshState,
-        onRefresh = { ii.value++ },
+        onRefresh = { ii.value += 4 },
         contentPadding = PaddingValues(top = padding.calculateTopPadding())
     ) {
         LazyColumn(

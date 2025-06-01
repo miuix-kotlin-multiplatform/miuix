@@ -74,6 +74,8 @@ fun ListPopup(
     minWidth: Dp = 200.dp,
     content: @Composable () -> Unit
 ) {
+    if (!show.value) return
+
     val currentOnDismissRequest by rememberUpdatedState(onDismissRequest)
     val currentContent by rememberUpdatedState(content)
 
@@ -159,7 +161,7 @@ fun ListPopup(
         enableWindowDim = enableWindowDim,
         transformOrigin = { rememberedTransformOrigin },
     ) {
-        val currentOffset by rememberUpdatedState(offset) // Used for placement
+        val currentOffset by rememberUpdatedState(offset)
         val shape: Shape = remember { SmoothRoundedCornerShape(16.dp) }
         val rememberedElevationPx = remember(density, shadowElevation) { with(density) { shadowElevation.toPx() } }
 
@@ -177,7 +179,7 @@ fun ListPopup(
             windowSize
         ) {
             popupModifier
-                .pointerInput(currentOnDismissRequest) { // Keyed by the updated state object
+                .pointerInput(currentOnDismissRequest) {
                     detectTapGestures {
                         currentOnDismissRequest?.invoke()
                     }
