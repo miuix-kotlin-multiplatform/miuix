@@ -611,7 +611,7 @@ private fun TopAppBarLayout(
     val navigationBarsInsets = WindowInsets.navigationBars
 
     val layoutModifier = remember(defaultWindowInsetsPadding, statusBarsInsets, captionBarInsets) {
-        modifier
+        Modifier
             .windowInsetsPadding(statusBarsInsets.only(WindowInsetsSides.Top))
             .windowInsetsPadding(captionBarInsets.only(WindowInsetsSides.Top))
             .then(
@@ -619,7 +619,7 @@ private fun TopAppBarLayout(
                     Modifier
                         .windowInsetsPadding(displayCutoutInsets.only(WindowInsetsSides.Horizontal))
                         .windowInsetsPadding(navigationBarsInsets.only(WindowInsetsSides.Horizontal))
-                } else modifier
+                } else Modifier
             )
     }
 
@@ -666,7 +666,8 @@ private fun TopAppBarLayout(
                 }
             }
         },
-        modifier = layoutModifier
+        modifier = modifier
+            .then(layoutModifier)
             .clipToBounds()
             .pointerInput(Unit) { detectVerticalDragGestures { _, _ -> } }
     ) { measurables, constraints ->
@@ -783,7 +784,7 @@ private fun SmallTopAppBarLayout(
     val navigationBarsInsets = WindowInsets.navigationBars
 
     val layoutModifier = remember(defaultWindowInsetsPadding, statusBarsInsets, captionBarInsets) {
-        modifier
+        Modifier
             .windowInsetsPadding(statusBarsInsets.only(WindowInsetsSides.Top))
             .windowInsetsPadding(captionBarInsets.only(WindowInsetsSides.Top))
             .then(
@@ -791,7 +792,7 @@ private fun SmallTopAppBarLayout(
                     Modifier
                         .windowInsetsPadding(displayCutoutInsets.only(WindowInsetsSides.Horizontal))
                         .windowInsetsPadding(navigationBarsInsets.only(WindowInsetsSides.Horizontal))
-                } else modifier
+                } else Modifier
             )
     }
 
@@ -820,7 +821,8 @@ private fun SmallTopAppBarLayout(
                 actions()
             }
         },
-        modifier = layoutModifier
+        modifier = modifier
+            .then(layoutModifier)
             .heightIn(max = 56.dp)
             .pointerInput(Unit) { detectVerticalDragGestures { _, _ -> } }
     ) { measurables, constraints ->
