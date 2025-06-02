@@ -309,12 +309,12 @@ object TabRowDefaults {
     /**
      * The default corner radius of the [TabRow].
      */
-    val TabRowCornerRadius = 8.dp
+    val TabRowCornerRadius = 12.dp
 
     /**
      * The default corner radius of the [TabRow] with contour style.
      */
-    val TabRowWithContourCornerRadius = 10.dp
+    val TabRowWithContourCornerRadius = 8.dp
 
     /**
      * The default minimum width of the [TabRow].
