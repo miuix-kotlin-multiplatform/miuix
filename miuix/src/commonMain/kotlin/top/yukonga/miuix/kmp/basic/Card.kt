@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -148,7 +147,6 @@ fun Card(
                     interactionSource = interactionSource,
                     indication = if (showIndication == true) currentIndication else null
                 )
-                .fillMaxSize()
                 .padding(insideMargin)
         }
         Column(
