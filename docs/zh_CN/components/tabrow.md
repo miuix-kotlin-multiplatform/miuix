@@ -48,6 +48,7 @@ TabRowWithContour(
 | modifier         | Modifier         | 应用于标签行的修饰符 | Modifier                          | 否       |
 | colors           | TabRowColors     | 标签行的颜色配置     | TabRowDefaults.tabRowColors()     | 否       |
 | minWidth         | Dp               | 每个标签的最小宽度   | TabRowDefaults.TabRowMinWidth     | 否       |
+| maxWidth         | Dp               | 每个标签的最大宽度   | TabRowDefaults.TabRowMaxWidth     | 否       |
 | height           | Dp               | 标签行的高度         | TabRowDefaults.TabRowHeight       | 否       |
 | cornerRadius     | Dp               | 标签的圆角半径       | TabRowDefaults.TabRowCornerRadius | 否       |
 | onTabSelected    | ((Int) -> Unit)? | 标签选中时的回调函数 | null                              | 否       |
@@ -61,6 +62,7 @@ TabRowWithContour(
 | modifier         | Modifier         | 应用于标签行的修饰符 | Modifier                                     | 否       |
 | colors           | TabRowColors     | 标签行的颜色配置     | TabRowDefaults.tabRowColors()                | 否       |
 | minWidth         | Dp               | 每个标签的最小宽度   | TabRowDefaults.TabRowWithContourMinWidth     | 否       |
+| maxWidth         | Dp               | 每个标签的最大宽度   | TabRowDefaults.TabRowWithContourMaxWidth     | 否       |
 | height           | Dp               | 标签行的高度         | TabRowDefaults.TabRowHeight                  | 否       |
 | cornerRadius     | Dp               | 标签的圆角半径       | TabRowDefaults.TabRowWithContourCornerRadius | 否       |
 | onTabSelected    | ((Int) -> Unit)? | 标签选中时的回调函数 | null                                         | 否       |
@@ -78,6 +80,8 @@ TabRowDefaults 对象提供了 TabRow 组件的默认配置。
 | TabRowWithContourCornerRadius | Dp   | 10.dp | 带轮廓样式的默认圆角半径     |
 | TabRowMinWidth                | Dp   | 76.dp | 标准样式的每个标签最小宽度   |
 | TabRowWithContourMinWidth     | Dp   | 62.dp | 带轮廓样式的每个标签最小宽度 |
+| TabRowMaxWidth                | Dp   | 98.dp | 标准样式的每个标签最大宽度   |
+| TabRowWithContourMaxWidth     | Dp   | 84.dp | 带轮廓样式的每个标签最大宽度 |
 
 #### 方法
 
