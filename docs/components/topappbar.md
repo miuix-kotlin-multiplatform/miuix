@@ -47,7 +47,7 @@ Scaffold(
             largeTitle = "Large Title", // If not specified, title value will be used
             navigationIcon = {
                 IconButton(onClick = { /* Handle click event */ }) {
-                    Icon(MiuixIcons.Basic.ArrowLeft, contentDescription = "Back")
+                    Icon(MiuixIcons.Useful.Back, contentDescription = "Back")
                 }
             },
             actions = {
@@ -83,7 +83,7 @@ Scaffold(
             // If you want to add the overscroll effect, please add it before the scroll behavior
             .overScrollVertical()
             // Bind TopAppBar scroll behavior
-            .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         contentPadding = PaddingValues(top = paddingValues.calculateTopPadding())
     ) {
         // List content

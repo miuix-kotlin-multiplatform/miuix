@@ -1,5 +1,3 @@
-import androidx.compose.foundation.LocalIndication
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.CanvasBasedWindow
 import kotlinx.browser.document
@@ -12,9 +10,7 @@ fun main() {
     val id = iFrameParams.get("id")
     onWasmReady {
         CanvasBasedWindow(canvasElementId = "ComposeTarget") {
-            CompositionLocalProvider(LocalIndication provides NoIndication) {
-                Demo(demoId = id)
-            }
+            Demo(demoId = id)
         }
     }
 }

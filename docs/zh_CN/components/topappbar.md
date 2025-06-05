@@ -47,7 +47,7 @@ Scaffold(
             largeTitle = "大标题", // 如果不指定，将使用 title 的值
             navigationIcon = {
                 IconButton(onClick = { /* 处理点击事件 */ }) {
-                    Icon(MiuixIcons.Basic.ArrowLeft, contentDescription = "返回")
+                    Icon(MiuixIcons.Useful.Back, contentDescription = "返回")
                 }
             },
             actions = {
@@ -83,7 +83,7 @@ Scaffold(
             // 如需添加越界回弹效果，则应在绑定滚动行为之前添加
             .overScrollVertical()
             // 绑定 TopAppBar 滚动事件
-            .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         contentPadding = PaddingValues(top = paddingValues.calculateTopPadding())
     ) {
         // 列表内容
