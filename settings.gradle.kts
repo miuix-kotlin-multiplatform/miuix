@@ -43,4 +43,7 @@ android {
 }
 
 rootProject.name = "miuix"
-include(":miuix", ":example")
+
+include(":miuix")
+include(":example")
+include(":docs:demo")
