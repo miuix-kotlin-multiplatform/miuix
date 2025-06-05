@@ -40,6 +40,7 @@ private data class AvailableComponent(val name: String, val id: String, val demo
 private val availableComponents = listOf(
     AvailableComponent("Surface", "surface") { SurfaceDemo() },
     AvailableComponent("TopAppBar", "topAppBar") { TopAppBarDemo() },
+    AvailableComponent("NavigationBar", "navigationBar") { NavigationBarDemo() },
     AvailableComponent("Card", "card") { CardDemo() },
     AvailableComponent("Button", "button") { ButtonDemo() },
     AvailableComponent("IconButton", "iconButton") { IconButtonDemo() },
