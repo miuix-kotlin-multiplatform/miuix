@@ -31,7 +31,6 @@ import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.LocalPullToRefreshState
 import top.yukonga.miuix.kmp.basic.RefreshState
 import kotlin.math.abs
-import kotlin.math.exp
 import kotlin.math.sign
 import kotlin.math.sqrt
 
@@ -52,11 +51,9 @@ import kotlin.math.sqrt
 @Stable
 fun parabolaScrollEasing(currentOffset: Float, newOffset: Float, p: Float = 50f, density: Float): Float {
     val realP = p * density
-    val distance = abs(currentOffset + newOffset / 2)
-    val ratio = (realP / (sqrt(realP * distance.coerceAtLeast(Float.MIN_VALUE)))).coerceIn(Float.MIN_VALUE, 1f)
-    val nonLinearRatio = ratio * (1 - exp(-distance / realP))
+    val ratio = (realP / (sqrt(realP * abs(currentOffset + newOffset / 2).coerceAtLeast(Float.MIN_VALUE)))).coerceIn(Float.MIN_VALUE, 1f)
     return if (sign(currentOffset) == sign(newOffset)) {
-        currentOffset + newOffset * nonLinearRatio
+        currentOffset + newOffset * ratio
     } else {
         currentOffset + newOffset
     }
@@ -67,12 +64,12 @@ internal val DefaultParabolaScrollEasing: (currentOffset: Float, newOffset: Floa
     get() {
         val density = LocalDensity.current.density
         return { currentOffset, newOffset ->
-            parabolaScrollEasing(currentOffset, newOffset, density = density)
+            parabolaScrollEasing(currentOffset, newOffset, 20f, density)
         }
     }
 
-internal const val OutBoundSpringStiff = 150f
-internal const val OutBoundSpringDamp = 0.86f
+internal const val OutBoundSpringStiff = 180f
+internal const val OutBoundSpringDamp = 1f
 
 /**
  * @see overScrollOutOfBound
@@ -267,7 +264,8 @@ fun Modifier.overScrollOutOfBound(
                 }
                 lastFlingAnimator = Animatable(offset)
                 lastFlingAnimator.animateTo(
-                    0f, spring(currentSpringDamp, currentSpringStiff, visibilityThreshold),
+                    0f,
+                    spring(currentSpringDamp, currentSpringStiff, visibilityThreshold),
                     if (currentIsVertical) realAvailable.y else realAvailable.x
                 ) {
                     offset = currentScrollEasing(offset, value - offset)
@@ -305,5 +303,5 @@ class OverScrollState {
  *
  * @see OverScrollState
  */
-val LocalOverScrollState = compositionLocalOf<OverScrollState> { OverScrollState() }
+val LocalOverScrollState = compositionLocalOf { OverScrollState() }
 
