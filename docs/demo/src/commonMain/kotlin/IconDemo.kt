@@ -21,6 +21,7 @@ import top.yukonga.miuix.kmp.icon.icons.useful.Edit
 import top.yukonga.miuix.kmp.icon.icons.useful.Personal
 import top.yukonga.miuix.kmp.icon.icons.useful.Rename
 import top.yukonga.miuix.kmp.icon.icons.useful.Settings
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 fun IconDemo() {
@@ -46,11 +47,13 @@ fun IconDemo() {
                 ) {
                     Icon(
                         imageVector = MiuixIcons.Useful.Personal,
-                        contentDescription = "Personal"
+                        contentDescription = "Personal",
+                        tint = MiuixTheme.colorScheme.onBackground
                     )
                     Icon(
                         imageVector = MiuixIcons.Useful.Settings,
-                        contentDescription = "Settings"
+                        contentDescription = "Settings",
+                        tint = MiuixTheme.colorScheme.onBackground
                     )
                     Icon(
                         imageVector = MiuixIcons.Useful.Edit,
