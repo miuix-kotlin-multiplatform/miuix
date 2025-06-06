@@ -40,6 +40,7 @@ fun DividerDemo() {
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(32.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Card(
                     modifier = Modifier.weight(0.5f),

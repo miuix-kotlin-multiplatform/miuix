@@ -51,7 +51,7 @@ fun ScaffoldDemo() {
                 NavigationItem("Profile", MiuixIcons.Useful.Personal),
                 NavigationItem("Settings", MiuixIcons.Useful.Settings)
             )
-            var selectedIndex1 by remember { mutableStateOf(0) }
+            var selectedIndex by remember { mutableStateOf(0) }
             Scaffold(
                 topBar = {
                     SmallTopAppBar(
@@ -61,8 +61,8 @@ fun ScaffoldDemo() {
                 bottomBar = {
                     NavigationBar(
                         items = items,
-                        selected = selectedIndex1,
-                        onClick = { selectedIndex1 = it }
+                        selected = selectedIndex,
+                        onClick = { selectedIndex = it }
                     )
                 },
                 floatingActionButton = {
@@ -73,7 +73,8 @@ fun ScaffoldDemo() {
                     ) {
                         Icon(
                             imageVector = MiuixIcons.Useful.Personal,
-                            contentDescription = "Personal"
+                            contentDescription = "Personal",
+                            tint = Color.White
                         )
                     }
                 }
@@ -85,7 +86,7 @@ fun ScaffoldDemo() {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Current: ${pages[selectedIndex1]}",
+                        text = "Current: ${pages[selectedIndex]}",
                         style = MiuixTheme.textStyles.title1
                     )
                 }

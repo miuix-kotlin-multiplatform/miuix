@@ -52,7 +52,8 @@ fun FloatingActionButtonDemo() {
                         ) {
                             Icon(
                                 imageVector = MiuixIcons.Useful.SelectAll,
-                                contentDescription = "SelectAll"
+                                contentDescription = "SelectAll",
+                                tint = Color.White
                             )
                         }
                     }
@@ -77,7 +78,8 @@ fun FloatingActionButtonDemo() {
                         ) {
                             Icon(
                                 imageVector = MiuixIcons.Useful.SelectAll,
-                                contentDescription = "SelectAll"
+                                contentDescription = "SelectAll",
+                                tint = Color.White
                             )
                         }
                     },

@@ -57,10 +57,12 @@ private val availableComponents = listOf(
     AvailableComponent("Icon", "icon") { IconDemo() },
     AvailableComponent("FloatingActionButton", "floatingActionButton") { FloatingActionButtonDemo() },
     AvailableComponent("FloatingToolbar", "floatingToolbar") { FloatingToolbarDemo() },
-    AvailableComponent("DividerDemo", "dividerDemo") { DividerDemo() },
+    AvailableComponent("Divider", "divider") { DividerDemo() },
+    AvailableComponent("PullToRefresh", "pullToRefresh") { PullToRefreshDemo() },
+    AvailableComponent("SearchBar", "searchBar") { SearchBarDemo() },
     AvailableComponent("ColorPicker", "colorPicker") { ColorPickerDemo() },
-
-    )
+    AvailableComponent("ListPopup", "listPopup") { ListPopupDemo() },
+)
 
 @Composable
 private fun DemoSelection() {
