@@ -57,7 +57,7 @@ Text(
 
 Text(
     text = "次要文本",
-    color = MiuixTheme.colorScheme.onSurfaceVariant
+    color = MiuixTheme.colorScheme.onSurfaceContainerVariant
 )
 ```
 

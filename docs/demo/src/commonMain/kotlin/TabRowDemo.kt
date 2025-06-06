@@ -2,7 +2,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,10 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import top.yukonga.miuix.kmp.basic.Checkbox
+import top.yukonga.miuix.kmp.basic.TabRow
+import top.yukonga.miuix.kmp.basic.TabRowWithContour
 
 @Composable
-fun CheckboxDemo() {
+fun TabRowDemo() {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -35,30 +35,22 @@ fun CheckboxDemo() {
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            var checkbox1 by remember { mutableStateOf(false) }
-            var checkbox2 by remember { mutableStateOf(true) }
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(32.dp),
-            ) {
-                Checkbox(
-                    checked = checkbox1,
-                    onCheckedChange = { checkbox1 = it }
-                )
-                Checkbox(
-                    checked = checkbox2,
-                    onCheckedChange = { checkbox2 = it }
-                )
-                Checkbox(
-                    checked = false,
-                    onCheckedChange = { },
-                    enabled = false
-                )
-                Checkbox(
-                    checked = true,
-                    onCheckedChange = { },
-                    enabled = false
-                )
-            }
+            val tabs1 = listOf("Recommended", "Following", "Popular", "Featured")
+            var selectedTabIndex1 by remember { mutableStateOf(0) }
+
+            TabRow(
+                tabs = tabs1,
+                selectedTabIndex = selectedTabIndex1,
+                onTabSelected = { selectedTabIndex1 = it }
+            )
+            val tabs2 = listOf("All", "Photos", "Videos", "Documents")
+            var selectedTabIndex2 by remember { mutableStateOf(0) }
+
+            TabRowWithContour(
+                tabs = tabs2,
+                selectedTabIndex = selectedTabIndex2,
+                onTabSelected = { selectedTabIndex2 = it }
+            )
         }
     }
 }

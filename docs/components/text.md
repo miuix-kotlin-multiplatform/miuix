@@ -57,7 +57,7 @@ Text(
 
 Text(
     text = "Secondary Text",
-    color = MiuixTheme.colorScheme.onSurfaceVariant
+    color = MiuixTheme.colorScheme.onSurfaceContainerVariant
 )
 ```
 

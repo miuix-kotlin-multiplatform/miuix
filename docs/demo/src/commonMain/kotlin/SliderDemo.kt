@@ -2,7 +2,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,10 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import top.yukonga.miuix.kmp.basic.Checkbox
+import top.yukonga.miuix.kmp.basic.Slider
 
 @Composable
-fun CheckboxDemo() {
+fun SliderDemo() {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -35,30 +34,17 @@ fun CheckboxDemo() {
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            var checkbox1 by remember { mutableStateOf(false) }
-            var checkbox2 by remember { mutableStateOf(true) }
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(32.dp),
-            ) {
-                Checkbox(
-                    checked = checkbox1,
-                    onCheckedChange = { checkbox1 = it }
-                )
-                Checkbox(
-                    checked = checkbox2,
-                    onCheckedChange = { checkbox2 = it }
-                )
-                Checkbox(
-                    checked = false,
-                    onCheckedChange = { },
-                    enabled = false
-                )
-                Checkbox(
-                    checked = true,
-                    onCheckedChange = { },
-                    enabled = false
-                )
-            }
+            var slider1 by remember { mutableStateOf(0.5f) }
+            var slider2 by remember { mutableStateOf(0.7f) }
+            Slider(
+                progress = slider1,
+                onProgressChange = { slider1 = it }
+            )
+            Slider(
+                progress = slider2,
+                onProgressChange = { slider2 = it },
+                enabled = false
+            )
         }
     }
 }

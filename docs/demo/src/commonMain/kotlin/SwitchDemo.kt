@@ -17,10 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import top.yukonga.miuix.kmp.basic.Checkbox
+import top.yukonga.miuix.kmp.basic.Switch
 
 @Composable
-fun CheckboxDemo() {
+fun SwitchDemo() {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -35,25 +35,25 @@ fun CheckboxDemo() {
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            var checkbox1 by remember { mutableStateOf(false) }
-            var checkbox2 by remember { mutableStateOf(true) }
+            var switch1 by remember { mutableStateOf(false) }
+            var switch2 by remember { mutableStateOf(true) }
             Row(
                 horizontalArrangement = Arrangement.spacedBy(32.dp),
             ) {
-                Checkbox(
-                    checked = checkbox1,
-                    onCheckedChange = { checkbox1 = it }
+                Switch(
+                    checked = switch1,
+                    onCheckedChange = { switch1 = it }
                 )
-                Checkbox(
-                    checked = checkbox2,
-                    onCheckedChange = { checkbox2 = it }
+                Switch(
+                    checked = switch2,
+                    onCheckedChange = { switch2 = it }
                 )
-                Checkbox(
+                Switch(
                     checked = false,
                     onCheckedChange = { },
                     enabled = false
                 )
-                Checkbox(
+                Switch(
                     checked = true,
                     onCheckedChange = { },
                     enabled = false

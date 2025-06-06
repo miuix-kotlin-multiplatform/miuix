@@ -38,13 +38,26 @@ fun Demo(demoId: String? = null) {
 private data class AvailableComponent(val name: String, val id: String, val demo: @Composable () -> Unit)
 
 private val availableComponents = listOf(
+    AvailableComponent("Scaffold", "scaffold") { ScaffoldDemo() },
     AvailableComponent("Surface", "surface") { SurfaceDemo() },
     AvailableComponent("TopAppBar", "topAppBar") { TopAppBarDemo() },
     AvailableComponent("NavigationBar", "navigationBar") { NavigationBarDemo() },
+    AvailableComponent("TabRow", "tabRow") { TabRowDemo() },
     AvailableComponent("Card", "card") { CardDemo() },
+    AvailableComponent("BasicComponent", "basicComponent") { BasicComponentDemo() },
     AvailableComponent("Button", "button") { ButtonDemo() },
     AvailableComponent("IconButton", "iconButton") { IconButtonDemo() },
+    AvailableComponent("Text", "text") { TextDemo() },
+    AvailableComponent("SmallTitle", "smallTitle") { SmallTitleDemo() },
+    AvailableComponent("TextField", "textField") { TextFieldDemo() },
+    AvailableComponent("Switch", "switch") { SwitchDemo() },
     AvailableComponent("Checkbox", "checkbox") { CheckboxDemo() },
+    AvailableComponent("Slider", "slider") { SliderDemo() },
+    AvailableComponent("ProgressIndicator", "progressIndicator") { ProgressIndicatorDemo() },
+    AvailableComponent("Icon", "icon") { IconDemo() },
+    AvailableComponent("FloatingActionButton", "floatingActionButton") { FloatingActionButtonDemo() },
+    AvailableComponent("FloatingToolbar", "floatingToolbar") { FloatingToolbarDemo() },
+    AvailableComponent("DividerDemo", "dividerDemo") { DividerDemo() },
     AvailableComponent("ColorPicker", "colorPicker") { ColorPickerDemo() },
 
     )

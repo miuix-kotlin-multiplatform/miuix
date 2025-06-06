@@ -18,7 +18,10 @@ import top.yukonga.miuix.kmp.basic.ToolbarPosition // 用于 Scaffold
 Scaffold(
     floatingToolbar = {
         FloatingToolbar {
-            Row { // 或 Column
+            Row(
+                modifier = Modifier.padding(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) { // 或 Column
                 IconButton(onClick = { /* 操作 1 */ }) {
                     Icon(MiuixIcons.Useful.Edit, contentDescription = "编辑")
                 }
@@ -70,7 +73,10 @@ FloatingToolbar(
     outSidePadding = PaddingValues(24.dp),
     showDivider = false
 ) {
-    Row(modifier = Modifier.padding(horizontal = 8.dp)) {
+    Row(
+        modifier = Modifier.padding(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) { // 或 Column
         IconButton(onClick = { /* 操作 1 */ }) {
             Icon(MiuixIcons.Useful.Edit, contentDescription = "编辑", tint = MiuixTheme.colorScheme.onPrimaryContainer)
         }
@@ -85,7 +91,10 @@ FloatingToolbar(
 
 ```kotlin
 FloatingToolbar {
-    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+    Column(
+        modifier = Modifier.padding(vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         IconButton(onClick = { /* 操作 1 */ }) {
             Icon(MiuixIcons.Useful.Edit, contentDescription = "编辑")
         }
