@@ -2,6 +2,10 @@
 
 `Switch` 是 Miuix 中的基础切换组件，用于在两种状态之间进行切换。它提供了具有动画效果的交互式开关控件，适用于设置项的启用与禁用场景。
 
+<div style="position: relative; max-width: 700px; height: 100px; border-radius: 10px; overflow: hidden; border: 1px solid #777;">
+    <iframe id="demoIframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="../../compose/index.html?id=switch" title="Demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div>
+
 ## 引入
 
 ```kotlin

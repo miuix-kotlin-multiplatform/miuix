@@ -2,6 +2,10 @@
 
 `CheckBox` is a basic selection component in Miuix, used for toggling between checked and unchecked states. It provides an interactive selection control with animation effects, suitable for multiple selection scenarios and enabling/disabling configuration items.
 
+<div style="position: relative; max-width: 700px; height: 100px; border-radius: 10px; overflow: hidden; border: 1px solid #777;">
+    <iframe id="demoIframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="../compose/index.html?id=checkbox" title="Demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div>
+
 ## Import
 
 ```kotlin

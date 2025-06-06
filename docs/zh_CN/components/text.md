@@ -2,6 +2,10 @@
 
 `Text` 组件是 Miuix 中的基础文本组件，用于显示文字内容。支持自定义各种文本样式、对齐方式和装饰效果。
 
+<div style="position: relative; max-width: 700px; height: 300px; border-radius: 10px; overflow: hidden; border: 1px solid #777;">
+    <iframe id="demoIframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="../../compose/index.html?id=text" title="Demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div>
+
 ## 引入
 
 ```kotlin
@@ -57,7 +61,7 @@ Text(
 
 Text(
     text = "次要文本",
-    color = MiuixTheme.colorScheme.onSurfaceVariant
+    color = MiuixTheme.colorScheme.onSurfaceContainerVariant
 )
 ```
 

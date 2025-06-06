@@ -4,6 +4,10 @@
 
 此组件通常与 `Scaffold` 结合使用，放置在页面的特定位置，提供快捷操作或信息展示。
 
+<div style="position: relative; max-width: 700px; height: 300px; border-radius: 10px; overflow: hidden; border: 1px solid #777;">
+    <iframe id="demoIframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="../../compose/index.html?id=floatingToolbar" title="Demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div>
+
 ## 引入
 
 ```kotlin
@@ -18,7 +22,10 @@ import top.yukonga.miuix.kmp.basic.ToolbarPosition // 用于 Scaffold
 Scaffold(
     floatingToolbar = {
         FloatingToolbar {
-            Row { // 或 Column
+            Row(
+                modifier = Modifier.padding(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) { // 或 Column
                 IconButton(onClick = { /* 操作 1 */ }) {
                     Icon(MiuixIcons.Useful.Edit, contentDescription = "编辑")
                 }
@@ -70,7 +77,10 @@ FloatingToolbar(
     outSidePadding = PaddingValues(24.dp),
     showDivider = false
 ) {
-    Row(modifier = Modifier.padding(horizontal = 8.dp)) {
+    Row(
+        modifier = Modifier.padding(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) { // 或 Column
         IconButton(onClick = { /* 操作 1 */ }) {
             Icon(MiuixIcons.Useful.Edit, contentDescription = "编辑", tint = MiuixTheme.colorScheme.onPrimaryContainer)
         }
@@ -85,7 +95,10 @@ FloatingToolbar(
 
 ```kotlin
 FloatingToolbar {
-    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+    Column(
+        modifier = Modifier.padding(vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         IconButton(onClick = { /* 操作 1 */ }) {
             Icon(MiuixIcons.Useful.Edit, contentDescription = "编辑")
         }

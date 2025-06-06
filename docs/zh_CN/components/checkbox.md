@@ -2,6 +2,10 @@
 
 `CheckBox` 是 Miuix 中的基础选择组件，用于在选中与未选中状态间切换。它提供了具有动画效果的交互式选择控件，适用于多选场景和配置项的启用与禁用。
 
+<div style="position: relative; max-width: 700px; height: 100px; border-radius: 10px; overflow: hidden; border: 1px solid #777;">
+    <iframe id="demoIframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="../../compose/index.html?id=checkbox" title="Demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div>
+
 ## 引入
 
 ```kotlin

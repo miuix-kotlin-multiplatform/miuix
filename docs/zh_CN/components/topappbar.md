@@ -4,6 +4,10 @@
 
 此组件通常与 `Scaffold` 组件结合使用，以便在应用程序的不同页面中保持一致的布局和行为。
 
+<div style="position: relative; max-width: 700px; height: 300px; border-radius: 10px; overflow: hidden; border: 1px solid #777;">
+    <iframe id="demoIframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="../../compose/index.html?id=topAppBar" title="Demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div>
+
 ## 引入
 
 ```kotlin
@@ -47,7 +51,7 @@ Scaffold(
             largeTitle = "大标题", // 如果不指定，将使用 title 的值
             navigationIcon = {
                 IconButton(onClick = { /* 处理点击事件 */ }) {
-                    Icon(MiuixIcons.Basic.ArrowLeft, contentDescription = "返回")
+                    Icon(MiuixIcons.Useful.Back, contentDescription = "返回")
                 }
             },
             actions = {
@@ -83,7 +87,7 @@ Scaffold(
             // 如需添加越界回弹效果，则应在绑定滚动行为之前添加
             .overScrollVertical()
             // 绑定 TopAppBar 滚动事件
-            .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         contentPadding = PaddingValues(top = paddingValues.calculateTopPadding())
     ) {
         // 列表内容

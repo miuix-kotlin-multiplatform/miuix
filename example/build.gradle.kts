@@ -4,8 +4,11 @@
 @file:Suppress("UnstableApiUsage")
 
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
+import org.gradle.kotlin.dsl.withType
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
+import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 import java.util.Properties
 
 plugins {
@@ -190,6 +193,10 @@ compose.desktop {
             macOS.iconFile = project.file("src/macosMain/resources/Miuix.icns")
         }
     }
+}
+
+rootProject.plugins.withType<YarnPlugin> {
+    rootProject.the<YarnRootExtension>().lockFileDirectory = rootProject.file("example").resolve("kotlin-js-store")
 }
 
 spotless {

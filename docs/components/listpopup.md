@@ -2,6 +2,10 @@
 
 `ListPopup` is a popup list component in Miuix used to display a popup menu with multiple options. It provides a lightweight, floating temporary list suitable for various dropdown menus, context menus, and similar scenarios.
 
+<div style="position: relative; max-width: 700px; height: 250px; border-radius: 10px; overflow: hidden; border: 1px solid #777;">
+    <iframe id="demoIframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="../compose/index.html?id=listPopup" title="Demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div>
+
 ::: warning
 `ListPopup` must be used within a `Scaffold` component!
 :::
@@ -18,7 +22,7 @@ import top.yukonga.miuix.kmp.basic.ListPopupColumn
 The ListPopup component can be used to create simple dropdown menus:
 
 ```kotlin
-var showPopup = remember { mutableStateOf(false) }
+val showPopup = remember { mutableStateOf(false) }
 var selectedIndex by remember { mutableStateOf(0) }
 val items = listOf("Option 1", "Option 2", "Option 3")
 
@@ -26,6 +30,7 @@ Scaffold {
     Box {
         TextButton(
             text = "Click to show menu",
+            alignment = PopupPositionProvider.Align.Left,
             onClick = { showPopup.value = true }
         )
         ListPopup(

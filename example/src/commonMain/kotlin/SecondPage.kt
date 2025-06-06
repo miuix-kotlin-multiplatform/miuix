@@ -32,25 +32,20 @@ fun SecondPage(
     scrollEndHaptic: Boolean
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
-    var isRefreshing by remember { mutableStateOf(false) }
 
     val dropdownOptions = listOf("Option 1", "Option 2", "Option 3", "Option 4")
     val dropdownSelectedOption = remember { mutableStateOf(0) }
-    var ii = remember { mutableStateOf(8) }
+    var ii by remember { mutableStateOf(8) }
 
     LaunchedEffect(pullToRefreshState.isRefreshing) {
         if (pullToRefreshState.isRefreshing) {
-            isRefreshing = true
             delay(300)
-            pullToRefreshState.completeRefreshing {
-                isRefreshing = false
-            }
+            pullToRefreshState.completeRefreshing { ii += 4 }
         }
     }
 
     PullToRefresh(
         pullToRefreshState = pullToRefreshState,
-        onRefresh = { ii.value += 4 },
         contentPadding = PaddingValues(top = padding.calculateTopPadding())
     ) {
         LazyColumn(
@@ -68,7 +63,7 @@ fun SecondPage(
                 Card(
                     modifier = Modifier.padding(12.dp)
                 ) {
-                    for (i in 0 until ii.value) {
+                    for (i in 0 until ii) {
                         SuperDropdown(
                             title = "Dropdown ${i + 1}",
                             items = dropdownOptions,
