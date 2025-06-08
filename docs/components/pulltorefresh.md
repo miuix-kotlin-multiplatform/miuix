@@ -6,7 +6,7 @@
 This component is only available in touch-enabled scenes and does not work well in the Web build target!
 :::
 
-For a demonstration, see the DropDown page of the <a href="https://miuix-kotlin-multiplatform.github.io/miuix-jsCanvas/" target="_blank">Miuix Example</a>.
+For a demonstration, see the DropDown page of the <a href="https://miuix-kotlin-multiplatform.github.io/miuix-jsCanvas/" target="_blank" rel="noopener noreferrer">Miuix Example</a>.
 
 ## Import
 
