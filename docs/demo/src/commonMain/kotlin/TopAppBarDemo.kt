@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,6 +18,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
@@ -46,63 +49,111 @@ fun TopAppBarDemo() {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                val scrollBehavior = MiuixScrollBehavior()
-                Scaffold(
-                    modifier = Modifier.weight(0.5f),
-                    topBar = {
-                        TopAppBar(
-                            title = "Title",
-                            largeTitle = "Large Title", // If not specified, title value will be used
-                            scrollBehavior = scrollBehavior,
-                            navigationIcon = {
-                                IconButton(onClick = { /* Handle click event */ }) {
-                                    Icon(MiuixIcons.Useful.Back, contentDescription = "Back")
+                Card(
+                    modifier = Modifier.weight(0.5f)
+                ) {
+                    val scrollBehavior = MiuixScrollBehavior()
+                    Scaffold(
+                        topBar = {
+                            TopAppBar(
+                                title = "Title",
+                                largeTitle = "Large Title", // If not specified, title value will be used
+                                scrollBehavior = scrollBehavior,
+                                navigationIcon = {
+                                    IconButton(
+                                        onClick = { /* Handle click event */ },
+                                        modifier = Modifier.padding(start = 16.dp)
+                                    ) {
+                                        Icon(
+                                            MiuixIcons.Useful.Back,
+                                            contentDescription = "Back"
+                                        )
+                                    }
+                                },
+                                actions = {
+                                    IconButton(
+                                        onClick = { /* Handle click event */ },
+                                        modifier = Modifier.padding(end = 16.dp)
+                                    ) {
+                                        Icon(
+                                            MiuixIcons.Useful.More,
+                                            contentDescription = "More"
+                                        )
+                                    }
                                 }
-                            },
-                            actions = {
-                                IconButton(onClick = { /* Handle click event */ }) {
-                                    Icon(MiuixIcons.Useful.More, contentDescription = "More")
+                            )
+                        }
+                    ) { paddingValues ->
+                        LazyColumn(
+                            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                            contentPadding = PaddingValues(top = paddingValues.calculateTopPadding())
+                        ) {
+                            item {
+                                Spacer(Modifier.height(8.dp))
+                            }
+                            items(100) {
+                                Card(
+                                    modifier = Modifier
+                                        .padding(horizontal = 16.dp)
+                                        .padding(bottom = 8.dp)
+                                ) {
+                                    SuperArrow(
+                                        title = "Something"
+                                    )
                                 }
                             }
-                        )
-                    }
-                ) { paddingValues ->
-                    LazyColumn(
-                        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-                        contentPadding = PaddingValues(top = paddingValues.calculateTopPadding())
-                    ) {
-                        items(100) {
-                            SuperArrow(
-                                title = "Something"
-                            )
                         }
                     }
                 }
-                Scaffold(
-                    modifier = Modifier.weight(0.5f),
-                    topBar = {
-                        SmallTopAppBar(
-                            title = "Title",
-                            navigationIcon = {
-                                IconButton(onClick = { /* Handle click event */ }) {
-                                    Icon(MiuixIcons.Useful.Back, contentDescription = "Back")
+                Card(
+                    modifier = Modifier.weight(0.5f)
+                ) {
+                    Scaffold(
+                        topBar = {
+                            SmallTopAppBar(
+                                title = "Title",
+                                navigationIcon = {
+                                    IconButton(
+                                        onClick = { /* Handle click event */ },
+                                        modifier = Modifier.padding(start = 16.dp)
+                                    ) {
+                                        Icon(
+                                            MiuixIcons.Useful.Back,
+                                            contentDescription = "Back"
+                                        )
+                                    }
+                                },
+                                actions = {
+                                    IconButton(
+                                        onClick = { /* Handle click event */ },
+                                        modifier = Modifier.padding(end = 16.dp)
+                                    ) {
+                                        Icon(
+                                            MiuixIcons.Useful.More,
+                                            contentDescription = "More"
+                                        )
+                                    }
                                 }
-                            },
-                            actions = {
-                                IconButton(onClick = { /* Handle click event */ }) {
-                                    Icon(MiuixIcons.Useful.More, contentDescription = "More")
+                            )
+                        }
+                    ) { paddingValues ->
+                        LazyColumn(
+                            contentPadding = PaddingValues(top = paddingValues.calculateTopPadding())
+                        ) {
+                            item {
+                                Spacer(Modifier.height(8.dp))
+                            }
+                            items(100) {
+                                Card(
+                                    modifier = Modifier
+                                        .padding(horizontal = 16.dp)
+                                        .padding(bottom = 8.dp)
+                                ) {
+                                    SuperArrow(
+                                        title = "Something"
+                                    )
                                 }
                             }
-                        )
-                    }
-                ) { paddingValues ->
-                    LazyColumn(
-                        contentPadding = PaddingValues(top = paddingValues.calculateTopPadding())
-                    ) {
-                        items(100) {
-                            SuperArrow(
-                                title = "Something"
-                            )
                         }
                     }
                 }

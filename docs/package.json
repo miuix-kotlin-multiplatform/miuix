@@ -10,7 +10,7 @@
     "docs:preview": "vitepress preview"
   },
   "dependencies": {
-    "medium-zoom": "^1.1.1"
+    "medium-zoom": "^1.1.0"
   },
   "resolutions": {
     "vite": "npm:rolldown-vite@latest"

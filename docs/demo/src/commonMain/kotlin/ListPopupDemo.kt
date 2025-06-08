@@ -21,14 +21,12 @@ import top.yukonga.miuix.kmp.extra.DropdownImpl
 
 @Composable
 fun ListPopupDemo() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Brush.linearGradient(listOf(Color(0xfff77062), Color(0xfffe5196)))),
-        contentAlignment = Alignment.Center
-    ) {
-        Scaffold(
-            containerColor = Color.Transparent
+    Scaffold {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Brush.linearGradient(listOf(Color(0xfff77062), Color(0xfffe5196)))),
+            contentAlignment = Alignment.Center
         ) {
             val showPopup = remember { mutableStateOf(false) }
             var selectedIndex by remember { mutableStateOf(0) }

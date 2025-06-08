@@ -62,6 +62,12 @@ private val availableComponents = listOf(
     AvailableComponent("SearchBar", "searchBar") { SearchBarDemo() },
     AvailableComponent("ColorPicker", "colorPicker") { ColorPickerDemo() },
     AvailableComponent("ListPopup", "listPopup") { ListPopupDemo() },
+    AvailableComponent("SuperArrow", "superArrow") { SuperArrowDemo() },
+    AvailableComponent("SuperSwitch", "superSwitch") { SuperSwitchDemo() },
+    AvailableComponent("SuperCheckbox", "superCheckbox") { SuperCheckboxDemo() },
+    AvailableComponent("SuperDropdown", "superDropdown") { SuperDropdownDemo() },
+    AvailableComponent("SuperSpinner", "superSpinner") { SuperSpinnerDemo() },
+    AvailableComponent("SuperDialog", "superDialog") { SuperDialogDemo() },
 )
 
 @Composable

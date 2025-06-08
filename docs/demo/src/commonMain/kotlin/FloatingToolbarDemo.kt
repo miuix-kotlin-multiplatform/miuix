@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.FloatingToolbar
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
@@ -44,60 +45,66 @@ fun FloatingToolbarDemo() {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Scaffold(
-                    modifier = Modifier.weight(0.5f),
-                    floatingToolbar = {
-                        FloatingToolbar {
-                            Row(
-                                modifier = Modifier.padding(8.dp),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) { // or Column
-                                IconButton(onClick = { /* Action 1 */ }) {
-                                    Icon(MiuixIcons.Useful.Edit, contentDescription = "Edit")
-                                }
-                                IconButton(onClick = { /* Action 2 */ }) {
-                                    Icon(MiuixIcons.Useful.Delete, contentDescription = "Delete")
+                Card(
+                    modifier = Modifier.weight(0.5f)
+                ) {
+                    Scaffold(
+                        floatingToolbar = {
+                            FloatingToolbar {
+                                Row(
+                                    modifier = Modifier.padding(8.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) { // or Column
+                                    IconButton(onClick = { /* Action 1 */ }) {
+                                        Icon(MiuixIcons.Useful.Edit, contentDescription = "Edit")
+                                    }
+                                    IconButton(onClick = { /* Action 2 */ }) {
+                                        Icon(MiuixIcons.Useful.Delete, contentDescription = "Delete")
+                                    }
                                 }
                             }
                         }
-                    }
-                ) { paddingValues ->
-                    LazyColumn(
-                        contentPadding = PaddingValues(top = paddingValues.calculateTopPadding())
-                    ) {
-                        items(100) {
-                            SuperArrow(
-                                title = "Something"
-                            )
+                    ) { paddingValues ->
+                        LazyColumn(
+                            contentPadding = PaddingValues(top = paddingValues.calculateTopPadding())
+                        ) {
+                            items(100) {
+                                SuperArrow(
+                                    title = "Something"
+                                )
+                            }
                         }
                     }
                 }
-                Scaffold(
-                    modifier = Modifier.weight(0.5f),
-                    floatingToolbar = {
-                        FloatingToolbar {
-                            Row(
-                                modifier = Modifier.padding(8.dp),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) { // or Column
-                                IconButton(onClick = { /* Action 1 */ }) {
-                                    Icon(MiuixIcons.Useful.Edit, contentDescription = "Edit")
-                                }
-                                IconButton(onClick = { /* Action 2 */ }) {
-                                    Icon(MiuixIcons.Useful.Delete, contentDescription = "Delete")
+                Card(
+                    modifier = Modifier.weight(0.5f)
+                ) {
+                    Scaffold(
+                        floatingToolbar = {
+                            FloatingToolbar {
+                                Row(
+                                    modifier = Modifier.padding(8.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) { // or Column
+                                    IconButton(onClick = { /* Action 1 */ }) {
+                                        Icon(MiuixIcons.Useful.Edit, contentDescription = "Edit")
+                                    }
+                                    IconButton(onClick = { /* Action 2 */ }) {
+                                        Icon(MiuixIcons.Useful.Delete, contentDescription = "Delete")
+                                    }
                                 }
                             }
-                        }
-                    },
-                    floatingToolbarPosition = ToolbarPosition.BottomEnd
-                ) { paddingValues ->
-                    LazyColumn(
-                        contentPadding = PaddingValues(top = paddingValues.calculateTopPadding())
-                    ) {
-                        items(100) {
-                            SuperArrow(
-                                title = "Something"
-                            )
+                        },
+                        floatingToolbarPosition = ToolbarPosition.BottomEnd
+                    ) { paddingValues ->
+                        LazyColumn(
+                            contentPadding = PaddingValues(top = paddingValues.calculateTopPadding())
+                        ) {
+                            items(100) {
+                                SuperArrow(
+                                    title = "Something"
+                                )
+                            }
                         }
                     }
                 }

@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.FabPosition
 import top.yukonga.miuix.kmp.basic.FloatingActionButton
 import top.yukonga.miuix.kmp.basic.Icon
@@ -42,56 +43,62 @@ fun FloatingActionButtonDemo() {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Scaffold(
-                    modifier = Modifier.weight(0.5f),
-                    floatingActionButton = {
-                        FloatingActionButton(
-                            onClick = {
-                                // Handle FAB click
+                Card(
+                    modifier = Modifier.weight(0.5f)
+                ) {
+                    Scaffold(
+                        floatingActionButton = {
+                            FloatingActionButton(
+                                onClick = {
+                                    // Handle FAB click
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = MiuixIcons.Useful.SelectAll,
+                                    contentDescription = "SelectAll",
+                                    tint = Color.White
+                                )
                             }
-                        ) {
-                            Icon(
-                                imageVector = MiuixIcons.Useful.SelectAll,
-                                contentDescription = "SelectAll",
-                                tint = Color.White
-                            )
                         }
-                    }
-                ) { paddingValues ->
-                    LazyColumn(
-                        contentPadding = PaddingValues(top = paddingValues.calculateTopPadding())
-                    ) {
-                        items(100) {
-                            SuperArrow(
-                                title = "Something"
-                            )
+                    ) { paddingValues ->
+                        LazyColumn(
+                            contentPadding = PaddingValues(top = paddingValues.calculateTopPadding())
+                        ) {
+                            items(100) {
+                                SuperArrow(
+                                    title = "Something"
+                                )
+                            }
                         }
                     }
                 }
-                Scaffold(
-                    modifier = Modifier.weight(0.5f),
-                    floatingActionButton = {
-                        FloatingActionButton(
-                            onClick = {
-                                // Handle FAB click
+                Card(
+                    modifier = Modifier.weight(0.5f)
+                ) {
+                    Scaffold(
+                        floatingActionButton = {
+                            FloatingActionButton(
+                                onClick = {
+                                    // Handle FAB click
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = MiuixIcons.Useful.SelectAll,
+                                    contentDescription = "SelectAll",
+                                    tint = Color.White
+                                )
                             }
+                        },
+                        floatingActionButtonPosition = FabPosition.Center
+                    ) { paddingValues ->
+                        LazyColumn(
+                            contentPadding = PaddingValues(top = paddingValues.calculateTopPadding())
                         ) {
-                            Icon(
-                                imageVector = MiuixIcons.Useful.SelectAll,
-                                contentDescription = "SelectAll",
-                                tint = Color.White
-                            )
-                        }
-                    },
-                    floatingActionButtonPosition = FabPosition.Center
-                ) { paddingValues ->
-                    LazyColumn(
-                        contentPadding = PaddingValues(top = paddingValues.calculateTopPadding())
-                    ) {
-                        items(100) {
-                            SuperArrow(
-                                title = "Something"
-                            )
+                            items(100) {
+                                SuperArrow(
+                                    title = "Something"
+                                )
+                            }
                         }
                     }
                 }

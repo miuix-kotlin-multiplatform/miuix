@@ -2,6 +2,10 @@
 
 `SuperArrow` 是 Miuix 中的箭头指示组件，通常用于导航或展示更多内容。提供了标题、摘要和右侧箭头图标，支持点击交互，常用于设置项、菜单项或列表项中。
 
+<div style="position: relative; max-width: 700px; height: 280px; border-radius: 10px; overflow: hidden; border: 1px solid #777;">
+    <iframe id="demoIframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="../../compose/index.html?id=superArrow" title="Demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div>
+
 ## 引入
 
 ```kotlin
@@ -47,7 +51,7 @@ SuperArrow(
 SuperArrow 支持通过 `holdDownState` 参数控制按下状态，通常用于显示弹出对话框时的视觉反馈：
 
 ```kotlin
-var showDialog = remember { mutableStateOf(false) }
+val showDialog = remember { mutableStateOf(false) }
 
 Scaffold {
     SuperArrow(
@@ -137,7 +141,7 @@ SuperArrow(
 ### 结合对话框使用
 
 ```kotlin
-var showDialog = remember { mutableStateOf(false) }
+val showDialog = remember { mutableStateOf(false) }
 var language by remember { mutableStateOf("简体中文") }
 
 Scaffold {

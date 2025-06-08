@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.FloatingNavigationBar
 import top.yukonga.miuix.kmp.basic.FloatingNavigationBarMode
 import top.yukonga.miuix.kmp.basic.NavigationBar
@@ -56,49 +57,55 @@ fun NavigationBarDemo() {
                 )
                 var selectedIndex1 by remember { mutableStateOf(0) }
                 var selectedIndex2 by remember { mutableStateOf(0) }
-                Scaffold(
-                    modifier = Modifier.weight(0.5f),
-                    bottomBar = {
-                        NavigationBar(
-                            items = items,
-                            selected = selectedIndex1,
-                            onClick = { selectedIndex1 = it }
-                        )
-                    }
-                ) { paddingValues ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "Current: ${pages[selectedIndex1]}",
-                            style = MiuixTheme.textStyles.title1
-                        )
+                Card(
+                    modifier = Modifier.weight(0.5f)
+                ) {
+                    Scaffold(
+                        bottomBar = {
+                            NavigationBar(
+                                items = items,
+                                selected = selectedIndex1,
+                                onClick = { selectedIndex1 = it }
+                            )
+                        }
+                    ) { paddingValues ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Current: ${pages[selectedIndex1]}",
+                                style = MiuixTheme.textStyles.title1
+                            )
+                        }
                     }
                 }
-                Scaffold(
-                    modifier = Modifier.weight(0.5f),
-                    bottomBar = {
-                        FloatingNavigationBar(
-                            items = items,
-                            selected = selectedIndex2,
-                            onClick = { selectedIndex2 = it },
-                            mode = FloatingNavigationBarMode.IconOnly // Show icons only
-                        )
-                    }
-                ) { paddingValues ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "Current: ${pages[selectedIndex2]}",
-                            style = MiuixTheme.textStyles.title1
-                        )
+                Card(
+                    modifier = Modifier.weight(0.5f)
+                ) {
+                    Scaffold(
+                        bottomBar = {
+                            FloatingNavigationBar(
+                                items = items,
+                                selected = selectedIndex2,
+                                onClick = { selectedIndex2 = it },
+                                mode = FloatingNavigationBarMode.IconOnly // Show icons only
+                            )
+                        }
+                    ) { paddingValues ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Current: ${pages[selectedIndex2]}",
+                                style = MiuixTheme.textStyles.title1
+                            )
+                        }
                     }
                 }
             }

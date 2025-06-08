@@ -228,9 +228,11 @@ fun FloatingNavigationBar(
     val bottomPaddingValue = when (platformValue) {
         Platform.IOS -> 8.dp
         Platform.Android -> {
-            val navBarBottomPadding = WindowInsets.navigationBars.only(WindowInsetsSides.Bottom).asPaddingValues().calculateBottomPadding()
+            val navBarBottomPadding =
+                WindowInsets.navigationBars.only(WindowInsetsSides.Bottom).asPaddingValues().calculateBottomPadding()
             if (navBarBottomPadding != 0.dp) 8.dp + navBarBottomPadding else 36.dp
         }
+
         else -> 36.dp
     }
 
@@ -346,63 +348,69 @@ fun FloatingNavigationBar(
                     horizontalAlignment = CenterHorizontally
                 ) {
                     val imageColorFilter = remember(tint) { ColorFilter.tint(tint) }
-                    if (mode == FloatingNavigationBarMode.IconAndText) {
-                        Image(
-                            modifier = Modifier.padding(top = 6.dp).size(24.dp),
-                            imageVector = item.icon,
-                            contentDescription = item.label,
-                            colorFilter = imageColorFilter
-                        )
-                        Box(
-                            modifier = Modifier.padding(bottom = 6.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            // Invisible text for layout calculation (always bold)
-                            Text(
-                                modifier = Modifier.alpha(0f),
-                                text = item.label,
-                                textAlign = TextAlign.Center,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Bold // Always bold for layout
+                    when (mode) {
+                        FloatingNavigationBarMode.IconAndText -> {
+                            Image(
+                                modifier = Modifier.padding(top = 6.dp).size(24.dp),
+                                imageVector = item.icon,
+                                contentDescription = item.label,
+                                colorFilter = imageColorFilter
                             )
-                            // Visible text
-                            Text(
-                                text = item.label,
-                                color = tint,
-                                textAlign = TextAlign.Center,
-                                fontSize = 12.sp,
-                                fontWeight = fontWeight
+                            Box(
+                                modifier = Modifier.padding(bottom = 6.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                // Invisible text for layout calculation (always bold)
+                                Text(
+                                    modifier = Modifier.alpha(0f),
+                                    text = item.label,
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold // Always bold for layout
+                                )
+                                // Visible text
+                                Text(
+                                    text = item.label,
+                                    color = tint,
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 12.sp,
+                                    fontWeight = fontWeight
+                                )
+                            }
+                        }
+
+                        FloatingNavigationBarMode.TextOnly -> {
+                            Box(
+                                modifier = Modifier.padding(vertical = 16.dp, horizontal = 2.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                // Invisible text for layout calculation
+                                Text(
+                                    modifier = Modifier.alpha(0f),
+                                    text = item.label,
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold // Always bold for layout
+                                )
+                                // Visible text
+                                Text(
+                                    text = item.label,
+                                    color = tint,
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 14.sp,
+                                    fontWeight = fontWeight
+                                )
+                            }
+                        }
+
+                        else -> {
+                            Image(
+                                modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp).size(28.dp),
+                                imageVector = item.icon,
+                                contentDescription = item.label,
+                                colorFilter = imageColorFilter
                             )
                         }
-                    } else if (mode == FloatingNavigationBarMode.TextOnly) {
-                        Box(
-                            modifier = Modifier.padding(vertical = 16.dp, horizontal = 2.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            // Invisible text for layout calculation
-                            Text(
-                                modifier = Modifier.alpha(0f),
-                                text = item.label,
-                                textAlign = TextAlign.Center,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold // Always bold for layout
-                            )
-                            // Visible text
-                            Text(
-                                text = item.label,
-                                color = tint,
-                                textAlign = TextAlign.Center,
-                                fontSize = 14.sp,
-                                fontWeight = fontWeight
-                            )
-                        }
-                    } else {
-                        Image(
-                            modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp).size(28.dp),
-                            imageVector = item.icon,
-                            contentDescription = item.label,
-                            colorFilter = imageColorFilter
-                        )
                     }
                 }
             }

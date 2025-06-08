@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.FloatingActionButton
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.NavigationBar
@@ -52,43 +53,45 @@ fun ScaffoldDemo() {
                 NavigationItem("Settings", MiuixIcons.Useful.Settings)
             )
             var selectedIndex by remember { mutableStateOf(0) }
-            Scaffold(
-                topBar = {
-                    SmallTopAppBar(
-                        title = "SmallTopAppBar"
-                    )
-                },
-                bottomBar = {
-                    NavigationBar(
-                        items = items,
-                        selected = selectedIndex,
-                        onClick = { selectedIndex = it }
-                    )
-                },
-                floatingActionButton = {
-                    FloatingActionButton(
-                        onClick = {
-                            // Handle FAB click
+            Card {
+                Scaffold(
+                    topBar = {
+                        SmallTopAppBar(
+                            title = "SmallTopAppBar"
+                        )
+                    },
+                    bottomBar = {
+                        NavigationBar(
+                            items = items,
+                            selected = selectedIndex,
+                            onClick = { selectedIndex = it }
+                        )
+                    },
+                    floatingActionButton = {
+                        FloatingActionButton(
+                            onClick = {
+                                // Handle FAB click
+                            }
+                        ) {
+                            Icon(
+                                imageVector = MiuixIcons.Useful.Personal,
+                                contentDescription = "Personal",
+                                tint = Color.White
+                            )
                         }
+                    }
+                ) { paddingValues ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            imageVector = MiuixIcons.Useful.Personal,
-                            contentDescription = "Personal",
-                            tint = Color.White
+                        Text(
+                            text = "Current: ${pages[selectedIndex]}",
+                            style = MiuixTheme.textStyles.title1
                         )
                     }
-                }
-            ) { paddingValues ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Current: ${pages[selectedIndex]}",
-                        style = MiuixTheme.textStyles.title1
-                    )
                 }
             }
         }
