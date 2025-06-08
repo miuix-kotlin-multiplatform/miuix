@@ -2,6 +2,10 @@
 
 `TextField` is a basic input component in Miuix for receiving text input from users. The component provides rich customization options, supporting label animations, leading and trailing icons, and other features.
 
+<div style="position: relative; max-width: 700px; height: 340px; border-radius: 10px; overflow: hidden; border: 1px solid #777;">
+    <iframe id="demoIframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="../compose/index.html?id=textField" title="Demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div>
+
 ## Import
 
 ```kotlin

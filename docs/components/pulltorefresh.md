@@ -2,6 +2,12 @@
 
 `PullToRefresh` is a pull-to-refresh component in Miuix that provides refresh functionality for lists and other scrollable content. It features an animated interactive refresh indicator suitable for various scenarios where data refresh is needed.
 
+::: warning
+This component is only available in touch-enabled scenes and does not work well in the Web build target!
+:::
+
+For a demonstration, see the DropDown page of the <a href="https://miuix-kotlin-multiplatform.github.io/miuix-jsCanvas/" target="_blank" rel="noopener noreferrer">Miuix Example</a>.
+
 ## Import
 
 ```kotlin

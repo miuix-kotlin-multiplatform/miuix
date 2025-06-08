@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Demo</title>
+    <script src="skiko.js" type="application/javascript"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #ComposeTarget {
+            display: block;
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+<canvas id="ComposeTarget"></canvas>
+<script src="demo.js" type="application/javascript"></script>
+<script>
+    // Prevent scroll events on the canvas
+    const canvas = document.getElementById('ComposeTarget');
+
+    // Prevent wheel events (mouse wheel)
+    canvas.addEventListener('wheel', function(e) {
+        e.preventDefault();
+    }, { passive: false });
+
+    // Prevent touchmove events (touch scrolling)
+    canvas.addEventListener('touchmove', function(e) {
+        e.preventDefault();
+    }, { passive: false });
+</script>
+</body>
+
+</html>

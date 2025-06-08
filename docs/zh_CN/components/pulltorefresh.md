@@ -2,6 +2,12 @@
 
 `PullToRefresh` 是 Miuix 中的下拉刷新组件，可为列表和其他可滚动内容提供刷新功能。它提供了具有动画效果的交互式刷新指示器，适用于需要刷新数据的各种场景。
 
+::: warning 注意
+该组件只适用于支持触控的场景，并且在网页构建目标中工作不佳!
+:::
+
+如需演示，请查看 <a href="https://miuix-kotlin-multiplatform.github.io/miuix-jsCanvas/" target="_blank">Miuix Example</a> 的 DropDown 页。
+
 ## 引入
 
 ```kotlin

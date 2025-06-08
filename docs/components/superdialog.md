@@ -2,6 +2,10 @@
 
 `SuperDialog` is a dialog component in Miuix used to display important information, collect user input, or confirm user actions. The dialog appears above the current interface and supports custom styles and content layouts.
 
+<div style="position: relative; max-width: 700px; height: 210px; border-radius: 10px; overflow: hidden; border: 1px solid #777;">
+    <iframe id="demoIframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="../compose/index.html?id=superDialog" title="Demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div>
+
 ::: warning
 `SuperDialog` must be used within a `Scaffold` component!
 :::

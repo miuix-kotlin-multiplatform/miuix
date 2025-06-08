@@ -2,6 +2,10 @@
 
 `ColorPicker` 是 Miuix 中的颜色选择组件，允许用户通过调整色相、饱和度、明度和透明度来选择颜色。组件提供了直观的滑块界面，支持触觉反馈和实时颜色预览。
 
+<div style="position: relative; max-width: 700px; height: 260px; border-radius: 10px; overflow: hidden; border: 1px solid #777;">
+    <iframe id="demoIframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="../../compose/index.html?id=colorPicker" title="Demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div>
+
 ## 引入
 
 ```kotlin

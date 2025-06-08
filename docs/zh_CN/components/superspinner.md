@@ -2,6 +2,10 @@
 
 `SuperSpinner` 是 Miuix 中的下拉选择器组件，提供了标题、摘要和带有图标、文本的选项列表，支持点击交互和多种显示模式，常用于具有视觉辅助的选项设置中。该组件与 `SuperDropdown` 组件类似，但提供更丰富的功能和交互体验。
 
+<div style="position: relative; max-width: 700px; height: 282px; border-radius: 10px; overflow: hidden; border: 1px solid #777;">
+    <iframe id="demoIframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="../../compose/index.html?id=superSpinner" title="Demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div>
+
 ::: warning 注意
 `SuperSpinner` 需要在 `Scaffold` 组件内使用！
 :::

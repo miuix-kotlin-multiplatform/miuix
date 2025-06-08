@@ -4,6 +4,10 @@
 
 如果要跟随夜间模式或主题变化，需主动使用 `Icon` 组件的 `tint` 属性来设置图标的颜色，常用颜色为 `MiuixTheme.colorScheme.onBackground`。
 
+<div style="position: relative; max-width: 700px; height: 120px; border-radius: 10px; overflow: hidden; border: 1px solid #777;">
+    <iframe id="demoIframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="../../compose/index.html?id=icon" title="Demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div>
+
 ## 引入
 
 ```kotlin

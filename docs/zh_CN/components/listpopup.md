@@ -2,6 +2,10 @@
 
 `ListPopup` 是 Miuix 中的弹出列表组件，用于显示一个包含多个选项的弹出菜单。它提供了一个轻量级的、悬浮在界面上的临时列表，适用于各种下拉菜单、上下文菜单等场景。
 
+<div style="position: relative; max-width: 700px; height: 250px; border-radius: 10px; overflow: hidden; border: 1px solid #777;">
+    <iframe id="demoIframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="../../compose/index.html?id=listPopup" title="Demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div>
+
 ::: warning 注意
 `ListPopup` 需要在 `Scaffold` 组件内使用！
 :::
@@ -18,7 +22,7 @@ import top.yukonga.miuix.kmp.basic.ListPopupColumn
 ListPopup 组件可以用于创建简单的下拉菜单：
 
 ```kotlin
-var showPopup = remember { mutableStateOf(false) }
+val showPopup = remember { mutableStateOf(false) }
 var selectedIndex by remember { mutableStateOf(0) }
 val items = listOf("选项 1", "选项 2", "选项 3")
 
@@ -30,6 +34,7 @@ Scaffold {
         )
         ListPopup(
             show = showPopup,
+            alignment = PopupPositionProvider.Align.Left,
             onDismissRequest = { showPopup.value = false } // 关闭弹出菜单
         ) {
             ListPopupColumn {

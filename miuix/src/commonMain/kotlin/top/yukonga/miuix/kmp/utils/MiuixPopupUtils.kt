@@ -162,7 +162,7 @@ class MiuixPopupUtils {
             dimExitTransition: ExitTransition? = null,
             content: (@Composable () -> Unit)? = null,
         ) {
-            if (visible.value == false) return
+            if (!visible.value) return
             if (content == null) {
                 if (visible.value) visible.value = false
                 return
@@ -208,7 +208,7 @@ class MiuixPopupUtils {
             transformOrigin: (() -> TransformOrigin) = { TransformOrigin.Center },
             content: (@Composable () -> Unit)? = null,
         ) {
-            if (visible.value == false) return
+            if (!visible.value) return
             if (content == null) {
                 if (visible.value) visible.value = false
                 return

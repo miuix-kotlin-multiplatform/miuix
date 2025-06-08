@@ -2,6 +2,10 @@
 
 `SuperArrow` is a directional indicator component in Miuix, typically used for navigation or displaying additional content. It provides a title, summary, and right arrow icon with click interaction support, commonly used in settings, menu items, or list items.
 
+<div style="position: relative; max-width: 700px; height: 280px; border-radius: 10px; overflow: hidden; border: 1px solid #777;">
+    <iframe id="demoIframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" src="../compose/index.html?id=superArrow" title="Demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div>
+
 ## Import
 
 ```kotlin
@@ -47,7 +51,7 @@ SuperArrow(
 SuperArrow supports controlling the hold-down state through the `holdDownState` parameter, typically used for visual feedback when displaying popup dialogs:
 
 ```kotlin
-var showDialog = remember { mutableStateOf(false) }
+val showDialog = remember { mutableStateOf(false) }
 
 Scaffold {
     SuperArrow(
@@ -137,7 +141,7 @@ SuperArrow(
 ### Using with Dialog
 
 ```kotlin
-var showDialog = remember { mutableStateOf(false) }
+val showDialog = remember { mutableStateOf(false) }
 var language by remember { mutableStateOf("Simplified Chinese") }
 
 Scaffold {
