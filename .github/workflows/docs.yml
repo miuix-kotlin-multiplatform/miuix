@@ -37,7 +37,7 @@ jobs:
           mv ./miuix/build/dokka/html/* ./docs/public/dokka
           ./gradlew :docs:demo:jsBrowserDistribution
           mkdir -p ./docs/public/compose
-          mv ./miuix/docs/demo/build/dist/js/productionExecutable/* ./public/docs/compose
+          mv ./miuix/docs/demo/build/dist/js/productionExecutable/* ./docs/public/compose
           cd ./docs
           yarn install
           yarn docs:build
