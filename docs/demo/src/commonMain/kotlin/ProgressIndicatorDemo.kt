@@ -1,3 +1,6 @@
+// Copyright 2025, miuix-kotlin-multiplatform contributors
+// SPDX-License-Identifier: Apache-2.0
+
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable

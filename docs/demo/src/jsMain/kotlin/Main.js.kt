@@ -1,3 +1,6 @@
+// Copyright 2025, miuix-kotlin-multiplatform contributors
+// SPDX-License-Identifier: Apache-2.0
+
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.CanvasBasedWindow
 import kotlinx.browser.document

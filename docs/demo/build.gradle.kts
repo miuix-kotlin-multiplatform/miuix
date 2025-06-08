@@ -1,3 +1,6 @@
+// Copyright 2025, miuix-kotlin-multiplatform contributors
+// SPDX-License-Identifier: Apache-2.0
+
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 
@@ -5,6 +8,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.spotless)
 }
 
 java {
@@ -38,4 +42,16 @@ kotlin {
 
 rootProject.plugins.withType<YarnPlugin> {
     rootProject.the<YarnRootExtension>().lockFileDirectory = rootProject.file("docs/demo").resolve("kotlin-js-store")
+}
+
+spotless {
+    kotlin {
+        target("src/**/*.kt")
+        licenseHeaderFile(rootProject.file("./spotless/copyright.txt"), "(^(?![\\/ ]\\**).*$)")
+    }
+
+    kotlinGradle {
+        target("*.kts")
+        licenseHeaderFile(rootProject.file("./spotless/copyright.txt"), "(^(?![\\/ ]\\**).*$)")
+    }
 }

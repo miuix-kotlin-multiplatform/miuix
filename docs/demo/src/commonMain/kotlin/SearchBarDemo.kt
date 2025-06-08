@@ -1,3 +1,6 @@
+// Copyright 2025, miuix-kotlin-multiplatform contributors
+// SPDX-License-Identifier: Apache-2.0
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
