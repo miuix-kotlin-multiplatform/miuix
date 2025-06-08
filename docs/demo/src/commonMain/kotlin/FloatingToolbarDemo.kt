@@ -25,6 +25,7 @@ import top.yukonga.miuix.kmp.extra.SuperArrow
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.useful.Delete
 import top.yukonga.miuix.kmp.icon.icons.useful.Edit
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 fun FloatingToolbarDemo() {
@@ -56,10 +57,18 @@ fun FloatingToolbarDemo() {
                                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                                 ) { // or Column
                                     IconButton(onClick = { /* Action 1 */ }) {
-                                        Icon(MiuixIcons.Useful.Edit, contentDescription = "Edit")
+                                        Icon(
+                                            imageVector = MiuixIcons.Useful.Edit,
+                                            contentDescription = "Edit",
+                                            tint = MiuixTheme.colorScheme.onBackground
+                                        )
                                     }
                                     IconButton(onClick = { /* Action 2 */ }) {
-                                        Icon(MiuixIcons.Useful.Delete, contentDescription = "Delete")
+                                        Icon(
+                                            imageVector = MiuixIcons.Useful.Delete,
+                                            contentDescription = "Delete",
+                                            tint = MiuixTheme.colorScheme.onBackground
+                                        )
                                     }
                                 }
                             }
@@ -87,10 +96,18 @@ fun FloatingToolbarDemo() {
                                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                                 ) { // or Column
                                     IconButton(onClick = { /* Action 1 */ }) {
-                                        Icon(MiuixIcons.Useful.Edit, contentDescription = "Edit")
+                                        Icon(
+                                            imageVector =  MiuixIcons.Useful.Edit,
+                                            contentDescription = "Edit",
+                                            tint = MiuixTheme.colorScheme.onBackground
+                                        )
                                     }
                                     IconButton(onClick = { /* Action 2 */ }) {
-                                        Icon(MiuixIcons.Useful.Delete, contentDescription = "Delete")
+                                        Icon(
+                                            imageVector = MiuixIcons.Useful.Delete,
+                                            contentDescription = "Delete",
+                                            tint = MiuixTheme.colorScheme.onBackground
+                                        )
                                     }
                                 }
                             }
