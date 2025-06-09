@@ -2,7 +2,7 @@
 android-gradle-plugin = "8.10.1"
 androidx-activity-compose = "1.10.1"
 androidx-window = "1.4.0"
-androidx-graphics-shapes = "1.0.0-alpha06"
+androidx-graphics-shapes = "1.0.0-alpha08"
 compose-plugin = "1.8.1"
 dokka = "2.0.0"
 haze = "1.6.3"
