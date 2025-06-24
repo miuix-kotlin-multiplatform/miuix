@@ -6,7 +6,7 @@ androidx-graphics-shapes = "1.0.0-alpha08"
 compose-plugin = "1.8.2"
 dokka = "2.0.0"
 haze = "1.6.4"
-kotlin = "2.1.21"
+kotlin = "2.2.0"
 spotless = "7.0.4"
 
 [libraries]
