@@ -5,7 +5,7 @@ androidx-window = "1.4.0"
 androidx-graphics-shapes = "1.0.0-alpha09"
 compose-plugin = "1.8.2"
 dokka = "2.0.0"
-haze = "1.6.8"
+haze = "1.6.9"
 kotlin = "2.2.0"
 spotless = "7.1.0"
 
