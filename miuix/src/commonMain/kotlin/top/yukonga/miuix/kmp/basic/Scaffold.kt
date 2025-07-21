@@ -279,21 +279,11 @@ private fun ScaffoldLayout(
                 .fastMap { it.measure(looseConstraints) }
 
         layout(layoutWidth, layoutHeight) {
-            // Place Popups first
-            popupPlaceables.fastForEach { it.place(0, 0) }
-
             // Place Content
             bodyContentPlaceables.fastForEach { it.place(0, 0) }
 
             // Place TopBar
             topBarPlaceables.fastForEach { it.place(0, 0) }
-
-            // Place Snackbar
-            snackbarPlaceables.fastForEach {
-                val left = (layoutWidth - snackbarWidth) / 2 + contentWindowInsets.getLeft(this@SubcomposeLayout, layoutDirection)
-                val top = layoutHeight - snackbarOffsetFromBottom
-                it.place(left, top)
-            }
 
             // Place BottomBar
             bottomBarPlaceables.fastForEach { it.place(0, layoutHeight - (bottomBarHeight ?: 0)) }
@@ -330,10 +320,16 @@ private fun ScaffoldLayout(
                 }
 
                 // Specific adjustments based on horizontal alignment (already handled by align function + startInset)
-
                 floatingToolbarPlaceables.fastForEach { placeable ->
                     placeable.place(x, y)
                 }
+            }
+
+            // Place Snackbar
+            snackbarPlaceables.fastForEach {
+                val left = (layoutWidth - snackbarWidth) / 2 + contentWindowInsets.getLeft(this@SubcomposeLayout, layoutDirection)
+                val top = layoutHeight - snackbarOffsetFromBottom
+                it.place(left, top)
             }
 
             // Place FAB
@@ -342,6 +338,9 @@ private fun ScaffoldLayout(
                     it.place(placement.left, layoutHeight - fabOffsetFromBottom!!)
                 }
             }
+
+            // Place Popup
+            popupPlaceables.fastForEach { it.place(0, 0) }
         }
     }
 }
