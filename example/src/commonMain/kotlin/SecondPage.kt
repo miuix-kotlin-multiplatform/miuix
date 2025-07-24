@@ -13,7 +13,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import top.yukonga.miuix.kmp.basic.Card
@@ -22,7 +21,6 @@ import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.rememberPullToRefreshState
 import top.yukonga.miuix.kmp.extra.SuperDropdown
 import top.yukonga.miuix.kmp.utils.getWindowSize
-import top.yukonga.miuix.kmp.utils.overScrollVertical
 import top.yukonga.miuix.kmp.utils.scrollEndHaptic
 
 @Composable
@@ -35,27 +33,27 @@ fun SecondPage(
 
     val dropdownOptions = listOf("Option 1", "Option 2", "Option 3", "Option 4")
     val dropdownSelectedOption = remember { mutableStateOf(0) }
-    var ii by remember { mutableStateOf(8) }
+    var ii by remember { mutableStateOf(6) }
 
     LaunchedEffect(pullToRefreshState.isRefreshing) {
         if (pullToRefreshState.isRefreshing) {
-            delay(300)
+            delay(350)
             pullToRefreshState.completeRefreshing { ii += 6 }
         }
     }
 
     PullToRefresh(
         pullToRefreshState = pullToRefreshState,
+        topAppBarScrollBehavior = topAppBarScrollBehavior,
+        useScrollCoordinator = true,
         contentPadding = PaddingValues(top = padding.calculateTopPadding() + 12.dp)
     ) {
         LazyColumn(
             modifier = Modifier
+                .height(getWindowSize().height.dp)
                 .then(
                     if (scrollEndHaptic) Modifier.scrollEndHaptic() else Modifier
-                )
-                .overScrollVertical()
-                .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
-                .height(getWindowSize().height.dp),
+                ),
             contentPadding = PaddingValues(top = padding.calculateTopPadding() + 12.dp),
             overscrollEffect = null
         ) {

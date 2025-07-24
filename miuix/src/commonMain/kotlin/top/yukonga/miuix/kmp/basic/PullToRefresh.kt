@@ -62,8 +62,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.utils.LocalOverScrollState
+import top.yukonga.miuix.kmp.utils.LocalScrollCoordinatorState
 import top.yukonga.miuix.kmp.utils.OverScrollState
+import top.yukonga.miuix.kmp.utils.ScrollPriority
 import top.yukonga.miuix.kmp.utils.getWindowSize
+import top.yukonga.miuix.kmp.utils.overScrollVertical
+import top.yukonga.miuix.kmp.utils.rememberScrollCoordinator
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.max
@@ -82,6 +86,8 @@ import kotlin.math.sin
  * @param circleSize The size of the refresh indicator circle.
  * @param refreshTexts The texts to show when refreshing.
  * @param refreshTextStyle The style of the refresh text.
+ * @param topAppBarScrollBehavior The scroll behavior of the top app bar to coordinate with.
+ * @param useScrollCoordinator Whether to use the scroll coordinator for better integration.
  * @param onRefresh The callback to be called when the refresh is triggered.
  * @param content the content to be shown when the [PullToRefresh] is expanded.
  */
@@ -94,6 +100,8 @@ fun PullToRefresh(
     circleSize: Dp = PullToRefreshDefaults.circleSize,
     refreshTexts: List<String> = PullToRefreshDefaults.refreshTexts,
     refreshTextStyle: TextStyle = PullToRefreshDefaults.refreshTextStyle,
+    topAppBarScrollBehavior: ScrollBehavior? = null,
+    useScrollCoordinator: Boolean = false,
     onRefresh: () -> Unit = {},
     content: @Composable () -> Unit
 ) {
@@ -102,9 +110,19 @@ fun PullToRefresh(
     LaunchedEffect(pullToRefreshState.rawDragOffset) {
         pullToRefreshState.syncDragOffsetWithRawOffset()
     }
+
     val overScrollState = LocalOverScrollState.current
-    val nestedScrollConnection = remember(pullToRefreshState, overScrollState) {
-        pullToRefreshState.createNestedScrollConnection(overScrollState)
+
+    val scrollCoordinator = if (useScrollCoordinator && topAppBarScrollBehavior != null) {
+        rememberScrollCoordinator(
+            topAppBarScrollBehavior = topAppBarScrollBehavior,
+            pullToRefreshState = pullToRefreshState,
+            overScrollState = overScrollState
+        )
+    } else null
+
+    val nestedScrollConnection = remember(pullToRefreshState, overScrollState, scrollCoordinator) {
+        scrollCoordinator ?: pullToRefreshState.createNestedScrollConnection(overScrollState)
     }
     val pointerModifier = Modifier.pointerInput(Unit) {
         awaitPointerEventScope {
@@ -122,11 +140,20 @@ fun PullToRefresh(
         pullToRefreshState.handlePointerReleased(currentOnRefresh)
     }
 
-    val boxModifier = modifier
-        .nestedScroll(nestedScrollConnection)
-        .then(pointerModifier)
-
-    CompositionLocalProvider(LocalPullToRefreshState provides pullToRefreshState) {
+    CompositionLocalProvider(
+        LocalPullToRefreshState provides pullToRefreshState,
+        LocalScrollCoordinatorState provides scrollCoordinator?.state
+    ) {
+        val boxModifier = modifier
+            .nestedScroll(nestedScrollConnection)
+            .then(pointerModifier)
+            .then(
+                if (scrollCoordinator != null && scrollCoordinator.state.currentPriority == ScrollPriority.OverScroll) {
+                    Modifier.overScrollVertical()
+                } else {
+                    Modifier
+                }
+            )
         Box(modifier = boxModifier) {
             Column {
                 RefreshHeader(

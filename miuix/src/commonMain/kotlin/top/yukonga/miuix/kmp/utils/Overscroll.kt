@@ -304,4 +304,3 @@ class OverScrollState {
  * @see OverScrollState
  */
 val LocalOverScrollState = compositionLocalOf { OverScrollState() }
-
