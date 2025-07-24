@@ -80,12 +80,10 @@ fun Switch(
     var hasVibrated by remember { mutableStateOf(false) }
     var hasVibratedOnce by remember { mutableStateOf(false) }
 
-    val springSpec = remember {
-        spring<Dp>(
-            dampingRatio = Spring.DampingRatioLowBouncy,
-            stiffness = Spring.StiffnessMedium
-        )
-    }
+    val springSpec = spring<Dp>(
+        dampingRatio = Spring.DampingRatioLowBouncy,
+        stiffness = Spring.StiffnessMedium
+    )
 
     var dragOffset by remember { mutableStateOf(0f) }
     val thumbOffset by animateDpAsState(
