@@ -27,10 +27,8 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,7 +44,6 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
@@ -67,8 +64,9 @@ fun Checkbox(
     colors: CheckboxColors = CheckboxDefaults.checkboxColors(),
     enabled: Boolean = true,
 ) {
+    val isChecked by rememberUpdatedState(checked)
     val currentOnCheckedChange by rememberUpdatedState(onCheckedChange)
-    var onCheck by remember { mutableStateOf(false) }
+
     val hapticFeedback = LocalHapticFeedback.current
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -79,21 +77,15 @@ fun Checkbox(
         isPressed || isDragged || isHovered
     }
 
-    LaunchedEffect(onCheck) {
-        if (onCheck) {
-            delay(80)
-            onCheck = false
-        }
-    }
 
     val springSpec = spring<Float>(
         dampingRatio = Spring.DampingRatioLowBouncy,
-        stiffness = if (onCheck) Spring.StiffnessHigh else Spring.StiffnessMedium
+        stiffness = if (isChecked) Spring.StiffnessHigh else Spring.StiffnessMedium
     )
 
     val scale by animateFloatAsState(
         targetValue = when {
-            isInteracted || onCheck -> 0.95f
+            isInteracted || isChecked -> 0.95f
             else -> 1f
         },
         animationSpec = springSpec
@@ -186,7 +178,6 @@ fun Checkbox(
                         value = checked,
                         onValueChange = {
                             currentOnCheckedChange?.invoke(it)
-                            onCheck = true
                             hapticFeedback.performHapticFeedback(
                                 if (it) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff
                             )
