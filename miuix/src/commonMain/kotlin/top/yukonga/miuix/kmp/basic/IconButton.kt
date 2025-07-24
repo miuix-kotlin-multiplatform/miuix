@@ -58,11 +58,11 @@ fun IconButton(
     val interactionSource = remember { MutableInteractionSource() }
     val holdDown = remember { mutableStateOf<HoldDownInteraction.HoldDown?>(null) }
 
-    LaunchedEffect(holdDownState, interactionSource) {
+    LaunchedEffect(holdDownState) {
         if (holdDownState) {
-            interactionSource.emit(HoldDownInteraction.HoldDown().also {
-                holdDown.value = it
-            })
+            val interaction = HoldDownInteraction.HoldDown()
+            holdDown.value = interaction
+            interactionSource.emit(interaction)
         } else {
             holdDown.value?.let { oldValue ->
                 interactionSource.emit(HoldDownInteraction.Release(oldValue))
@@ -71,33 +71,18 @@ fun IconButton(
         }
     }
 
-    val currentLocalIndication = LocalIndication.current
-    val boxModifier = remember(
-        modifier,
-        minWidth,
-        minHeight,
-        shape,
-        backgroundColor,
-        enabled,
-        interactionSource,
-        currentLocalIndication,
-        currentOnClick
-    ) {
-        modifier
+    Box(
+        modifier = modifier
             .defaultMinSize(minWidth = minWidth, minHeight = minHeight)
             .clip(shape)
             .background(color = backgroundColor)
             .clickable(
                 enabled = enabled,
                 role = Role.Button,
-                indication = currentLocalIndication,
+                indication = LocalIndication.current,
                 interactionSource = interactionSource,
                 onClick = currentOnClick
-            )
-    }
-
-    Box(
-        modifier = boxModifier,
+            ),
         contentAlignment = Alignment.Center
     ) {
         content()

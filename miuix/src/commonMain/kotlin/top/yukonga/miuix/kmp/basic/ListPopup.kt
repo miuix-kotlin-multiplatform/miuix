@@ -23,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -87,23 +86,21 @@ fun ListPopup(
     var windowSize by remember { mutableStateOf(IntSize(getWindowSizeState.value.width, getWindowSizeState.value.height)) }
     var parentBounds by remember { mutableStateOf(IntRect.Zero) }
 
-    val windowBounds by rememberUpdatedState(
-        with(density) {
-            IntRect(
-                left = WindowInsets.displayCutout.asPaddingValues(density).calculateLeftPadding(layoutDirection).roundToPx(),
-                top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding().roundToPx(),
-                right = windowSize.width -
-                        WindowInsets.displayCutout.asPaddingValues(density).calculateRightPadding(layoutDirection).roundToPx(),
-                bottom = windowSize.height -
-                        WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().roundToPx() -
-                        WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().roundToPx()
-            )
-        }
-    )
+    val windowBounds = with(density) {
+        IntRect(
+            left = WindowInsets.displayCutout.asPaddingValues(density).calculateLeftPadding(layoutDirection).roundToPx(),
+            top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding().roundToPx(),
+            right = windowSize.width -
+                    WindowInsets.displayCutout.asPaddingValues(density).calculateRightPadding(layoutDirection).roundToPx(),
+            bottom = windowSize.height -
+                    WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().roundToPx() -
+                    WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().roundToPx()
+        )
+    }
 
     var popupContentSize by remember { mutableStateOf(IntSize.Zero) }
 
-    val rememberedPopupMargin = remember(popupPositionProvider, density, layoutDirection) {
+    val popupMargin = remember(popupPositionProvider, density, layoutDirection) {
         val popupMarginsPd = popupPositionProvider.getMargins()
         with(density) {
             IntRect(
@@ -115,16 +112,16 @@ fun ListPopup(
         }
     }
 
-    val rememberedTransformOrigin = remember(parentBounds, rememberedPopupMargin, windowSize, density, alignment) {
+    val transformOrigin = remember(parentBounds, popupMargin, windowSize, density, alignment) {
         val xInWindow = if (alignment in listOf(
                 PopupPositionProvider.Align.Right,
                 PopupPositionProvider.Align.TopRight,
                 PopupPositionProvider.Align.BottomRight,
             )
         ) {
-            parentBounds.right - rememberedPopupMargin.right - with(density) { 64.dp.roundToPx() }
+            parentBounds.right - popupMargin.right - with(density) { 64.dp.roundToPx() }
         } else {
-            parentBounds.left + rememberedPopupMargin.left + with(density) { 64.dp.roundToPx() }
+            parentBounds.left + popupMargin.left + with(density) { 64.dp.roundToPx() }
         }
         val yInWindow = parentBounds.top + parentBounds.height / 2 - with(density) { 56.dp.roundToPx() }
         safeTransformOrigin(
@@ -159,26 +156,13 @@ fun ListPopup(
     PopupLayout(
         visible = show,
         enableWindowDim = enableWindowDim,
-        transformOrigin = { rememberedTransformOrigin },
+        transformOrigin = { transformOrigin },
     ) {
-        val currentOffset by rememberUpdatedState(offset)
-        val shape: Shape = remember { SmoothRoundedCornerShape(16.dp) }
-        val rememberedElevationPx = remember(density, shadowElevation) { with(density) { shadowElevation.toPx() } }
+        val shape = remember { SmoothRoundedCornerShape(16.dp) }
+        val elevationPx = with(density) { shadowElevation.toPx() }
 
-        val popupContentBoxModifier = remember(
-            popupModifier,
-            currentOnDismissRequest,
-            minWidth,
-            maxHeight,
-            popupPositionProvider,
-            parentBounds,
-            windowBounds,
-            layoutDirection,
-            rememberedPopupMargin,
-            alignment,
-            windowSize
-        ) {
-            popupModifier
+        Box(
+            modifier = popupModifier
                 .pointerInput(currentOnDismissRequest) {
                     detectTapGestures {
                         currentOnDismissRequest?.invoke()
@@ -190,7 +174,7 @@ fun ListPopup(
                             minWidth = if (minWidth.roundToPx() <= windowSize.width) minWidth.roundToPx() else windowSize.width,
                             minHeight = if (50.dp.roundToPx() <= windowSize.height) 50.dp.roundToPx() else windowSize.height,
                             maxHeight = maxHeight?.roundToPx()?.coerceAtLeast(50.dp.roundToPx())
-                                ?: (windowBounds.height - rememberedPopupMargin.top - rememberedPopupMargin.bottom).coerceAtLeast(
+                                ?: (windowBounds.height - popupMargin.top - popupMargin.bottom).coerceAtLeast(
                                     50.dp.roundToPx()
                                 ),
                             maxWidth = if (minWidth.roundToPx() <= windowSize.width) windowSize.width else minWidth.roundToPx()
@@ -206,7 +190,7 @@ fun ListPopup(
                         windowBounds,
                         layoutDirection,
                         measuredSize,
-                        rememberedPopupMargin,
+                        popupMargin,
                         alignment
                     )
                     if (offset != calculatedOffset) {
@@ -214,26 +198,21 @@ fun ListPopup(
                     }
 
                     layout(constraints.maxWidth, constraints.maxHeight) {
-                        placeable.place(currentOffset)
+                        placeable.place(offset)
                     }
                 }
-        }
-
-        Box(modifier = popupContentBoxModifier) {
-            val surfaceColor = MiuixTheme.colorScheme.surface
-            val windowDimmingColor = MiuixTheme.colorScheme.windowDimming
-            val graphicsAndBackgroundModifier = remember(shape, rememberedElevationPx, surfaceColor, windowDimmingColor) {
-                Modifier
+        ) {
+            Box(
+                modifier = Modifier
                     .graphicsLayer(
                         clip = true,
                         shape = shape,
-                        shadowElevation = rememberedElevationPx,
-                        ambientShadowColor = windowDimmingColor,
-                        spotShadowColor = windowDimmingColor
+                        shadowElevation = elevationPx,
+                        ambientShadowColor = MiuixTheme.colorScheme.windowDimming,
+                        spotShadowColor = MiuixTheme.colorScheme.windowDimming
                     )
-                    .background(surfaceColor)
-            }
-            Box(modifier = graphicsAndBackgroundModifier) {
+                    .background(MiuixTheme.colorScheme.surface)
+            ) {
                 currentContent()
             }
         }

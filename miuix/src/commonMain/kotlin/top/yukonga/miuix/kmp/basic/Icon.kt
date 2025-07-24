@@ -43,7 +43,7 @@ fun Icon(
     imageVector: ImageVector,
     contentDescription: String?,
     modifier: Modifier = Modifier,
-    tint: Color = IconDefaults.DefaultTint()
+    tint: Color = IconDefaults.defaultTint()
 ) {
     Icon(
         painter = rememberVectorPainter(imageVector),
@@ -70,7 +70,7 @@ fun Icon(
     bitmap: ImageBitmap,
     contentDescription: String?,
     modifier: Modifier = Modifier,
-    tint: Color = IconDefaults.DefaultTint()
+    tint: Color = IconDefaults.defaultTint()
 ) {
     val painter = remember(bitmap) { BitmapPainter(bitmap) }
     Icon(
@@ -98,23 +98,12 @@ fun Icon(
     painter: Painter,
     contentDescription: String?,
     modifier: Modifier = Modifier,
-    tint: Color = IconDefaults.DefaultTint()
+    tint: Color = IconDefaults.defaultTint()
 ) {
-    val colorFilter = remember(tint) { if (tint == Color.Unspecified) null else ColorFilter.tint(tint) }
-    val semanticsModifier =
-        remember(contentDescription) {
-            if (contentDescription != null) {
-                Modifier.semantics {
-                    this.contentDescription = contentDescription
-                    this.role = Role.Image
-                }
-            } else {
-                Modifier
-            }
-        }
+    val colorFilter = if (tint == Color.Unspecified) null else ColorFilter.tint(tint)
 
-    val iconModifier = remember(modifier, painter, colorFilter, semanticsModifier) {
-        val baseModifier = modifier
+    Box(
+        modifier = modifier
             .toolingGraphicsLayer()
             .then(
                 if (painter.intrinsicSize == Size.Unspecified || painter.intrinsicSize.isInfinite()) {
@@ -124,10 +113,17 @@ fun Icon(
                 }
             )
             .paint(painter, colorFilter = colorFilter, contentScale = ContentScale.Fit)
-        baseModifier.then(semanticsModifier)
-    }
-
-    Box(iconModifier)
+            .then(
+                if (contentDescription != null) {
+                    Modifier.semantics {
+                        this.contentDescription = contentDescription
+                        this.role = Role.Image
+                    }
+                } else {
+                    Modifier
+                }
+            )
+    )
 }
 
 private fun Size.isInfinite() = width.isInfinite() && height.isInfinite()
@@ -140,5 +136,5 @@ object IconDefaults {
      * The default tint of the [Icon].
      */
     @Composable
-    fun DefaultTint() = Color.Unspecified
+    fun defaultTint() = Color.Unspecified
 }

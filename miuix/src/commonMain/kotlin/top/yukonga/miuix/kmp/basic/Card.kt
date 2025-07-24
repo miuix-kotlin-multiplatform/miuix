@@ -53,7 +53,7 @@ import top.yukonga.miuix.kmp.utils.pressTilt
 @Composable
 fun Card(
     modifier: Modifier = Modifier,
-    color: Color = CardDefaults.DefaultColor(),
+    color: Color = CardDefaults.defaultColor(),
     cornerRadius: Dp = CardDefaults.CornerRadius,
     insideMargin: PaddingValues = CardDefaults.InsideMargin,
     content: @Composable ColumnScope.() -> Unit
@@ -63,11 +63,8 @@ fun Card(
         cornerRadius = cornerRadius,
         color = color
     ) {
-        val columnModifier = remember(insideMargin) {
-            Modifier.padding(insideMargin)
-        }
         Column(
-            modifier = columnModifier,
+            modifier = Modifier.padding(insideMargin),
             content = content
         )
     }
@@ -94,7 +91,7 @@ fun Card(
     modifier: Modifier = Modifier,
     cornerRadius: Dp = CardDefaults.CornerRadius,
     insideMargin: PaddingValues = CardDefaults.InsideMargin,
-    color: Color = CardDefaults.DefaultColor(),
+    color: Color = CardDefaults.defaultColor(),
     pressFeedbackType: PressFeedbackType = PressFeedbackType.None,
     showIndication: Boolean? = false,
     onClick: (() -> Unit)? = null,
@@ -105,12 +102,10 @@ fun Card(
     val currentOnClick by rememberUpdatedState(onClick)
     val currentOnLongPress by rememberUpdatedState(onLongPress)
 
-    val pressFeedbackModifier = remember(pressFeedbackType, interactionSource) {
-        when (pressFeedbackType) {
-            PressFeedbackType.None -> Modifier
-            PressFeedbackType.Sink -> Modifier.pressSink(interactionSource)
-            PressFeedbackType.Tilt -> Modifier.pressTilt(interactionSource)
-        }
+    val pressFeedbackModifier = when (pressFeedbackType) {
+        PressFeedbackType.None -> Modifier
+        PressFeedbackType.Sink -> Modifier.pressSink(interactionSource)
+        PressFeedbackType.Tilt -> Modifier.pressTilt(interactionSource)
     }
 
     BasicCard(
@@ -140,17 +135,13 @@ fun Card(
         cornerRadius = cornerRadius,
         color = color
     ) {
-        val currentIndication = LocalIndication.current
-        val columnModifier = remember(interactionSource, showIndication, insideMargin, currentIndication) {
-            Modifier
+        Column(
+            modifier = Modifier
                 .indication(
                     interactionSource = interactionSource,
-                    indication = if (showIndication == true) currentIndication else null
+                    indication = if (showIndication == true) LocalIndication.current else null
                 )
-                .padding(insideMargin)
-        }
-        Column(
-            modifier = columnModifier,
+                .padding(insideMargin),
             content = content
         )
     }
@@ -167,23 +158,20 @@ fun Card(
 @Composable
 private fun BasicCard(
     modifier: Modifier = Modifier,
-    color: Color = CardDefaults.DefaultColor(),
+    color: Color = CardDefaults.defaultColor(),
     cornerRadius: Dp = CardDefaults.CornerRadius,
     content: @Composable BoxScope.() -> Unit
 ) {
     val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
     val clipShape = remember(cornerRadius) { RoundedCornerShape(cornerRadius) }
 
-    val boxModifier = remember(modifier, color, shape, clipShape) {
-        modifier
+    Box(
+        modifier = modifier
             .semantics(mergeDescendants = false) {
                 isTraversalGroup = true
             }
             .background(color = color, shape = shape)
-            .clip(clipShape) // For touch feedback, there is a problem when using SmoothRoundedCornerShape.
-    }
-    Box(
-        modifier = boxModifier,
+            .clip(clipShape), // For touch feedback, there is a problem when using SmoothRoundedCornerShape.
         propagateMinConstraints = true,
         content = content
     )
@@ -205,5 +193,5 @@ object CardDefaults {
      * The default color width of the [Card].
      */
     @Composable
-    fun DefaultColor() = MiuixTheme.colorScheme.surface
+    fun defaultColor() = MiuixTheme.colorScheme.surface
 }

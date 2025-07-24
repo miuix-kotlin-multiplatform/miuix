@@ -223,6 +223,7 @@ fun SmallTopAppBar(
  * @param flingAnimationSpec an optional [DecayAnimationSpec] that defined how to fling the top
  *   app bar when the user flings the app bar itself, or the content below it
  */
+@Suppress("ComposableNaming")
 @Composable
 fun MiuixScrollBehavior(
     state: TopAppBarState = rememberTopAppBarState(),

@@ -21,7 +21,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,13 +65,9 @@ fun ColorPicker(
     var currentValue by remember { mutableStateOf(0f) }
     var currentAlpha by remember { mutableStateOf(1f) }
 
-    val currentOnColorChanged by rememberUpdatedState(onColorChanged)
+    val selectedColor = Color.hsv(currentHue, currentSaturation, currentValue, currentAlpha)
 
-    val selectedColor = remember(currentHue, currentSaturation, currentValue, currentAlpha) {
-        Color.hsv(currentHue, currentSaturation, currentValue, currentAlpha)
-    }
-
-    LaunchedEffect(initialColor, initialSetup) {
+    LaunchedEffect(initialColor) {
         if (initialSetup) {
             val hsv = FloatArray(3)
             ColorUtils.rgbToHsv(
@@ -89,30 +84,24 @@ fun ColorPicker(
         }
     }
 
-    var previousColor by remember { mutableStateOf(selectedColor) }
-
     LaunchedEffect(selectedColor) {
-        if (!initialSetup && selectedColor != previousColor) {
-            previousColor = selectedColor
-            currentOnColorChanged(selectedColor)
+        if (!initialSetup) {
+            onColorChanged(selectedColor)
         }
     }
+
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         // Color preview
         if (showPreview) {
-            val previewShape = remember { SmoothRoundedCornerShape(50.dp) }
-            val previewModifier = remember(selectedColor, previewShape) {
-                Modifier
+            Box(
+                modifier = Modifier
                     .fillMaxWidth()
                     .height(26.dp)
-                    .clip(previewShape)
+                    .clip(SmoothRoundedCornerShape(50.dp))
                     .background(selectedColor)
-            }
-            Box(
-                modifier = previewModifier
             )
         }
 
@@ -165,16 +154,42 @@ fun HueSlider(
     onHueChanged: (Float) -> Unit,
     hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
 ) {
-    val currentOnHueChanged by rememberUpdatedState(onHueChanged)
-    val hueColors = remember { List(36) { i -> Color.hsv(i * 10f, 1f, 1f) } }
     ColorSlider(
         value = currentHue / 360f,
-        onValueChanged = currentOnHueChanged,
-        drawBrushColors = hueColors,
+        onValueChanged = onHueChanged,
+        drawBrushColors = HUE_COLORS_FAST,
         modifier = Modifier.fillMaxWidth(),
         hapticEffect = hapticEffect
     )
 }
+
+private val HUE_COLORS_FAST = intArrayOf(
+    0xFFFF0000.toInt(), // 0°   Red
+    0xFFFF4000.toInt(), // 15°  Red-Orange
+    0xFFFF8000.toInt(), // 30°  Orange
+    0xFFFFBF00.toInt(), // 45°  Yellow-Orange
+    0xFFFFFF00.toInt(), // 60°  Yellow
+    0xFFBFFF00.toInt(), // 75°  Yellow-Green
+    0xFF80FF00.toInt(), // 90°  Light Green
+    0xFF40FF00.toInt(), // 105° Green-Yellow
+    0xFF00FF00.toInt(), // 120° Green
+    0xFF00FF40.toInt(), // 135° Green-Cyan
+    0xFF00FF80.toInt(), // 150° Cyan-Green
+    0xFF00FFBF.toInt(), // 165° Light Cyan
+    0xFF00FFFF.toInt(), // 180° Cyan
+    0xFF00BFFF.toInt(), // 195° Cyan-Blue
+    0xFF0080FF.toInt(), // 210° Light Blue
+    0xFF0040FF.toInt(), // 225° Blue-Cyan
+    0xFF0000FF.toInt(), // 240° Blue
+    0xFF4000FF.toInt(), // 255° Blue-Magenta
+    0xFF8000FF.toInt(), // 270° Magenta-Blue
+    0xFFBF00FF.toInt(), // 285° Light Magenta
+    0xFFFF00FF.toInt(), // 300° Magenta
+    0xFFFF00BF.toInt(), // 315° Magenta-Red
+    0xFFFF0080.toInt(), // 330° Red-Magenta
+    0xFFFF0040.toInt(),  // 345° Light Red
+    0xFFFF0000.toInt()   // 360° Red (wrap around)
+).map { Color(it) }
 
 /**
  * A [SaturationSlider] component for selecting the saturation of a color.
@@ -191,13 +206,12 @@ fun SaturationSlider(
     onSaturationChanged: (Float) -> Unit,
     hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
 ) {
-    val currentOnSaturationChanged by rememberUpdatedState(onSaturationChanged)
     val saturationColors = remember(currentHue) {
         listOf(Color.hsv(currentHue, 0f, 1f, 1f), Color.hsv(currentHue, 1f, 1f, 1f))
     }
     ColorSlider(
         value = currentSaturation,
-        onValueChanged = currentOnSaturationChanged,
+        onValueChanged = onSaturationChanged,
         drawBrushColors = saturationColors,
         modifier = Modifier.fillMaxWidth(),
         hapticEffect = hapticEffect
@@ -222,13 +236,12 @@ fun ValueSlider(
     onValueChanged: (Float) -> Unit,
     hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
 ) {
-    val currentOnValueChanged by rememberUpdatedState(onValueChanged)
     val valueColors = remember(currentHue, currentSaturation) {
         listOf(Color.Black, Color.hsv(currentHue, currentSaturation, 1f))
     }
     ColorSlider(
         value = currentValue,
-        onValueChanged = currentOnValueChanged,
+        onValueChanged = onValueChanged,
         drawBrushColors = valueColors,
         modifier = Modifier.fillMaxWidth(),
         hapticEffect = hapticEffect
@@ -256,44 +269,45 @@ fun AlphaSlider(
 ) {
     val density = LocalDensity.current
 
-    val currentOnAlphaChanged by rememberUpdatedState(onAlphaChanged)
-    val baseColor = remember(currentHue, currentSaturation, currentValue) {
-        Color.hsv(currentHue, currentSaturation, currentValue)
+    val alphaColors = remember(currentHue, currentSaturation, currentValue) {
+        val baseColor = Color.hsv(currentHue, currentSaturation, currentValue)
+        listOf(baseColor.copy(alpha = 0f), baseColor.copy(alpha = 1f))
     }
-    val startColor = remember(baseColor) { baseColor.copy(alpha = 0f) }
-    val endColor = remember(baseColor) { baseColor.copy(alpha = 1f) }
-    val alphaColors = remember(startColor, endColor) { listOf(startColor, endColor) }
 
-    val actualCheckerBrush = remember(density) {
-        val lightColor = Color(0xFFCCCCCC)
-        val darkColor = Color(0xFFAAAAAA)
-        val checkerSizeDp = 3.dp
-
-        val pixelSize = with(density) { checkerSizeDp.toPx() }
-        val tileBitmapSideLengthPx = (2 * pixelSize).toInt().coerceAtLeast(1)
-
-        val imageBitmap = ImageBitmap(tileBitmapSideLengthPx, tileBitmapSideLengthPx)
-        val canvasForBitmap = androidx.compose.ui.graphics.Canvas(imageBitmap)
-
-        val lightPaint = Paint().apply { color = lightColor }
-        val darkPaint = Paint().apply { color = darkColor }
-
-        canvasForBitmap.drawRect(0f, 0f, tileBitmapSideLengthPx.toFloat(), tileBitmapSideLengthPx.toFloat(), lightPaint)
-        canvasForBitmap.drawRect(pixelSize, 0f, 2 * pixelSize, pixelSize, darkPaint)
-        canvasForBitmap.drawRect(0f, pixelSize, pixelSize, 2 * pixelSize, darkPaint)
-
-        val shader = ImageShader(imageBitmap, TileMode.Repeated, TileMode.Repeated)
-        ShaderBrush(shader)
+    val checkerBrush = remember(density) {
+        createCheckerboardBrush(density)
     }
 
     ColorSlider(
         value = currentAlpha,
-        onValueChanged = currentOnAlphaChanged,
+        onValueChanged = onAlphaChanged,
         drawBrushColors = alphaColors,
         modifier = Modifier.fillMaxWidth(),
         hapticEffect = hapticEffect,
-        drawBackground = { _, _ -> drawRect(brush = actualCheckerBrush) }
+        drawBackground = { _, _ -> drawRect(brush = checkerBrush) }
     )
+}
+
+private fun createCheckerboardBrush(density: androidx.compose.ui.unit.Density): ShaderBrush {
+    val lightColor = Color(0xFFCCCCCC)
+    val darkColor = Color(0xFFAAAAAA)
+    val checkerSizeDp = 3.dp
+
+    val pixelSize = with(density) { checkerSizeDp.toPx() }
+    val tileBitmapSideLengthPx = (2 * pixelSize).toInt().coerceAtLeast(1)
+
+    val imageBitmap = ImageBitmap(tileBitmapSideLengthPx, tileBitmapSideLengthPx)
+    val canvasForBitmap = androidx.compose.ui.graphics.Canvas(imageBitmap)
+
+    val lightPaint = Paint().apply { color = lightColor }
+    val darkPaint = Paint().apply { color = darkColor }
+
+    canvasForBitmap.drawRect(0f, 0f, tileBitmapSideLengthPx.toFloat(), tileBitmapSideLengthPx.toFloat(), lightPaint)
+    canvasForBitmap.drawRect(pixelSize, 0f, 2 * pixelSize, pixelSize, darkPaint)
+    canvasForBitmap.drawRect(0f, pixelSize, pixelSize, 2 * pixelSize, darkPaint)
+
+    val shader = ImageShader(imageBitmap, TileMode.Repeated, TileMode.Repeated)
+    return ShaderBrush(shader)
 }
 
 /**
@@ -312,15 +326,11 @@ private fun ColorSlider(
     var sliderWidth by remember { mutableStateOf(0.dp) }
     val indicatorSizeDp = 20.dp
     val sliderHeightDp = 26.dp
-    val sliderHeightPx = with(density) { remember(sliderHeightDp) { sliderHeightDp.toPx() } }
+    val sliderHeightPx = with(density) { sliderHeightDp.toPx() }
     val sliderWidthPx = with(density) { sliderWidth.toPx() }
-    val halfSliderHeightPx = remember(sliderHeightPx) { sliderHeightPx / 2f }
-    val borderShape = remember { SmoothRoundedCornerShape(50.dp) }
-    val borderStroke = remember { 0.5.dp }
-    val borderColor = remember { Color.Gray.copy(0.1f) }
+    val halfSliderHeightPx = sliderHeightPx / 2f
     val hapticFeedback = LocalHapticFeedback.current
     val hapticState = remember { SliderHapticState() }
-    val currentOnValueChanged by rememberUpdatedState(onValueChanged)
 
     val gradientBrush = remember(drawBrushColors, sliderWidthPx, halfSliderHeightPx) {
         Brush.horizontalGradient(
@@ -331,46 +341,33 @@ private fun ColorSlider(
         )
     }
 
-    val dragHandler = remember(currentOnValueChanged, sliderHeightPx) {
-        { posX: Float, width: Float ->
-            handleSliderInteraction(posX, width, sliderHeightPx).coerceIn(0f, 1f)
-        }
-    }
-
-    val boxModifier = remember(modifier, borderShape, borderStroke, borderColor, sliderHeightDp) {
-        modifier
-            .height(sliderHeightDp)
-            .clip(borderShape)
-            .border(borderStroke, borderColor, borderShape)
-    }
-
     Box(
-        modifier = boxModifier
+        modifier = modifier
+            .height(sliderHeightDp)
+            .clip(SmoothRoundedCornerShape(50.dp))
+            .border(0.5.dp, Color.Gray.copy(0.1f), SmoothRoundedCornerShape(50.dp))
     ) {
-        val canvasModifier = remember(dragHandler) {
-            Modifier
+        Canvas(
+            modifier = Modifier
                 .fillMaxSize()
                 .onGloballyPositioned { coordinates ->
                     sliderWidth = with(density) { coordinates.size.width.toDp() }
                 }
-                .pointerInput(dragHandler) {
+                .pointerInput(Unit) {
                     detectHorizontalDragGestures(
                         onDragStart = { offset ->
-                            val newValue = dragHandler(offset.x, size.width.toFloat())
-                            currentOnValueChanged(newValue)
+                            val newValue = handleSliderInteraction(offset.x, size.width.toFloat(), sliderHeightPx).coerceIn(0f, 1f)
+                            onValueChanged(newValue)
                             hapticState.reset(newValue)
                         },
                         onHorizontalDrag = { change, _ ->
                             change.consume()
-                            val newValue = dragHandler(change.position.x, size.width.toFloat())
-                            currentOnValueChanged(newValue)
+                            val newValue = handleSliderInteraction(change.position.x, size.width.toFloat(), sliderHeightPx).coerceIn(0f, 1f)
+                            onValueChanged(newValue)
                             hapticState.handleHapticFeedback(newValue, hapticEffect, hapticFeedback)
                         }
                     )
                 }
-        }
-        Canvas(
-            modifier = canvasModifier
         ) {
             drawBackground?.invoke(this, size.width, size.height)
             drawRect(gradientBrush)
@@ -402,16 +399,13 @@ private fun SliderIndicator(
         indicatorPositionPx.toDp() - (indicatorSize / 2)
     }
 
-    val indicatorBoxModifier = remember(modifier, indicatorOffsetXDp, indicatorSize) {
-        modifier
+    Box(
+        modifier = modifier
             .offset(x = indicatorOffsetXDp)
             .size(indicatorSize)
             .clip(CircleShape)
             .border(6.dp, Color.White, CircleShape)
             .background(Color.Transparent, CircleShape)
-    }
-    Box(
-        modifier = indicatorBoxModifier
     )
 }
 

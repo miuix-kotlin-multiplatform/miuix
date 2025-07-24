@@ -106,16 +106,14 @@ fun PullToRefresh(
     val nestedScrollConnection = remember(pullToRefreshState, overScrollState) {
         pullToRefreshState.createNestedScrollConnection(overScrollState)
     }
-    val pointerModifier = remember {
-        Modifier.pointerInput(Unit) {
-            awaitPointerEventScope {
-                while (true) {
-                    val event = awaitPointerEvent()
-                    if (event.changes.all { !it.pressed }) {
-                        pullToRefreshState.onPointerRelease()
-                    } else {
-                        pullToRefreshState.resetPointerReleased()
-                    }
+    val pointerModifier = Modifier.pointerInput(Unit) {
+        awaitPointerEventScope {
+            while (true) {
+                val event = awaitPointerEvent()
+                if (event.changes.all { !it.pressed }) {
+                    pullToRefreshState.onPointerRelease()
+                } else {
+                    pullToRefreshState.resetPointerReleased()
                 }
             }
         }
@@ -124,20 +122,15 @@ fun PullToRefresh(
         pullToRefreshState.handlePointerReleased(currentOnRefresh)
     }
 
-    val boxModifier = remember(modifier, nestedScrollConnection, pointerModifier) {
-        modifier
-            .nestedScroll(nestedScrollConnection)
-            .then(pointerModifier)
-    }
+    val boxModifier = modifier
+        .nestedScroll(nestedScrollConnection)
+        .then(pointerModifier)
 
     CompositionLocalProvider(LocalPullToRefreshState provides pullToRefreshState) {
         Box(modifier = boxModifier) {
             Column {
-                val headerModifier = remember(contentPadding) {
-                    Modifier.offset(y = contentPadding.calculateTopPadding())
-                }
                 RefreshHeader(
-                    modifier = headerModifier,
+                    modifier = Modifier.offset(y = contentPadding.calculateTopPadding()),
                     pullToRefreshState = pullToRefreshState,
                     circleSize = circleSize,
                     color = color,
@@ -182,90 +175,64 @@ fun RefreshHeader(
         }
     }
 
-    val refreshText by remember(pullToRefreshState.refreshState, pullToRefreshState.pullProgress) {
+    val refreshDisplayInfo by remember(pullToRefreshState.refreshState, pullToRefreshState.pullProgress, refreshCompleteAnimProgress) {
         derivedStateOf {
-            when (pullToRefreshState.refreshState) {
-                RefreshState.Idle -> ""
-                RefreshState.Pulling -> if (pullToRefreshState.pullProgress > 0.5) refreshTexts[0] else ""
-                RefreshState.ThresholdReached -> refreshTexts[1]
-                RefreshState.Refreshing -> refreshTexts[2]
-                RefreshState.RefreshComplete -> refreshTexts[3]
-            }
-        }
-    }
-    val textAlpha by remember(pullToRefreshState.refreshState, pullToRefreshState.pullProgress, refreshCompleteAnimProgress) {
-        derivedStateOf {
-            when (pullToRefreshState.refreshState) {
-                RefreshState.Idle -> 0f
-                RefreshState.Pulling -> if (pullToRefreshState.pullProgress > 0.6f) (pullToRefreshState.pullProgress - 0.5f) * 2f else 0f
-                RefreshState.RefreshComplete -> (1f - refreshCompleteAnimProgress * 1.95f).coerceAtLeast(0f)
-                else -> 1f
-            }
-        }
-    }
-    val sHeight by remember(
-        density,
-        pullToRefreshState.refreshState,
-        circleSize,
-        dragOffset,
-        thresholdOffset,
-        refreshCompleteAnimProgress
-    ) {
-        derivedStateOf {
-            with(density) {
-                when (pullToRefreshState.refreshState) {
-                    RefreshState.Idle -> 0.dp
-                    RefreshState.Pulling -> circleSize * pullToRefreshState.pullProgress
-                    RefreshState.ThresholdReached -> circleSize + (dragOffset - thresholdOffset).toDp()
-                    RefreshState.Refreshing -> circleSize
-                    RefreshState.RefreshComplete -> circleSize.coerceIn(
-                        0.dp,
-                        circleSize - circleSize * refreshCompleteAnimProgress
-                    )
+            val (text, alpha) = when (pullToRefreshState.refreshState) {
+                RefreshState.Idle -> "" to 0f
+                RefreshState.Pulling -> {
+                    val progress = pullToRefreshState.pullProgress
+                    if (progress > 0.5) refreshTexts[0] to if (progress > 0.6f) (progress - 0.5f) * 2f else 0f
+                    else "" to 0f
                 }
+
+                RefreshState.ThresholdReached -> refreshTexts[1] to 1f
+                RefreshState.Refreshing -> refreshTexts[2] to 1f
+                RefreshState.RefreshComplete -> refreshTexts[3] to (1f - refreshCompleteAnimProgress * 1.95f).coerceAtLeast(0f)
             }
-        }
-    }
-    val headerHeight by remember(
-        density,
-        pullToRefreshState.refreshState,
-        circleSize,
-        dragOffset,
-        thresholdOffset,
-        refreshCompleteAnimProgress
-    ) {
-        derivedStateOf {
-            with(density) {
-                when (pullToRefreshState.refreshState) {
-                    RefreshState.Idle -> 0.dp
-                    RefreshState.Pulling -> (circleSize + 36.dp) * pullToRefreshState.pullProgress
-                    RefreshState.ThresholdReached -> (circleSize + 36.dp) + (dragOffset - thresholdOffset).toDp()
-                    RefreshState.Refreshing -> (circleSize + 36.dp)
-                    RefreshState.RefreshComplete -> (circleSize + 36.dp).coerceIn(
-                        0.dp,
-                        (circleSize + 36.dp) - (circleSize + 36.dp) * refreshCompleteAnimProgress
-                    )
-                }
-            }
+            text to alpha
         }
     }
 
-    val columnModifier = remember(modifier, headerHeight) {
-        modifier
-            .fillMaxWidth()
-            .height(headerHeight)
+    val heightInfo by remember(density, pullToRefreshState.refreshState, circleSize, dragOffset, thresholdOffset, refreshCompleteAnimProgress) {
+        derivedStateOf {
+            with(density) {
+                when (pullToRefreshState.refreshState) {
+                    RefreshState.Idle -> 0.dp to 0.dp
+                    RefreshState.Pulling -> {
+                        val progress = pullToRefreshState.pullProgress
+                        val sHeight = circleSize * progress
+                        val headerHeight = (circleSize + 36.dp) * progress
+                        sHeight to headerHeight
+                    }
+
+                    RefreshState.ThresholdReached -> {
+                        val offset = (dragOffset - thresholdOffset).toDp()
+                        val sHeight = circleSize + offset
+                        val headerHeight = (circleSize + 36.dp) + offset
+                        sHeight to headerHeight
+                    }
+
+                    RefreshState.Refreshing -> circleSize to (circleSize + 36.dp)
+                    RefreshState.RefreshComplete -> {
+                        val progress = refreshCompleteAnimProgress
+                        val sHeight = circleSize.coerceIn(0.dp, circleSize - circleSize * progress)
+                        val headerHeight = (circleSize + 36.dp).coerceIn(0.dp, (circleSize + 36.dp) - (circleSize + 36.dp) * progress)
+                        sHeight to headerHeight
+                    }
+                }
+            }
+        }
     }
 
     Column(
-        modifier = columnModifier,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(heightInfo.second),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        val refreshContentModifier = remember(sHeight) {
-            Modifier.height(sHeight)
-        }
         RefreshContent(
-            modifier = refreshContentModifier,
+            modifier = Modifier.height(heightInfo.first),
             circleSize = circleSize
         ) {
             val ringStrokeWidthPx = circleSize.toPx() / 11
@@ -310,16 +277,13 @@ fun RefreshHeader(
                 )
             }
         }
-        val textModifier = remember(textAlpha) {
-            Modifier
-                .padding(top = 6.dp)
-                .alpha(textAlpha)
-        }
         Text(
-            text = refreshText,
+            text = refreshDisplayInfo.first,
             style = refreshTextStyle,
             color = color,
-            modifier = textModifier
+            modifier = Modifier
+                .padding(top = 6.dp)
+                .alpha(refreshDisplayInfo.second)
         )
     }
 }
@@ -337,17 +301,11 @@ private fun RefreshContent(
     circleSize: Dp,
     drawContent: DrawScope.() -> Unit
 ) {
-    val boxModifier = remember(modifier) {
-        modifier.fillMaxSize()
-    }
     Box(
-        modifier = boxModifier,
+        modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
     ) {
-        val canvasModifier = remember(circleSize) {
-            Modifier.size(circleSize)
-        }
-        Canvas(modifier = canvasModifier) {
+        Canvas(modifier = Modifier.size(circleSize)) {
             drawContent()
         }
     }

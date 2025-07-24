@@ -65,11 +65,11 @@ fun BasicComponent(
     val holdDown = remember { mutableStateOf<HoldDownInteraction.HoldDown?>(null) }
     val currentOnClick by rememberUpdatedState(onClick)
 
-    LaunchedEffect(holdDownState, interactionSource) {
+    LaunchedEffect(holdDownState) {
         if (holdDownState) {
-            interactionSource.emit(HoldDownInteraction.HoldDown().also {
-                holdDown.value = it
-            })
+            val interaction = HoldDownInteraction.HoldDown()
+            holdDown.value = interaction
+            interactionSource.emit(interaction)
         } else {
             holdDown.value?.let { oldValue ->
                 interactionSource.emit(HoldDownInteraction.Release(oldValue))
@@ -78,38 +78,29 @@ fun BasicComponent(
         }
     }
 
-    val currentLocalIndication = LocalIndication.current
-    val rowModifier = remember(modifier, currentOnClick, enabled, interactionSource, currentLocalIndication, insideMargin) {
-        val baseModifierWithPractices = modifier
-            .heightIn(min = 56.dp)
-            .fillMaxWidth()
-        if (currentOnClick != null && enabled) {
-            baseModifierWithPractices
-                .clickable(
-                    indication = currentLocalIndication,
+    val rowModifier = modifier
+        .heightIn(min = 56.dp)
+        .fillMaxWidth()
+        .then(
+            if (currentOnClick != null && enabled) {
+                Modifier.clickable(
+                    indication = LocalIndication.current,
                     interactionSource = interactionSource,
                     onClick = { currentOnClick?.invoke() }
                 )
-                .padding(insideMargin)
-        } else {
-            baseModifierWithPractices
-
-                .padding(insideMargin)
-        }
-    }
+            } else Modifier
+        )
+        .padding(insideMargin)
 
     Row(
         modifier = rowModifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        leftAction?.let {
-            it()
-        }
+        leftAction?.invoke()
 
-        val columnModifier = remember { Modifier.weight(1f) }
         Column(
-            modifier = columnModifier
+            modifier = Modifier.weight(1f)
         ) {
             title?.let {
                 Text(
@@ -128,9 +119,8 @@ fun BasicComponent(
             }
         }
 
-        val rightActionsBoxModifier = remember { Modifier.padding(start = 16.dp) }
         Box(
-            modifier = rightActionsBoxModifier
+            modifier = Modifier.padding(start = 16.dp)
         ) {
             Row(
                 horizontalArrangement = Arrangement.End,

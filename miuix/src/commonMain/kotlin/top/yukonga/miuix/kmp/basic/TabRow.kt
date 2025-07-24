@@ -126,8 +126,6 @@ fun TabRowWithContour(
 ) {
     val currentOnTabSelected by rememberUpdatedState(onTabSelected)
     val contourPadding = 5.dp
-    val outerClipShape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius + contourPadding) }
-    val innerClipShape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
 
     BoxWithConstraints(
         modifier = Modifier
@@ -141,7 +139,7 @@ fun TabRowWithContour(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .clip(outerClipShape)
+                .clip(SmoothRoundedCornerShape(cornerRadius + contourPadding))
                 .background(color = colors.backgroundColor(false))
                 .padding(contourPadding)
         ) {
@@ -150,7 +148,7 @@ fun TabRowWithContour(
                 modifier = Modifier
                     .fillMaxSize()
                     .overScrollHorizontal()
-                    .clip(innerClipShape),
+                    .clip(SmoothRoundedCornerShape(cornerRadius)),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(contourPadding),
                 overscrollEffect = null

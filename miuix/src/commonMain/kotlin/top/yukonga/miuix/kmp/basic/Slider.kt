@@ -74,7 +74,6 @@ fun Slider(
     val hapticFeedback = LocalHapticFeedback.current
     var dragOffset by remember { mutableStateOf(0f) }
     var isDragging by remember { mutableStateOf(false) }
-    var currentValue by remember { mutableStateOf(progress) }
     val updatedOnProgressChange by rememberUpdatedState(onProgressChange)
     val factor = remember(decimalPlaces) { 10f.pow(decimalPlaces) }
     val hapticState = remember { SliderHapticState() }
@@ -88,48 +87,32 @@ fun Slider(
         }
     }
 
-    val currentLocalIndication = LocalIndication.current
-    val boxModifier = remember(
-        modifier,
-        enabled,
-        interactionSource,
-        currentLocalIndication,
-        calculateProgress,
-        updatedOnProgressChange,
-        hapticEffect,
-        hapticFeedback,
-        hapticState
-    ) {
-        if (enabled) {
-            modifier.pointerInput(Unit) {
-                detectHorizontalDragGestures(
-                    onDragStart = { offset ->
-                        isDragging = true
-                        dragOffset = offset.x
-                        val calculatedValue = calculateProgress(dragOffset, size.width)
-                        currentValue = calculatedValue
-                        updatedOnProgressChange(calculatedValue)
-                        hapticState.reset(calculatedValue)
-                    },
-                    onHorizontalDrag = { _, dragAmount ->
-                        dragOffset = (dragOffset + dragAmount).coerceIn(0f, size.width.toFloat())
-                        val calculatedValue = calculateProgress(dragOffset, size.width)
-                        currentValue = calculatedValue
-                        updatedOnProgressChange(calculatedValue)
-                        hapticState.handleHapticFeedback(calculatedValue, hapticEffect, hapticFeedback)
-                    },
-                    onDragEnd = {
-                        isDragging = false
-                    }
-                )
-            }.indication(interactionSource, currentLocalIndication)
-        } else {
-            modifier
-        }
-    }
-
     Box(
-        modifier = boxModifier,
+        modifier = modifier
+            .then(
+                if (enabled) {
+                    Modifier.pointerInput(Unit) {
+                        detectHorizontalDragGestures(
+                            onDragStart = { offset ->
+                                isDragging = true
+                                dragOffset = offset.x
+                                val calculatedValue = calculateProgress(dragOffset, size.width)
+                                updatedOnProgressChange(calculatedValue)
+                                hapticState.reset(calculatedValue)
+                            },
+                            onHorizontalDrag = { _, dragAmount ->
+                                dragOffset = (dragOffset + dragAmount).coerceIn(0f, size.width.toFloat())
+                                val calculatedValue = calculateProgress(dragOffset, size.width)
+                                updatedOnProgressChange(calculatedValue)
+                                hapticState.handleHapticFeedback(calculatedValue, hapticEffect, hapticFeedback)
+                            },
+                            onDragEnd = {
+                                isDragging = false
+                            }
+                        )
+                    }.indication(interactionSource, LocalIndication.current)
+                } else Modifier
+            ),
         contentAlignment = Alignment.CenterStart
     ) {
         SliderTrack(
@@ -161,18 +144,15 @@ private fun SliderTrack(
     maxValue: Float,
     isDragging: Boolean,
 ) {
-    val animationSpec = remember { tween<Float>(150) }
     val backgroundAlpha by animateFloatAsState(
         targetValue = if (isDragging) 0.044f else 0f,
-        animationSpec = animationSpec
+        animationSpec = tween(150)
     )
 
-    val canvasBaseModifier = remember(modifier, shape, backgroundColor) {
-        modifier.clip(shape).background(backgroundColor)
-    }
-
     Canvas(
-        modifier = canvasBaseModifier
+        modifier = modifier
+            .clip(shape)
+            .background(backgroundColor)
             .drawBehind { drawRect(Color.Black.copy(alpha = backgroundAlpha)) }
     ) {
         val barHeight = size.height

@@ -52,10 +52,6 @@ fun LinearProgressIndicator(
     colors: ProgressIndicatorColors = ProgressIndicatorDefaults.progressIndicatorColors(),
     height: Dp = ProgressIndicatorDefaults.DefaultLinearProgressIndicatorHeight
 ) {
-    val canvasModifier = remember(modifier, height) {
-        modifier.fillMaxWidth().height(height)
-    }
-
     if (progress == null) {
         val animatedValue = remember { Animatable(initialValue = 0f) }
 
@@ -69,7 +65,11 @@ fun LinearProgressIndicator(
             )
         }
 
-        Canvas(modifier = canvasModifier) {
+        Canvas(
+            modifier = modifier
+                .fillMaxWidth()
+                .height(height)
+        ) {
             val currentBackgroundColor = colors.backgroundColor()
             val currentForegroundColor = colors.foregroundColor(true) // Assuming enabled for indeterminate
 
@@ -130,7 +130,11 @@ fun LinearProgressIndicator(
         val currentBackgroundColor = colors.backgroundColor()
         val currentForegroundColor = colors.foregroundColor(true) // Assuming enabled for determinate
 
-        Canvas(modifier = canvasModifier) {
+        Canvas(
+            modifier = modifier
+                .fillMaxWidth()
+                .height(height)
+        ) {
             val cornerRadius = size.height / 2
 
             drawRoundRect(
@@ -169,10 +173,6 @@ fun CircularProgressIndicator(
     strokeWidth: Dp = ProgressIndicatorDefaults.DefaultCircularProgressIndicatorStrokeWidth,
     size: Dp = ProgressIndicatorDefaults.DefaultCircularProgressIndicatorSize
 ) {
-    val canvasModifier = remember(modifier, size) {
-        modifier.size(size)
-    }
-
     if (progress == null) {
         val transition = rememberInfiniteTransition()
 
@@ -197,7 +197,9 @@ fun CircularProgressIndicator(
             )
         )
 
-        Canvas(modifier = canvasModifier) {
+        Canvas(
+            modifier = modifier.size(size)
+        ) {
             val currentBackgroundColor = colors.backgroundColor()
             val currentForegroundColor = colors.foregroundColor(true) // Assuming enabled
 
@@ -227,7 +229,9 @@ fun CircularProgressIndicator(
         val currentBackgroundColor = colors.backgroundColor()
         val currentForegroundColor = colors.foregroundColor(true) // Assuming enabled
 
-        Canvas(modifier = canvasModifier) {
+        Canvas(
+            modifier = modifier.size(size)
+        ) {
             val strokeWidthPx = strokeWidth.toPx()
             val radius = (size.toPx() - strokeWidthPx) / 2
             val center = Offset(size.toPx() / 2, size.toPx() / 2)
@@ -275,10 +279,7 @@ fun InfiniteProgressIndicator(
     orbitingDotSize: Dp = ProgressIndicatorDefaults.DefaultInfiniteProgressIndicatorOrbitingDotSize
 ) {
     val rotationAnim = remember { Animatable(0f) }
-    val canvasModifier = remember(modifier, size) {
-        modifier.size(size)
-    }
-    val rememberedColor by rememberUpdatedState(color)
+    val currentColor by rememberUpdatedState(color)
 
     LaunchedEffect(Unit) {
         rotationAnim.animateTo(
@@ -290,12 +291,14 @@ fun InfiniteProgressIndicator(
         )
     }
 
-    Canvas(modifier = canvasModifier) {
+    Canvas(
+        modifier = modifier.size(size)
+    ) {
         val center = Offset(this.size.width / 2, this.size.height / 2)
         val radius = (size.toPx() - strokeWidth.toPx()) / 2
 
         drawCircle(
-            color = rememberedColor,
+            color = currentColor,
             radius = radius,
             center = center,
             style = Stroke(strokeWidth.toPx(), cap = StrokeCap.Round)
@@ -309,7 +312,7 @@ fun InfiniteProgressIndicator(
         )
 
         drawCircle(
-            color = rememberedColor,
+            color = currentColor,
             radius = orbitingDotSize.toPx(),
             center = dotCenter
         )
@@ -344,17 +347,11 @@ object ProgressIndicatorDefaults {
         disabledForegroundColor: Color = MiuixTheme.colorScheme.disabledPrimarySlider,
         backgroundColor: Color = MiuixTheme.colorScheme.tertiaryContainerVariant
     ): ProgressIndicatorColors {
-        val rememberedForegroundColor by rememberUpdatedState(foregroundColor)
-        val rememberedDisabledForegroundColor by rememberUpdatedState(disabledForegroundColor)
-        val rememberedBackgroundColor by rememberUpdatedState(backgroundColor)
-
-        return remember(rememberedForegroundColor, rememberedDisabledForegroundColor, rememberedBackgroundColor) {
-            ProgressIndicatorColors(
-                foregroundColor = rememberedForegroundColor,
-                disabledForegroundColor = rememberedDisabledForegroundColor,
-                backgroundColor = rememberedBackgroundColor
-            )
-        }
+        return ProgressIndicatorColors(
+            foregroundColor = foregroundColor,
+            disabledForegroundColor = disabledForegroundColor,
+            backgroundColor = backgroundColor
+        )
     }
 
     @Immutable

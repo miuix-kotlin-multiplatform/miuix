@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.isSpecified
@@ -83,7 +81,7 @@ fun Text(
     onTextLayout: ((TextLayoutResult) -> Unit)? = null,
     style: TextStyle = MiuixTheme.textStyles.main
 ) {
-    val textColor by rememberUpdatedState(if (color.isSpecified) color else if (style.color.isSpecified) style.color else MiuixTheme.colorScheme.onBackground)
+    val textColor = if (color.isSpecified) color else if (style.color.isSpecified) style.color else MiuixTheme.colorScheme.onBackground
 
     BasicText(
         text = text,
@@ -166,23 +164,22 @@ fun Text(
     onTextLayout: (TextLayoutResult) -> Unit = {},
     style: TextStyle = MiuixTheme.textStyles.main
 ) {
-    val textColor by rememberUpdatedState(if (color.isSpecified) color else if (style.color.isSpecified) style.color else MiuixTheme.colorScheme.onBackground)
+    val textColor = if (color.isSpecified) color else if (style.color.isSpecified) style.color else MiuixTheme.colorScheme.onBackground
 
     BasicText(
         text = text,
         modifier = modifier.padding(vertical = 4.dp),
-        style =
-            style.merge(
-                color = textColor,
-                fontSize = fontSize,
-                fontWeight = fontWeight,
-                textAlign = textAlign ?: TextAlign.Unspecified,
-                lineHeight = lineHeight,
-                fontFamily = fontFamily,
-                textDecoration = textDecoration,
-                fontStyle = fontStyle,
-                letterSpacing = letterSpacing
-            ),
+        style = style.merge(
+            color = textColor,
+            fontSize = fontSize,
+            fontWeight = fontWeight,
+            textAlign = textAlign ?: TextAlign.Unspecified,
+            lineHeight = lineHeight,
+            fontFamily = fontFamily,
+            textDecoration = textDecoration,
+            fontStyle = fontStyle,
+            letterSpacing = letterSpacing
+        ),
         onTextLayout = onTextLayout,
         overflow = overflow,
         softWrap = softWrap,

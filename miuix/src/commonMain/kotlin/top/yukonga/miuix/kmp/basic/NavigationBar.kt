@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.captionBar
-import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
@@ -87,13 +86,11 @@ fun NavigationBar(
         animationSpec = tween(durationMillis = 300)
     )
 
-    val columnModifier = remember(modifier, color) {
-        modifier
+    Column(
+        modifier = modifier
             .fillMaxWidth()
             .background(color)
-    }
-
-    Column(modifier = columnModifier) {
+    ) {
         if (showDivider) {
             HorizontalDivider()
         }
@@ -102,6 +99,10 @@ fun NavigationBar(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            val itemPlatform = platform()
+            val itemHeight = if (itemPlatform != Platform.IOS) 64.dp else 48.dp
+            val itemWeight = 1f / items.size
+
             items.forEachIndexed { index, item ->
                 val isSelected = selected == index
                 var isPressed by remember { mutableStateOf(false) }
@@ -124,12 +125,8 @@ fun NavigationBar(
                 )
                 val fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
 
-                val itemPlatform = platform()
-                val itemHeight = if (itemPlatform != Platform.IOS) 64.dp else 48.dp
-                val itemWeight = 1f / items.size
-
-                val itemModifier = remember(itemHeight, itemWeight, currentOnClick, index) {
-                    Modifier
+                Column(
+                    modifier = Modifier
                         .height(itemHeight)
                         .weight(itemWeight)
                         .pointerInput(currentOnClick, index) {
@@ -141,19 +138,14 @@ fun NavigationBar(
                                 },
                                 onTap = { currentOnClick(index) }
                             )
-                        }
-                }
-
-                Column(
-                    modifier = itemModifier,
+                        },
                     horizontalAlignment = CenterHorizontally
                 ) {
-                    val imageColorFilter = remember(tint) { ColorFilter.tint(tint) }
                     Image(
                         modifier = Modifier.size(32.dp).padding(top = 6.dp),
                         imageVector = item.icon,
                         contentDescription = item.label,
-                        colorFilter = imageColorFilter
+                        colorFilter = ColorFilter.tint(tint)
                     )
                     Text(
                         modifier = Modifier.padding(bottom = if (itemPlatform != Platform.IOS) 12.dp else 0.dp),
@@ -168,13 +160,10 @@ fun NavigationBar(
         }
         if (defaultWindowInsetsPadding) {
             val navigationBarsPadding = WindowInsets.navigationBars.asPaddingValues()
-            val spacerHeight = remember(navigationBarsPadding, animatedCaptionBarHeight) {
-                navigationBarsPadding.calculateBottomPadding() + animatedCaptionBarHeight
-            }
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(spacerHeight)
+                    .height(navigationBarsPadding.calculateBottomPadding() + animatedCaptionBarHeight)
                     .pointerInput(Unit) { detectTapGestures { /* Do nothing to consume the click */ } }
             )
         }
@@ -217,13 +206,6 @@ fun FloatingNavigationBar(
     val currentOnClick by rememberUpdatedState(onClick)
     val density = LocalDensity.current
 
-    val statusBarsInsets = WindowInsets.statusBars.only(WindowInsetsSides.Bottom)
-    val captionBarInsets = WindowInsets.captionBar.only(WindowInsetsSides.Bottom)
-    val displayCutoutInsets = WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal)
-    val navigationBarsInsets = WindowInsets.navigationBars
-
-    val dividerLineColor = MiuixTheme.colorScheme.dividerLine
-
     val platformValue = remember { platform() }
     val bottomPaddingValue = when (platformValue) {
         Platform.IOS -> 8.dp
@@ -236,48 +218,30 @@ fun FloatingNavigationBar(
         else -> 36.dp
     }
 
-    val rootColumnModifier = remember(horizontalAlignment, horizontalOutSidePadding) {
-        Modifier
+    Column(
+        modifier = Modifier
             .fillMaxWidth()
             .padding(
                 start = if (horizontalAlignment == Alignment.Start) horizontalOutSidePadding else 0.dp,
                 end = if (horizontalAlignment == Alignment.End) horizontalOutSidePadding else 0.dp,
             )
-    }
-
-    Column(modifier = rootColumnModifier) {
-        val rowModifierInstance = remember(
-            defaultWindowInsetsPadding,
-            statusBarsInsets,
-            captionBarInsets,
-            displayCutoutInsets,
-            navigationBarsInsets,
-            showDivider,
-            dividerLineColor,
-            cornerRadius,
-            shadowElevation,
-            density,
-            color,
-            modifier,
-            horizontalAlignment,
-            bottomPaddingValue
-        ) {
-            Modifier
+    ) {
+        Row(
+            modifier = Modifier
                 .padding(bottom = bottomPaddingValue)
                 .then(
                     if (defaultWindowInsetsPadding) {
                         Modifier
-                            .windowInsetsPadding(statusBarsInsets)
-                            .windowInsetsPadding(captionBarInsets)
-                            .windowInsetsPadding(displayCutoutInsets)
-                            .windowInsetsPadding(navigationBarsInsets)
+                            .windowInsetsPadding(WindowInsets.statusBars.only(WindowInsetsSides.Bottom))
+                            .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Bottom))
+                            .windowInsetsPadding(WindowInsets.navigationBars)
                     } else Modifier
                 )
                 .then(
                     if (showDivider) {
                         Modifier
                             .background(
-                                color = dividerLineColor,
+                                color = MiuixTheme.colorScheme.dividerLine,
                                 shape = SmoothRoundedCornerShape(cornerRadius)
                             )
                             .padding(0.75.dp)
@@ -300,11 +264,7 @@ fun FloatingNavigationBar(
                 .then(modifier)
                 .padding(horizontal = 12.dp)
                 .align(horizontalAlignment)
-                .pointerInput(Unit) { detectTapGestures { /* Do nothing to consume the click */ } }
-        }
-
-        Row(
-            modifier = rowModifierInstance,
+                .pointerInput(Unit) { detectTapGestures { /* Do nothing to consume the click */ } },
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -330,8 +290,8 @@ fun FloatingNavigationBar(
                 )
                 val fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
 
-                val itemColumnModifier = remember(currentOnClick, index) {
-                    Modifier
+                Column(
+                    modifier = Modifier
                         .pointerInput(currentOnClick, index) {
                             detectTapGestures(
                                 onPress = {
@@ -341,20 +301,16 @@ fun FloatingNavigationBar(
                                 },
                                 onTap = { currentOnClick(index) }
                             )
-                        }
-                }
-                Column(
-                    modifier = itemColumnModifier,
+                        },
                     horizontalAlignment = CenterHorizontally
                 ) {
-                    val imageColorFilter = remember(tint) { ColorFilter.tint(tint) }
                     when (mode) {
                         FloatingNavigationBarMode.IconAndText -> {
                             Image(
                                 modifier = Modifier.padding(top = 6.dp).size(24.dp),
                                 imageVector = item.icon,
                                 contentDescription = item.label,
-                                colorFilter = imageColorFilter
+                                colorFilter = ColorFilter.tint(tint)
                             )
                             Box(
                                 modifier = Modifier.padding(bottom = 6.dp),
@@ -408,7 +364,7 @@ fun FloatingNavigationBar(
                                 modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp).size(28.dp),
                                 imageVector = item.icon,
                                 contentDescription = item.label,
-                                colorFilter = imageColorFilter
+                                colorFilter = ColorFilter.tint(tint)
                             )
                         }
                     }

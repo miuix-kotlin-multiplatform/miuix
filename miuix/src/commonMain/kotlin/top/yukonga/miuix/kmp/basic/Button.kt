@@ -53,22 +53,18 @@ fun Button(
 ) {
     val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
     val currentOnClick by rememberUpdatedState(onClick)
-    val surfaceColor by colors.colorState(enabled)
 
     Surface(
         onClick = currentOnClick,
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
         shape = shape,
-        color = surfaceColor
+        color = colors.color(enabled)
     ) {
-        val rowModifier = remember(minWidth, minHeight, insideMargin) {
-            Modifier
-                .defaultMinSize(minWidth = minWidth, minHeight = minHeight)
-                .padding(insideMargin)
-        }
         Row(
-            rowModifier,
+            modifier = Modifier
+                .defaultMinSize(minWidth = minWidth, minHeight = minHeight)
+                .padding(insideMargin),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             content = content
@@ -103,29 +99,24 @@ fun TextButton(
 ) {
     val currentOnClick by rememberUpdatedState(onClick)
     val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
-    val surfaceColor by colors.colorState(enabled)
-    val textColor by colors.textColorState(enabled)
 
     Surface(
         onClick = currentOnClick,
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
         shape = shape,
-        color = surfaceColor
+        color = colors.color(enabled)
     ) {
-        val rowModifier = remember(minWidth, minHeight, insideMargin) {
-            Modifier
-                .defaultMinSize(minWidth = minWidth, minHeight = minHeight)
-                .padding(insideMargin)
-        }
         Row(
-            rowModifier,
+            modifier = Modifier
+                .defaultMinSize(minWidth = minWidth, minHeight = minHeight)
+                .padding(insideMargin),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             content = {
                 Text(
                     text = text,
-                    color = textColor,
+                    color = colors.textColor(enabled),
                     style = MiuixTheme.textStyles.button
                 )
             }

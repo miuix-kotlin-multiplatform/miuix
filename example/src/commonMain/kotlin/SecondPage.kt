@@ -40,13 +40,13 @@ fun SecondPage(
     LaunchedEffect(pullToRefreshState.isRefreshing) {
         if (pullToRefreshState.isRefreshing) {
             delay(300)
-            pullToRefreshState.completeRefreshing { ii += 4 }
+            pullToRefreshState.completeRefreshing { ii += 6 }
         }
     }
 
     PullToRefresh(
         pullToRefreshState = pullToRefreshState,
-        contentPadding = PaddingValues(top = padding.calculateTopPadding())
+        contentPadding = PaddingValues(top = padding.calculateTopPadding() + 12.dp)
     ) {
         LazyColumn(
             modifier = Modifier
@@ -56,12 +56,12 @@ fun SecondPage(
                 .overScrollVertical()
                 .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
                 .height(getWindowSize().height.dp),
-            contentPadding = PaddingValues(top = padding.calculateTopPadding()),
+            contentPadding = PaddingValues(top = padding.calculateTopPadding() + 12.dp),
             overscrollEffect = null
         ) {
             item {
                 Card(
-                    modifier = Modifier.padding(12.dp)
+                    modifier = Modifier.padding(horizontal = 12.dp).padding(bottom = 12.dp),
                 ) {
                     for (i in 0 until ii) {
                         SuperDropdown(

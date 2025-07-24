@@ -67,7 +67,6 @@ fun Checkbox(
     colors: CheckboxColors = CheckboxDefaults.checkboxColors(),
     enabled: Boolean = true,
 ) {
-    val isChecked by rememberUpdatedState(checked)
     val currentOnCheckedChange by rememberUpdatedState(onCheckedChange)
     var onCheck by remember { mutableStateOf(false) }
     val hapticFeedback = LocalHapticFeedback.current
@@ -80,17 +79,17 @@ fun Checkbox(
         isPressed || isDragged || isHovered
     }
 
-    LaunchedEffect(onCheck == true) {
-        delay(80)
-        onCheck = false
+    LaunchedEffect(onCheck) {
+        if (onCheck) {
+            delay(80)
+            onCheck = false
+        }
     }
 
-    val springSpec = remember(onCheck) {
-        spring<Float>(
-            dampingRatio = Spring.DampingRatioLowBouncy,
-            stiffness = if (onCheck) Spring.StiffnessHigh else Spring.StiffnessMedium
-        )
-    }
+    val springSpec = spring<Float>(
+        dampingRatio = Spring.DampingRatioLowBouncy,
+        stiffness = if (onCheck) Spring.StiffnessHigh else Spring.StiffnessMedium
+    )
 
     val scale by animateFloatAsState(
         targetValue = when {
@@ -101,21 +100,21 @@ fun Checkbox(
     )
 
     val backgroundColor by animateColorAsState(
-        targetValue = if (isChecked) colors.checkedBackgroundColor(enabled) else colors.uncheckedBackgroundColor(enabled),
+        targetValue = if (checked) colors.checkedBackgroundColor(enabled) else colors.uncheckedBackgroundColor(enabled),
         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
     )
 
     val foregroundColor by animateColorAsState(
-        targetValue = if (isChecked) colors.checkedForegroundColor(enabled) else colors.uncheckedForegroundColor(enabled),
+        targetValue = if (checked) colors.checkedForegroundColor(enabled) else colors.uncheckedForegroundColor(enabled),
         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
     )
 
-    val checkAlpha = remember { Animatable(if (isChecked) 1f else 0f) }
+    val checkAlpha = remember { Animatable(if (checked) 1f else 0f) }
     val checkStartTrim = remember { Animatable(0.0f) }
-    val checkEndTrim = remember { Animatable(if (isChecked) 0.803f else 0.1f) }
+    val checkEndTrim = remember { Animatable(if (checked) 0.803f else 0.1f) }
 
-    LaunchedEffect(isChecked) {
-        if (isChecked) {
+    LaunchedEffect(checked) {
+        if (checked) {
             launch {
                 checkAlpha.animateTo(
                     targetValue = 1f,
@@ -175,39 +174,30 @@ fun Checkbox(
         }
     }
 
-    val currentIndication = LocalIndication.current
-    val toggleableModifier = remember(isChecked, currentOnCheckedChange, enabled, interactionSource, currentIndication) {
-        if (currentOnCheckedChange != null) {
-            Modifier.toggleable(
-                value = isChecked,
-                onValueChange = {
-                    currentOnCheckedChange?.invoke(it)
-                    onCheck = true
-                    hapticFeedback.performHapticFeedback(
-                        if (it) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff
-                    )
-                },
-                enabled = enabled,
-                role = Role.Checkbox,
-                interactionSource = interactionSource,
-                indication = currentIndication
-            )
-        } else {
-            Modifier
-        }
-    }
-
-    val boxModifier = remember(modifier, scale, backgroundColor, toggleableModifier) {
-        modifier
+    Box(
+        modifier = modifier
             .size(25.5.dp)
             .scale(scale)
             .clip(CircleShape)
             .background(backgroundColor)
-            .then(toggleableModifier)
-    }
-
-    Box(
-        modifier = boxModifier,
+            .then(
+                if (currentOnCheckedChange != null) {
+                    Modifier.toggleable(
+                        value = checked,
+                        onValueChange = {
+                            currentOnCheckedChange?.invoke(it)
+                            onCheck = true
+                            hapticFeedback.performHapticFeedback(
+                                if (it) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff
+                            )
+                        },
+                        enabled = enabled,
+                        role = Role.Checkbox,
+                        interactionSource = interactionSource,
+                        indication = LocalIndication.current
+                    )
+                } else Modifier
+            ),
         contentAlignment = Alignment.Center
     ) {
         Canvas(modifier = Modifier.size(25.5.dp)) {

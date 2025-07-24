@@ -7,9 +7,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
 import top.yukonga.miuix.kmp.basic.BasicComponent
@@ -52,56 +49,12 @@ fun SuperCheckbox(
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
     enabled: Boolean = true
 ) {
-    val updatedOnCheckedChange by rememberUpdatedState(onCheckedChange)
-    val updatedOnClick by rememberUpdatedState(onClick)
-
-    val rememberedOnClick: (() -> Unit)? =
-        remember(enabled, onCheckedChange, checked, updatedOnClick, updatedOnCheckedChange) {
-            if (enabled && onCheckedChange != null) {
-                {
-                    updatedOnClick?.invoke()
-                    updatedOnCheckedChange?.invoke(!checked)
-                }
-            } else {
-                null
-            }
+    val handleClick: (() -> Unit)? = if (enabled && onCheckedChange != null) {
+        {
+            onClick?.invoke()
+            onCheckedChange.invoke(!checked)
         }
-
-    val rememberedLeftAction: (@Composable () -> Unit)? =
-        remember(checkboxLocation, insideMargin, checked, updatedOnCheckedChange, enabled, checkboxColors) {
-            if (checkboxLocation == CheckboxLocation.Left) {
-                @Composable {
-                    val leftCheckboxModifier = remember(insideMargin) {
-                        Modifier.padding(end = insideMargin.calculateLeftPadding(LayoutDirection.Ltr))
-                    }
-                    Checkbox(
-                        modifier = leftCheckboxModifier,
-                        checked = checked,
-                        onCheckedChange = updatedOnCheckedChange,
-                        enabled = enabled,
-                        colors = checkboxColors
-                    )
-                }
-            } else {
-                null
-            }
-        }
-
-    val rememberedRightActions: @Composable RowScope.() -> Unit =
-        remember(rightActions, checkboxLocation, checked, updatedOnCheckedChange, enabled, checkboxColors) {
-            @Composable {
-                rightActions()
-                if (checkboxLocation == CheckboxLocation.Right) {
-                    Checkbox(
-                        modifier = Modifier,
-                        checked = checked,
-                        onCheckedChange = updatedOnCheckedChange,
-                        enabled = enabled,
-                        colors = checkboxColors
-                    )
-                }
-            }
-        }
+    } else null
 
     BasicComponent(
         modifier = modifier,
@@ -110,11 +63,67 @@ fun SuperCheckbox(
         titleColor = titleColor,
         summary = summary,
         summaryColor = summaryColor,
-        leftAction = rememberedLeftAction,
-        rightActions = rememberedRightActions,
-        onClick = rememberedOnClick,
+        leftAction = if (checkboxLocation == CheckboxLocation.Left) {
+            {
+                SuperCheckboxLeftAction(
+                    checked = checked,
+                    onCheckedChange = onCheckedChange,
+                    enabled = enabled,
+                    checkboxColors = checkboxColors,
+                    insideMargin = insideMargin
+                )
+            }
+        } else null,
+        rightActions = {
+            SuperCheckboxRightActions(
+                rightActions = rightActions,
+                checkboxLocation = checkboxLocation,
+                checked = checked,
+                onCheckedChange = onCheckedChange,
+                enabled = enabled,
+                checkboxColors = checkboxColors
+            )
+        },
+        onClick = handleClick,
         enabled = enabled
     )
+}
+
+@Composable
+private fun SuperCheckboxLeftAction(
+    checked: Boolean,
+    onCheckedChange: ((Boolean) -> Unit)?,
+    enabled: Boolean,
+    checkboxColors: CheckboxColors,
+    insideMargin: PaddingValues
+) {
+    Checkbox(
+        modifier = Modifier.padding(end = insideMargin.calculateLeftPadding(LayoutDirection.Ltr)),
+        checked = checked,
+        onCheckedChange = onCheckedChange,
+        enabled = enabled,
+        colors = checkboxColors
+    )
+}
+
+@Composable
+private fun RowScope.SuperCheckboxRightActions(
+    rightActions: @Composable RowScope.() -> Unit,
+    checkboxLocation: CheckboxLocation,
+    checked: Boolean,
+    onCheckedChange: ((Boolean) -> Unit)?,
+    enabled: Boolean,
+    checkboxColors: CheckboxColors
+) {
+    rightActions()
+    if (checkboxLocation == CheckboxLocation.Right) {
+        Checkbox(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            enabled = enabled,
+            colors = checkboxColors
+        )
+    }
 }
 
 enum class CheckboxLocation {

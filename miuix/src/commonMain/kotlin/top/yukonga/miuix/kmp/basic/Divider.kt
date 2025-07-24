@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -31,10 +30,11 @@ fun HorizontalDivider(
     thickness: Dp = DividerDefaults.Thickness,
     color: Color = DividerDefaults.DividerColor
 ) {
-    val canvasModifier = remember(modifier, thickness) {
-        modifier.fillMaxWidth().height(thickness)
-    }
-    Canvas(canvasModifier) {
+    Canvas(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(thickness)
+    ) {
         val strokeWidthPx = thickness.toPx()
         if (strokeWidthPx <= 0f) return@Canvas
         drawLine(
@@ -60,10 +60,11 @@ fun VerticalDivider(
     thickness: Dp = DividerDefaults.Thickness,
     color: Color = DividerDefaults.DividerColor
 ) {
-    val canvasModifier = remember(modifier, thickness) {
-        modifier.fillMaxHeight().width(thickness)
-    }
-    Canvas(canvasModifier) {
+    Canvas(
+        modifier = modifier
+            .fillMaxHeight()
+            .width(thickness)
+    ) {
         val strokeWidthPx = thickness.toPx()
         if (strokeWidthPx <= 0f) return@Canvas
         drawLine(

@@ -310,7 +310,7 @@ private fun ScaffoldLayout(
 
                 // Calculate final coordinates, adding back insets based on alignment
                 // Start with the aligned position within the available space
-                var x = position.x + startInset
+                val x = position.x + startInset
                 var y = position.y
 
                 // Specific adjustments based on vertical alignment

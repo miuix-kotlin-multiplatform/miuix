@@ -6,9 +6,6 @@ package top.yukonga.miuix.kmp.extra
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.BasicComponentColors
@@ -52,32 +49,12 @@ fun SuperSwitch(
     holdDownState: Boolean = false,
     enabled: Boolean = true
 ) {
-    val updatedOnCheckedChange by rememberUpdatedState(onCheckedChange)
-    val currentOnClick by rememberUpdatedState(onClick)
-
-    val rememberedRightActions: @Composable RowScope.() -> Unit =
-        remember(rightActions, checked, updatedOnCheckedChange, enabled, switchColors) {
-            {
-                rightActions()
-                Switch(
-                    checked = checked,
-                    onCheckedChange = updatedOnCheckedChange,
-                    enabled = enabled,
-                    colors = switchColors
-                )
-            }
+    val handleClick: (() -> Unit)? = if (enabled && onCheckedChange != null) {
+        {
+            onClick?.invoke()
+            onCheckedChange.invoke(!checked)
         }
-
-    val rememberedOnClick: (() -> Unit)? = remember(enabled, currentOnClick, updatedOnCheckedChange, checked) {
-        if (enabled) {
-            {
-                currentOnClick?.invoke()
-                updatedOnCheckedChange?.invoke(!checked)
-            }
-        } else {
-            null
-        }
-    }
+    } else null
 
     BasicComponent(
         modifier = modifier,
@@ -87,9 +64,34 @@ fun SuperSwitch(
         summary = summary,
         summaryColor = summaryColor,
         leftAction = leftAction,
-        rightActions = rememberedRightActions,
-        onClick = rememberedOnClick,
+        rightActions = {
+            SuperSwitchRightActions(
+                rightActions = rightActions,
+                checked = checked,
+                onCheckedChange = onCheckedChange,
+                enabled = enabled,
+                switchColors = switchColors
+            )
+        },
+        onClick = handleClick,
         holdDownState = holdDownState,
         enabled = enabled
+    )
+}
+
+@Composable
+private fun RowScope.SuperSwitchRightActions(
+    rightActions: @Composable RowScope.() -> Unit,
+    checked: Boolean,
+    onCheckedChange: ((Boolean) -> Unit)?,
+    enabled: Boolean,
+    switchColors: SwitchColors
+) {
+    rightActions()
+    Switch(
+        checked = checked,
+        onCheckedChange = onCheckedChange,
+        enabled = enabled,
+        colors = switchColors
     )
 }

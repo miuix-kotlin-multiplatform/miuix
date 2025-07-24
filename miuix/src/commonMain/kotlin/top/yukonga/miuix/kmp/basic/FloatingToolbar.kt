@@ -45,7 +45,7 @@ import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 @Composable
 fun FloatingToolbar(
     modifier: Modifier = Modifier,
-    color: Color = FloatingToolbarDefaults.DefaultColor(),
+    color: Color = FloatingToolbarDefaults.defaultColor(),
     cornerRadius: Dp = FloatingToolbarDefaults.CornerRadius,
     outSidePadding: PaddingValues = FloatingToolbarDefaults.OutSidePadding,
     shadowElevation: Dp = 4.dp,
@@ -54,28 +54,19 @@ fun FloatingToolbar(
     content: @Composable () -> Unit
 ) {
     val density = LocalDensity.current
-    val statusBarsInsets = WindowInsets.statusBars.only(WindowInsetsSides.Vertical)
-    val captionBarInsets = WindowInsets.captionBar.only(WindowInsetsSides.Vertical)
-    val displayCutoutInsets = WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal)
-    val navigationBarsInsets = WindowInsets.navigationBars
-
     val roundedCornerShape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
     val dividerColor = MiuixTheme.colorScheme.dividerLine
 
-    val outerBoxModifier = remember(
-        outSidePadding, defaultWindowInsetsPadding, statusBarsInsets, captionBarInsets,
-        displayCutoutInsets, navigationBarsInsets, showDivider, dividerColor, roundedCornerShape,
-        shadowElevation, density, cornerRadius, color
-    ) {
-        Modifier
+    Box(
+        modifier = Modifier
             .padding(outSidePadding)
             .then(
                 if (defaultWindowInsetsPadding) {
                     Modifier
-                        .windowInsetsPadding(statusBarsInsets)
-                        .windowInsetsPadding(captionBarInsets)
-                        .windowInsetsPadding(displayCutoutInsets)
-                        .windowInsetsPadding(navigationBarsInsets)
+                        .windowInsetsPadding(WindowInsets.statusBars.only(WindowInsetsSides.Vertical))
+                        .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Vertical))
+                        .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
+                        .windowInsetsPadding(WindowInsets.navigationBars)
                 } else Modifier
             )
             .then(
@@ -103,10 +94,6 @@ fun FloatingToolbar(
             )
             .background(color = color)
             .pointerInput(Unit) { detectTapGestures { /* Do nothing to consume the click */ } }
-    }
-
-    Box(
-        modifier = outerBoxModifier
     ) {
         Box(
             modifier = modifier
@@ -127,7 +114,7 @@ object FloatingToolbarDefaults {
      * Default color of the [FloatingToolbar].
      */
     @Composable
-    fun DefaultColor() = MiuixTheme.colorScheme.surfaceContainer
+    fun defaultColor() = MiuixTheme.colorScheme.surfaceContainer
 
     /**
      * Default padding outside the [FloatingToolbar].
