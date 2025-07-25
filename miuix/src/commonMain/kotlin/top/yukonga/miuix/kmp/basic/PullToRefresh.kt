@@ -114,12 +114,22 @@ fun PullToRefresh(
         remember(pullToRefreshState, topAppBarScrollBehavior) {
             object : NestedScrollConnection {
                 override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                    val consumedByAppBar = topAppBarScrollBehavior?.nestedScrollConnection?.onPreScroll(available, source) ?: Offset.Zero
+                    if (pullToRefreshState == RefreshState.Idle) {
+                        val consumedByAppBar =
+                            topAppBarScrollBehavior?.nestedScrollConnection?.onPreScroll(available, source) ?: Offset.Zero
 
-                    val remaining = available - consumedByAppBar
-                    val consumedByRefresh = pullToRefreshState.createNestedScrollConnection().onPreScroll(remaining, source)
+                        val remaining = available - consumedByAppBar
+                        val consumedByRefresh = pullToRefreshState.createNestedScrollConnection().onPreScroll(remaining, source)
 
-                    return consumedByAppBar + consumedByRefresh
+                        return consumedByAppBar + consumedByRefresh
+                    } else {
+                        val consumedByRefresh = pullToRefreshState.createNestedScrollConnection().onPreScroll(available, source)
+                        val remaining = available - consumedByRefresh
+                        val consumedByAppBar =
+                            topAppBarScrollBehavior?.nestedScrollConnection?.onPreScroll(remaining, source) ?: Offset.Zero
+
+                        return consumedByRefresh + consumedByAppBar
+                    }
                 }
 
                 override fun onPostScroll(
@@ -127,24 +137,29 @@ fun PullToRefresh(
                     available: Offset,
                     source: NestedScrollSource
                 ): Offset {
-                    val consumedByAppBar = topAppBarScrollBehavior?.nestedScrollConnection?.onPostScroll(consumed, available, source) ?: Offset.Zero
+                        val consumedByAppBar =
+                            topAppBarScrollBehavior?.nestedScrollConnection?.onPostScroll(consumed, available, source) ?: Offset.Zero
 
-                    val remaining = available - consumedByAppBar
-                    val consumedByRefresh =
-                        pullToRefreshState.createNestedScrollConnection().onPostScroll(consumed, remaining, source)
+                        val remaining = available - consumedByAppBar
+                        val consumedByRefresh =
+                            pullToRefreshState.createNestedScrollConnection().onPostScroll(consumed, remaining, source)
 
-                    return consumedByAppBar + consumedByRefresh
+                        return consumedByAppBar + consumedByRefresh
                 }
 
                 override suspend fun onPreFling(available: Velocity): Velocity {
-                    return topAppBarScrollBehavior?.nestedScrollConnection?.onPreFling(available) ?: Velocity.Zero
+                    val consumedByAppBar =
+                        topAppBarScrollBehavior?.nestedScrollConnection?.onPreFling(available) ?: Velocity.Zero
+
+                    return consumedByAppBar
                 }
 
                 override suspend fun onPostFling(
                     consumed: Velocity,
                     available: Velocity
                 ): Velocity {
-                    val consumedByAppBar = topAppBarScrollBehavior?.nestedScrollConnection?.onPostFling(consumed, available) ?: Velocity.Zero
+                    val consumedByAppBar =
+                        topAppBarScrollBehavior?.nestedScrollConnection?.onPostFling(consumed, available) ?: Velocity.Zero
 
                     return consumedByAppBar
                 }
