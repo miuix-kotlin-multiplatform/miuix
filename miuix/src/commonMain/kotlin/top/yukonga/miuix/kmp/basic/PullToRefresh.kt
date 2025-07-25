@@ -35,6 +35,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -60,10 +63,12 @@ import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import top.yukonga.miuix.kmp.basic.PullToRefreshState.Companion.Saver
 import top.yukonga.miuix.kmp.utils.getWindowSize
-import top.yukonga.miuix.kmp.utils.overScrollVertical
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.max
@@ -105,37 +110,46 @@ fun PullToRefresh(
         pullToRefreshState.syncDragOffsetWithRawOffset()
     }
 
-    val nestedScrollConnection = remember(pullToRefreshState, topAppBarScrollBehavior) {
-        object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                val consumedByAppBar = topAppBarScrollBehavior?.nestedScrollConnection?.onPreScroll(available, source) ?: Offset.Zero
+    val nestedScrollConnection =
+        remember(pullToRefreshState, topAppBarScrollBehavior) {
+            object : NestedScrollConnection {
+                override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                    val consumedByAppBar = topAppBarScrollBehavior?.nestedScrollConnection?.onPreScroll(available, source) ?: Offset.Zero
 
-                val remaining = available - consumedByAppBar
-                val consumedByRefresh = pullToRefreshState.createNestedScrollConnection().onPreScroll(remaining, source)
+                    val remaining = available - consumedByAppBar
+                    val consumedByRefresh = pullToRefreshState.createNestedScrollConnection().onPreScroll(remaining, source)
 
-                return consumedByAppBar + consumedByRefresh
-            }
+                    return consumedByAppBar + consumedByRefresh
+                }
 
-            override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
-                val consumedByAppBar = topAppBarScrollBehavior?.nestedScrollConnection?.onPostScroll(consumed, available, source) ?: Offset.Zero
+                override fun onPostScroll(
+                    consumed: Offset,
+                    available: Offset,
+                    source: NestedScrollSource
+                ): Offset {
+                    val consumedByAppBar = topAppBarScrollBehavior?.nestedScrollConnection?.onPostScroll(consumed, available, source) ?: Offset.Zero
 
-                val remaining = available - consumedByAppBar
-                val consumedByRefresh = pullToRefreshState.createNestedScrollConnection().onPostScroll(consumed, remaining, source)
+                    val remaining = available - consumedByAppBar
+                    val consumedByRefresh =
+                        pullToRefreshState.createNestedScrollConnection().onPostScroll(consumed, remaining, source)
 
-                return consumedByAppBar + consumedByRefresh
-            }
+                    return consumedByAppBar + consumedByRefresh
+                }
 
-            override suspend fun onPreFling(available: Velocity): Velocity {
-                return topAppBarScrollBehavior?.nestedScrollConnection?.onPreFling(available) ?: Velocity.Zero
-            }
+                override suspend fun onPreFling(available: Velocity): Velocity {
+                    return topAppBarScrollBehavior?.nestedScrollConnection?.onPreFling(available) ?: Velocity.Zero
+                }
 
-            override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
-                val consumedByAppBar = topAppBarScrollBehavior?.nestedScrollConnection?.onPostFling(consumed, available) ?: Velocity.Zero
+                override suspend fun onPostFling(
+                    consumed: Velocity,
+                    available: Velocity
+                ): Velocity {
+                    val consumedByAppBar = topAppBarScrollBehavior?.nestedScrollConnection?.onPostFling(consumed, available) ?: Velocity.Zero
 
-                return consumedByAppBar
+                    return consumedByAppBar
+                }
             }
         }
-    }
 
     val pointerModifier = Modifier.pointerInput(Unit) {
         awaitPointerEventScope {
@@ -149,7 +163,11 @@ fun PullToRefresh(
             }
         }
     }
-    LaunchedEffect(pullToRefreshState.pointerReleasedValue, pullToRefreshState.isRefreshing, currentOnRefresh) {
+    LaunchedEffect(
+        pullToRefreshState.pointerReleasedValue,
+        pullToRefreshState.isRefreshing,
+        currentOnRefresh
+    ) {
         pullToRefreshState.handlePointerReleased(currentOnRefresh)
     }
 
@@ -159,7 +177,6 @@ fun PullToRefresh(
         val boxModifier = modifier
             .nestedScroll(nestedScrollConnection)
             .then(pointerModifier)
-            .overScrollVertical()
 
         Box(modifier = boxModifier) {
             Column {
@@ -209,7 +226,11 @@ fun RefreshHeader(
         }
     }
 
-    val refreshDisplayInfo by remember(pullToRefreshState.refreshState, pullToRefreshState.pullProgress, refreshCompleteAnimProgress) {
+    val refreshDisplayInfo by remember(
+        pullToRefreshState.refreshState,
+        pullToRefreshState.pullProgress,
+        refreshCompleteAnimProgress
+    ) {
         derivedStateOf {
             val (text, alpha) = when (pullToRefreshState.refreshState) {
                 RefreshState.Idle -> "" to 0f
@@ -227,7 +248,14 @@ fun RefreshHeader(
         }
     }
 
-    val heightInfo by remember(density, pullToRefreshState.refreshState, circleSize, dragOffset, thresholdOffset, refreshCompleteAnimProgress) {
+    val heightInfo by remember(
+        density,
+        pullToRefreshState.refreshState,
+        circleSize,
+        dragOffset,
+        thresholdOffset,
+        refreshCompleteAnimProgress
+    ) {
         derivedStateOf {
             with(density) {
                 when (pullToRefreshState.refreshState) {
@@ -484,23 +512,38 @@ private fun DrawScope.drawRefreshCompleteState(
 }
 
 /**
- * Refresh status
+ * Represents the various states of the pull-to-refresh component.
  */
-sealed class RefreshState {
-    /** Idle state */
-    data object Idle : RefreshState()
+sealed interface RefreshState {
+    /** The default, resting state. */
+    data object Idle : RefreshState
 
-    /** Pulling state */
-    data object Pulling : RefreshState()
+    /** The state when the user is actively pulling down, but has not yet passed the threshold. */
+    data object Pulling : RefreshState
 
-    /** Threshold reached state */
-    data object ThresholdReached : RefreshState()
+    /** The state when the user has pulled down past the refresh threshold. */
+    data object ThresholdReached : RefreshState
 
-    /** Refreshing state */
-    data object Refreshing : RefreshState()
+    /** The state when the refresh operation is in progress. */
+    data object Refreshing : RefreshState
 
-    /** Refresh complete state */
-    data object RefreshComplete : RefreshState()
+    /** The state after the refresh operation has completed, before returning to Idle. */
+    data object RefreshComplete : RefreshState
+
+    companion object {
+        /**
+         * Restores a [RefreshState] from a saved integer value.
+         * @param value The integer representation of the state.
+         * @return The corresponding [RefreshState] instance.
+         */
+        internal fun fromInt(value: Int): RefreshState = when (value) {
+            1 -> Pulling
+            2 -> ThresholdReached
+            3 -> Refreshing
+            4 -> RefreshComplete
+            else -> Idle // Default to Idle for safety.
+        }
+    }
 }
 
 /**
@@ -512,16 +555,26 @@ sealed class RefreshState {
 fun rememberPullToRefreshState(): PullToRefreshState {
     val coroutineScope = rememberCoroutineScope()
     val currentWindowSize = getWindowSize()
-    return remember(coroutineScope, currentWindowSize.height) {
-        val screenHeight = currentWindowSize.height.toFloat()
-        val maxDragDistancePx = screenHeight * maxDragRatio
-        val refreshThresholdOffset = maxDragDistancePx * thresholdRatio
+
+    // Use rememberSaveable with the custom Saver to preserve state across configuration changes.
+    val state = rememberSaveable(saver = Saver) {
+        // This block provides the initial state when created for the first time.
         PullToRefreshState(
-            coroutineScope,
-            screenHeight,
-            refreshThresholdOffset
+            coroutineScope = coroutineScope,
+            maxDragDistancePx = currentWindowSize.height.toFloat(),
+            refreshThresholdOffset = currentWindowSize.height.toFloat() * maxDragRatio * thresholdRatio
         )
     }
+
+    // Update the transient, context-dependent properties after creation or restoration.
+    LaunchedEffect(state, coroutineScope, currentWindowSize) {
+        state.coroutineScope = coroutineScope // The coroutine scope needs to be updated.
+        // Recalculate dimensions in case they changed during rotation.
+        state.maxDragDistancePx = currentWindowSize.height.toFloat()
+        state.refreshThresholdOffset = currentWindowSize.height.toFloat() * maxDragRatio * thresholdRatio
+    }
+
+    return state
 }
 
 /**
@@ -532,9 +585,9 @@ fun rememberPullToRefreshState(): PullToRefreshState {
  * @param refreshThresholdOffset Refresh threshold offset
  */
 class PullToRefreshState(
-    private val coroutineScope: CoroutineScope,
-    val maxDragDistancePx: Float,
-    val refreshThresholdOffset: Float
+    internal var coroutineScope: CoroutineScope,
+    internal var maxDragDistancePx: Float,
+    internal var refreshThresholdOffset: Float
 ) {
     /** Original drag offset */
     var rawDragOffset by mutableFloatStateOf(0f)
@@ -566,6 +619,37 @@ class PullToRefreshState(
 
     /** Refresh in progress */
     private var isRefreshingInProgress by mutableStateOf(false)
+
+    companion object {
+        /**
+         * A [Saver] object that defines how to save and restore a [PullToRefreshState].
+         * It saves the essential state properties needed to survive configuration changes.
+         */
+        val Saver: Saver<PullToRefreshState, *> = listSaver(
+            save = {
+                listOf(
+                    it.rawDragOffset,
+                    it.isRefreshingInProgress,
+                    it.refreshState.toInt() // Convert sealed interface state to a savable Int
+                )
+            },
+            restore = { list ->
+                // Create a new state instance with placeholder values, as context is needed.
+                // The actual state will be restored immediately after.
+                val state = PullToRefreshState(
+                    coroutineScope = CoroutineScope(Job() + Dispatchers.Main.immediate), // Placeholder
+                    maxDragDistancePx = 0f, // Will be recalculated
+                    refreshThresholdOffset = 0f // Will be recalculated
+                )
+                // Restore the saved properties.
+                state.rawDragOffset = list[0] as Float
+                state.isRefreshingInProgress = list[1] as Boolean
+                // Use the correct `fromInt` call.
+                state.internalRefreshState = RefreshState.fromInt(list[2] as Int)
+                state
+            }
+        )
+    }
 
     init {
         coroutineScope.launch {
@@ -668,7 +752,11 @@ class PullToRefreshState(
             } else Offset.Zero
         }
 
-        override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset = when {
+        override fun onPostScroll(
+            consumed: Offset,
+            available: Offset,
+            source: NestedScrollSource
+        ): Offset = when {
             isRefreshingInProgress || refreshState == RefreshState.Refreshing || refreshState == RefreshState.RefreshComplete -> Offset.Zero
             source == NestedScrollSource.UserInput -> {
                 if (available.y > 0f && consumed.y == 0f) {
@@ -745,6 +833,19 @@ class PullToRefreshState(
         val overThreshold = offset - refreshThresholdOffset
         return 1.0f / (1.0f + overThreshold / refreshThresholdOffset * 0.8f)
     }
+
+}
+
+/**
+ * Converts a [RefreshState] instance to a savable integer representation.
+ * @return The integer corresponding to the state.
+ */
+private fun RefreshState.toInt(): Int = when (this) {
+    is RefreshState.Idle -> 0
+    is RefreshState.Pulling -> 1
+    is RefreshState.ThresholdReached -> 2
+    is RefreshState.Refreshing -> 3
+    is RefreshState.RefreshComplete -> 4
 }
 
 /** Maximum drag ratio */

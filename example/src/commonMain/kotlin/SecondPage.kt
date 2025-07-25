@@ -21,6 +21,7 @@ import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.rememberPullToRefreshState
 import top.yukonga.miuix.kmp.extra.SuperDropdown
 import top.yukonga.miuix.kmp.utils.getWindowSize
+import top.yukonga.miuix.kmp.utils.overScrollVertical
 import top.yukonga.miuix.kmp.utils.scrollEndHaptic
 
 @Composable
@@ -50,9 +51,8 @@ fun SecondPage(
         LazyColumn(
             modifier = Modifier
                 .height(getWindowSize().height.dp)
-                .then(
-                    if (scrollEndHaptic) Modifier.scrollEndHaptic() else Modifier
-                ),
+                .overScrollVertical()
+                .then(if (scrollEndHaptic) Modifier.scrollEndHaptic() else Modifier),
             contentPadding = PaddingValues(top = padding.calculateTopPadding() + 12.dp),
             overscrollEffect = null
         ) {
