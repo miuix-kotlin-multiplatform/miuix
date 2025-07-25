@@ -9,10 +9,8 @@ import androidx.compose.animation.core.Spring.StiffnessMediumLow
 import androidx.compose.animation.core.spring
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
@@ -123,7 +121,6 @@ fun Modifier.overScrollOutOfBound(
 ): Modifier = composed {
     if (!isEnabled()) return@composed this
 
-    val overScrollState = LocalOverScrollState.current
     val pullToRefreshState = LocalPullToRefreshState.current
     val currentNestedScrollToParent by rememberUpdatedState(nestedScrollToParent)
     val currentScrollEasing by rememberUpdatedState(scrollEasing ?: DefaultParabolaScrollEasing)
@@ -149,8 +146,6 @@ fun Modifier.overScrollOutOfBound(
             }
 
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                // Check if overScroll should be disabled for drop-down direction
-                overScrollState.isOverScrollActive = abs(offset) > visibilityThreshold
                 if (shouldBypassForPullToRefresh(available.y)) {
                     return dispatcher.dispatchPreScroll(available, source)
                 }
@@ -193,8 +188,6 @@ fun Modifier.overScrollOutOfBound(
             }
 
             override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
-                // Check if overScroll should be disabled for drop-down direction
-                overScrollState.isOverScrollActive = abs(offset) > visibilityThreshold
                 if (shouldBypassForPullToRefresh(available.y)) {
                     return dispatcher.dispatchPostScroll(consumed, available, source)
                 }
@@ -215,8 +208,6 @@ fun Modifier.overScrollOutOfBound(
             }
 
             override suspend fun onPreFling(available: Velocity): Velocity {
-                // Check if overScroll should be disabled for drop-down direction
-                overScrollState.isOverScrollActive = abs(offset) > visibilityThreshold
                 if (shouldBypassForPullToRefresh(available.y)) {
                     return dispatcher.dispatchPreFling(available)
                 }
@@ -253,8 +244,6 @@ fun Modifier.overScrollOutOfBound(
             }
 
             override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
-                // Check if overScroll should be disabled for drop-down direction
-                overScrollState.isOverScrollActive = abs(offset) > visibilityThreshold
                 if (shouldBypassForPullToRefresh(available.y)) {
                     return dispatcher.dispatchPostFling(consumed, available)
                 }
@@ -286,21 +275,3 @@ fun Modifier.overScrollOutOfBound(
             if (currentIsVertical) translationY = offset else translationX = offset
         }
 }
-
-/**
- * OverScrollState is used to control the overscroll effect.
- *
- * @param isOverScrollActive Whether the overscroll effect is active.
- */
-@Stable
-class OverScrollState {
-    var isOverScrollActive by mutableStateOf(false)
-        internal set
-}
-
-/**
- * [LocalOverScrollState] is used to provide the [OverScrollState] instance to the composition.
- *
- * @see OverScrollState
- */
-val LocalOverScrollState = compositionLocalOf { OverScrollState() }

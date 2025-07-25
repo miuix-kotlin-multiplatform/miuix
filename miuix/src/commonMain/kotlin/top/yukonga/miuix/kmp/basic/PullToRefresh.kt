@@ -56,18 +56,14 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import top.yukonga.miuix.kmp.utils.LocalOverScrollState
-import top.yukonga.miuix.kmp.utils.LocalScrollCoordinatorState
-import top.yukonga.miuix.kmp.utils.OverScrollState
-import top.yukonga.miuix.kmp.utils.ScrollPriority
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import top.yukonga.miuix.kmp.utils.overScrollVertical
-import top.yukonga.miuix.kmp.utils.rememberScrollCoordinator
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.max
@@ -87,7 +83,6 @@ import kotlin.math.sin
  * @param refreshTexts The texts to show when refreshing.
  * @param refreshTextStyle The style of the refresh text.
  * @param topAppBarScrollBehavior The scroll behavior of the top app bar to coordinate with.
- * @param useScrollCoordinator Whether to use the scroll coordinator for better integration.
  * @param onRefresh The callback to be called when the refresh is triggered.
  * @param content the content to be shown when the [PullToRefresh] is expanded.
  */
@@ -101,7 +96,6 @@ fun PullToRefresh(
     refreshTexts: List<String> = PullToRefreshDefaults.refreshTexts,
     refreshTextStyle: TextStyle = PullToRefreshDefaults.refreshTextStyle,
     topAppBarScrollBehavior: ScrollBehavior? = null,
-    useScrollCoordinator: Boolean = false,
     onRefresh: () -> Unit = {},
     content: @Composable () -> Unit
 ) {
@@ -111,19 +105,38 @@ fun PullToRefresh(
         pullToRefreshState.syncDragOffsetWithRawOffset()
     }
 
-    val overScrollState = LocalOverScrollState.current
+    val nestedScrollConnection = remember(pullToRefreshState, topAppBarScrollBehavior) {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                val consumedByAppBar = topAppBarScrollBehavior?.nestedScrollConnection?.onPreScroll(available, source) ?: Offset.Zero
 
-    val scrollCoordinator = if (useScrollCoordinator && topAppBarScrollBehavior != null) {
-        rememberScrollCoordinator(
-            topAppBarScrollBehavior = topAppBarScrollBehavior,
-            pullToRefreshState = pullToRefreshState,
-            overScrollState = overScrollState
-        )
-    } else null
+                val remaining = available - consumedByAppBar
+                val consumedByRefresh = pullToRefreshState.createNestedScrollConnection().onPreScroll(remaining, source)
 
-    val nestedScrollConnection = remember(pullToRefreshState, overScrollState, scrollCoordinator) {
-        scrollCoordinator ?: pullToRefreshState.createNestedScrollConnection(overScrollState)
+                return consumedByAppBar + consumedByRefresh
+            }
+
+            override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
+                val consumedByAppBar = topAppBarScrollBehavior?.nestedScrollConnection?.onPostScroll(consumed, available, source) ?: Offset.Zero
+
+                val remaining = available - consumedByAppBar
+                val consumedByRefresh = pullToRefreshState.createNestedScrollConnection().onPostScroll(consumed, remaining, source)
+
+                return consumedByAppBar + consumedByRefresh
+            }
+
+            override suspend fun onPreFling(available: Velocity): Velocity {
+                return topAppBarScrollBehavior?.nestedScrollConnection?.onPreFling(available) ?: Velocity.Zero
+            }
+
+            override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
+                val consumedByAppBar = topAppBarScrollBehavior?.nestedScrollConnection?.onPostFling(consumed, available) ?: Velocity.Zero
+
+                return consumedByAppBar
+            }
+        }
     }
+
     val pointerModifier = Modifier.pointerInput(Unit) {
         awaitPointerEventScope {
             while (true) {
@@ -142,18 +155,12 @@ fun PullToRefresh(
 
     CompositionLocalProvider(
         LocalPullToRefreshState provides pullToRefreshState,
-        LocalScrollCoordinatorState provides scrollCoordinator?.state
     ) {
         val boxModifier = modifier
             .nestedScroll(nestedScrollConnection)
             .then(pointerModifier)
-            .then(
-                if (scrollCoordinator != null && scrollCoordinator.state.currentPriority == ScrollPriority.OverScroll) {
-                    Modifier.overScrollVertical()
-                } else {
-                    Modifier
-                }
-            )
+            .overScrollVertical()
+
         Box(modifier = boxModifier) {
             Column {
                 RefreshHeader(
@@ -646,11 +653,8 @@ class PullToRefreshState(
         isRefreshingInProgress = false
     }
 
-    fun createNestedScrollConnection(
-        overScrollState: OverScrollState
-    ): NestedScrollConnection = object : NestedScrollConnection {
+    fun createNestedScrollConnection(): NestedScrollConnection = object : NestedScrollConnection {
         override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-            if (overScrollState.isOverScrollActive) return Offset.Zero
             if (isRefreshingInProgress || refreshState == RefreshState.Refreshing || refreshState == RefreshState.RefreshComplete) return Offset.Zero
             return if (source == NestedScrollSource.UserInput && available.y < 0 && rawDragOffset > 0f) {
                 if (isRebounding && dragOffsetAnimatable.isRunning) {
@@ -665,7 +669,7 @@ class PullToRefreshState(
         }
 
         override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset = when {
-            overScrollState.isOverScrollActive || isRefreshingInProgress || refreshState == RefreshState.Refreshing || refreshState == RefreshState.RefreshComplete -> Offset.Zero
+            isRefreshingInProgress || refreshState == RefreshState.Refreshing || refreshState == RefreshState.RefreshComplete -> Offset.Zero
             source == NestedScrollSource.UserInput -> {
                 if (available.y > 0f && consumed.y == 0f) {
                     if (isRebounding && dragOffsetAnimatable.isRunning) {

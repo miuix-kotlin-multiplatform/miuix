@@ -45,7 +45,6 @@ fun SecondPage(
     PullToRefresh(
         pullToRefreshState = pullToRefreshState,
         topAppBarScrollBehavior = topAppBarScrollBehavior,
-        useScrollCoordinator = true,
         contentPadding = PaddingValues(top = padding.calculateTopPadding() + 12.dp)
     ) {
         LazyColumn(
