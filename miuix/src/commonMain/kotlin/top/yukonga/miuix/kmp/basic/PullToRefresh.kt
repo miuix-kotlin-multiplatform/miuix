@@ -4,7 +4,6 @@
 package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -34,10 +33,6 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.listSaver
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -63,127 +58,92 @@ import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import top.yukonga.miuix.kmp.basic.PullToRefreshState.Companion.Saver
+import top.yukonga.miuix.kmp.utils.LocalOverScrollState
+import top.yukonga.miuix.kmp.utils.OverScrollState
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.max
-import kotlin.math.min
 import kotlin.math.sin
 
 /**
- * A [PullToRefresh] component with Miuix style.
- * modified from the example provided by @sd086.
+ * A container that supports the "pull-to-refresh" gesture.
  *
- * @param modifier The modifier to be applied to the [PullToRefresh].
- * @param pullToRefreshState The state of the pull-to-refresh.
- * @param contentPadding The padding to be applied to the content.
- *   Only [PaddingValues.calculateTopPadding] is required.
+ * This composable follows a hoisted state pattern, where the logical `isRefreshing` state
+ * is managed by the caller (e.g., a ViewModel). It coordinates nested scrolling to enable a
+ * pull-to-refresh action, displays a customizable indicator, and triggers a callback when a
+ * refresh is requested.
+ *
+ * @param isRefreshing A boolean state representing whether a refresh is currently in progress.
+ *   This state should be hoisted and is the source of truth for the refresh operation.
+ * @param onRefresh A lambda to be invoked when a refresh is triggered by the user. This lambda
+ *   should initiate the data loading and is responsible for eventually setting `isRefreshing`
+ *   back to `false` upon completion.
+ * @param modifier The modifier to be applied to this container.
+ * @param pullToRefreshState The state object that manages the UI and animations of the indicator.
+ *   See [rememberPullToRefreshState].
+ * @param contentPadding The padding to be applied to the content. The top padding is used to
+ *   correctly offset the refresh indicator.
+ * @param topAppBarScrollBehavior An optional [ScrollBehavior] for a `TopAppBar` to coordinate
+ *   scrolling between the app bar and the pull-to-refresh gesture.
  * @param color The color of the refresh indicator.
- * @param circleSize The size of the refresh indicator circle.
- * @param refreshTexts The texts to show when refreshing.
- * @param refreshTextStyle The style of the refresh text.
- * @param topAppBarScrollBehavior The scroll behavior of the top app bar to coordinate with.
- * @param onRefresh The callback to be called when the refresh is triggered.
- * @param content the content to be shown when the [PullToRefresh] is expanded.
+ * @param circleSize The size of the refresh indicator's animated circle.
+ * @param refreshTexts A list of strings representing the text shown in different states.
+ * @param refreshTextStyle The [TextStyle] for the refresh indicator text.
+ * @param content The content to be displayed inside the container.
  */
 @Composable
 fun PullToRefresh(
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
-    pullToRefreshState: PullToRefreshState,
+    pullToRefreshState: PullToRefreshState = rememberPullToRefreshState(),
     contentPadding: PaddingValues = PaddingValues(0.dp),
+    topAppBarScrollBehavior: ScrollBehavior? = null,
     color: Color = PullToRefreshDefaults.color,
     circleSize: Dp = PullToRefreshDefaults.circleSize,
     refreshTexts: List<String> = PullToRefreshDefaults.refreshTexts,
     refreshTextStyle: TextStyle = PullToRefreshDefaults.refreshTextStyle,
-    topAppBarScrollBehavior: ScrollBehavior? = null,
-    onRefresh: () -> Unit = {},
     content: @Composable () -> Unit
 ) {
-    val currentOnRefresh by rememberUpdatedState(onRefresh)
+    val coroutineScope = rememberCoroutineScope()
+    val overScrollState = LocalOverScrollState.current
 
-    LaunchedEffect(pullToRefreshState.rawDragOffset) {
-        pullToRefreshState.syncDragOffsetWithRawOffset()
+    // This effect acts as the bridge between the hoisted `isRefreshing` logical state
+    // and the `pullToRefreshState` UI state object. It ensures the UI state always
+    // reflects the logical state, even after lifecycle events.
+    LaunchedEffect(isRefreshing) {
+        if (isRefreshing) {
+            pullToRefreshState.startRefreshing()
+        } else {
+            pullToRefreshState.finishRefreshing()
+        }
     }
 
+    // This connection establishes the chain of responsibility for nested scroll events.
     val nestedScrollConnection =
-        remember(pullToRefreshState, topAppBarScrollBehavior) {
-            object : NestedScrollConnection {
-                override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                    if (pullToRefreshState == RefreshState.Idle) {
-                        val consumedByAppBar =
-                            topAppBarScrollBehavior?.nestedScrollConnection?.onPreScroll(available, source) ?: Offset.Zero
-
-                        val remaining = available - consumedByAppBar
-                        val consumedByRefresh = pullToRefreshState.createNestedScrollConnection().onPreScroll(remaining, source)
-
-                        return consumedByAppBar + consumedByRefresh
-                    } else {
-                        val consumedByRefresh = pullToRefreshState.createNestedScrollConnection().onPreScroll(available, source)
-                        val remaining = available - consumedByRefresh
-                        val consumedByAppBar =
-                            topAppBarScrollBehavior?.nestedScrollConnection?.onPreScroll(remaining, source) ?: Offset.Zero
-
-                        return consumedByRefresh + consumedByAppBar
-                    }
-                }
-
-                override fun onPostScroll(
-                    consumed: Offset,
-                    available: Offset,
-                    source: NestedScrollSource
-                ): Offset {
-                        val consumedByAppBar =
-                            topAppBarScrollBehavior?.nestedScrollConnection?.onPostScroll(consumed, available, source) ?: Offset.Zero
-
-                        val remaining = available - consumedByAppBar
-                        val consumedByRefresh =
-                            pullToRefreshState.createNestedScrollConnection().onPostScroll(consumed, remaining, source)
-
-                        return consumedByAppBar + consumedByRefresh
-                }
-
-                override suspend fun onPreFling(available: Velocity): Velocity {
-                    val consumedByAppBar =
-                        topAppBarScrollBehavior?.nestedScrollConnection?.onPreFling(available) ?: Velocity.Zero
-
-                    return consumedByAppBar
-                }
-
-                override suspend fun onPostFling(
-                    consumed: Velocity,
-                    available: Velocity
-                ): Velocity {
-                    val consumedByAppBar =
-                        topAppBarScrollBehavior?.nestedScrollConnection?.onPostFling(consumed, available) ?: Velocity.Zero
-
-                    return consumedByAppBar
-                }
-            }
+        remember(pullToRefreshState, topAppBarScrollBehavior, overScrollState) {
+            createPullToRefreshConnection(
+                pullToRefreshState,
+                topAppBarScrollBehavior,
+                overScrollState
+            )
         }
 
+    // A modifier to detect when the user releases their finger and trigger the refresh logic.
     val pointerModifier = Modifier.pointerInput(Unit) {
         awaitPointerEventScope {
             while (true) {
                 val event = awaitPointerEvent()
                 if (event.changes.all { !it.pressed }) {
-                    pullToRefreshState.onPointerRelease()
-                } else {
-                    pullToRefreshState.resetPointerReleased()
+                    coroutineScope.launch {
+                        pullToRefreshState.handlePointerRelease(onRefresh)
+                    }
                 }
             }
         }
-    }
-    LaunchedEffect(
-        pullToRefreshState.pointerReleasedValue,
-        pullToRefreshState.isRefreshing,
-        currentOnRefresh
-    ) {
-        pullToRefreshState.handlePointerReleased(currentOnRefresh)
     }
 
     CompositionLocalProvider(
@@ -210,523 +170,156 @@ fun PullToRefresh(
 }
 
 /**
- * Refresh header
+ * Creates and remembers a [PullToRefreshState] across recompositions.
  *
- * @param modifier The modifier to be applied to the [RefreshHeader]
- * @param pullToRefreshState The state of the pull-to-refresh
- * @param circleSize The size of the refresh indicator circle
- * @param color The color of the refresh indicator
- * @param refreshTexts The texts to show when refreshing
- * @param refreshTextStyle The style of the refresh text
- */
-@Composable
-fun RefreshHeader(
-    modifier: Modifier = Modifier,
-    pullToRefreshState: PullToRefreshState,
-    circleSize: Dp,
-    color: Color,
-    refreshTexts: List<String>,
-    refreshTextStyle: TextStyle
-) {
-    val hapticFeedback = LocalHapticFeedback.current
-    val density = LocalDensity.current
-    val dragOffset = pullToRefreshState.dragOffsetAnimatable.value
-    val thresholdOffset = pullToRefreshState.refreshThresholdOffset
-    val rotation by animateRotation()
-    val refreshCompleteAnimProgress = pullToRefreshState.refreshCompleteAnimProgress
-
-    LaunchedEffect(pullToRefreshState.refreshState) {
-        if (pullToRefreshState.refreshState == RefreshState.ThresholdReached) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
-        }
-    }
-
-    val refreshDisplayInfo by remember(
-        pullToRefreshState.refreshState,
-        pullToRefreshState.pullProgress,
-        refreshCompleteAnimProgress
-    ) {
-        derivedStateOf {
-            val (text, alpha) = when (pullToRefreshState.refreshState) {
-                RefreshState.Idle -> "" to 0f
-                RefreshState.Pulling -> {
-                    val progress = pullToRefreshState.pullProgress
-                    if (progress > 0.5) refreshTexts[0] to if (progress > 0.6f) (progress - 0.5f) * 2f else 0f
-                    else "" to 0f
-                }
-
-                RefreshState.ThresholdReached -> refreshTexts[1] to 1f
-                RefreshState.Refreshing -> refreshTexts[2] to 1f
-                RefreshState.RefreshComplete -> refreshTexts[3] to (1f - refreshCompleteAnimProgress * 1.95f).coerceAtLeast(0f)
-            }
-            text to alpha
-        }
-    }
-
-    val heightInfo by remember(
-        density,
-        pullToRefreshState.refreshState,
-        circleSize,
-        dragOffset,
-        thresholdOffset,
-        refreshCompleteAnimProgress
-    ) {
-        derivedStateOf {
-            with(density) {
-                when (pullToRefreshState.refreshState) {
-                    RefreshState.Idle -> 0.dp to 0.dp
-                    RefreshState.Pulling -> {
-                        val progress = pullToRefreshState.pullProgress
-                        val sHeight = circleSize * progress
-                        val headerHeight = (circleSize + 36.dp) * progress
-                        sHeight to headerHeight
-                    }
-
-                    RefreshState.ThresholdReached -> {
-                        val offset = (dragOffset - thresholdOffset).toDp()
-                        val sHeight = circleSize + offset
-                        val headerHeight = (circleSize + 36.dp) + offset
-                        sHeight to headerHeight
-                    }
-
-                    RefreshState.Refreshing -> circleSize to (circleSize + 36.dp)
-                    RefreshState.RefreshComplete -> {
-                        val progress = refreshCompleteAnimProgress
-                        val sHeight = circleSize.coerceIn(0.dp, circleSize - circleSize * progress)
-                        val headerHeight = (circleSize + 36.dp).coerceIn(0.dp, (circleSize + 36.dp) - (circleSize + 36.dp) * progress)
-                        sHeight to headerHeight
-                    }
-                }
-            }
-        }
-    }
-
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(heightInfo.second),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
-        RefreshContent(
-            modifier = Modifier.height(heightInfo.first),
-            circleSize = circleSize
-        ) {
-            val ringStrokeWidthPx = circleSize.toPx() / 11
-            val indicatorRadiusPx = max(size.minDimension / 2, circleSize.toPx() / 3.5f)
-            val center = Offset(circleSize.toPx() / 2, circleSize.toPx() / 1.8f)
-            val alpha = (pullToRefreshState.pullProgress - 0.2f).coerceAtLeast(0f)
-            when (pullToRefreshState.refreshState) {
-                RefreshState.Idle -> return@RefreshContent
-
-                RefreshState.Pulling -> drawInitialState(
-                    center,
-                    indicatorRadiusPx,
-                    ringStrokeWidthPx,
-                    color,
-                    alpha
-                )
-
-                RefreshState.ThresholdReached -> drawThresholdExceededState(
-                    center,
-                    indicatorRadiusPx,
-                    ringStrokeWidthPx,
-                    color,
-                    dragOffset,
-                    thresholdOffset,
-                    pullToRefreshState.maxDragDistancePx
-                )
-
-                RefreshState.Refreshing -> drawRefreshingState(
-                    center,
-                    indicatorRadiusPx,
-                    ringStrokeWidthPx,
-                    color,
-                    rotation
-                )
-
-                RefreshState.RefreshComplete -> drawRefreshCompleteState(
-                    center,
-                    indicatorRadiusPx,
-                    ringStrokeWidthPx,
-                    color,
-                    refreshCompleteAnimProgress
-                )
-            }
-        }
-        Text(
-            text = refreshDisplayInfo.first,
-            style = refreshTextStyle,
-            color = color,
-            modifier = Modifier
-                .padding(top = 6.dp)
-                .alpha(refreshDisplayInfo.second)
-        )
-    }
-}
-
-/**
- * Refresh content container
+ * This state object is responsible for managing the visual aspects of the refresh indicator,
+ * such as its position and animation. The logical `isRefreshing` state should be hoisted and
+ * managed separately.
  *
- * @param modifier modifier
- * @param circleSize circle size, used for Canvas size
- * @param drawContent Canvas drawing lambda
- */
-@Composable
-private fun RefreshContent(
-    modifier: Modifier = Modifier,
-    circleSize: Dp,
-    drawContent: DrawScope.() -> Unit
-) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
-    ) {
-        Canvas(modifier = Modifier.size(circleSize)) {
-            drawContent()
-        }
-    }
-}
-
-/**
- * Animate the rotation angle
- *
- * @return rotation angle state
- */
-@Composable
-private fun animateRotation(): State<Float> {
-    val infiniteTransition = rememberInfiniteTransition(label = "rotationAnimation")
-    return infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(800, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "rotationValue"
-    )
-}
-
-/**
- * Draw the circle that expands to the initial state
- */
-private fun DrawScope.drawInitialState(
-    center: Offset,
-    radius: Float,
-    strokeWidth: Float,
-    color: Color,
-    alpha: Float
-) {
-    drawCircle(
-        color = color.copy(alpha = alpha),
-        radius = radius,
-        center = center,
-        style = Stroke(strokeWidth, cap = StrokeCap.Round)
-    )
-}
-
-/**
- * Draw the circle that expands to the threshold exceeded state
- */
-private fun DrawScope.drawThresholdExceededState(
-    center: Offset,
-    radius: Float,
-    strokeWidth: Float,
-    color: Color,
-    dragOffset: Float,
-    thresholdOffset: Float,
-    maxDrag: Float
-) {
-    val lineLength = if (dragOffset > thresholdOffset) {
-        min(max(dragOffset - thresholdOffset, 0f), maxDrag - thresholdOffset)
-    } else 0f
-    val topY = center.y
-    val bottomY = center.y + lineLength
-    drawArc(
-        color = color,
-        startAngle = 180f,
-        sweepAngle = 180f,
-        useCenter = false,
-        topLeft = Offset(center.x - radius, topY - radius),
-        size = Size(radius * 2, radius * 2),
-        style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
-    )
-    drawArc(
-        color = color,
-        startAngle = 0f,
-        sweepAngle = 180f,
-        useCenter = false,
-        topLeft = Offset(center.x - radius, bottomY - radius),
-        size = Size(radius * 2, radius * 2),
-        style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
-    )
-    drawLine(
-        color = color,
-        start = Offset(center.x - radius, topY),
-        end = Offset(center.x - radius, bottomY),
-        strokeWidth = strokeWidth,
-        cap = StrokeCap.Round
-    )
-    drawLine(
-        color = color,
-        start = Offset(center.x + radius, topY),
-        end = Offset(center.x + radius, bottomY),
-        strokeWidth = strokeWidth,
-        cap = StrokeCap.Round
-    )
-}
-
-/**
- * Draw the circle that expands to the refreshing state
- */
-private fun DrawScope.drawRefreshingState(
-    center: Offset,
-    radius: Float,
-    strokeWidth: Float,
-    color: Color,
-    rotation: Float
-) {
-    drawCircle(
-        color = color,
-        radius = radius,
-        center = center,
-        style = Stroke(strokeWidth, cap = StrokeCap.Round)
-    )
-    val orbitRadius = radius - 2 * strokeWidth
-    val angle = rotation * PI / 180.0
-    val dotCenter = center + Offset(
-        x = orbitRadius * cos(angle).toFloat(),
-        y = orbitRadius * sin(angle).toFloat()
-    )
-    drawCircle(
-        color = color,
-        radius = strokeWidth,
-        center = dotCenter
-    )
-}
-
-/**
- * Draw the circle that expands to the refresh complete state
- */
-private fun DrawScope.drawRefreshCompleteState(
-    center: Offset,
-    radius: Float,
-    strokeWidth: Float,
-    color: Color,
-    refreshCompleteProgress: Float
-) {
-    val animatedRadius = radius * ((1f - refreshCompleteProgress).coerceAtLeast(0.9f))
-    val alphaColor = color.copy(alpha = (1f - refreshCompleteProgress - 0.35f).coerceAtLeast(0f))
-    val y = center.y - radius - strokeWidth + animatedRadius
-    drawCircle(
-        color = alphaColor,
-        radius = animatedRadius,
-        center = Offset(center.x, y),
-        style = Stroke(strokeWidth, cap = StrokeCap.Round)
-    )
-}
-
-/**
- * Represents the various states of the pull-to-refresh component.
- */
-sealed interface RefreshState {
-    /** The default, resting state. */
-    data object Idle : RefreshState
-
-    /** The state when the user is actively pulling down, but has not yet passed the threshold. */
-    data object Pulling : RefreshState
-
-    /** The state when the user has pulled down past the refresh threshold. */
-    data object ThresholdReached : RefreshState
-
-    /** The state when the refresh operation is in progress. */
-    data object Refreshing : RefreshState
-
-    /** The state after the refresh operation has completed, before returning to Idle. */
-    data object RefreshComplete : RefreshState
-
-    companion object {
-        /**
-         * Restores a [RefreshState] from a saved integer value.
-         * @param value The integer representation of the state.
-         * @return The corresponding [RefreshState] instance.
-         */
-        internal fun fromInt(value: Int): RefreshState = when (value) {
-            1 -> Pulling
-            2 -> ThresholdReached
-            3 -> Refreshing
-            4 -> RefreshComplete
-            else -> Idle // Default to Idle for safety.
-        }
-    }
-}
-
-/**
- * Remember the [PullToRefreshState] state object
- *
- * @return [PullToRefreshState] state object
+ * @return A remembered instance of [PullToRefreshState].
  */
 @Composable
 fun rememberPullToRefreshState(): PullToRefreshState {
     val coroutineScope = rememberCoroutineScope()
+
+    // The state object is created using `remember` as it's a runtime UI state manager.
+    // The logical `isRefreshing` state, which survives process death, is hoisted.
+    val state = remember {
+        PullToRefreshState(coroutineScope)
+    }
+
+    // Update context-dependent properties on the state instance to ensure it's always current.
     val currentWindowSize = getWindowSize()
-
-    // Use rememberSaveable with the custom Saver to preserve state across configuration changes.
-    val state = rememberSaveable(saver = Saver) {
-        // This block provides the initial state when created for the first time.
-        PullToRefreshState(
-            coroutineScope = coroutineScope,
-            maxDragDistancePx = currentWindowSize.height.toFloat(),
-            refreshThresholdOffset = currentWindowSize.height.toFloat() * maxDragRatio * thresholdRatio
-        )
-    }
-
-    // Update the transient, context-dependent properties after creation or restoration.
-    LaunchedEffect(state, coroutineScope, currentWindowSize) {
-        state.coroutineScope = coroutineScope // The coroutine scope needs to be updated.
-        // Recalculate dimensions in case they changed during rotation.
-        state.maxDragDistancePx = currentWindowSize.height.toFloat()
-        state.refreshThresholdOffset = currentWindowSize.height.toFloat() * maxDragRatio * thresholdRatio
-    }
+    state.maxDragDistancePx = currentWindowSize.height.toFloat()// * maxDragRatio
+    state.refreshThresholdOffset = currentWindowSize.height.toFloat() * maxDragRatio * thresholdRatio
 
     return state
 }
 
+
+/** Represents the various visual states of the pull-to-refresh indicator. */
+sealed interface RefreshState {
+    data object Idle : RefreshState
+    data object Pulling : RefreshState
+    data object ThresholdReached : RefreshState
+    data object Refreshing : RefreshState
+    data object RefreshComplete : RefreshState
+}
+
 /**
- * The PullToRefreshState class
+ * A UI state holder for the [PullToRefresh] composable.
  *
- * @param coroutineScope Coroutine scope
- * @param maxDragDistancePx Maximum drag distance
- * @param refreshThresholdOffset Refresh threshold offset
+ * This class manages the internal state machine for animations and nested scroll interactions,
+ * driven by the hoisted `isRefreshing` boolean.
+ *
+ * @param coroutineScope A [CoroutineScope] used to launch animations and state updates.
  */
 class PullToRefreshState(
-    internal var coroutineScope: CoroutineScope,
-    internal var maxDragDistancePx: Float,
-    internal var refreshThresholdOffset: Float
+    internal var coroutineScope: CoroutineScope
 ) {
-    /** Original drag offset */
+    internal var maxDragDistancePx: Float = 0f
+    internal var refreshThresholdOffset: Float = 0f
+
+    /** The raw drag offset in pixels, before any animation or resistance is applied. */
     var rawDragOffset by mutableFloatStateOf(0f)
 
-    /** Drag offset animatable */
+    /** An animatable value for the drag offset, used to drive smooth transitions. */
     val dragOffsetAnimatable = Animatable(0f)
     private var internalRefreshState by mutableStateOf<RefreshState>(RefreshState.Idle)
 
-    /** Refresh state */
+    /** The current visual [RefreshState] of the component. */
     val refreshState: RefreshState get() = internalRefreshState
 
-    /** Whether it is refreshing */
+    /** A derived state that is true if the component is in the [RefreshState.Refreshing] state. */
     val isRefreshing: Boolean by derivedStateOf { refreshState is RefreshState.Refreshing }
-    private var pointerReleased by mutableStateOf(false)
 
-    /**  Whether it is rebounding */
-    private var isRebounding by mutableStateOf(false)
-
-    /** Pull progress */
+    /** The progress of the pull gesture, from 0.0 to 1.0, until the threshold is reached. */
     val pullProgress: Float by derivedStateOf {
         if (refreshThresholdOffset > 0f) {
             (dragOffsetAnimatable.value / refreshThresholdOffset).coerceIn(0f, 1f)
         } else 0f
     }
+
+    private var isRebounding by mutableStateOf(false)
     private val _refreshCompleteAnimProgress = mutableFloatStateOf(1f)
-
-    /** Refresh complete animation progress */
-    val refreshCompleteAnimProgress: Float by derivedStateOf { _refreshCompleteAnimProgress.floatValue }
-
-    /** Refresh in progress */
+    internal val refreshCompleteAnimProgress: Float by derivedStateOf { _refreshCompleteAnimProgress.floatValue }
     private var isRefreshingInProgress by mutableStateOf(false)
-
-    companion object {
-        /**
-         * A [Saver] object that defines how to save and restore a [PullToRefreshState].
-         * It saves the essential state properties needed to survive configuration changes.
-         */
-        val Saver: Saver<PullToRefreshState, *> = listSaver(
-            save = {
-                listOf(
-                    it.rawDragOffset,
-                    it.isRefreshingInProgress,
-                    it.refreshState.toInt() // Convert sealed interface state to a savable Int
-                )
-            },
-            restore = { list ->
-                // Create a new state instance with placeholder values, as context is needed.
-                // The actual state will be restored immediately after.
-                val state = PullToRefreshState(
-                    coroutineScope = CoroutineScope(Job() + Dispatchers.Main.immediate), // Placeholder
-                    maxDragDistancePx = 0f, // Will be recalculated
-                    refreshThresholdOffset = 0f // Will be recalculated
-                )
-                // Restore the saved properties.
-                state.rawDragOffset = list[0] as Float
-                state.isRefreshingInProgress = list[1] as Boolean
-                // Use the correct `fromInt` call.
-                state.internalRefreshState = RefreshState.fromInt(list[2] as Int)
-                state
-            }
-        )
-    }
+    private var isTriggerRefresh by mutableStateOf(false)
 
     init {
+        // This flow observes the animated drag offset and updates the state machine accordingly.
         coroutineScope.launch {
             snapshotFlow { dragOffsetAnimatable.value }.collectLatest { offset ->
-                internalRefreshState = when {
-                    isRefreshing -> RefreshState.Refreshing
-                    offset >= refreshThresholdOffset -> RefreshState.ThresholdReached
-                    offset > 0 -> RefreshState.Pulling
-                    else -> RefreshState.Idle
+                if (!isRefreshing && !isRebounding) {
+                    internalRefreshState = when {
+                        refreshThresholdOffset > 0f && offset >= refreshThresholdOffset -> RefreshState.ThresholdReached
+                        offset > 0 -> RefreshState.Pulling
+                        else -> RefreshState.Idle
+                    }
                 }
             }
         }
     }
 
-    private fun startRefreshing() {
-        internalRefreshState = RefreshState.Refreshing
-    }
-
-    suspend fun syncDragOffsetWithRawOffset() {
-        if (!dragOffsetAnimatable.isRunning) {
-            dragOffsetAnimatable.snapTo(rawDragOffset)
+    /**
+     * Called when the hoisted `isRefreshing` state becomes true.
+     * Forces the state machine into the refreshing state and moves the indicator.
+     */
+    internal fun startRefreshing() {
+        if (!isRefreshingInProgress) {
+            isRefreshingInProgress = true
+            coroutineScope.launch {
+                try {
+                    dragOffsetAnimatable.animateTo(
+                        refreshThresholdOffset,
+                        animationSpec = tween(easing = CubicBezierEasing(0.33f, 0f, 0.67f, 1f))
+                    )
+                    rawDragOffset = refreshThresholdOffset
+                } finally {
+                    internalRefreshState = RefreshState.Refreshing
+                }
+            }
         }
     }
 
-    private suspend fun animateDragOffset(targetValue: Float, animationSpec: AnimationSpec<Float>) {
-        dragOffsetAnimatable.animateTo(
-            targetValue = targetValue,
-            animationSpec = animationSpec
-        )
+    /**
+     * Called when the hoisted `isRefreshing` state becomes false.
+     * Triggers the completion animation and resets the state.
+     */
+    internal fun finishRefreshing() {
+        if (isRefreshingInProgress) {
+            performAsyncReset()
+        }
     }
 
-    internal fun resetPointerReleased() {
-        pointerReleased = false
-    }
+    /** Handles the pointer release event to either trigger a refresh or rebound the indicator. */
+    internal suspend fun handlePointerRelease(onRefresh: () -> Unit) {
+        if (isRefreshing) return
 
-    internal fun onPointerRelease() {
-        pointerReleased = true
-    }
-
-    val pointerReleasedValue: Boolean get() = pointerReleased
-
-    fun completeRefreshing(block: suspend () -> Unit) {
-        if (!isRefreshingInProgress) return
-        resetState(block)
-    }
-
-    private fun resetState(block: suspend () -> Unit) {
-        performReset(block)
-    }
-
-    private fun performReset(block: suspend () -> Unit) {
-        performAsyncReset(block)
-    }
-
-    private fun performAsyncReset(block: suspend () -> Unit) {
-        coroutineScope.launch {
+        if (rawDragOffset >= refreshThresholdOffset) {
+            // If pulled past threshold, trigger the onRefresh callback.
+            // The hoisted state will change, which will then call startRefreshing().
+            isTriggerRefresh = true
+            onRefresh()
+        } else {
+            // If not pulled past threshold, rebound to the resting state.
+            isRebounding = true
             try {
-                block()
+                dragOffsetAnimatable.animateTo(
+                    0f,
+                    animationSpec = tween(easing = CubicBezierEasing(0.33f, 0f, 0.67f, 1f))
+                )
+                rawDragOffset = 0f
             } finally {
-                internalRefreshState = RefreshState.RefreshComplete
-                launch { startManualRefreshCompleteAnimation() }
+                isRebounding = false
             }
+        }
+    }
+
+    private fun performAsyncReset() {
+        coroutineScope.launch {
+            internalRefreshState = RefreshState.RefreshComplete
+            startManualRefreshCompleteAnimation()
         }
     }
 
@@ -746,16 +339,30 @@ class PullToRefreshState(
     }
 
     private suspend fun internalResetState() {
-        internalRefreshState = RefreshState.Idle
         dragOffsetAnimatable.snapTo(0f)
         rawDragOffset = 0f
         isRefreshingInProgress = false
+        isTriggerRefresh = false
+        internalRefreshState = RefreshState.Idle
     }
 
-    fun createNestedScrollConnection(): NestedScrollConnection = object : NestedScrollConnection {
+    /** Creates a [NestedScrollConnection] for the pull-to-refresh logic itself. */
+    internal fun createNestedScrollConnection(
+        overScrollState: OverScrollState
+    ): NestedScrollConnection = object : NestedScrollConnection {
         override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-            if (isRefreshingInProgress || refreshState == RefreshState.Refreshing || refreshState == RefreshState.RefreshComplete) return Offset.Zero
-            return if (source == NestedScrollSource.UserInput && available.y < 0 && rawDragOffset > 0f) {
+            if (overScrollState.isOverScrollActive) return Offset.Zero
+
+            // If the refresh is in progress, consume all scroll events.
+            if (refreshState == RefreshState.RefreshComplete
+                || refreshState == RefreshState.Refreshing
+                || isTriggerRefresh
+            ) {
+                return available
+            }
+
+            // When pulling up while the indicator is visible, consume the scroll to hide it.
+            if (source == NestedScrollSource.UserInput && available.y < 0 && rawDragOffset > 0f) {
                 if (isRebounding && dragOffsetAnimatable.isRunning) {
                     coroutineScope.launch { dragOffsetAnimatable.stop() }
                     isRebounding = false
@@ -763,139 +370,370 @@ class PullToRefreshState(
                 val delta = available.y.coerceAtLeast(-rawDragOffset)
                 rawDragOffset += delta
                 coroutineScope.launch { dragOffsetAnimatable.snapTo(rawDragOffset) }
-                Offset(0f, delta)
-            } else Offset.Zero
+                return Offset(0f, delta)
+            }
+            return Offset.Zero
         }
 
         override fun onPostScroll(
-            consumed: Offset,
-            available: Offset,
-            source: NestedScrollSource
-        ): Offset = when {
-            isRefreshingInProgress || refreshState == RefreshState.Refreshing || refreshState == RefreshState.RefreshComplete -> Offset.Zero
-            source == NestedScrollSource.UserInput -> {
-                if (available.y > 0f && consumed.y == 0f) {
-                    if (isRebounding && dragOffsetAnimatable.isRunning) {
-                        coroutineScope.launch { dragOffsetAnimatable.stop() }
-                        isRebounding = false
-                    }
-                    val resistanceFactor = calculateResistanceFactor(rawDragOffset)
-                    val effectiveY = available.y * resistanceFactor
-                    val newOffset = rawDragOffset + effectiveY
-                    val consumedY = effectiveY
-                    rawDragOffset = newOffset
-                    coroutineScope.launch { dragOffsetAnimatable.snapTo(newOffset) }
-                    Offset(0f, consumedY)
-                } else if (available.y < 0f) {
-                    val newOffset = max(rawDragOffset + available.y, 0f)
-                    val consumedY = rawDragOffset - newOffset
-                    rawDragOffset = newOffset
-                    Offset(0f, -consumedY)
-                } else Offset.Zero
+            consumed: Offset, available: Offset, source: NestedScrollSource
+        ): Offset {
+            if (overScrollState.isOverScrollActive) return Offset.Zero
+
+            // If the refresh is in progress, consume all scroll events.
+            if (refreshState == RefreshState.RefreshComplete
+                || refreshState == RefreshState.Refreshing
+                || isTriggerRefresh
+            ) {
+                return available
             }
 
-            else -> Offset.Zero
-        }
-    }
-
-    fun handlePointerReleased(onRefresh: () -> Unit) {
-        if (isRefreshingInProgress) {
-            resetPointerReleased()
-            return
-        }
-        if (pointerReleasedValue && !isRefreshing) {
-            if (rawDragOffset >= refreshThresholdOffset) {
-                isRefreshingInProgress = true
-                coroutineScope.launch {
-                    try {
-                        animateDragOffset(
-                            targetValue = refreshThresholdOffset,
-                            animationSpec = tween(
-                                durationMillis = 200,
-                                easing = CubicBezierEasing(0f, 0f, 0f, 0.37f)
-                            )
-                        )
-                        rawDragOffset = refreshThresholdOffset
-                        startRefreshing()
-                        onRefresh()
-                    } catch (_: Exception) {
-                        internalResetState()
-                    }
+            // When pulling down after the content is at its top, consume the scroll to show the indicator.
+            if (source == NestedScrollSource.UserInput && available.y > 0f && consumed.y == 0f) {
+                if (isRebounding && dragOffsetAnimatable.isRunning) {
+                    coroutineScope.launch { dragOffsetAnimatable.stop() }
+                    isRebounding = false
                 }
-            } else {
-                isRebounding = true
-                coroutineScope.launch {
-                    try {
-                        animateDragOffset(
-                            targetValue = 0f,
-                            animationSpec = tween(
-                                durationMillis = 250,
-                                easing = CubicBezierEasing(0.33f, 0f, 0.67f, 1f)
-                            )
-                        )
-                        rawDragOffset = 0f
-                    } finally {
-                        isRebounding = false
-                    }
-                }
+                val resistanceFactor = 1f / (1f + rawDragOffset / refreshThresholdOffset * 0.8f)
+                val effectiveY = available.y * resistanceFactor
+                rawDragOffset += effectiveY
+                coroutineScope.launch { dragOffsetAnimatable.snapTo(rawDragOffset) }
+                return Offset(0f, effectiveY)
             }
-            resetPointerReleased()
+            return Offset.Zero
         }
     }
-
-    private fun calculateResistanceFactor(offset: Float): Float {
-        if (offset < refreshThresholdOffset) return 1.0f
-        val overThreshold = offset - refreshThresholdOffset
-        return 1.0f / (1.0f + overThreshold / refreshThresholdOffset * 0.8f)
-    }
-
 }
 
 /**
- * Converts a [RefreshState] instance to a savable integer representation.
- * @return The integer corresponding to the state.
+ * A factory function to create the main [NestedScrollConnection] for the [PullToRefresh] component.
  */
-private fun RefreshState.toInt(): Int = when (this) {
-    is RefreshState.Idle -> 0
-    is RefreshState.Pulling -> 1
-    is RefreshState.ThresholdReached -> 2
-    is RefreshState.Refreshing -> 3
-    is RefreshState.RefreshComplete -> 4
+private fun createPullToRefreshConnection(
+    pullToRefreshState: PullToRefreshState,
+    topAppBarScrollBehavior: ScrollBehavior?,
+    overScrollState: OverScrollState
+): NestedScrollConnection = object : NestedScrollConnection {
+    override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+        when (pullToRefreshState.refreshState) {
+            RefreshState.Idle -> {
+                val consumedByAppBar =
+                    topAppBarScrollBehavior?.nestedScrollConnection
+                        ?.onPreScroll(available, source) ?: Offset.Zero
+                val remaining = available - consumedByAppBar
+                val consumedByRefresh = pullToRefreshState
+                    .createNestedScrollConnection(overScrollState)
+                    .onPreScroll(remaining, source)
+                return consumedByAppBar + consumedByRefresh
+            }
+
+            RefreshState.RefreshComplete, RefreshState.Refreshing -> {
+                return available
+            }
+
+            else -> {
+                val consumedByRefresh = pullToRefreshState.createNestedScrollConnection(overScrollState)
+                    .onPreScroll(available, source)
+                val remaining = available - consumedByRefresh
+                val consumedByAppBar =
+                    topAppBarScrollBehavior?.nestedScrollConnection
+                        ?.onPreScroll(remaining, source) ?: Offset.Zero
+                return consumedByRefresh + consumedByAppBar
+            }
+        }
+    }
+
+    override fun onPostScroll(
+        consumed: Offset, available: Offset, source: NestedScrollSource
+    ): Offset {
+        when (pullToRefreshState.refreshState) {
+            RefreshState.RefreshComplete, RefreshState.Refreshing -> {
+                return available
+            }
+
+            else -> {
+                val consumedByAppBar = topAppBarScrollBehavior?.nestedScrollConnection
+                    ?.onPostScroll(consumed, available, source) ?: Offset.Zero
+                val remaining = available - consumedByAppBar
+                val consumedByRefresh = pullToRefreshState
+                    .createNestedScrollConnection(overScrollState)
+                    .onPostScroll(consumed, remaining, source)
+                return consumedByAppBar + consumedByRefresh
+            }
+        }
+    }
+
+    override suspend fun onPreFling(available: Velocity): Velocity {
+        if (pullToRefreshState.refreshState != RefreshState.Idle) {
+            return available
+        }
+        return topAppBarScrollBehavior?.nestedScrollConnection
+            ?.onPreFling(available) ?: Velocity.Zero
+    }
+
+    override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
+        if (pullToRefreshState.refreshState != RefreshState.Idle) {
+            return available
+        }
+        return topAppBarScrollBehavior?.nestedScrollConnection
+            ?.onPostFling(consumed, available) ?: Velocity.Zero
+    }
 }
 
-/** Maximum drag ratio */
-internal const val maxDragRatio = 1 / 6f
+@Composable
+private fun RefreshHeader(
+    modifier: Modifier = Modifier,
+    pullToRefreshState: PullToRefreshState,
+    circleSize: Dp,
+    color: Color,
+    refreshTexts: List<String>,
+    refreshTextStyle: TextStyle
+) {
+    val hapticFeedback = LocalHapticFeedback.current
+    val density = LocalDensity.current
 
-/** Threshold ratio */
-internal const val thresholdRatio = 1 / 4f
+    LaunchedEffect(pullToRefreshState.refreshState) {
+        if (pullToRefreshState.refreshState == RefreshState.ThresholdReached) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
+        }
+    }
 
-/**
- * [LocalPullToRefreshState] is used to provide the [PullToRefreshState] instance to the composition.
- *
- * @see PullToRefreshState
- */
-val LocalPullToRefreshState = compositionLocalOf<PullToRefreshState?> { null }
+    val refreshDisplayInfo by remember(pullToRefreshState) {
+        derivedStateOf {
+            when (pullToRefreshState.refreshState) {
+                RefreshState.Idle -> "" to 0f
+                RefreshState.Pulling -> {
+                    val progress = pullToRefreshState.pullProgress
+                    val text = refreshTexts.getOrElse(0) { "" }
+                    val alpha = if (progress > 0.6f) (progress - 0.5f) * 2f else 0f
+                    if (progress > 0.5) text to alpha else "" to 0f
+                }
 
-/**
- * The default values of the [PullToRefresh] component.
- */
+                RefreshState.ThresholdReached -> refreshTexts.getOrElse(1) { "" } to 1f
+                RefreshState.Refreshing -> refreshTexts.getOrElse(2) { "" } to 1f
+                RefreshState.RefreshComplete -> {
+                    val text = refreshTexts.getOrElse(3) { "" }
+                    val alpha = (1f - pullToRefreshState.refreshCompleteAnimProgress * 1.95f)
+                        .coerceAtLeast(0f)
+                    text to alpha
+                }
+            }
+        }
+    }
+
+    val heightInfo by remember(pullToRefreshState) {
+        derivedStateOf {
+            val dragOffset = pullToRefreshState.dragOffsetAnimatable.value
+            val threshold = pullToRefreshState.refreshThresholdOffset
+            val progress = pullToRefreshState.pullProgress
+            val completeProgress = pullToRefreshState.refreshCompleteAnimProgress
+
+            val indicatorHeight: Dp
+            val headerHeight: Dp
+
+            when (pullToRefreshState.refreshState) {
+                RefreshState.Idle -> 0.dp to 0.dp
+                RefreshState.Pulling -> {
+                    indicatorHeight = circleSize * progress
+                    headerHeight = (circleSize + 36.dp) * progress
+                    indicatorHeight to headerHeight
+                }
+
+                RefreshState.ThresholdReached -> {
+                    val offsetDp = with(density) { (dragOffset - threshold).toDp() }
+                    indicatorHeight = circleSize + offsetDp
+                    headerHeight = (circleSize + 36.dp) + offsetDp
+                    indicatorHeight to headerHeight
+                }
+
+                RefreshState.Refreshing -> circleSize to (circleSize + 36.dp)
+                RefreshState.RefreshComplete -> {
+                    indicatorHeight = circleSize * (1 - completeProgress)
+                    headerHeight = (circleSize + 36.dp) * (1 - completeProgress)
+                    indicatorHeight to headerHeight
+                }
+            }
+        }
+    }
+
+    Column(
+        modifier = modifier.fillMaxWidth().height(heightInfo.second),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
+        val rotation by animateRotation()
+        RefreshIndicator(
+            modifier = Modifier.height(heightInfo.first),
+            pullToRefreshState = pullToRefreshState,
+            circleSize = circleSize,
+            color = color,
+            rotation = rotation
+        )
+        Text(
+            text = refreshDisplayInfo.first,
+            style = refreshTextStyle,
+            color = color,
+            modifier = Modifier.padding(top = 6.dp).alpha(refreshDisplayInfo.second)
+        )
+    }
+}
+
+@Composable
+private fun RefreshIndicator(
+    modifier: Modifier = Modifier,
+    pullToRefreshState: PullToRefreshState,
+    circleSize: Dp,
+    color: Color,
+    rotation: Float
+) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        Canvas(modifier = Modifier.size(circleSize)) {
+            val ringStrokeWidthPx = circleSize.toPx() / 11
+            val indicatorRadiusPx = max(size.minDimension / 2, circleSize.toPx() / 3.5f)
+            val center = Offset(circleSize.toPx() / 2, circleSize.toPx() / 1.8f)
+
+            when (pullToRefreshState.refreshState) {
+                RefreshState.Idle -> return@Canvas
+                RefreshState.Pulling -> {
+                    val alpha = (pullToRefreshState.pullProgress - 0.2f).coerceAtLeast(0f)
+                    drawPullingIndicator(center, indicatorRadiusPx, ringStrokeWidthPx, color, alpha)
+                }
+
+                RefreshState.ThresholdReached -> {
+                    drawThresholdIndicator(
+                        center, indicatorRadiusPx, ringStrokeWidthPx, color,
+                        pullToRefreshState.dragOffsetAnimatable.value,
+                        pullToRefreshState.refreshThresholdOffset,
+                        pullToRefreshState.maxDragDistancePx
+                    )
+                }
+
+                RefreshState.Refreshing -> {
+                    drawRefreshingIndicator(
+                        center,
+                        indicatorRadiusPx,
+                        ringStrokeWidthPx,
+                        color,
+                        rotation
+                    )
+                }
+
+                RefreshState.RefreshComplete -> {
+                    drawRefreshCompleteIndicator(
+                        center, indicatorRadiusPx, ringStrokeWidthPx, color,
+                        pullToRefreshState.refreshCompleteAnimProgress
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun animateRotation(): State<Float> {
+    val infiniteTransition = rememberInfiniteTransition(label = "rotationAnimation")
+    return infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(800, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "rotationValue"
+    )
+}
+
+private fun DrawScope.drawPullingIndicator(
+    center: Offset, radius: Float, strokeWidth: Float, color: Color, alpha: Float
+) {
+    drawCircle(
+        color = color.copy(alpha = alpha),
+        radius = radius,
+        center = center,
+        style = Stroke(strokeWidth, cap = StrokeCap.Round)
+    )
+}
+
+private fun DrawScope.drawThresholdIndicator(
+    center: Offset, radius: Float, strokeWidth: Float, color: Color,
+    dragOffset: Float, thresholdOffset: Float, maxDrag: Float
+) {
+    val lineLength = (dragOffset - thresholdOffset).coerceIn(0f, maxDrag - thresholdOffset)
+    val topY = center.y
+    val bottomY = center.y + lineLength
+    drawArc(
+        color = color, startAngle = 180f, sweepAngle = 180f, useCenter = false,
+        topLeft = Offset(center.x - radius, topY - radius),
+        size = Size(radius * 2, radius * 2),
+        style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+    )
+    drawArc(
+        color = color, startAngle = 0f, sweepAngle = 180f, useCenter = false,
+        topLeft = Offset(center.x - radius, bottomY - radius),
+        size = Size(radius * 2, radius * 2),
+        style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+    )
+    drawLine(
+        color = color,
+        start = Offset(center.x - radius, topY), end = Offset(center.x - radius, bottomY),
+        strokeWidth = strokeWidth, cap = StrokeCap.Round
+    )
+    drawLine(
+        color = color,
+        start = Offset(center.x + radius, topY), end = Offset(center.x + radius, bottomY),
+        strokeWidth = strokeWidth, cap = StrokeCap.Round
+    )
+}
+
+private fun DrawScope.drawRefreshingIndicator(
+    center: Offset, radius: Float, strokeWidth: Float, color: Color, rotation: Float
+) {
+    drawCircle(
+        color = color,
+        radius = radius,
+        center = center,
+        style = Stroke(strokeWidth, cap = StrokeCap.Round)
+    )
+    val orbitRadius = radius - 2 * strokeWidth
+    val angle = rotation * PI / 180.0
+    val dotCenter = center + Offset(
+        x = (orbitRadius * cos(angle)).toFloat(),
+        y = (orbitRadius * sin(angle)).toFloat()
+    )
+    drawCircle(color = color, radius = strokeWidth, center = dotCenter)
+}
+
+private fun DrawScope.drawRefreshCompleteIndicator(
+    center: Offset, radius: Float, strokeWidth: Float, color: Color, progress: Float
+) {
+    val animatedRadius = radius * (1f - progress).coerceAtLeast(0.9f)
+    val alphaColor = color.copy(alpha = (1f - progress - 0.35f).coerceAtLeast(0f))
+    val y = center.y - radius - strokeWidth + animatedRadius
+    drawCircle(
+        color = alphaColor,
+        radius = animatedRadius,
+        center = Offset(center.x, y),
+        style = Stroke(strokeWidth, cap = StrokeCap.Round)
+    )
+}
+
+private const val maxDragRatio = 1 / 6f
+private const val thresholdRatio = 1 / 4f
+
+internal val LocalPullToRefreshState = compositionLocalOf<PullToRefreshState?> { null }
+
+/** Default values for the [PullToRefresh] component. */
 object PullToRefreshDefaults {
-
-    /** The default color of the refresh indicator */
     val color: Color = Color.Gray
-
-    /** The default size of the refresh indicator circle */
     val circleSize: Dp = 20.dp
-
-    /** The default texts to show when refreshing */
     val refreshTexts = listOf(
         "Pull down to refresh",
         "Release to refresh",
         "Refreshing...",
         "Refreshed successfully"
     )
-
-    /** The default style of the refresh text */
     val refreshTextStyle = TextStyle(
         fontSize = 14.sp,
         fontWeight = FontWeight.Bold,

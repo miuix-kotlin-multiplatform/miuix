@@ -20,26 +20,23 @@ import top.yukonga.miuix.kmp.basic.rememberPullToRefreshState
 PullToRefresh can wrap any scrollable content:
 
 ```kotlin
+var isRefreshing by rememberSaveable { mutableStateOf(false) }
 val pullToRefreshState = rememberPullToRefreshState()
 var items by remember { mutableStateOf(1) }
-val scope = rememberCoroutineScope()
+
+LaunchedEffect(isRefreshing) {
+    if (isRefreshing) {
+        delay(500)
+        items += 6
+        isRefreshing = false
+    }
+}
 
 Surface {
     PullToRefresh(
+        isRefreshing = isRefreshing,
+        onRefresh = { isRefreshing = true },
         pullToRefreshState = pullToRefreshState,
-        onRefresh = {
-            scope.launch {
-                // Check refresh state
-                if (pullToRefreshState.isRefreshing) {
-                    delay(300) // Simulate refresh operation
-                    // Complete refresh
-                    pullToRefreshState.completeRefreshing {
-                        // Update data
-                        items++
-                    }
-                }
-            }
-        }
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize()
@@ -66,50 +63,34 @@ PullToRefresh has the following states:
 4. `Refreshing`: Currently refreshing
 5. `RefreshComplete`: Refresh completed, returning to initial state
 
-```kotlin
-val pullToRefreshState = rememberPullToRefreshState()
-// Check if refreshing
-if (pullToRefreshState.isRefreshing) {
-    // Logic during refresh
-    delay(2000) // Simulate network request
-    pullToRefreshState.completeRefreshing {} // Callback when refresh completes
-}
-```
-
 ## Properties
 
 ### PullToRefresh Properties
 
-| Property Name      | Type                   | Description                    | Default Value                          | Required |
-| ------------------ | ---------------------- | ------------------------------ | -------------------------------------- | -------- |
-| pullToRefreshState | PullToRefreshState     | Refresh state controller       | -                                      | Yes      |
-| onRefresh          | () -> Unit             | Refresh callback function      | {}                                     | Yes      |
-| modifier           | Modifier               | Container modifier             | Modifier                               | No       |
-| contentPadding     | PaddingValues          | Content padding                | PaddingValues(0.dp)                    | No       |
-| color              | Color                  | Indicator color                | PullToRefreshDefaults.color            | No       |
-| circleSize         | Dp                     | Indicator circle size          | PullToRefreshDefaults.circleSize       | No       |
-| refreshTexts       | List\<String>          | Text list for different states | PullToRefreshDefaults.refreshTexts     | No       |
-| refreshTextStyle   | TextStyle              | Refresh text style             | PullToRefreshDefaults.refreshTextStyle | No       |
-| content            | @Composable () -> Unit | Scrollable content composable  | -                                      | Yes      |
+| Property Name           | Type                   | Description                    | Default Value                          | Required |
+| ----------------------- | ---------------------- | ------------------------------ | -------------------------------------- | -------- |
+| isRefreshing            | Boolean                | Refresh state                  | None                                   | Yes      |
+| onRefresh               | () -> Unit             | Refresh callback function      | None                                   | Yes      |
+| modifier                | Modifier               | Container modifier             | Modifier                               | No       |
+| pullToRefreshState      | PullToRefreshState     | PullToRefresh state            | rememberPullToRefreshState()           | No       |
+| contentPadding          | PaddingValues          | Content padding                | PaddingValues(0.dp)                    | No       |
+| topAppBarScrollBehavior | ScrollBehavior         | Top app bar scroll behavior    | null                                   | No       |
+| color                   | Color                  | Indicator color                | PullToRefreshDefaults.color            | No       |
+| circleSize              | Dp                     | Indicator circle size          | PullToRefreshDefaults.circleSize       | No       |
+| refreshTexts            | List<String>           | Text list for different states | PullToRefreshDefaults.refreshTexts     | No       |
+| refreshTextStyle        | TextStyle              | Refresh text style             | PullToRefreshDefaults.refreshTextStyle | No       |
+| content                 | @Composable () -> Unit | Scrollable content composable  | None                                   | Yes      |
 
 ### PullToRefreshState Class
 
-PullToRefreshState controls the refresh state and can be created using `rememberPullToRefreshState()`.
+PullToRefreshState manages the UI state of the refresh indicator and can be created using `rememberPullToRefreshState()`. It should only be used for UI state, while refresh logic should be controlled by `isRefreshing` and `onRefresh`.
 
-#### Properties
-
-| Property Name               | Type         | Description            | Required |
-| --------------------------- | ------------ | ---------------------- | -------- |
-| refreshState                | RefreshState | Current refresh state  | Yes      |
-| isRefreshing                | Boolean      | Is refreshing          | Yes      |
-| pullProgress                | Float        | Pull progress (0-1)    | Yes      |
-| refreshCompleteAnimProgress | Float        | Complete anim progress | Yes      |
-
-#### Methods
-
-| Method Name        | Parameters           | Description                    | Required |
-| ------------------ | -------------------- | ------------------------------ | -------- |
-| completeRefreshing | (suspend () -> Unit) | Complete refresh with callback | Yes      |
+| Property Name                | Type         | Description                  |
+| ---------------------------- | ------------ | ---------------------------- |
+| refreshState                 | RefreshState | Current refresh state        |
+| isRefreshing                 | Boolean      | Whether it is refreshing     |
+| pullProgress                 | Float        | Pull progress (0-1)          |
+| refreshCompleteAnimProgress  | Float        | Refresh complete animation   |
 
 ### PullToRefreshDefaults Object
 
@@ -127,14 +108,9 @@ PullToRefreshDefaults provides default values for the component.
 ### Custom Indicator Color
 
 ```kotlin
-val pullToRefreshState = rememberPullToRefreshState()
-
 PullToRefresh(
-    pullToRefreshState = pullToRefreshState,
     color = Color.Blue,
-    onRefresh = { 
-        // Perform refresh
-    }
+    // Other properties
 ) {
     // Content
 }
@@ -143,53 +119,15 @@ PullToRefresh(
 ### Custom Refresh Texts
 
 ```kotlin
-val pullToRefreshState = rememberPullToRefreshState()
-
 PullToRefresh(
-    pullToRefreshState = pullToRefreshState,
     refreshTexts = listOf(
         "Pull to refresh",
         "Release to refresh",
         "Refreshing",
         "Refresh successful"
     ),
-    onRefresh = {
-        // Perform refresh
-    }
+    // Other properties
 ) {
     // Content
-}
-```
-
-### Using with Loading State
-
-```kotlin
-val pullToRefreshState = rememberPullToRefreshState()
-var items by remember { mutableStateOf(List(5) { "Item $it" }) }
-val scope = rememberCoroutineScope()
-
-PullToRefresh(
-    pullToRefreshState = pullToRefreshState,
-    onRefresh = {
-        scope.launch {
-            delay(2000) // Simulate refresh operation
-            pullToRefreshState.completeRefreshing {
-                items = List(8) { "Updated Item $it" }
-            }
-        }
-    }
-) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        items(items.size) { item ->
-            Text(
-                text = items[item],
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxSize()
-            )
-        }
-    }
 }
 ```

@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -30,20 +31,24 @@ fun SecondPage(
     padding: PaddingValues,
     scrollEndHaptic: Boolean
 ) {
+    var isRefreshing by rememberSaveable { mutableStateOf(false) }
     val pullToRefreshState = rememberPullToRefreshState()
 
     val dropdownOptions = listOf("Option 1", "Option 2", "Option 3", "Option 4")
     val dropdownSelectedOption = remember { mutableStateOf(0) }
     var ii by remember { mutableStateOf(6) }
 
-    LaunchedEffect(pullToRefreshState.isRefreshing) {
-        if (pullToRefreshState.isRefreshing) {
-            delay(350)
-            pullToRefreshState.completeRefreshing { ii += 6 }
+    LaunchedEffect(isRefreshing) {
+        if (isRefreshing) {
+            delay(500)
+            ii += 6
+            isRefreshing = false
         }
     }
 
     PullToRefresh(
+        isRefreshing = isRefreshing,
+        onRefresh = { isRefreshing = true },
         pullToRefreshState = pullToRefreshState,
         topAppBarScrollBehavior = topAppBarScrollBehavior,
         contentPadding = PaddingValues(top = padding.calculateTopPadding() + 12.dp)
@@ -52,7 +57,9 @@ fun SecondPage(
             modifier = Modifier
                 .height(getWindowSize().height.dp)
                 .overScrollVertical()
-                .then(if (scrollEndHaptic) Modifier.scrollEndHaptic() else Modifier),
+                .then(
+                    if (scrollEndHaptic) Modifier.scrollEndHaptic() else Modifier
+                ),
             contentPadding = PaddingValues(top = padding.calculateTopPadding() + 12.dp),
             overscrollEffect = null
         ) {
@@ -65,7 +72,9 @@ fun SecondPage(
                             title = "Dropdown ${i + 1}",
                             items = dropdownOptions,
                             selectedIndex = dropdownSelectedOption.value,
-                            onSelectedIndexChange = { newOption -> dropdownSelectedOption.value = newOption }
+                            onSelectedIndexChange = { newOption ->
+                                dropdownSelectedOption.value = newOption
+                            }
                         )
                     }
                 }

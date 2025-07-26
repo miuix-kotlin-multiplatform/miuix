@@ -16,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,17 +48,20 @@ fun PullToRefreshDemo() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             val pullToRefreshState = rememberPullToRefreshState()
-
+            var isRefreshing by rememberSaveable { mutableStateOf(false) }
             var ii by remember { mutableStateOf(1) }
 
-            LaunchedEffect(pullToRefreshState.isRefreshing) {
-                if (pullToRefreshState.isRefreshing) {
-                    delay(300)
-                    pullToRefreshState.completeRefreshing { ii ++ }
+            LaunchedEffect(isRefreshing) {
+                if (isRefreshing) {
+                    delay(500)
+                    ii += 6
+                    isRefreshing = false
                 }
             }
 
             PullToRefresh(
+                isRefreshing = isRefreshing,
+                onRefresh = { isRefreshing = true },
                 pullToRefreshState = pullToRefreshState,
             ) {
                 LazyColumn(
