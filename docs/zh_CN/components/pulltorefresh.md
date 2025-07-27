@@ -1,15 +1,12 @@
 # PullToRefresh
 
-
 `PullToRefresh` 是 Miuix 中的下拉刷新组件，可为列表和其他可滚动内容提供刷新功能。它采用“状态提升”模式，提供了带动画的交互式刷新指示器，适用于需要刷新数据的各种场景。
 
 ::: warning 注意
 该组件只适用于支持触控的场景，并且在网页构建目标中工作不佳!
 :::
 
-
-如需演示，请查看 <a href="https://miuix-kotlin-multiplatform.github.io/miuix-jsCanvas/" target="_blank" rel="noopener noreferrer">Miuix Example</a> 的 DropDown 页。
-
+如需演示，请查看 <a href="https://miuix-kotlin-multiplatform.github.io/miuix-jsCanvas/" target="_blank">Miuix Example</a> 的 DropDown 页。
 
 ## 引入
 
@@ -17,7 +14,6 @@
 import top.yukonga.miuix.kmp.basic.PullToRefresh
 import top.yukonga.miuix.kmp.basic.rememberPullToRefreshState
 ```
-
 
 ## 基本用法
 
@@ -71,19 +67,19 @@ PullToRefresh 组件有以下几种状态：
 
 ### PullToRefresh 属性
 
-| 属性名                   | 类型                   | 说明                     | 默认值                                 | 是否必须 |
-| ------------------------ | ---------------------- | ------------------------ | -------------------------------------- | -------- |
-| isRefreshing             | Boolean                | 是否正在刷新             | 无                                     | 是       |
-| onRefresh                | () -> Unit             | 刷新触发时的回调函数     | 无                                     | 是       |
-| modifier                 | Modifier               | 应用于容器的修饰符       | Modifier                               | 否       |
-| pullToRefreshState       | PullToRefreshState     | 下拉刷新状态控制器       | rememberPullToRefreshState()           | 否       |
-| contentPadding           | PaddingValues          | 内容区的内边距           | PaddingValues(0.dp)                    | 否       |
-| topAppBarScrollBehavior  | ScrollBehavior         | 顶部应用栏滚动行为       | null                                   | 否       |
-| color                    | Color                  | 刷新指示器的颜色         | PullToRefreshDefaults.color            | 否       |
-| circleSize               | Dp                     | 刷新指示器圆圈的大小     | PullToRefreshDefaults.circleSize       | 否       |
-| refreshTexts             | List<String>           | 不同状态下显示的文本列表 | PullToRefreshDefaults.refreshTexts     | 否       |
-| refreshTextStyle         | TextStyle              | 刷新文本的样式           | PullToRefreshDefaults.refreshTextStyle | 否       |
-| content                  | @Composable () -> Unit | 可滚动内容的可组合函数   | 无                                     | 是       |
+| 属性名                  | 类型                   | 说明                     | 默认值                                 | 是否必须 |
+| ----------------------- | ---------------------- | ------------------------ | -------------------------------------- | -------- |
+| isRefreshing            | Boolean                | 是否正在刷新             | 无                                     | 是       |
+| onRefresh               | () -> Unit             | 刷新触发时的回调函数     | 无                                     | 是       |
+| modifier                | Modifier               | 应用于容器的修饰符       | Modifier                               | 否       |
+| pullToRefreshState      | PullToRefreshState     | 下拉刷新状态控制器       | rememberPullToRefreshState()           | 否       |
+| contentPadding          | PaddingValues          | 内容区的内边距           | PaddingValues(0.dp)                    | 否       |
+| topAppBarScrollBehavior | ScrollBehavior         | 顶部应用栏滚动行为       | null                                   | 否       |
+| color                   | Color                  | 刷新指示器的颜色         | PullToRefreshDefaults.color            | 否       |
+| circleSize              | Dp                     | 刷新指示器圆圈的大小     | PullToRefreshDefaults.circleSize       | 否       |
+| refreshTexts            | List\<String>          | 不同状态下显示的文本列表 | PullToRefreshDefaults.refreshTexts     | 否       |
+| refreshTextStyle        | TextStyle              | 刷新文本的样式           | PullToRefreshDefaults.refreshTextStyle | 否       |
+| content                 | @Composable () -> Unit | 可滚动内容的可组合函数   | 无                                     | 是       |
 
 
 
@@ -109,7 +105,7 @@ PullToRefreshDefaults 提供下拉刷新组件的默认值。
 | ---------------- | ------------- | -------------------- | ----------------------------------------------------------------------------------------- |
 | color            | Color         | 刷新指示器的默认颜色 | Color.Gray                                                                                |
 | circleSize       | Dp            | 指示器圆圈的默认大小 | 20.dp                                                                                     |
-| refreshTexts     | List<String>  | 默认的刷新文本列表   | ["Pull down to refresh", "Release to refresh", "Refreshing...", "Refreshed successfully"] |
+| refreshTexts     | List\<String> | 默认的刷新文本列表   | ["Pull down to refresh", "Release to refresh", "Refreshing...", "Refreshed successfully"] |
 | refreshTextStyle | TextStyle     | 默认的文本样式       | TextStyle(fontSize = 14.sp, fontWeight = Bold, color = color)                             |
 
 

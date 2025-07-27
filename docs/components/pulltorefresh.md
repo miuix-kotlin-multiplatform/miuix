@@ -77,7 +77,7 @@ PullToRefresh has the following states:
 | topAppBarScrollBehavior | ScrollBehavior         | Top app bar scroll behavior    | null                                   | No       |
 | color                   | Color                  | Indicator color                | PullToRefreshDefaults.color            | No       |
 | circleSize              | Dp                     | Indicator circle size          | PullToRefreshDefaults.circleSize       | No       |
-| refreshTexts            | List<String>           | Text list for different states | PullToRefreshDefaults.refreshTexts     | No       |
+| refreshTexts            | List\<String>          | Text list for different states | PullToRefreshDefaults.refreshTexts     | No       |
 | refreshTextStyle        | TextStyle              | Refresh text style             | PullToRefreshDefaults.refreshTextStyle | No       |
 | content                 | @Composable () -> Unit | Scrollable content composable  | None                                   | Yes      |
 
@@ -85,12 +85,12 @@ PullToRefresh has the following states:
 
 PullToRefreshState manages the UI state of the refresh indicator and can be created using `rememberPullToRefreshState()`. It should only be used for UI state, while refresh logic should be controlled by `isRefreshing` and `onRefresh`.
 
-| Property Name                | Type         | Description                  |
-| ---------------------------- | ------------ | ---------------------------- |
-| refreshState                 | RefreshState | Current refresh state        |
-| isRefreshing                 | Boolean      | Whether it is refreshing     |
-| pullProgress                 | Float        | Pull progress (0-1)          |
-| refreshCompleteAnimProgress  | Float        | Refresh complete animation   |
+| Property Name               | Type         | Description                |
+| --------------------------- | ------------ | -------------------------- |
+| refreshState                | RefreshState | Current refresh state      |
+| isRefreshing                | Boolean      | Whether it is refreshing   |
+| pullProgress                | Float        | Pull progress (0-1)        |
+| refreshCompleteAnimProgress | Float        | Refresh complete animation |
 
 ### PullToRefreshDefaults Object
 
@@ -124,7 +124,7 @@ PullToRefresh(
         "Pull to refresh",
         "Release to refresh",
         "Refreshing",
-        "Refresh successful"
+        "Refresh successful",
     ),
     // Other properties
 ) {

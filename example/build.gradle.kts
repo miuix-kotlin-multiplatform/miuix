@@ -4,7 +4,6 @@
 @file:Suppress("UnstableApiUsage")
 
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
-import org.gradle.kotlin.dsl.withType
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
@@ -233,10 +232,23 @@ val generateVersionInfo by tasks.registering {
                 const val VERSION_NAME = "$verName"
                 const val VERSION_CODE = $verCode
                 const val JDK_VERSION = "${System.getProperty("java.version")}"
-
             }
             """.trimIndent(),
         )
+        val iosPlist = project.rootDir.resolve("iosApp/iosApp/Info.plist")
+        if (iosPlist.exists()) {
+            val content = iosPlist.readText()
+            val updatedContent = content
+                .replace(
+                    Regex("<key>CFBundleShortVersionString</key>\\s*<string>[^<]*</string>"),
+                    "<key>CFBundleShortVersionString</key>\n\t<string>$verName</string>"
+                )
+                .replace(
+                    Regex("<key>CFBundleVersion</key>\\s*<string>[^<]*</string>"),
+                    "<key>CFBundleVersion</key>\n\t<string>$verCode</string>"
+                )
+            iosPlist.writeText(updatedContent)
+        }
     }
 }
 
