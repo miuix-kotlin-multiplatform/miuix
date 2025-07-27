@@ -141,8 +141,6 @@ fun UITest(
             ) {
                 AppTopBar(
                     selectedPage = selectedPage,
-                    hazeState = hazeState,
-                    hazeStyle = hazeStyle,
                     currentScrollBehavior = currentScrollBehavior,
                     items = navigationItem,
                     showTopPopup = showTopPopup,
@@ -344,8 +342,6 @@ fun UITest(
 @Composable
 private fun AppTopBar(
     selectedPage: Int,
-    hazeState: HazeState,
-    hazeStyle: HazeStyle,
     currentScrollBehavior: ScrollBehavior,
     items: List<NavigationItem>,
     showTopPopup: MutableState<Boolean>,
@@ -355,13 +351,7 @@ private fun AppTopBar(
         if (maxWidth > 840.dp) {
             SmallTopAppBar(
                 title = "Miuix",
-                modifier = Modifier.hazeEffect(state = hazeState) {
-                    style = hazeStyle
-                    blurRadius = 25.dp
-                    noiseFactor = 0f
-                },
                 scrollBehavior = currentScrollBehavior,
-                color = Color.Transparent,
                 actions = {
                     TopAppBarActions(
                         selectedPage = selectedPage,
@@ -374,14 +364,7 @@ private fun AppTopBar(
         } else {
             TopAppBar(
                 title = "Miuix",
-                modifier = Modifier
-                    .hazeEffect(state = hazeState) {
-                        style = hazeStyle
-                        blurRadius = 25.dp
-                        noiseFactor = 0f
-                    },
                 scrollBehavior = currentScrollBehavior,
-                color = Color.Transparent,
                 actions = {
                     TopAppBarActions(
                         selectedPage = selectedPage,
