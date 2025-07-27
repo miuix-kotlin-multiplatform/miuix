@@ -137,7 +137,9 @@ fun PullToRefresh(
         awaitPointerEventScope {
             while (true) {
                 val event = awaitPointerEvent()
-                if (event.changes.all { !it.pressed }) {
+                if (pullToRefreshState.refreshState != RefreshState.RefreshComplete
+                    && event.changes.all { !it.pressed }
+                ) {
                     coroutineScope.launch {
                         pullToRefreshState.handlePointerRelease(onRefresh)
                     }
@@ -341,8 +343,8 @@ class PullToRefreshState(
     private suspend fun internalResetState() {
         dragOffsetAnimatable.snapTo(0f)
         rawDragOffset = 0f
-        isRefreshingInProgress = false
         isTriggerRefresh = false
+        isRefreshingInProgress = false
         internalRefreshState = RefreshState.Idle
     }
 
@@ -378,7 +380,6 @@ class PullToRefreshState(
         override fun onPostScroll(
             consumed: Offset, available: Offset, source: NestedScrollSource
         ): Offset {
-            if (overScrollState.isOverScrollActive) return Offset.Zero
 
             // If the refresh is in progress, consume all scroll events.
             if (refreshState == RefreshState.RefreshComplete
