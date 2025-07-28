@@ -12,13 +12,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ macos-latest, ubuntu-latest, windows-latest ]
+        os: [ macos-latest, ubuntu-latest, ubuntu-24.04-arm, windows-latest ]
         include:
-          - os: windows-latest
-            platform: windows x64
-            build-command: ./gradlew createReleaseDistributable
-            artifact-path: example/build/compose/binaries/main-release/app/Miuix
-            artifact-name: Miuix-windows-x64-exe
           - os: macos-latest
             platform: macos arm64
             build-command: ./gradlew packageDmgNativeReleaseMacosArm64
@@ -33,6 +28,16 @@ jobs:
             artifact-pathEx: example/build/outputs/apk/release
             artifact-name: Miuix-linux-x64-bin
             artifact-nameEx: Miuix-android-aarch64-apk
+          - os: ubuntu-24.04-arm
+            platform: linux arm64
+            build-command: ./gradlew createReleaseDistributable
+            artifact-path: example/build/compose/binaries/main-release/app/Miuix
+            artifact-name: Miuix-linux-arm64-bin
+          - os: windows-latest
+            platform: windows x64
+            build-command: ./gradlew createReleaseDistributable
+            artifact-path: example/build/compose/binaries/main-release/app/Miuix
+            artifact-name: Miuix-windows-x64-exe
 
     steps:
       - name: Checkout sources
