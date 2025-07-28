@@ -3,6 +3,9 @@
 
 package top.yukonga.miuix.kmp.utils
 
+import androidx.annotation.IntRange
+import androidx.annotation.Size
+
 object ColorUtils {
     /**
      * Converts RGB color values to HSV color space.
@@ -16,17 +19,11 @@ object ColorUtils {
      *            - value: 0.0-1.0
      */
     fun rgbToHsv(
-        r: Int,
-        g: Int,
-        b: Int,
-        hsv: FloatArray,
+        @IntRange(from = 0, to = 255) r: Int,
+        @IntRange(from = 0, to = 255) g: Int,
+        @IntRange(from = 0, to = 255) b: Int,
+        @Size(3) hsv: FloatArray,
     ) {
-        require(hsv.size >= 3) { "HSV array must have at least 3 elements" }
-        require(r in 0..255) { "Red component must be in range 0-255, got $r" }
-        require(g in 0..255) { "Green component must be in range 0-255, got $g" }
-        require(b in 0..255) { "Blue component must be in range 0-255, got $b" }
-
-        // Normalize RGB values to 0.0-1.0 range
         val rf = r * INV_255
         val gf = g * INV_255
         val bf = b * INV_255
@@ -35,23 +32,16 @@ object ColorUtils {
         val min = minOf(rf, gf, bf)
         val delta = max - min
 
-        // Value (brightness)
-        hsv[2] = max
-
-        // Saturation
-        hsv[1] = if (max > 0f) delta / max else 0f
-
-        // Hue
-        hsv[0] = when {
+        val hue = when {
             delta == 0f -> 0f
-            max == rf -> {
-                val hue = (gf - bf) / delta * 60f
-                if (hue < 0f) hue + 360f else hue
-            }
-
-            max == gf -> (bf - rf) / delta * 60f + 120f
-            else -> (rf - gf) / delta * 60f + 240f
+            max == rf -> (60f * ((gf - bf) / delta) + 360f) % 360f
+            max == gf -> (60f * ((bf - rf) / delta) + 120f) % 360f
+            else -> (60f * ((rf - gf) / delta) + 240f) % 360f
         }
+
+        hsv[0] = hue
+        hsv[1] = if (max > 0f) delta / max else 0f
+        hsv[2] = max
     }
 
     private const val INV_255 = 1f / 255f
