@@ -150,7 +150,6 @@ android {
                 (this as BaseVariantOutputImpl).outputFileName = "$appName-v$versionName($versionCode)-$name.apk"
             }
         }
-        resources.excludes += "**"
     }
     buildTypes {
         release {
@@ -163,6 +162,12 @@ android {
         debug {
             if (keystorePath != null) signingConfig = signingConfigs.getByName("github")
         }
+    }
+}
+
+androidComponents {
+    onVariants(selector().withBuildType("release")) {
+        it.packaging.resources.excludes.add("**")
     }
 }
 

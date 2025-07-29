@@ -561,13 +561,11 @@ private fun RefreshHeader(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        val rotation by animateRotation(pullToRefreshState.refreshState == RefreshState.Refreshing)
         RefreshIndicator(
             modifier = Modifier.height(heightInfo.first),
             pullToRefreshState = pullToRefreshState,
             circleSize = circleSize,
-            color = color,
-            rotation = rotation
+            color = color
         )
         Text(
             text = refreshDisplayInfo.first,
@@ -583,13 +581,13 @@ private fun RefreshIndicator(
     modifier: Modifier = Modifier,
     pullToRefreshState: PullToRefreshState,
     circleSize: Dp,
-    color: Color,
-    rotation: Float
+    color: Color
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
     ) {
+        val rotation by animateRotation()
         Canvas(modifier = Modifier.size(circleSize)) {
             val ringStrokeWidthPx = circleSize.toPx() / 11
             val indicatorRadiusPx = max(size.minDimension / 2, circleSize.toPx() / 3.5f)
@@ -633,21 +631,16 @@ private fun RefreshIndicator(
 }
 
 @Composable
-private fun animateRotation(isRefreshing: Boolean): State<Float> {
-    return if (isRefreshing) {
-        val infiniteTransition = rememberInfiniteTransition(label = "rotationAnimation")
-        infiniteTransition.animateFloat(
-            initialValue = 0f,
-            targetValue = 360f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(800, easing = LinearEasing),
-                repeatMode = RepeatMode.Restart
-            ),
-            label = "rotationValue"
+private fun animateRotation(): State<Float> {
+    val infiniteTransition = rememberInfiniteTransition()
+    return infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(800, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
         )
-    } else {
-        remember { mutableStateOf(0f) }
-    }
+    )
 }
 
 private fun DrawScope.drawPullingIndicator(

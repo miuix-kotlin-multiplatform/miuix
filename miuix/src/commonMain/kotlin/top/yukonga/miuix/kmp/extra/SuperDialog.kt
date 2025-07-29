@@ -68,6 +68,7 @@ fun SuperDialog(
     defaultWindowInsetsPadding: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    if (!show.value) return
     DialogLayout(
         visible = show,
         enableWindowDim = enableWindowDim,

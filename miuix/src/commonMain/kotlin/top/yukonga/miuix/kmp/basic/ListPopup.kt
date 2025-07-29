@@ -75,66 +75,16 @@ fun ListPopup(
 ) {
     if (!show.value) return
 
-    val currentOnDismissRequest by rememberUpdatedState(onDismissRequest)
-    val currentContent by rememberUpdatedState(content)
-
-    var offset by remember { mutableStateOf(IntOffset.Zero) }
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
 
-    val getWindowSizeState = rememberUpdatedState(getWindowSize())
-    var windowSize by remember { mutableStateOf(IntSize(getWindowSizeState.value.width, getWindowSizeState.value.height)) }
+    val currentWindowSize = getWindowSize()
+    var windowSize by remember { mutableStateOf(IntSize(currentWindowSize.width, currentWindowSize.height)) }
     var parentBounds by remember { mutableStateOf(IntRect.Zero) }
 
-    val windowBounds = with(density) {
-        IntRect(
-            left = WindowInsets.displayCutout.asPaddingValues(density).calculateLeftPadding(layoutDirection).roundToPx(),
-            top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding().roundToPx(),
-            right = windowSize.width -
-                    WindowInsets.displayCutout.asPaddingValues(density).calculateRightPadding(layoutDirection).roundToPx(),
-            bottom = windowSize.height -
-                    WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().roundToPx() -
-                    WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().roundToPx()
-        )
-    }
-
-    var popupContentSize by remember { mutableStateOf(IntSize.Zero) }
-
-    val popupMargin = remember(popupPositionProvider, density, layoutDirection) {
-        val popupMarginsPd = popupPositionProvider.getMargins()
-        with(density) {
-            IntRect(
-                left = popupMarginsPd.calculateLeftPadding(layoutDirection).roundToPx(),
-                top = popupMarginsPd.calculateTopPadding().roundToPx(),
-                right = popupMarginsPd.calculateRightPadding(layoutDirection).roundToPx(),
-                bottom = popupMarginsPd.calculateBottomPadding().roundToPx()
-            )
-        }
-    }
-
-    val transformOrigin = remember(parentBounds, popupMargin, windowSize, density, alignment) {
-        val xInWindow = if (alignment in listOf(
-                PopupPositionProvider.Align.Right,
-                PopupPositionProvider.Align.TopRight,
-                PopupPositionProvider.Align.BottomRight,
-            )
-        ) {
-            parentBounds.right - popupMargin.right - with(density) { 64.dp.roundToPx() }
-        } else {
-            parentBounds.left + popupMargin.left + with(density) { 64.dp.roundToPx() }
-        }
-        val yInWindow = parentBounds.top + parentBounds.height / 2 - with(density) { 56.dp.roundToPx() }
-        safeTransformOrigin(
-            xInWindow / windowSize.width.toFloat(),
-            yInWindow / windowSize.height.toFloat()
-        )
-    }
-
-    // Anchor point for the popup
     Layout(
         modifier = Modifier.onGloballyPositioned { childCoordinates ->
-            val parentLayoutCoordinates = childCoordinates.parentLayoutCoordinates
-            if (parentLayoutCoordinates != null) {
+            childCoordinates.parentLayoutCoordinates?.let { parentLayoutCoordinates ->
                 val positionInWindow = parentLayoutCoordinates.positionInWindow()
                 parentBounds = IntRect(
                     left = positionInWindow.x.toInt(),
@@ -143,83 +93,109 @@ fun ListPopup(
                     bottom = positionInWindow.y.toInt() + parentLayoutCoordinates.size.height
                 )
             }
-            val newUtilWindowSize = getWindowSizeState.value
-            val newIntSize = IntSize(newUtilWindowSize.width, newUtilWindowSize.height)
-            if (windowSize != newIntSize) {
-                windowSize = newIntSize
-            }
         }
-    ) { _, _ ->
-        layout(0, 0) {}
+    ) { _, _ -> layout(0, 0) {} }
+
+    val popupMargin = remember(popupPositionProvider, layoutDirection, density) {
+        val pd = popupPositionProvider.getMargins()
+        with(density) {
+            IntRect(
+                left = pd.calculateLeftPadding(layoutDirection).roundToPx(),
+                top = pd.calculateTopPadding().roundToPx(),
+                right = pd.calculateRightPadding(layoutDirection).roundToPx(),
+                bottom = pd.calculateBottomPadding().roundToPx()
+            )
+        }
     }
 
-    PopupLayout(
-        visible = show,
-        enableWindowDim = enableWindowDim,
-        transformOrigin = { transformOrigin },
-    ) {
-        val shape = remember { SmoothRoundedCornerShape(16.dp) }
-        val elevationPx = with(density) { shadowElevation.toPx() }
+    val windowBounds = with(density) {
+        IntRect(
+            left = WindowInsets.displayCutout.asPaddingValues().calculateLeftPadding(layoutDirection).roundToPx(),
+            top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding().roundToPx(),
+            right = windowSize.width - WindowInsets.displayCutout.asPaddingValues().calculateRightPadding(layoutDirection).roundToPx(),
+            bottom = windowSize.height - WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+                .roundToPx() - WindowInsets.captionBar.asPaddingValues().calculateBottomPadding().roundToPx()
+        )
+    }
 
-        Box(
-            modifier = popupModifier
-                .pointerInput(currentOnDismissRequest) {
-                    detectTapGestures {
-                        currentOnDismissRequest?.invoke()
-                    }
-                }
-                .layout { measurable, constraints ->
-                    val placeable = measurable.measure(
-                        constraints.copy(
-                            minWidth = if (minWidth.roundToPx() <= windowSize.width) minWidth.roundToPx() else windowSize.width,
-                            minHeight = if (50.dp.roundToPx() <= windowSize.height) 50.dp.roundToPx() else windowSize.height,
-                            maxHeight = maxHeight?.roundToPx()?.coerceAtLeast(50.dp.roundToPx())
-                                ?: (windowBounds.height - popupMargin.top - popupMargin.bottom).coerceAtLeast(
-                                    50.dp.roundToPx()
-                                ),
-                            maxWidth = if (minWidth.roundToPx() <= windowSize.width) windowSize.width else minWidth.roundToPx()
-                        )
-                    )
-                    val measuredSize = IntSize(placeable.width, placeable.height)
-                    if (popupContentSize != measuredSize) {
-                        popupContentSize = measuredSize
-                    }
+    val transformOrigin = remember(parentBounds, popupMargin, windowSize, alignment, density) {
+        val xInWindow = when (alignment) {
+            PopupPositionProvider.Align.Right,
+            PopupPositionProvider.Align.TopRight,
+            PopupPositionProvider.Align.BottomRight -> parentBounds.right - popupMargin.right - with(density) { 64.dp.roundToPx() }
 
-                    val calculatedOffset = popupPositionProvider.calculatePosition(
-                        parentBounds,
-                        windowBounds,
-                        layoutDirection,
-                        measuredSize,
-                        popupMargin,
-                        alignment
-                    )
-                    if (offset != calculatedOffset) {
-                        offset = calculatedOffset
-                    }
+            else -> parentBounds.left + popupMargin.left + with(density) { 64.dp.roundToPx() }
+        }
+        val yInWindow = parentBounds.top + parentBounds.height / 2 - with(density) { 56.dp.roundToPx() }
+        safeTransformOrigin(
+            xInWindow / windowSize.width.toFloat(),
+            yInWindow / windowSize.height.toFloat()
+        )
+    }
 
-                    layout(constraints.maxWidth, constraints.maxHeight) {
-                        placeable.place(offset)
-                    }
-                }
+    if (parentBounds != IntRect.Zero && windowSize != IntSize.Zero) {
+        PopupLayout(
+            visible = show,
+            enableWindowDim = enableWindowDim,
+            transformOrigin = { transformOrigin },
         ) {
+            val shape = remember { SmoothRoundedCornerShape(16.dp) }
+            val elevationPx = with(density) { shadowElevation.toPx() }
+
             Box(
-                modifier = Modifier
-                    .graphicsLayer(
-                        clip = true,
-                        shape = shape,
-                        shadowElevation = elevationPx,
-                        ambientShadowColor = MiuixTheme.colorScheme.windowDimming,
-                        spotShadowColor = MiuixTheme.colorScheme.windowDimming
-                    )
-                    .background(MiuixTheme.colorScheme.surface)
+                modifier = popupModifier
+                    .pointerInput(onDismissRequest) {
+                        detectTapGestures(
+                            onTap = { onDismissRequest?.invoke() }
+                        )
+                    }
+                    .layout { measurable, constraints ->
+                        val placeable = measurable.measure(
+                            constraints.copy(
+                                minWidth = if (minWidth.roundToPx() <= windowSize.width) minWidth.roundToPx() else windowSize.width,
+                                minHeight = if (50.dp.roundToPx() <= windowSize.height) 50.dp.roundToPx() else windowSize.height,
+                                maxHeight = maxHeight?.roundToPx()?.coerceAtLeast(50.dp.roundToPx())
+                                    ?: (windowBounds.height - popupMargin.top - popupMargin.bottom).coerceAtLeast(
+                                        50.dp.roundToPx()
+                                    ),
+                                maxWidth = if (minWidth.roundToPx() <= windowSize.width) windowSize.width else minWidth.roundToPx()
+                            )
+                        )
+                        val measuredSize = IntSize(placeable.width, placeable.height)
+
+                        val calculatedOffset = popupPositionProvider.calculatePosition(
+                            parentBounds,
+                            windowBounds,
+                            layoutDirection,
+                            measuredSize,
+                            popupMargin,
+                            alignment
+                        )
+
+                        layout(constraints.maxWidth, constraints.maxHeight) {
+                            placeable.place(calculatedOffset)
+                        }
+                    }
             ) {
-                currentContent()
+                Box(
+                    modifier = Modifier
+                        .graphicsLayer(
+                            clip = true,
+                            shape = shape,
+                            shadowElevation = elevationPx,
+                            ambientShadowColor = MiuixTheme.colorScheme.windowDimming,
+                            spotShadowColor = MiuixTheme.colorScheme.windowDimming
+                        )
+                        .background(MiuixTheme.colorScheme.surface)
+                ) {
+                    content()
+                }
             }
         }
     }
 
     BackHandler(enabled = show.value) {
-        currentOnDismissRequest?.invoke()
+        onDismissRequest?.invoke()
     }
 }
 

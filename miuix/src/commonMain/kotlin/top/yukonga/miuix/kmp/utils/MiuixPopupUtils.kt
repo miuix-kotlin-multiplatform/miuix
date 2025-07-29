@@ -22,6 +22,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -45,7 +46,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 class MiuixPopupUtils {
 
     @Immutable
-    private data class PopupState(
+    data class PopupState(
         val enterTransition: EnterTransition?,
         val exitTransition: ExitTransition?,
         val enableWindowDim: Boolean,
@@ -57,7 +58,7 @@ class MiuixPopupUtils {
     )
 
     @Immutable
-    private data class DialogState(
+    data class DialogState(
         val enterTransition: EnterTransition?,
         val exitTransition: ExitTransition?,
         val enableWindowDim: Boolean,
@@ -68,8 +69,6 @@ class MiuixPopupUtils {
     )
 
     companion object {
-        private val popupStates = mutableStateMapOf<MutableState<Boolean>, PopupState>()
-        private val dialogStates = mutableStateMapOf<MutableState<Boolean>, DialogState>()
         private var nextZIndex = 1f
 
         private fun defaultMiuixDialogDimmingEnterTransition(): EnterTransition {
@@ -152,7 +151,6 @@ class MiuixPopupUtils {
          * @param content The [Composable] content of the dialog.
          */
         @Composable
-        @Suppress("FunctionName")
         fun DialogLayout(
             visible: MutableState<Boolean> = mutableStateOf(true),
             enterTransition: EnterTransition? = null,
@@ -167,6 +165,7 @@ class MiuixPopupUtils {
                 if (visible.value) visible.value = false
                 return
             }
+            val dialogStates = LocalDialogStates.current
             val currentZIndex = if (!visible.value) {
                 nextZIndex++
             } else {
@@ -197,7 +196,7 @@ class MiuixPopupUtils {
          *   used for scale transformations. By default it's [TransformOrigin.Center].
          * @param content The [Composable] content of the popup.
          */
-        @Suppress("FunctionName")
+        @Composable
         fun PopupLayout(
             visible: MutableState<Boolean>,
             enterTransition: EnterTransition? = null,
@@ -213,6 +212,7 @@ class MiuixPopupUtils {
                 if (visible.value) visible.value = false
                 return
             }
+            val popupStates = LocalPopupStates.current
             val currentZIndex = if (!visible.value) {
                 nextZIndex++
             } else {
@@ -231,6 +231,93 @@ class MiuixPopupUtils {
             }
         }
 
+        @Composable
+        private fun DialogEntry(
+            showState: MutableState<Boolean>,
+            dialogState: DialogState,
+            largeScreen: Boolean
+        ) {
+            var internalVisible by remember { mutableStateOf(false) }
+            LaunchedEffect(showState.value) { internalVisible = showState.value }
+            val dialogStates = LocalDialogStates.current
+
+            if (dialogState.enableWindowDim) {
+                AnimatedVisibility(
+                    visible = internalVisible,
+                    modifier = Modifier.fillMaxSize().zIndex(dialogState.zIndex),
+                    enter = dialogState.dimEnterTransition ?: defaultMiuixDialogDimmingEnterTransition(),
+                    exit = dialogState.dimExitTransition ?: defaultMiuixDialogDimmingExitTransition()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MiuixTheme.colorScheme.windowDimming)
+                    )
+                }
+            }
+
+            AnimatedVisibility(
+                visible = internalVisible,
+                modifier = Modifier.fillMaxSize().zIndex(dialogState.zIndex),
+                enter = dialogState.enterTransition ?: defaultMiuixDialogEnterTransition(largeScreen),
+                exit = dialogState.exitTransition ?: defaultMiuixDialogExitTransition(largeScreen)
+            ) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    dialogState.content()
+                }
+                DisposableEffect(showState) {
+                    onDispose {
+                        if (!showState.value) {
+                            dialogStates.remove(showState)
+                        }
+                    }
+                }
+            }
+        }
+
+        @Composable
+        private fun PopupEntry(
+            showState: MutableState<Boolean>,
+            popupState: PopupState,
+        ) {
+            var internalVisible by remember { mutableStateOf(false) }
+            LaunchedEffect(showState.value) { internalVisible = showState.value }
+            val popupStates = LocalPopupStates.current
+
+            if (popupState.enableWindowDim) {
+                AnimatedVisibility(
+                    visible = internalVisible,
+                    modifier = Modifier.fillMaxSize().zIndex(popupState.zIndex),
+                    enter = popupState.dimEnterTransition ?: defaultMiuixPopupDimmingEnterTransition(),
+                    exit = popupState.dimExitTransition ?: defaultMiuixPopupDimmingExitTransition()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MiuixTheme.colorScheme.windowDimming)
+                    )
+                }
+            }
+
+            AnimatedVisibility(
+                visible = internalVisible,
+                modifier = Modifier.fillMaxSize().zIndex(popupState.zIndex),
+                enter = popupState.enterTransition ?: defaultMiuixPopupEnterTransition(popupState.transformOrigin),
+                exit = popupState.exitTransition ?: defaultMiuixPopupExitTransition(popupState.transformOrigin)
+            ) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    popupState.content()
+                }
+                DisposableEffect(showState) {
+                    onDispose {
+                        if (!showState.value) {
+                            popupStates.remove(showState)
+                        }
+                    }
+                }
+            }
+        }
+
         /**
          * A host for show popup and dialog. Already added to the [Scaffold] by default.
          */
@@ -242,99 +329,36 @@ class MiuixPopupUtils {
             val windowHeight by rememberUpdatedState(getWindowSize.height.dp / density.density)
             val largeScreen by remember { derivedStateOf { (windowHeight >= 480.dp && windowWidth >= 840.dp) } }
 
-            dialogStates.entries.forEach { (showState, dialogState) ->
+            val dialogStates = LocalDialogStates.current
+            val popupStates = LocalPopupStates.current
+
+            for (showState in dialogStates.keys) {
                 key(showState) {
-                    var internalVisible by remember { mutableStateOf(false) }
-
-                    LaunchedEffect(showState.value) {
-                        internalVisible = showState.value
-                    }
-
-                    // Dimming layer for the dialog
-                    if (dialogState.enableWindowDim) {
-                        AnimatedVisibility(
-                            visible = internalVisible,
-                            modifier = Modifier.zIndex(dialogState.zIndex).fillMaxSize(),
-                            enter = dialogState.dimEnterTransition ?: defaultMiuixDialogDimmingEnterTransition(),
-                            exit = dialogState.dimExitTransition ?: defaultMiuixDialogDimmingExitTransition()
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(MiuixTheme.colorScheme.windowDimming)
-                            )
-                        }
-                    }
-
-                    // Content layer for the dialog
-                    AnimatedVisibility(
-                        visible = internalVisible,
-                        modifier = Modifier.zIndex(dialogState.zIndex).fillMaxSize(),
-                        enter = dialogState.enterTransition ?: defaultMiuixDialogEnterTransition(largeScreen),
-                        exit = dialogState.exitTransition ?: defaultMiuixDialogExitTransition(largeScreen)
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            dialogState.content()
-                        }
-                        DisposableEffect(showState) {
-                            onDispose {
-                                if (!showState.value) {
-                                    dialogStates.remove(showState)
-                                }
-                            }
-                        }
+                    val dialogState = dialogStates[showState]
+                    if (dialogState != null) {
+                        DialogEntry(
+                            showState = showState,
+                            dialogState = dialogState,
+                            largeScreen = largeScreen
+                        )
                     }
                 }
             }
 
-            popupStates.entries.forEach { (showState, popupState) ->
+            for (showState in popupStates.keys) {
                 key(showState) {
-                    var internalVisible by remember { mutableStateOf(false) }
-
-                    LaunchedEffect(showState.value) {
-                        internalVisible = showState.value
-                    }
-
-                    // Dimming layer for the popup
-                    if (popupState.enableWindowDim) {
-                        AnimatedVisibility(
-                            visible = internalVisible,
-                            modifier = Modifier.zIndex(popupState.zIndex).fillMaxSize(),
-                            enter = popupState.dimEnterTransition ?: defaultMiuixPopupDimmingEnterTransition(),
-                            exit = popupState.dimExitTransition ?: defaultMiuixPopupDimmingExitTransition()
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(MiuixTheme.colorScheme.windowDimming)
-                            )
-                        }
-                    }
-
-                    // Content layer for the popup
-                    AnimatedVisibility(
-                        visible = internalVisible,
-                        modifier = Modifier.zIndex(popupState.zIndex).fillMaxSize(),
-                        enter = popupState.enterTransition ?: defaultMiuixPopupEnterTransition(popupState.transformOrigin),
-                        exit = popupState.exitTransition ?: defaultMiuixPopupExitTransition(popupState.transformOrigin)
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            popupState.content()
-                        }
-                        DisposableEffect(showState) {
-                            onDispose {
-                                if (!showState.value) {
-                                    popupStates.remove(showState)
-                                }
-                            }
-                        }
+                    val popupState = popupStates[showState]
+                    if (popupState != null) {
+                        PopupEntry(
+                            showState = showState,
+                            popupState = popupState,
+                        )
                     }
                 }
             }
         }
     }
 }
+
+val LocalPopupStates = compositionLocalOf { mutableStateMapOf<MutableState<Boolean>, MiuixPopupUtils.PopupState>() }
+val LocalDialogStates = compositionLocalOf { mutableStateMapOf<MutableState<Boolean>, MiuixPopupUtils.DialogState>() }

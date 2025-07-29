@@ -3,7 +3,6 @@
 
 package top.yukonga.miuix.kmp.basic
 
-import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -17,10 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -53,17 +50,15 @@ fun LinearProgressIndicator(
     height: Dp = ProgressIndicatorDefaults.DefaultLinearProgressIndicatorHeight
 ) {
     if (progress == null) {
-        val animatedValue = remember { Animatable(initialValue = 0f) }
-
-        LaunchedEffect(Unit) {
-            animatedValue.animateTo(
-                targetValue = 1f,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(durationMillis = 1250, easing = LinearEasing),
-                    repeatMode = RepeatMode.Restart
-                )
+        val transition = rememberInfiniteTransition()
+        val animatedValue by transition.animateFloat(
+            initialValue = 0f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 1250, easing = LinearEasing),
+                repeatMode = RepeatMode.Restart
             )
-        }
+        )
 
         Canvas(
             modifier = modifier
@@ -71,7 +66,7 @@ fun LinearProgressIndicator(
                 .height(height)
         ) {
             val currentBackgroundColor = colors.backgroundColor()
-            val currentForegroundColor = colors.foregroundColor(true) // Assuming enabled for indeterminate
+            val currentForegroundColor = colors.foregroundColor(true)
 
             drawRoundRect(
                 color = currentBackgroundColor,
@@ -79,7 +74,7 @@ fun LinearProgressIndicator(
                 cornerRadius = CornerRadius(size.height / 2)
             )
 
-            val value = animatedValue.value
+            val value = animatedValue
             val segmentWidth = 0.45f
             val gap = 0.55f
 
@@ -128,7 +123,7 @@ fun LinearProgressIndicator(
     } else {
         val progressValue = progress.coerceIn(0f, 1f)
         val currentBackgroundColor = colors.backgroundColor()
-        val currentForegroundColor = colors.foregroundColor(true) // Assuming enabled for determinate
+        val currentForegroundColor = colors.foregroundColor(true)
 
         Canvas(
             modifier = modifier
@@ -225,9 +220,9 @@ fun CircularProgressIndicator(
             )
         }
     } else {
-        val progressValue = progress.coerceIn(0f, 1f)
+        val progressValue by rememberUpdatedState(progress.coerceIn(0f, 1f))
         val currentBackgroundColor = colors.backgroundColor()
-        val currentForegroundColor = colors.foregroundColor(true) // Assuming enabled
+        val currentForegroundColor = colors.foregroundColor(true)
 
         Canvas(
             modifier = modifier.size(size)
@@ -244,7 +239,6 @@ fun CircularProgressIndicator(
             )
 
             val minSweepAngle = 0.1f
-
             val sweepAngle = minSweepAngle + (360f - minSweepAngle) * progressValue
 
             drawArc(
@@ -278,18 +272,17 @@ fun InfiniteProgressIndicator(
     strokeWidth: Dp = ProgressIndicatorDefaults.DefaultInfiniteProgressIndicatorStrokeWidth,
     orbitingDotSize: Dp = ProgressIndicatorDefaults.DefaultInfiniteProgressIndicatorOrbitingDotSize
 ) {
-    val rotationAnim = remember { Animatable(0f) }
     val currentColor by rememberUpdatedState(color)
 
-    LaunchedEffect(Unit) {
-        rotationAnim.animateTo(
-            targetValue = 360f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(800, easing = LinearEasing),
-                repeatMode = RepeatMode.Restart
-            )
+    val transition = rememberInfiniteTransition()
+    val rotation by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(800, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
         )
-    }
+    )
 
     Canvas(
         modifier = modifier.size(size)
@@ -305,7 +298,7 @@ fun InfiniteProgressIndicator(
         )
 
         val orbitRadius = radius - 2 * orbitingDotSize.toPx()
-        val angle = rotationAnim.value * PI.toFloat() / 180f
+        val angle = rotation * PI.toFloat() / 180f
         val dotCenter = center + Offset(
             x = orbitRadius * cos(angle),
             y = orbitRadius * sin(angle)

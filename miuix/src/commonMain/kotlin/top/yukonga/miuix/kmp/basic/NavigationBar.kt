@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -104,25 +105,26 @@ fun NavigationBar(
             val itemWeight = 1f / items.size
 
             items.forEachIndexed { index, item ->
-                val isSelected = selected == index
+                val isSelected = remember(selected) { selected == index }
                 var isPressed by remember { mutableStateOf(false) }
 
                 val onSurfaceContainerColor = MiuixTheme.colorScheme.onSurfaceContainer
                 val onSurfaceContainerVariantColor = MiuixTheme.colorScheme.onSurfaceContainerVariant
 
-                val tint by animateColorAsState(
-                    targetValue = when {
-                        isPressed -> if (isSelected) {
-                            onSurfaceContainerColor.copy(alpha = 0.6f)
-                        } else {
-                            onSurfaceContainerVariantColor.copy(alpha = 0.6f)
-                        }
+                val tint by remember(isSelected, isPressed) {
+                    derivedStateOf {
+                        when {
+                            isPressed -> if (isSelected) {
+                                onSurfaceContainerColor.copy(alpha = 0.6f)
+                            } else {
+                                onSurfaceContainerVariantColor.copy(alpha = 0.6f)
+                            }
 
-                        isSelected -> onSurfaceContainerColor
-                        else -> onSurfaceContainerVariantColor
-                    },
-                    label = "tintAnimation"
-                )
+                            isSelected -> onSurfaceContainerColor
+                            else -> onSurfaceContainerVariantColor
+                        }
+                    }
+                }
                 val fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
 
                 Column(
@@ -269,7 +271,7 @@ fun FloatingNavigationBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             items.forEachIndexed { index, item ->
-                val isSelected = selected == index
+                val isSelected = remember(selected) { selected == index }
                 var isPressed by remember { mutableStateOf(false) }
 
                 val onSurfaceContainerColor = MiuixTheme.colorScheme.onSurfaceContainer
