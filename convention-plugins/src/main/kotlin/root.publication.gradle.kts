@@ -3,5 +3,5 @@
 
 allprojects {
     group = "top.yukonga.miuix.kmp"
-    version = "0.4.8"
+    version = "0.4.9"
 }
