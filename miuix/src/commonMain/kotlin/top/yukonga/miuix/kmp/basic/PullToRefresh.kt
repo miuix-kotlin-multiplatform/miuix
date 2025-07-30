@@ -557,7 +557,9 @@ private fun RefreshHeader(
     }
 
     Column(
-        modifier = modifier.fillMaxWidth().height(heightInfo.second),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(heightInfo.second),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {

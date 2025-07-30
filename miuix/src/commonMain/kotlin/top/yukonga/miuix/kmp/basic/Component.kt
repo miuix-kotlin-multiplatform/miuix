@@ -7,8 +7,6 @@ import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -26,6 +24,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.interfaces.HoldDownInteraction
@@ -78,55 +77,82 @@ fun BasicComponent(
         }
     }
 
-    val rowModifier = modifier
-        .heightIn(min = 56.dp)
-        .fillMaxWidth()
-        .then(
-            if (currentOnClick != null && enabled) {
-                Modifier.clickable(
-                    indication = LocalIndication.current,
-                    interactionSource = interactionSource,
-                    onClick = { currentOnClick?.invoke() }
-                )
-            } else Modifier
-        )
-        .padding(insideMargin)
-
-    Row(
-        modifier = rowModifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        leftAction?.invoke()
-
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            title?.let {
+    SubcomposeLayout(
+        modifier = modifier
+            .heightIn(min = 56.dp)
+            .fillMaxWidth()
+            .then(
+                if (currentOnClick != null && enabled) {
+                    Modifier.clickable(
+                        indication = LocalIndication.current,
+                        interactionSource = interactionSource,
+                        onClick = { currentOnClick?.invoke() }
+                    )
+                } else Modifier
+            )
+            .padding(insideMargin)
+    ) { constraints ->
+        val looseConstraints = constraints.copy(minWidth = 0, minHeight = 0)
+        // 1. leftAction
+        val leftPlaceables = leftAction?.let {
+            subcompose("leftAction") { it() }.map { it -> it.measure(looseConstraints) }
+        } ?: emptyList()
+        val leftWidth = leftPlaceables.maxOfOrNull { it.width } ?: 0
+        val leftHeight = leftPlaceables.maxOfOrNull { it.height } ?: 0
+        // 2. rightActions
+        val rightPlaceables = subcompose("rightActions") {
+            Row(
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+                content = rightActions
+            )
+        }.map { it.measure(looseConstraints) }
+        val rightWidth = rightPlaceables.maxOfOrNull { it.width } ?: 0
+        val rightHeight = rightPlaceables.maxOfOrNull { it.height } ?: 0
+        // 3. content
+        val contentMaxWidth = maxOf(0, constraints.maxWidth - leftWidth - rightWidth - 16.dp.roundToPx())
+        val titlePlaceable = title?.let {
+            subcompose("title") {
                 Text(
                     text = it,
                     fontSize = MiuixTheme.textStyles.headline1.fontSize,
                     fontWeight = FontWeight.Medium,
                     color = titleColor.color(enabled)
                 )
-            }
-            summary?.let {
+            }.first().measure(looseConstraints.copy(maxWidth = contentMaxWidth))
+        }
+        val summaryPlaceable = summary?.let {
+            subcompose("summary") {
                 Text(
                     text = it,
                     fontSize = MiuixTheme.textStyles.body2.fontSize,
                     color = summaryColor.color(enabled)
                 )
-            }
+            }.first().measure(looseConstraints.copy(maxWidth = contentMaxWidth))
         }
+        listOfNotNull(titlePlaceable?.width, summaryPlaceable?.width).maxOrNull() ?: 0
+        val contentHeight = (titlePlaceable?.height ?: 0) + (summaryPlaceable?.height ?: 0)
 
-        Box(
-            modifier = Modifier.padding(start = 16.dp)
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically,
-                content = rightActions
-            )
+        val layoutHeight = maxOf(leftHeight, rightHeight, contentHeight)
+        layout(constraints.maxWidth, layoutHeight) {
+            var x = 0
+            // leftAction
+            leftPlaceables.forEach {
+                it.placeRelative(x, (layoutHeight - it.height) / 2)
+                x += it.width
+            }
+            // content
+            var contentY = (layoutHeight - contentHeight) / 2
+            titlePlaceable?.let {
+                it.placeRelative(x, contentY)
+                contentY += it.height
+            }
+            summaryPlaceable?.placeRelative(x, contentY)
+            // rightActions
+            val rightX = constraints.maxWidth - rightWidth
+            rightPlaceables.forEach {
+                it.placeRelative(rightX, (layoutHeight - it.height) / 2)
+            }
         }
     }
 }

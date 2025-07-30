@@ -3,14 +3,12 @@
 
 package top.yukonga.miuix.kmp.basic
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -25,6 +23,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -33,10 +33,12 @@ import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.utils.ColorUtils
@@ -207,7 +209,10 @@ fun SaturationSlider(
     hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
 ) {
     val saturationColors = remember(currentHue) {
-        listOf(Color.hsv(currentHue, 0f, 1f, 1f), Color.hsv(currentHue, 1f, 1f, 1f))
+        listOf(
+            Color.hsv(currentHue, 0f, 1f, 1f),
+            Color.hsv(currentHue, 1f, 1f, 1f)
+        )
     }
     ColorSlider(
         value = currentSaturation,
@@ -284,11 +289,16 @@ fun AlphaSlider(
         drawBrushColors = alphaColors,
         modifier = Modifier.fillMaxWidth(),
         hapticEffect = hapticEffect,
-        drawBackground = { _, _ -> drawRect(brush = checkerBrush) }
+        drawBackground = { _, _ ->
+            drawRoundRect(
+                brush = checkerBrush,
+                cornerRadius = CornerRadius(size.height / 2, size.height / 2)
+            )
+        }
     )
 }
 
-private fun createCheckerboardBrush(density: androidx.compose.ui.unit.Density): ShaderBrush {
+private fun createCheckerboardBrush(density: Density): ShaderBrush {
     val lightColor = Color(0xFFCCCCCC)
     val darkColor = Color(0xFFAAAAAA)
     val checkerSizeDp = 3.dp
@@ -327,16 +337,16 @@ private fun ColorSlider(
     val indicatorSizeDp = 20.dp
     val sliderHeightDp = 26.dp
     val sliderHeightPx = with(density) { sliderHeightDp.toPx() }
-    val sliderWidthPx = with(density) { sliderWidth.toPx() }
-    val halfSliderHeightPx = sliderHeightPx / 2f
     val hapticFeedback = LocalHapticFeedback.current
     val hapticState = remember { SliderHapticState() }
 
-    val gradientBrush = remember(drawBrushColors, sliderWidthPx, halfSliderHeightPx) {
+    val gradientBrush = remember(drawBrushColors, sliderWidth) {
+        val widthPx = with(density) { sliderWidth.toPx() }
+        val halfSliderHeightPx = with(density) { sliderHeightDp.toPx() } / 2f
         Brush.horizontalGradient(
             colors = drawBrushColors,
             startX = halfSliderHeightPx,
-            endX = sliderWidthPx - halfSliderHeightPx,
+            endX = widthPx - halfSliderHeightPx,
             tileMode = TileMode.Clamp
         )
     }
@@ -344,35 +354,44 @@ private fun ColorSlider(
     Box(
         modifier = modifier
             .height(sliderHeightDp)
-            .clip(SmoothRoundedCornerShape(50.dp))
-            .border(0.5.dp, Color.Gray.copy(0.1f), SmoothRoundedCornerShape(50.dp))
+            .onGloballyPositioned { coordinates ->
+                sliderWidth = with(density) { coordinates.size.width.toDp() }
+            }
+            .drawBehind {
+                drawBackground?.invoke(this, size.width, size.height)
+                drawRoundRect(
+                    brush = gradientBrush,
+                    cornerRadius = CornerRadius(size.height / 2, size.height / 2)
+                )
+                drawRoundRect(
+                    color = Color.Gray.copy(0.1f),
+                    style = Stroke(width = with(density) { 0.5.dp.toPx() }),
+                    cornerRadius = CornerRadius(size.height / 2, size.height / 2)
+                )
+            }
+            .pointerInput(Unit) {
+                detectHorizontalDragGestures(
+                    onDragStart = { offset ->
+                        val newValue =
+                            handleSliderInteraction(offset.x, size.width.toFloat(), with(density) { sliderHeightDp.toPx() }).coerceIn(
+                                0f,
+                                1f
+                            )
+                        onValueChanged(newValue)
+                        hapticState.reset(newValue)
+                    },
+                    onHorizontalDrag = { change, _ ->
+                        change.consume()
+                        val newValue = handleSliderInteraction(
+                            change.position.x,
+                            size.width.toFloat(),
+                            with(density) { sliderHeightDp.toPx() }).coerceIn(0f, 1f)
+                        onValueChanged(newValue)
+                        hapticState.handleHapticFeedback(newValue, hapticEffect, hapticFeedback)
+                    }
+                )
+            }
     ) {
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .onGloballyPositioned { coordinates ->
-                    sliderWidth = with(density) { coordinates.size.width.toDp() }
-                }
-                .pointerInput(Unit) {
-                    detectHorizontalDragGestures(
-                        onDragStart = { offset ->
-                            val newValue = handleSliderInteraction(offset.x, size.width.toFloat(), sliderHeightPx).coerceIn(0f, 1f)
-                            onValueChanged(newValue)
-                            hapticState.reset(newValue)
-                        },
-                        onHorizontalDrag = { change, _ ->
-                            change.consume()
-                            val newValue = handleSliderInteraction(change.position.x, size.width.toFloat(), sliderHeightPx).coerceIn(0f, 1f)
-                            onValueChanged(newValue)
-                            hapticState.handleHapticFeedback(newValue, hapticEffect, hapticFeedback)
-                        }
-                    )
-                }
-        ) {
-            drawBackground?.invoke(this, size.width, size.height)
-            drawRect(gradientBrush)
-        }
-
         SliderIndicator(
             modifier = Modifier.align(Alignment.CenterStart),
             value = value,

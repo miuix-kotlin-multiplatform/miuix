@@ -83,27 +83,27 @@ fun ListPopup(
     var parentBounds by remember { mutableStateOf(IntRect.Zero) }
 
     Layout(
-        modifier = Modifier.onGloballyPositioned { childCoordinates ->
-            childCoordinates.parentLayoutCoordinates?.let { parentLayoutCoordinates ->
-                val positionInWindow = parentLayoutCoordinates.positionInWindow()
-                parentBounds = IntRect(
-                    left = positionInWindow.x.toInt(),
-                    top = positionInWindow.y.toInt(),
-                    right = positionInWindow.x.toInt() + parentLayoutCoordinates.size.width,
-                    bottom = positionInWindow.y.toInt() + parentLayoutCoordinates.size.height
-                )
+        modifier = Modifier
+            .onGloballyPositioned { childCoordinates ->
+                childCoordinates.parentLayoutCoordinates?.let { parentLayoutCoordinates ->
+                    val positionInWindow = parentLayoutCoordinates.positionInWindow()
+                    parentBounds = IntRect(
+                        left = positionInWindow.x.toInt(),
+                        top = positionInWindow.y.toInt(),
+                        right = positionInWindow.x.toInt() + parentLayoutCoordinates.size.width,
+                        bottom = positionInWindow.y.toInt() + parentLayoutCoordinates.size.height
+                    )
+                }
             }
-        }
     ) { _, _ -> layout(0, 0) {} }
 
-    val popupMargin = remember(popupPositionProvider, layoutDirection, density) {
-        val pd = popupPositionProvider.getMargins()
+    val popupMargin = remember {
         with(density) {
             IntRect(
-                left = pd.calculateLeftPadding(layoutDirection).roundToPx(),
-                top = pd.calculateTopPadding().roundToPx(),
-                right = pd.calculateRightPadding(layoutDirection).roundToPx(),
-                bottom = pd.calculateBottomPadding().roundToPx()
+                left = popupPositionProvider.getMargins().calculateLeftPadding(layoutDirection).roundToPx(),
+                top = popupPositionProvider.getMargins().calculateTopPadding().roundToPx(),
+                right = popupPositionProvider.getMargins().calculateRightPadding(layoutDirection).roundToPx(),
+                bottom = popupPositionProvider.getMargins().calculateBottomPadding().roundToPx()
             )
         }
     }

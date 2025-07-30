@@ -564,7 +564,12 @@ private fun TopAppBarLayout(
     }
 
     // Small Title Animation
-    val extOffset = abs(scrolledOffset.offset()) / expandedHeightPx * 2
+    val extOffset by remember(scrolledOffset) {
+        derivedStateOf {
+            abs(scrolledOffset.offset()) / expandedHeightPx * 2
+        }
+    }
+
     val alpha by animateFloatAsState(
         targetValue = if (1 - extOffset.coerceIn(0f, 1f) == 0f) 1f else 0f,
         animationSpec = tween(durationMillis = 250)
@@ -574,46 +579,14 @@ private fun TopAppBarLayout(
         animationSpec = tween(durationMillis = 250)
     )
 
-    val titleModifier = remember(horizontalPadding, alpha, translationY) {
-        Modifier
-            .layoutId("title")
-            .padding(horizontal = horizontalPadding)
-            .graphicsLayer(
-                alpha = alpha,
-                translationY = translationY
-            )
-    }
     val largeTitleGraphicsAlpha = remember(scrolledOffset.offset(), expandedHeightPx) {
         1f - (abs(scrolledOffset.offset()) / expandedHeightPx * 2).coerceIn(0f, 1f)
-    }
-    val largeTitleContainerModifier = remember(horizontalPadding, largeTitleGraphicsAlpha) {
-        Modifier
-            .fillMaxWidth()
-            .padding(top = 56.dp)
-            .padding(horizontal = horizontalPadding)
-            .graphicsLayer(alpha = largeTitleGraphicsAlpha)
-    }
-    val largeTitleTextModifier = remember(heightOffset) {
-        Modifier.offset { IntOffset(0, heightOffset) }
     }
 
     val statusBarsInsets = WindowInsets.statusBars
     val captionBarInsets = WindowInsets.captionBar
     val displayCutoutInsets = WindowInsets.displayCutout
     val navigationBarsInsets = WindowInsets.navigationBars
-
-    val layoutModifier = remember(defaultWindowInsetsPadding, statusBarsInsets, captionBarInsets) {
-        Modifier
-            .windowInsetsPadding(statusBarsInsets.only(WindowInsetsSides.Top))
-            .windowInsetsPadding(captionBarInsets.only(WindowInsetsSides.Top))
-            .then(
-                if (defaultWindowInsetsPadding) {
-                    Modifier
-                        .windowInsetsPadding(displayCutoutInsets.only(WindowInsetsSides.Horizontal))
-                        .windowInsetsPadding(navigationBarsInsets.only(WindowInsetsSides.Horizontal))
-                } else Modifier
-            )
-    }
 
     Layout(
         {
@@ -623,7 +596,15 @@ private fun TopAppBarLayout(
             ) {
                 navigationIcon()
             }
-            Box(titleModifier) {
+            Box(
+                Modifier
+                    .layoutId("title")
+                    .padding(horizontal = horizontalPadding)
+                    .graphicsLayer(
+                        alpha = alpha,
+                        translationY = translationY
+                    )
+            ) {
                 Text(
                     text = title,
                     maxLines = 1,
@@ -644,22 +625,35 @@ private fun TopAppBarLayout(
                     .layoutId("largeTitle")
                     .fillMaxWidth()
             ) {
-                Box(largeTitleContainerModifier) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 56.dp)
+                        .padding(horizontal = horizontalPadding)
+                        .graphicsLayer(alpha = largeTitleGraphicsAlpha)
+                ) {
                     Text(
-                        modifier = largeTitleTextModifier,
+                        modifier = Modifier.offset { IntOffset(0, heightOffset) },
                         text = largeTitle,
                         fontSize = MiuixTheme.textStyles.title1.fontSize,
                         fontWeight = FontWeight.Normal,
                         onTextLayout = {
                             largeTitleHeight.value = it.size.height
                         },
-
-                        )
+                    )
                 }
             }
         },
         modifier = modifier
-            .then(layoutModifier)
+            .windowInsetsPadding(statusBarsInsets.only(WindowInsetsSides.Top))
+            .windowInsetsPadding(captionBarInsets.only(WindowInsetsSides.Top))
+            .then(
+                if (defaultWindowInsetsPadding) {
+                    Modifier
+                        .windowInsetsPadding(displayCutoutInsets.only(WindowInsetsSides.Horizontal))
+                        .windowInsetsPadding(navigationBarsInsets.only(WindowInsetsSides.Horizontal))
+                } else Modifier
+            )
             .clipToBounds()
             .pointerInput(Unit) { detectVerticalDragGestures { _, _ -> } }
     ) { measurables, constraints ->
