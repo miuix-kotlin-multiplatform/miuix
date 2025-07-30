@@ -26,6 +26,10 @@ TextField(
 )
 ```
 
+::: info
+This TextField component now also supports the latest state-based version. Please refer to the [State-based](https://developer.android.com/develop/ui/compose/text/user-input?textfield=state-based) documentation for details.
+:::
+
 ## Input Types
 
 ### TextField with Label

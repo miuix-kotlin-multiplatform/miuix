@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -252,6 +253,9 @@ fun LazyListScope.otherComponent(focusManager: FocusManager, padding: PaddingVal
 
     item {
         var text1 by remember { mutableStateOf("") }
+        var text2 by remember { mutableStateOf(TextFieldValue("")) }
+        val text3 = rememberTextFieldState(initialText = "")
+        var text4 by remember { mutableStateOf("") }
 
         SmallTitle(text = "TextField")
         TextField(
@@ -263,28 +267,28 @@ fun LazyListScope.otherComponent(focusManager: FocusManager, padding: PaddingVal
             keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
         )
-    }
-    item {
-        var text2 by remember { mutableStateOf(TextFieldValue("")) }
-
         TextField(
             value = text2,
             onValueChange = { text2 = it },
-            label = "Text Field",
+            label = "With title",
             modifier = Modifier
                 .padding(horizontal = 12.dp)
                 .padding(bottom = 12.dp),
             keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
         )
-    }
-
-    item {
-        var text3 by remember { mutableStateOf("") }
-
         TextField(
-            value = text3,
-            onValueChange = { text3 = it },
+            state = text3,
+            label = "State-based",
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 12.dp),
+            onKeyboardAction = { focusManager.clearFocus() },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        )
+        TextField(
+            value = text4,
+            onValueChange = { text4 = it },
             label = "Placeholder & SingleLine",
             useLabelAsPlaceholder = true,
             singleLine = true,

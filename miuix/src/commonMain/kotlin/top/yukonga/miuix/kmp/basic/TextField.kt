@@ -8,6 +8,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -17,10 +18,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.InputTransformation
+import androidx.compose.foundation.text.input.KeyboardActionHandler
+import androidx.compose.foundation.text.input.OutputTransformation
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -36,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -43,6 +51,123 @@ import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+
+/**
+ * A [TextField] component with Miuix style.
+ *
+ * @param state The [TextFieldState] to be shown in the text field.
+ * @param modifier The modifier to be applied to the [TextField].
+ * @param insideMargin The margin inside the [TextField].
+ * @param backgroundColor The background color of the [TextField].
+ * @param cornerRadius The corner radius of the [TextField].
+ * @param label The label to be displayed when the [TextField] is empty.
+ * @param labelColor The color of the label.
+ * @param borderColor The color of the border when the [TextField] is focused.
+ * @param useLabelAsPlaceholder Whether to use the label as a placeholder.
+ * @param enabled Whether the [TextField] is enabled.
+ * @param readOnly Whether the [TextField] is read-only.
+ * @param inputTransformation The input transformation to be applied to the [TextField].
+ * @param textStyle The text style to be applied to the [TextField].
+ * @param keyboardOptions The keyboard options to be applied to the [TextField].
+ * @param onKeyboardAction The keyboard action handler for the [TextField].
+ * @param lineLimits The line limits for the [TextField].
+ * @param leadingIcon The leading icon to be displayed in the [TextField].
+ * @param trailingIcon The trailing icon to be displayed in the [TextField].
+ * @param onTextLayout The callback to be called when the text layout changes.
+ * @param interactionSource The interaction source to be applied to the [TextField].
+ * @param cursorBrush The brush to be used for the cursor.
+ * @param outputTransformation The output transformation for the text field.
+ * @param scrollState The scroll state for the text field.
+ */
+@Composable
+fun TextField(
+    state: TextFieldState,
+    modifier: Modifier = Modifier,
+    insideMargin: DpSize = DpSize(16.dp, 16.dp),
+    backgroundColor: Color = MiuixTheme.colorScheme.secondaryContainer,
+    cornerRadius: Dp = 16.dp,
+    label: String = "",
+    labelColor: Color = MiuixTheme.colorScheme.onSecondaryContainer,
+    borderColor: Color = MiuixTheme.colorScheme.primary,
+    useLabelAsPlaceholder: Boolean = false,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    inputTransformation: InputTransformation? = null,
+    textStyle: TextStyle = MiuixTheme.textStyles.main,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    onKeyboardAction: KeyboardActionHandler? = null,
+    lineLimits: TextFieldLineLimits = TextFieldLineLimits.Default,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    onTextLayout: (Density.(getResult: () -> TextLayoutResult?) -> Unit)? = null,
+    interactionSource: MutableInteractionSource? = null,
+    cursorBrush: Brush = SolidColor(MiuixTheme.colorScheme.primary),
+    outputTransformation: OutputTransformation? = null,
+    scrollState: ScrollState = rememberScrollState(),
+) {
+    @Suppress("NAME_SHADOWING")
+    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
+    val paddingModifier = remember(insideMargin, leadingIcon, trailingIcon) {
+        if (leadingIcon == null && trailingIcon == null) Modifier.padding(
+            horizontal = insideMargin.width,
+            vertical = insideMargin.height
+        )
+        else if (leadingIcon == null) Modifier.padding(start = insideMargin.width).padding(vertical = insideMargin.height)
+        else if (trailingIcon == null) Modifier.padding(end = insideMargin.width).padding(vertical = insideMargin.height)
+        else Modifier.padding(vertical = insideMargin.height)
+    }
+    val isFocused by interactionSource.collectIsFocusedAsState()
+    val borderWidth by animateDpAsState(if (isFocused) 2.dp else 0.dp)
+    val animatedBorderColor by animateColorAsState(if (isFocused) borderColor else backgroundColor)
+    val labelOffsetY by animateDpAsState(if (state.text.isNotEmpty() && !useLabelAsPlaceholder) -(insideMargin.height / 2.2f) else 0.dp)
+    val innerTextOffsetY by animateDpAsState(if (state.text.isNotEmpty() && !useLabelAsPlaceholder) (insideMargin.height / 1.8f) else 0.dp)
+    val borderShape = remember(cornerRadius) { RoundedCornerShape(cornerRadius) }
+    val borderModifier = Modifier.border(borderWidth, animatedBorderColor, borderShape)
+    val labelOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = labelOffsetY) else Modifier
+    val innerTextOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = innerTextOffsetY) else Modifier
+    val labelFontSize by animateDpAsState(
+        if (state.text.isNotEmpty() && !useLabelAsPlaceholder) max(
+            textStyle.fontSize.value.dp - 7.dp,
+            0.dp
+        ) else textStyle.fontSize.value.dp
+    )
+
+    BasicTextField(
+        state = state,
+        modifier = modifier,
+        enabled = enabled,
+        readOnly = readOnly,
+        textStyle = textStyle,
+        cursorBrush = cursorBrush,
+        keyboardOptions = keyboardOptions,
+        onKeyboardAction = onKeyboardAction,
+        lineLimits = lineLimits,
+        onTextLayout = onTextLayout,
+        interactionSource = interactionSource,
+        inputTransformation = inputTransformation,
+        outputTransformation = outputTransformation,
+        scrollState = scrollState,
+        decorator = @Composable { innerTextField ->
+            textFieldDecorationBox(
+                backgroundColor = backgroundColor,
+                cornerRadius = cornerRadius,
+                borderModifier = borderModifier,
+                leadingIcon = leadingIcon,
+                trailingIcon = trailingIcon,
+                paddingModifier = paddingModifier,
+                label = label,
+                labelVisible = if (useLabelAsPlaceholder) state.text.isEmpty() else true,
+                labelFontSize = labelFontSize,
+                labelOffset = labelOffset,
+                labelColor = labelColor,
+                innerTextOffset = innerTextOffset,
+                innerTextField = innerTextField,
+                contentAlignment = Alignment.CenterVertically,
+                labelContentAlignment = Alignment.TopStart
+            )
+        }
+    )
+}
 
 /**
  * A [TextField] component with Miuix style.
@@ -146,60 +271,25 @@ fun TextField(
         onTextLayout = onTextLayout,
         interactionSource = interactionSource,
         cursorBrush = cursorBrush,
-        decorationBox =
-            @Composable { innerTextField ->
-                val backgroundShape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
-                val enterTransition = remember { fadeIn(spring(stiffness = 2500f)) }
-                val exitTransition = remember { fadeOut(spring(stiffness = 5000f)) }
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = backgroundColor,
-                            shape = backgroundShape
-                        )
-                        .then(borderModifier),
-                    contentAlignment = Alignment.CenterStart
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        if (leadingIcon != null) {
-                            leadingIcon()
-                        }
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .then(paddingModifier),
-                            contentAlignment = Alignment.TopStart
-                        ) {
-                            androidx.compose.animation.AnimatedVisibility(
-                                visible = if (useLabelAsPlaceholder) value.text.isEmpty() else true,
-                                enter = enterTransition,
-                                exit = exitTransition
-                            ) {
-                                Text(
-                                    text = label,
-                                    textAlign = TextAlign.Start,
-                                    fontWeight = FontWeight.Medium,
-                                    fontSize = labelFontSize.value.sp,
-                                    modifier = Modifier.then(labelOffset),
-                                    color = labelColor
-                                )
-                            }
-                            Box(
-                                modifier = Modifier.then(innerTextOffset),
-                                contentAlignment = Alignment.CenterStart
-                            ) {
-                                innerTextField()
-                            }
-                        }
-                        if (trailingIcon != null) {
-                            trailingIcon()
-                        }
-                    }
-                }
-            }
+        decorationBox = @Composable { innerTextField ->
+            textFieldDecorationBox(
+                backgroundColor = backgroundColor,
+                cornerRadius = cornerRadius,
+                borderModifier = borderModifier,
+                leadingIcon = leadingIcon,
+                trailingIcon = trailingIcon,
+                paddingModifier = paddingModifier,
+                label = label,
+                labelVisible = if (useLabelAsPlaceholder) value.text.isEmpty() else true,
+                labelFontSize = labelFontSize,
+                labelOffset = labelOffset,
+                labelColor = labelColor,
+                innerTextOffset = innerTextOffset,
+                innerTextField = innerTextField,
+                contentAlignment = Alignment.CenterVertically,
+                labelContentAlignment = Alignment.TopStart
+            )
+        }
     )
 }
 
@@ -296,59 +386,98 @@ fun TextField(
         onTextLayout = onTextLayout,
         interactionSource = interactionSource,
         cursorBrush = cursorBrush,
-        decorationBox =
-            @Composable { innerTextField ->
-                val backgroundShape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
-                val enterTransition = remember { fadeIn(spring(stiffness = 2500f)) }
-                val exitTransition = remember { fadeOut(spring(stiffness = 5000f)) }
+        decorationBox = @Composable { innerTextField ->
+            textFieldDecorationBox(
+                backgroundColor = backgroundColor,
+                cornerRadius = cornerRadius,
+                borderModifier = borderModifier,
+                leadingIcon = leadingIcon,
+                trailingIcon = trailingIcon,
+                paddingModifier = paddingModifier,
+                label = label,
+                labelVisible = if (useLabelAsPlaceholder) value.isEmpty() else true,
+                labelFontSize = labelFontSize,
+                labelOffset = labelOffset,
+                labelColor = labelColor,
+                innerTextOffset = innerTextOffset,
+                innerTextField = innerTextField,
+                contentAlignment = Alignment.CenterVertically,
+                labelContentAlignment = Alignment.TopStart
+            )
+        }
+    )
+}
+
+/**
+ * A Miuix style decoration box for the [TextField] component.
+ */
+@Composable
+private fun textFieldDecorationBox(
+    backgroundColor: Color,
+    cornerRadius: Dp,
+    borderModifier: Modifier,
+    leadingIcon: @Composable (() -> Unit)?,
+    trailingIcon: @Composable (() -> Unit)?,
+    paddingModifier: Modifier,
+    label: String,
+    labelVisible: Boolean,
+    labelFontSize: Dp,
+    labelOffset: Modifier,
+    labelColor: Color,
+    innerTextOffset: Modifier,
+    innerTextField: @Composable () -> Unit,
+    contentAlignment: Alignment.Vertical = Alignment.CenterVertically,
+    labelContentAlignment: Alignment = Alignment.CenterStart
+) {
+    val backgroundShape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
+    val enterTransition = remember { fadeIn(spring(stiffness = 2500f)) }
+    val exitTransition = remember { fadeOut(spring(stiffness = 5000f)) }
+    Box(
+        modifier = Modifier
+            .background(
+                color = backgroundColor,
+                shape = backgroundShape
+            )
+            .then(borderModifier),
+        contentAlignment = Alignment.CenterStart
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = contentAlignment
+        ) {
+            if (leadingIcon != null) {
+                leadingIcon()
+            }
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .then(paddingModifier),
+                contentAlignment = labelContentAlignment
+            ) {
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = labelVisible,
+                    enter = enterTransition,
+                    exit = exitTransition
+                ) {
+                    Text(
+                        text = label,
+                        textAlign = TextAlign.Start,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = labelFontSize.value.sp,
+                        modifier = Modifier.then(labelOffset),
+                        color = labelColor
+                    )
+                }
                 Box(
-                    modifier = Modifier
-                        .background(
-                            color = backgroundColor,
-                            shape = backgroundShape
-                        )
-                        .then(borderModifier),
+                    modifier = Modifier.then(innerTextOffset),
                     contentAlignment = Alignment.CenterStart
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        if (leadingIcon != null) {
-                            leadingIcon()
-                        }
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .then(paddingModifier),
-                            contentAlignment = Alignment.CenterStart
-                        ) {
-                            androidx.compose.animation.AnimatedVisibility(
-                                visible = if (useLabelAsPlaceholder) value.isEmpty() else true,
-                                enter = enterTransition,
-                                exit = exitTransition
-                            ) {
-                                Text(
-                                    text = label,
-                                    textAlign = TextAlign.Start,
-                                    fontWeight = FontWeight.Medium,
-                                    fontSize = labelFontSize.value.sp,
-                                    modifier = Modifier.then(labelOffset),
-                                    color = labelColor
-                                )
-                            }
-                            Box(
-                                modifier = Modifier.then(innerTextOffset),
-                                contentAlignment = Alignment.CenterStart
-                            ) {
-                                innerTextField()
-                            }
-                        }
-                        if (trailingIcon != null) {
-                            trailingIcon()
-                        }
-                    }
+                    innerTextField()
                 }
             }
-    )
+            if (trailingIcon != null) {
+                trailingIcon()
+            }
+        }
+    }
 }

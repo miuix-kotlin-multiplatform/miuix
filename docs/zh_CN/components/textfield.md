@@ -26,6 +26,10 @@ TextField(
 )
 ```
 
+::: info 信息
+此 TextFiled 组件现在也支持最新基于状态的版本，具体请参考 [State-based](https://developer.android.com/develop/ui/compose/text/user-input?textfield=state-based&hl=zh-cn) 文档。
+:::
+
 ## 输入框类型
 
 ### 带标签输入框
