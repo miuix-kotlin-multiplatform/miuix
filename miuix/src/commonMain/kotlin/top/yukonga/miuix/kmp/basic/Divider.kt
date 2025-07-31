@@ -28,23 +28,16 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 fun HorizontalDivider(
     modifier: Modifier = Modifier,
     thickness: Dp = DividerDefaults.Thickness,
-    color: Color = DividerDefaults.DividerColor
-) {
-    Canvas(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(thickness)
-    ) {
-        val strokeWidthPx = thickness.toPx()
-        if (strokeWidthPx <= 0f) return@Canvas
+    color: Color = DividerDefaults.DividerColor,
+) =
+    Canvas(modifier.fillMaxWidth().height(thickness)) {
         drawLine(
             color = color,
-            strokeWidth = strokeWidthPx,
-            start = Offset(0f, strokeWidthPx / 2),
-            end = Offset(size.width, strokeWidthPx / 2),
+            strokeWidth = thickness.toPx(),
+            start = Offset(0f, thickness.toPx() / 2),
+            end = Offset(size.width, thickness.toPx() / 2),
         )
     }
-}
 
 /**
  * A divider is a thin line that groups content in lists and layouts.
@@ -59,22 +52,15 @@ fun VerticalDivider(
     modifier: Modifier = Modifier,
     thickness: Dp = DividerDefaults.Thickness,
     color: Color = DividerDefaults.DividerColor
-) {
-    Canvas(
-        modifier = modifier
-            .fillMaxHeight()
-            .width(thickness)
-    ) {
-        val strokeWidthPx = thickness.toPx()
-        if (strokeWidthPx <= 0f) return@Canvas
+) =
+    Canvas(modifier.fillMaxHeight().width(thickness)) {
         drawLine(
             color = color,
-            strokeWidth = strokeWidthPx,
-            start = Offset(strokeWidthPx / 2, 0f),
-            end = Offset(strokeWidthPx / 2, size.height),
+            strokeWidth = thickness.toPx(),
+            start = Offset(thickness.toPx() / 2, 0f),
+            end = Offset(thickness.toPx() / 2, size.height),
         )
     }
-}
 
 object DividerDefaults {
 
