@@ -47,10 +47,11 @@ Surface(
 
 ### Additional Properties for Clickable Surface
 
-| Property Name | Type       | Description                      | Default Value | Required |
-| ------------- | ---------- | -------------------------------- | ------------- | -------- |
-| onClick       | () -> Unit | Callback triggered on click      | -             | Yes      |
-| enabled       | Boolean    | Whether the Surface is clickable | true          | No       |
+| Property Name     | Type                      | Description                          | Default Value | Required |
+| ----------------- | ------------------------- | ------------------------------------ | ------------- | -------- |
+| onClick           | () -> Unit                | Callback triggered on click          | -             | Yes      |
+| enabled           | Boolean                   | Whether the component is clickable   | true          | No       |
+| interactionSource | MutableInteractionSource? | Interaction source for the component | null          | No       |
 
 ## Advanced Usage
 
