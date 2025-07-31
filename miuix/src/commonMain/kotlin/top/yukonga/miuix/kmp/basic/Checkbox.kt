@@ -12,14 +12,14 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.LocalIndication
-import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
@@ -32,6 +32,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -68,39 +69,78 @@ fun Checkbox(
     val currentOnCheckedChange by rememberUpdatedState(onCheckedChange)
 
     val hapticFeedback = LocalHapticFeedback.current
+
     val interactionSource = remember { MutableInteractionSource() }
-
-    val isInteracted = interactionSource.let { source ->
-        val isPressed by source.collectIsPressedAsState()
-        val isDragged by source.collectIsDraggedAsState()
-        val isHovered by source.collectIsHoveredAsState()
-        isPressed || isDragged || isHovered
-    }
-
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val isDragged by interactionSource.collectIsDraggedAsState()
+    val isHovered by interactionSource.collectIsHoveredAsState()
 
     val springSpec = spring<Float>(
         dampingRatio = Spring.DampingRatioLowBouncy,
-        stiffness = if (isChecked) Spring.StiffnessHigh else Spring.StiffnessMedium
+        stiffness = Spring.StiffnessMedium
     )
 
-    val scale by animateFloatAsState(
-        targetValue = when {
-            isInteracted || isChecked -> 0.95f
-            else -> 1f
-        },
+    val size by animateFloatAsState(
+        targetValue = if (!enabled) 1f else if (isPressed || isDragged || isHovered) 0.95f else 1f,
         animationSpec = springSpec
     )
 
     val backgroundColor by animateColorAsState(
-        targetValue = if (checked) colors.checkedBackgroundColor(enabled) else colors.uncheckedBackgroundColor(enabled),
+        targetValue = if (isChecked) colors.checkedBackgroundColor(enabled) else colors.uncheckedBackgroundColor(enabled),
         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
     )
 
     val foregroundColor by animateColorAsState(
-        targetValue = if (checked) colors.checkedForegroundColor(enabled) else colors.uncheckedForegroundColor(enabled),
+        targetValue = if (isChecked) colors.checkedForegroundColor(enabled) else colors.uncheckedForegroundColor(enabled),
         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
     )
 
+    val checkmarkAnim = rememberCheckmarkAnimationState(isChecked)
+
+    val finalModifier = if (onCheckedChange != null) {
+        Modifier.toggleable(
+            value = isChecked,
+            onValueChange = {
+                if (currentOnCheckedChange == null) return@toggleable
+                currentOnCheckedChange?.invoke(!isChecked)
+                hapticFeedback.performHapticFeedback(
+                    if (isChecked) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff
+                )
+            },
+            enabled = enabled,
+            role = Role.Checkbox,
+            indication = null,
+            interactionSource = null
+        )
+    } else {
+        modifier
+    }
+
+    Box(
+        modifier = modifier
+            .wrapContentSize(Alignment.Center)
+            .requiredSize(25.5.dp)
+            .scale(size)
+            .clip(CircleShape)
+            .drawBehind {
+                drawCircle(backgroundColor)
+            }
+            .then(finalModifier),
+        contentAlignment = Alignment.Center
+    ) {
+        Canvas(modifier = Modifier.size(25.5.dp)) {
+            drawTrimmedCheckmark(
+                color = foregroundColor,
+                alpha = checkmarkAnim.alpha.value,
+                trimStart = checkmarkAnim.startTrim.value,
+                trimEnd = checkmarkAnim.endTrim.value
+            )
+        }
+    }
+}
+
+@Composable
+private fun rememberCheckmarkAnimationState(checked: Boolean): CheckmarkAnimationState {
     val checkAlpha = remember { Animatable(if (checked) 1f else 0f) }
     val checkStartTrim = remember { Animatable(0.0f) }
     val checkEndTrim = remember { Animatable(if (checked) 0.803f else 0.1f) }
@@ -165,42 +205,16 @@ fun Checkbox(
             }
         }
     }
-
-    Box(
-        modifier = modifier
-            .size(25.5.dp)
-            .scale(scale)
-            .clip(CircleShape)
-            .background(backgroundColor)
-            .then(
-                if (currentOnCheckedChange != null) {
-                    Modifier.toggleable(
-                        value = checked,
-                        onValueChange = {
-                            currentOnCheckedChange?.invoke(it)
-                            hapticFeedback.performHapticFeedback(
-                                if (it) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff
-                            )
-                        },
-                        enabled = enabled,
-                        role = Role.Checkbox,
-                        interactionSource = interactionSource,
-                        indication = LocalIndication.current
-                    )
-                } else Modifier
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Canvas(modifier = Modifier.size(25.5.dp)) {
-            drawTrimmedCheckmark(
-                color = foregroundColor,
-                alpha = checkAlpha.value,
-                trimStart = checkStartTrim.value,
-                trimEnd = checkEndTrim.value
-            )
-        }
+    return remember(checkAlpha, checkStartTrim, checkEndTrim) {
+        CheckmarkAnimationState(checkAlpha, checkStartTrim, checkEndTrim)
     }
 }
+
+private class CheckmarkAnimationState(
+    val alpha: Animatable<Float, *>,
+    val startTrim: Animatable<Float, *>,
+    val endTrim: Animatable<Float, *>
+)
 
 private fun DrawScope.drawTrimmedCheckmark(
     color: Color,
@@ -278,7 +292,8 @@ private fun DrawScope.drawTrimmedCheckmark(
 
     drawPath(
         path = path,
-        color = color.copy(alpha = alpha),
+        color = color,
+        alpha = alpha,
         style = Stroke(
             width = strokeWidth,
             cap = StrokeCap.Round,

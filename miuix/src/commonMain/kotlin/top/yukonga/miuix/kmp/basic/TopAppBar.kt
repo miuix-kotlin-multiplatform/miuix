@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.captionBar
 import androidx.compose.foundation.layout.displayCutout
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
@@ -45,6 +44,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -570,18 +570,21 @@ private fun TopAppBarLayout(
         }
     }
 
+    // Large Title Alpha Animation
+    val largeTitleAlpha by remember(scrolledOffset, expandedHeightPx) {
+        derivedStateOf {
+            1f - (abs(scrolledOffset.offset()) / expandedHeightPx * 2).coerceIn(0f, 1f)
+        }
+    }
+
     val alpha by animateFloatAsState(
         targetValue = if (1 - extOffset.coerceIn(0f, 1f) == 0f) 1f else 0f,
         animationSpec = tween(durationMillis = 250)
     )
     val translationY by animateFloatAsState(
-        targetValue = if (extOffset > 1f) 0f else 10f,
+        targetValue = if (extOffset > 1f) 0f else 12f,
         animationSpec = tween(durationMillis = 250)
     )
-
-    val largeTitleGraphicsAlpha = remember(scrolledOffset.offset(), expandedHeightPx) {
-        1f - (abs(scrolledOffset.offset()) / expandedHeightPx * 2).coerceIn(0f, 1f)
-    }
 
     val statusBarsInsets = WindowInsets.statusBars
     val captionBarInsets = WindowInsets.captionBar
@@ -607,7 +610,6 @@ private fun TopAppBarLayout(
             ) {
                 Text(
                     text = title,
-                    maxLines = 1,
                     fontSize = MiuixTheme.textStyles.title3.fontSize,
                     fontWeight = FontWeight.Medium,
                     overflow = TextOverflow.Ellipsis,
@@ -623,25 +625,19 @@ private fun TopAppBarLayout(
             Box(
                 Modifier
                     .layoutId("largeTitle")
-                    .fillMaxWidth()
+                    .padding(top = 56.dp)
+                    .padding(horizontal = horizontalPadding)
+                    .alpha(largeTitleAlpha)
             ) {
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(top = 56.dp)
-                        .padding(horizontal = horizontalPadding)
-                        .graphicsLayer(alpha = largeTitleGraphicsAlpha)
-                ) {
-                    Text(
-                        modifier = Modifier.offset { IntOffset(0, heightOffset) },
-                        text = largeTitle,
-                        fontSize = MiuixTheme.textStyles.title1.fontSize,
-                        fontWeight = FontWeight.Normal,
-                        onTextLayout = {
-                            largeTitleHeight.value = it.size.height
-                        },
-                    )
-                }
+                Text(
+                    modifier = Modifier.offset { IntOffset(0, heightOffset) },
+                    text = largeTitle,
+                    fontSize = MiuixTheme.textStyles.title1.fontSize,
+                    fontWeight = FontWeight.Normal,
+                    onTextLayout = {
+                        largeTitleHeight.value = it.size.height
+                    },
+                )
             }
         },
         modifier = modifier

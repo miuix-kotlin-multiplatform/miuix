@@ -29,8 +29,9 @@ import top.yukonga.miuix.kmp.basic.CheckboxDefaults
  * @param checkboxColors The [CheckboxColors] of the [SuperCheckbox].
  * @param rightActions The [Composable] content that on the right side of the [SuperCheckbox].
  * @param checkboxLocation The location of checkbox, [CheckboxLocation.Left] or [CheckboxLocation.Right].
- * @param onClick Optional callback when the component is clicked before checkbox is toggled.
  * @param insideMargin The margin inside the [SuperCheckbox].
+ * @param onClick Optional callback when the component is clicked before checkbox is toggled.
+ * @param holdDownState Used to determine whether it is in the pressed state.
  * @param enabled Whether the [SuperCheckbox] is clickable.
  */
 @Composable
@@ -45,14 +46,20 @@ fun SuperCheckbox(
     checkboxColors: CheckboxColors = CheckboxDefaults.checkboxColors(),
     rightActions: @Composable RowScope.() -> Unit = {},
     checkboxLocation: CheckboxLocation = CheckboxLocation.Left,
-    onClick: (() -> Unit)? = null,
     insideMargin: PaddingValues = BasicComponentDefaults.InsideMargin,
+    onClick: (() -> Unit)? = null,
+    holdDownState: Boolean = false,
     enabled: Boolean = true
 ) {
-    val handleClick: (() -> Unit)? = if (enabled && onCheckedChange != null) {
-        {
-            onClick?.invoke()
-            onCheckedChange.invoke(!checked)
+    val leftActionComposable = if (checkboxLocation == CheckboxLocation.Left) {
+        @Composable {
+            SuperCheckboxLeftAction(
+                checked = checked,
+                onCheckedChange = onCheckedChange,
+                enabled = enabled,
+                checkboxColors = checkboxColors,
+                insideMargin = insideMargin
+            )
         }
     } else null
 
@@ -63,17 +70,7 @@ fun SuperCheckbox(
         titleColor = titleColor,
         summary = summary,
         summaryColor = summaryColor,
-        leftAction = if (checkboxLocation == CheckboxLocation.Left) {
-            {
-                SuperCheckboxLeftAction(
-                    checked = checked,
-                    onCheckedChange = onCheckedChange,
-                    enabled = enabled,
-                    checkboxColors = checkboxColors,
-                    insideMargin = insideMargin
-                )
-            }
-        } else null,
+        leftAction = leftActionComposable,
         rightActions = {
             SuperCheckboxRightActions(
                 rightActions = rightActions,
@@ -84,7 +81,13 @@ fun SuperCheckbox(
                 checkboxColors = checkboxColors
             )
         },
-        onClick = handleClick,
+        onClick = {
+            if (enabled) {
+                onClick?.invoke()
+                onCheckedChange?.invoke(!checked)
+            }
+        },
+        holdDownState = holdDownState,
         enabled = enabled
     )
 }

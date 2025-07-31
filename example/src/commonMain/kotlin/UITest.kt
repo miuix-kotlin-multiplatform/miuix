@@ -45,11 +45,6 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.hazeEffect
-import dev.chrisbanes.haze.hazeSource
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.FabPosition
 import top.yukonga.miuix.kmp.basic.FloatingActionButton
@@ -123,12 +118,6 @@ fun UITest(
     var uiState by remember { mutableStateOf(UIState()) }
     val showTopPopup = remember { mutableStateOf(false) }
 
-    val hazeState = remember { HazeState() }
-    val hazeStyle = HazeStyle(
-        backgroundColor = MiuixTheme.colorScheme.background,
-        tint = HazeTint(MiuixTheme.colorScheme.background.copy(0.67f))
-    )
-
     val uriHandler = LocalUriHandler.current
 
     Scaffold(
@@ -165,13 +154,6 @@ fun UITest(
                     exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top)
                 ) {
                     NavigationBar(
-                        modifier = Modifier
-                            .hazeEffect(hazeState) {
-                                style = hazeStyle
-                                blurRadius = 25.dp
-                                noiseFactor = 0f
-                            },
-                        color = Color.Transparent,
                         items = navigationItem,
                         selected = selectedPage,
                         onClick = { index ->
@@ -188,13 +170,6 @@ fun UITest(
                     exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top)
                 ) {
                     FloatingNavigationBar(
-                        modifier = Modifier
-                            .hazeEffect(hazeState) {
-                                style = hazeStyle
-                                blurRadius = 25.dp
-                                noiseFactor = 0f
-                            },
-                        color = Color.Transparent,
                         items = navigationItem,
                         selected = selectedPage,
                         mode = when (uiState.floatingNavigationBarMode) {
@@ -244,17 +219,7 @@ fun UITest(
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
-                val floatingToolbarBgColor = MiuixTheme.colorScheme.primary
                 FloatingToolbar(
-                    modifier = Modifier
-                        .hazeEffect(hazeState) {
-                            style = HazeStyle(
-                                backgroundColor = floatingToolbarBgColor,
-                                tint = HazeTint(floatingToolbarBgColor.copy(0.67f))
-                            )
-                            blurRadius = 25.dp
-                            noiseFactor = 0f
-                        },
                     color = Color.Transparent,
                     cornerRadius = 20.dp
                 ) {
@@ -314,7 +279,6 @@ fun UITest(
         AppHorizontalPager(
             modifier = Modifier
                 .imePadding()
-                .hazeSource(state = hazeState)
                 .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
                 .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)),
             pagerState = pagerState,

@@ -87,20 +87,20 @@ BasicComponent(
 
 ### BasicComponent Properties
 
-| Property Name     | Type                            | Description                                           | Default Value                            | Required |
-| ----------------- | ------------------------------- | ----------------------------------------------------- | ---------------------------------------- | -------- |
-| title             | String?                         | Title of the component                                | null                                     | No       |
-| titleColor        | BasicComponentColors            | Title color configuration                             | BasicComponentDefaults.titleColor()      | No       |
-| summary           | String?                         | Summary of the component                              | null                                     | No       |
-| summaryColor      | BasicComponentColors            | Summary color configuration                           | BasicComponentDefaults.summaryColor()    | No       |
-| leftAction        | @Composable (() -> Unit?)?      | Composable content on the left side of the component  | null                                     | No       |
-| rightActions      | @Composable RowScope.() -> Unit | Composable content on the right side of the component | {}                                       | No       |
-| modifier          | Modifier                        | Modifier for the component                            | Modifier                                 | No       |
-| insideMargin      | PaddingValues                   | Internal padding of the component                     | BasicComponentDefaults.InsideMargin      | No       |
-| onClick           | (() -> Unit)?                   | Callback triggered when the component is clicked      | null                                     | No       |
-| holdDownState     | Boolean                         | Whether the component is in the pressed state         | false                                    | No       |
-| enabled           | Boolean                         | Whether the component is enabled                      | true                                     | No       |
-| interactionSource | MutableInteractionSource        | Interaction source of the component                   | remember \{ MutableInteractionSource() } | No       |
+| Property Name     | Type                            | Description                                           | Default Value                         | Required |
+| ----------------- |---------------------------------| ----------------------------------------------------- |---------------------------------------| -------- |
+| title             | String?                         | Title of the component                                | null                                  | No       |
+| titleColor        | BasicComponentColors            | Title color configuration                             | BasicComponentDefaults.titleColor()   | No       |
+| summary           | String?                         | Summary of the component                              | null                                  | No       |
+| summaryColor      | BasicComponentColors            | Summary color configuration                           | BasicComponentDefaults.summaryColor() | No       |
+| leftAction        | @Composable (() -> Unit?)?      | Composable content on the left side of the component  | null                                  | No       |
+| rightActions      | @Composable RowScope.() -> Unit | Composable content on the right side of the component | {}                                    | No       |
+| modifier          | Modifier                        | Modifier for the component                            | Modifier                              | No       |
+| insideMargin      | PaddingValues                   | Internal padding of the component                     | BasicComponentDefaults.InsideMargin   | No       |
+| onClick           | (() -> Unit)?                   | Callback triggered when the component is clicked      | null                                  | No       |
+| holdDownState     | Boolean                         | Whether the component is in the pressed state         | false                                 | No       |
+| enabled           | Boolean                         | Whether the component is enabled                      | true                                  | No       |
+| interactionSource | MutableInteractionSource?       | Interaction source of the component                   | null                                  | No       |
 
 ### BasicComponentDefaults Object
 

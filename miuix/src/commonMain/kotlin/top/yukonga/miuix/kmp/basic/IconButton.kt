@@ -75,7 +75,7 @@ fun IconButton(
         modifier = modifier
             .defaultMinSize(minWidth = minWidth, minHeight = minHeight)
             .clip(shape)
-            .background(color = backgroundColor)
+            .background(backgroundColor)
             .clickable(
                 enabled = enabled,
                 role = Role.Button,

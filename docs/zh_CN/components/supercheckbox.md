@@ -90,8 +90,8 @@ SuperCheckbox(
 
 ### SuperCheckbox 属性
 
-| 属性名           | 类型                            | 说明                       | 默认值                                | 是否必须 |
-| ---------------- | ------------------------------- | -------------------------- | ------------------------------------- | -------- |
+| 属性名              | 类型                            | 说明                       | 默认值                                | 是否必须 |
+|------------------| ------------------------------- | -------------------------- | ------------------------------------- | -------- |
 | title            | String                          | 复选框项的标题             | -                                     | 是       |
 | checked          | Boolean                         | 复选框的选中状态           | -                                     | 是       |
 | onCheckedChange  | ((Boolean) -> Unit)?            | 复选框状态变化时的回调     | -                                     | 是       |
@@ -103,6 +103,7 @@ SuperCheckbox(
 | rightActions     | @Composable RowScope.() -> Unit | 右侧自定义内容（复选框前） | {}                                    | 否       |
 | checkboxLocation | CheckboxLocation                | 复选框的位置               | CheckboxLocation.Left                 | 否       |
 | onClick          | (() -> Unit)?                   | 点击选项时触发的额外回调   | null                                  | 否       |
+| holdDownState    | Boolean                         | 组件是否处于按下状态       | false                                 | 否       |
 | insideMargin     | PaddingValues                   | 组件内部内容的边距         | BasicComponentDefaults.InsideMargin   | 否       |
 | enabled          | Boolean                         | 组件是否可交互             | true                                  | 否       |
 

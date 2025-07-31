@@ -49,13 +49,6 @@ fun SuperSwitch(
     holdDownState: Boolean = false,
     enabled: Boolean = true
 ) {
-    val handleClick: (() -> Unit)? = if (enabled && onCheckedChange != null) {
-        {
-            onClick?.invoke()
-            onCheckedChange.invoke(!checked)
-        }
-    } else null
-
     BasicComponent(
         modifier = modifier,
         insideMargin = insideMargin,
@@ -73,8 +66,12 @@ fun SuperSwitch(
                 switchColors = switchColors
             )
         },
-        onClick = handleClick,
-        holdDownState = holdDownState,
+        onClick = {
+            if (enabled) {
+                onClick?.invoke()
+                onCheckedChange?.invoke(!checked)
+            }
+        },
         enabled = enabled
     )
 }

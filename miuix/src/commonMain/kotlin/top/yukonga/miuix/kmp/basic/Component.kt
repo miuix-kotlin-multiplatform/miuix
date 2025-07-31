@@ -59,11 +59,14 @@ fun BasicComponent(
     onClick: (() -> Unit)? = null,
     holdDownState: Boolean = false,
     enabled: Boolean = true,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
+    interactionSource: MutableInteractionSource? = null,
 ) {
-    val holdDown = remember { mutableStateOf<HoldDownInteraction.HoldDown?>(null) }
+    @Suppress("NAME_SHADOWING")
+    val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
+
     val currentOnClick by rememberUpdatedState(onClick)
 
+    val holdDown = remember { mutableStateOf<HoldDownInteraction.HoldDown?>(null) }
     LaunchedEffect(holdDownState) {
         if (holdDownState) {
             val interaction = HoldDownInteraction.HoldDown()

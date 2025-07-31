@@ -8,7 +8,6 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.awaitVerticalTouchSlopOrCancellation
@@ -27,7 +26,6 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
@@ -117,7 +115,9 @@ fun Switch(
             .size(50.dp, 28.5.dp)
             .requiredSize(50.dp, 28.5.dp)
             .clip(trackClipShape)
-            .drawBehind { drawRect(backgroundColor) }
+            .drawBehind {
+                drawRect(backgroundColor)
+            }
             .hoverable(
                 interactionSource = interactionSource,
                 enabled = enabled
@@ -155,9 +155,9 @@ fun Switch(
                 value = isChecked,
                 onValueChange = {
                     if (currentOnCheckedChange == null) return@toggleable
-                    currentOnCheckedChange?.invoke(it)
+                    currentOnCheckedChange?.invoke(!isChecked)
                     hapticFeedback.performHapticFeedback(
-                        if (it) HapticFeedbackType.ToggleOn
+                        if (isChecked) HapticFeedbackType.ToggleOn
                         else HapticFeedbackType.ToggleOff
                     )
                 },
@@ -172,10 +172,9 @@ fun Switch(
                 .padding(start = thumbOffset)
                 .align(Alignment.CenterStart)
                 .size(thumbSize)
-                .background(
-                    color = thumbColor,
-                    shape = CircleShape
-                )
+                .drawBehind {
+                    drawCircle(color = thumbColor)
+                }
                 .pointerInput(Unit) {
                     if (!enabled) return@pointerInput
                     awaitEachGesture {

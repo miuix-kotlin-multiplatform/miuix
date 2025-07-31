@@ -96,11 +96,10 @@ private fun SuperArrowRightActions(
             maxLines = 2
         )
     }
-
     Image(
         modifier = Modifier
             .padding(start = 8.dp)
-            .size(10.dp, 16.dp),
+            .size(width = 10.dp, height = 16.dp),
         imageVector = MiuixIcons.Basic.ArrowRight,
         contentDescription = null,
         colorFilter = ColorFilter.tint(currentRightActionColor),

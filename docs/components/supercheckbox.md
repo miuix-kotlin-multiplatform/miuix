@@ -90,21 +90,22 @@ SuperCheckbox(
 
 ### SuperCheckbox Properties
 
-| Property Name    | Type                            | Description                          | Default Value                         | Required |
-| ---------------- | ------------------------------- | ------------------------------------ | ------------------------------------- | -------- |
-| title            | String                          | Title of the checkbox item           | -                                     | Yes      |
-| checked          | Boolean                         | Checkbox checked state               | -                                     | Yes      |
-| onCheckedChange  | ((Boolean) -> Unit)?            | Callback when checkbox state changes | -                                     | Yes      |
-| modifier         | Modifier                        | Modifier applied to component        | Modifier                              | No       |
-| titleColor       | BasicComponentColors            | Title text color configuration       | BasicComponentDefaults.titleColor()   | No       |
-| summary          | String?                         | Summary description                  | null                                  | No       |
-| summaryColor     | BasicComponentColors            | Summary text color configuration     | BasicComponentDefaults.summaryColor() | No       |
-| checkboxColors   | CheckboxColors                  | Checkbox control color configuration | CheckboxDefaults.checkboxColors()     | No       |
-| rightActions     | @Composable RowScope.() -> Unit | Custom content before checkbox       | {}                                    | No       |
-| checkboxLocation | CheckboxLocation                | Checkbox position                    | CheckboxLocation.Left                 | No       |
-| onClick          | (() -> Unit)?                   | Additional callback on item click    | null                                  | No       |
-| insideMargin     | PaddingValues                   | Internal content padding             | BasicComponentDefaults.InsideMargin   | No       |
-| enabled          | Boolean                         | Whether component is interactive     | true                                  | No       |
+| Property Name     | Type                            | Description                          | Default Value                         | Required |
+|-------------------| ------------------------------- | ------------------------------------ | ------------------------------------- | -------- |
+| title             | String                          | Title of the checkbox item           | -                                     | Yes      |
+| checked           | Boolean                         | Checkbox checked state               | -                                     | Yes      |
+| onCheckedChange   | ((Boolean) -> Unit)?            | Callback when checkbox state changes | -                                     | Yes      |
+| modifier          | Modifier                        | Modifier applied to component        | Modifier                              | No       |
+| titleColor        | BasicComponentColors            | Title text color configuration       | BasicComponentDefaults.titleColor()   | No       |
+| summary           | String?                         | Summary description                  | null                                  | No       |
+| summaryColor      | BasicComponentColors            | Summary text color configuration     | BasicComponentDefaults.summaryColor() | No       |
+| checkboxColors    | CheckboxColors                  | Checkbox control color configuration | CheckboxDefaults.checkboxColors()     | No       |
+| rightActions      | @Composable RowScope.() -> Unit | Custom content before checkbox       | {}                                    | No       |
+| checkboxLocation  | CheckboxLocation                | Checkbox position                    | CheckboxLocation.Left                 | No       |
+| onClick           | (() -> Unit)?                   | Additional callback on item click    | null                                  | No       |
+| holdDownState     | Boolean                         | Whether the component is held down   | false                                 | No       |
+| insideMargin      | PaddingValues                   | Internal content padding             | BasicComponentDefaults.InsideMargin   | No       |
+| enabled           | Boolean                         | Whether component is interactive     | true                                  | No       |
 
 ## Advanced Usage
 
