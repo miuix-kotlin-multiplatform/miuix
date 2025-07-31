@@ -67,7 +67,7 @@ TabRowWithContour(
 | colors           | TabRowColors     | Color configuration           | TabRowDefaults.tabRowColors()                | No       |
 | minWidth         | Dp               | Minimum width of each tab     | TabRowDefaults.TabRowWithContourMinWidth     | No       |
 | maxWidth         | Dp               | Maximum width of each tab     | TabRowDefaults.TabRowWithContourMaxWidth     | No       |
-| height           | Dp               | Height of the tab row         | TabRowDefaults.TabRowHeight                  | No       |
+| height           | Dp               | Height of the tab row         | TabRowDefaults.TabRowWithContourHeight       | No       |
 | cornerRadius     | Dp               | Corner radius of tabs         | TabRowDefaults.TabRowWithContourCornerRadius | No       |
 | onTabSelected    | ((Int) -> Unit)? | Callback when tab is selected | null                                         | No       |
 
@@ -77,15 +77,16 @@ The TabRowDefaults object provides default configurations for the TabRow compone
 
 #### Constants
 
-| Constant Name                 | Type | Value | Description                              |
-| ----------------------------- | ---- | ----- | ---------------------------------------- |
-| TabRowHeight                  | Dp   | 42.dp | Default height of tab row                |
-| TabRowCornerRadius            | Dp   | 8.dp  | Default corner radius for standard style |
-| TabRowWithContourCornerRadius | Dp   | 10.dp | Default corner radius for contour style  |
-| TabRowMinWidth                | Dp   | 76.dp | Min width of tabs for standard style     |
-| TabRowWithContourMinWidth     | Dp   | 62.dp | Min width of tabs for contour style      |
-| TabRowMaxWidth                | Dp   | 98.dp | Max width of tabs for standard style     |
-| TabRowWithContourMaxWidth     | Dp   | 84.dp | Max width of tabs for contour style      |
+| Constant Name                 | Type | Value | Description                                  |
+| ----------------------------- | ---- | ----- | -------------------------------------------- |
+| TabRowHeight                  | Dp   | 54.dp | Default height of tab row for standard style |
+| TabRowWithContourHeight       | Dp   | 45.dp | Default height of tab row for contour style  |
+| TabRowCornerRadius            | Dp   | 8.dp  | Default corner radius for standard style     |
+| TabRowWithContourCornerRadius | Dp   | 10.dp | Default corner radius for contour style      |
+| TabRowMinWidth                | Dp   | 76.dp | Min width of tabs for standard style         |
+| TabRowWithContourMinWidth     | Dp   | 62.dp | Min width of tabs for contour style          |
+| TabRowMaxWidth                | Dp   | 98.dp | Max width of tabs for standard style         |
+| TabRowWithContourMaxWidth     | Dp   | 84.dp | Max width of tabs for contour style          |
 
 #### Methods
 

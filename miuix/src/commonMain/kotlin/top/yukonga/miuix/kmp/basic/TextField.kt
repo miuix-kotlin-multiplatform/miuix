@@ -5,9 +5,6 @@ package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,7 +28,6 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -47,10 +43,8 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 /**
  * A [TextField] component with Miuix style.
@@ -101,36 +95,44 @@ fun TextField(
     trailingIcon: @Composable (() -> Unit)? = null,
     onTextLayout: (Density.(getResult: () -> TextLayoutResult?) -> Unit)? = null,
     interactionSource: MutableInteractionSource? = null,
-    cursorBrush: Brush = SolidColor(MiuixTheme.colorScheme.primary),
+    cursorBrush: Brush = SolidColor(borderColor),
     outputTransformation: OutputTransformation? = null,
     scrollState: ScrollState = rememberScrollState(),
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
-    val paddingModifier = remember(insideMargin, leadingIcon, trailingIcon) {
-        if (leadingIcon == null && trailingIcon == null) Modifier.padding(
-            horizontal = insideMargin.width,
-            vertical = insideMargin.height
-        )
-        else if (leadingIcon == null) Modifier.padding(start = insideMargin.width).padding(vertical = insideMargin.height)
-        else if (trailingIcon == null) Modifier.padding(end = insideMargin.width).padding(vertical = insideMargin.height)
-        else Modifier.padding(vertical = insideMargin.height)
-    }
     val isFocused by interactionSource.collectIsFocusedAsState()
     val borderWidth by animateDpAsState(if (isFocused) 2.dp else 0.dp)
     val animatedBorderColor by animateColorAsState(if (isFocused) borderColor else backgroundColor)
-    val labelOffsetY by animateDpAsState(if (state.text.isNotEmpty() && !useLabelAsPlaceholder) -(insideMargin.height / 2.2f) else 0.dp)
-    val innerTextOffsetY by animateDpAsState(if (state.text.isNotEmpty() && !useLabelAsPlaceholder) (insideMargin.height / 1.8f) else 0.dp)
     val borderShape = remember(cornerRadius) { RoundedCornerShape(cornerRadius) }
-    val borderModifier = Modifier.border(borderWidth, animatedBorderColor, borderShape)
-    val labelOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = labelOffsetY) else Modifier
-    val innerTextOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = innerTextOffsetY) else Modifier
-    val labelFontSize by animateDpAsState(
-        if (state.text.isNotEmpty() && !useLabelAsPlaceholder) max(
-            textStyle.fontSize.value.dp - 7.dp,
-            0.dp
-        ) else textStyle.fontSize.value.dp
+    val finalModifier = Modifier.background(backgroundColor, borderShape).border(borderWidth, animatedBorderColor, borderShape)
+
+    val labelState = when {
+        label.isEmpty() -> LabelAnimState.Hidden
+        useLabelAsPlaceholder && state.text.isNotEmpty() -> LabelAnimState.Placeholder
+        state.text.isNotEmpty() -> LabelAnimState.Floating
+        else -> LabelAnimState.Normal
+    }
+    val labelAnim by animateDpAsState(
+        when (labelState) {
+            LabelAnimState.Floating -> -insideMargin.height / 2
+            LabelAnimState.Placeholder, LabelAnimState.Normal -> 0.dp
+            LabelAnimState.Hidden -> 0.dp
+        }
     )
+    val labelFontSize by animateDpAsState(
+        when (labelState) {
+            LabelAnimState.Floating -> 10.dp
+            else -> 17.dp
+        }
+    )
+    val paddingModifier = when {
+        leadingIcon == null && trailingIcon == null -> Modifier.padding(insideMargin.width, vertical = insideMargin.height)
+        leadingIcon == null -> Modifier.padding(start = insideMargin.width).padding(vertical = insideMargin.height)
+        trailingIcon == null -> Modifier.padding(end = insideMargin.width).padding(vertical = insideMargin.height)
+        else -> Modifier.padding(vertical = insideMargin.height)
+    }
+
 
     BasicTextField(
         state = state,
@@ -149,21 +151,17 @@ fun TextField(
         scrollState = scrollState,
         decorator = @Composable { innerTextField ->
             textFieldDecorationBox(
-                backgroundColor = backgroundColor,
-                cornerRadius = cornerRadius,
-                borderModifier = borderModifier,
+                finalModifier = finalModifier,
                 leadingIcon = leadingIcon,
                 trailingIcon = trailingIcon,
                 paddingModifier = paddingModifier,
                 label = label,
-                labelVisible = if (useLabelAsPlaceholder) state.text.isEmpty() else true,
                 labelFontSize = labelFontSize,
-                labelOffset = labelOffset,
                 labelColor = labelColor,
-                innerTextOffset = innerTextOffset,
-                innerTextField = innerTextField,
-                contentAlignment = Alignment.CenterVertically,
-                labelContentAlignment = Alignment.TopStart
+                labelState = labelState,
+                labelAnim = labelAnim,
+                insideMargin = insideMargin,
+                innerTextField = innerTextField
             )
         }
     )
@@ -228,36 +226,42 @@ fun TextField(
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
-    val currentOnValueChange by rememberUpdatedState(onValueChange)
-
-    val paddingModifier = remember(insideMargin, leadingIcon, trailingIcon) {
-        if (leadingIcon == null && trailingIcon == null) Modifier.padding(
-            horizontal = insideMargin.width,
-            vertical = insideMargin.height
-        )
-        else if (leadingIcon == null) Modifier.padding(start = insideMargin.width).padding(vertical = insideMargin.height)
-        else if (trailingIcon == null) Modifier.padding(end = insideMargin.width).padding(vertical = insideMargin.height)
-        else Modifier.padding(vertical = insideMargin.height)
-    }
     val isFocused by interactionSource.collectIsFocusedAsState()
     val borderWidth by animateDpAsState(if (isFocused) 2.dp else 0.dp)
     val animatedBorderColor by animateColorAsState(if (isFocused) borderColor else backgroundColor)
-    val labelOffsetY by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) -(insideMargin.height / 2.2f) else 0.dp)
-    val innerTextOffsetY by animateDpAsState(if (value.text.isNotEmpty() && !useLabelAsPlaceholder) (insideMargin.height / 1.8f) else 0.dp)
     val borderShape = remember(cornerRadius) { RoundedCornerShape(cornerRadius) }
-    val borderModifier = Modifier.border(borderWidth, animatedBorderColor, borderShape)
-    val labelOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = labelOffsetY) else Modifier
-    val innerTextOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = innerTextOffsetY) else Modifier
-    val labelFontSize by animateDpAsState(
-        if (value.text.isNotEmpty() && !useLabelAsPlaceholder) max(
-            textStyle.fontSize.value.dp - 7.dp,
-            0.dp
-        ) else textStyle.fontSize.value.dp
+    val finalModifier = Modifier.background(backgroundColor, borderShape).border(borderWidth, animatedBorderColor, borderShape)
+
+    val labelState = when {
+        label.isEmpty() -> LabelAnimState.Hidden
+        useLabelAsPlaceholder && value.text.isNotEmpty() -> LabelAnimState.Placeholder
+        value.text.isNotEmpty() -> LabelAnimState.Floating
+        else -> LabelAnimState.Normal
+    }
+    val labelAnim by animateDpAsState(
+        when (labelState) {
+            LabelAnimState.Floating -> -insideMargin.height / 2
+            LabelAnimState.Placeholder, LabelAnimState.Normal -> 0.dp
+            LabelAnimState.Hidden -> 0.dp
+        }
     )
+    val labelFontSize by animateDpAsState(
+        when (labelState) {
+            LabelAnimState.Floating -> 10.dp
+            else -> 17.dp
+        }
+    )
+    val paddingModifier = when {
+        leadingIcon == null && trailingIcon == null -> Modifier.padding(insideMargin.width, vertical = insideMargin.height)
+        leadingIcon == null -> Modifier.padding(start = insideMargin.width).padding(vertical = insideMargin.height)
+        trailingIcon == null -> Modifier.padding(end = insideMargin.width).padding(vertical = insideMargin.height)
+        else -> Modifier.padding(vertical = insideMargin.height)
+    }
+
 
     BasicTextField(
         value = value,
-        onValueChange = currentOnValueChange,
+        onValueChange = onValueChange,
         modifier = modifier,
         enabled = enabled,
         readOnly = readOnly,
@@ -273,21 +277,17 @@ fun TextField(
         cursorBrush = cursorBrush,
         decorationBox = @Composable { innerTextField ->
             textFieldDecorationBox(
-                backgroundColor = backgroundColor,
-                cornerRadius = cornerRadius,
-                borderModifier = borderModifier,
+                finalModifier = finalModifier,
                 leadingIcon = leadingIcon,
                 trailingIcon = trailingIcon,
                 paddingModifier = paddingModifier,
                 label = label,
-                labelVisible = if (useLabelAsPlaceholder) value.text.isEmpty() else true,
                 labelFontSize = labelFontSize,
-                labelOffset = labelOffset,
                 labelColor = labelColor,
-                innerTextOffset = innerTextOffset,
-                innerTextField = innerTextField,
-                contentAlignment = Alignment.CenterVertically,
-                labelContentAlignment = Alignment.TopStart
+                labelState = labelState,
+                labelAnim = labelAnim,
+                insideMargin = insideMargin,
+                innerTextField = innerTextField
             )
         }
     )
@@ -351,28 +351,41 @@ fun TextField(
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
-    val currentOnValueChange by rememberUpdatedState(onValueChange)
-
-    val paddingModifier = remember(insideMargin, leadingIcon, trailingIcon) {
-        if (leadingIcon == null && trailingIcon == null) Modifier.padding(insideMargin.width, vertical = insideMargin.height)
-        else if (leadingIcon == null) Modifier.padding(start = insideMargin.width).padding(vertical = insideMargin.height)
-        else if (trailingIcon == null) Modifier.padding(end = insideMargin.width).padding(vertical = insideMargin.height)
-        else Modifier.padding(vertical = insideMargin.height)
-    }
     val isFocused by interactionSource.collectIsFocusedAsState()
-    val borderWidth by animateDpAsState(if (isFocused) 2.0.dp else 0.dp)
+    val borderWidth by animateDpAsState(if (isFocused) 2.dp else 0.dp)
     val animatedBorderColor by animateColorAsState(if (isFocused) borderColor else backgroundColor)
-    val labelOffsetY by animateDpAsState(if (value.isNotEmpty() && !useLabelAsPlaceholder) -(insideMargin.height / 2) else 0.dp)
-    val innerTextOffsetY by animateDpAsState(if (value.isNotEmpty() && !useLabelAsPlaceholder) (insideMargin.height / 2) else 0.dp)
-    val labelFontSize by animateDpAsState(if (value.isNotEmpty() && !useLabelAsPlaceholder) 10.dp else 17.dp)
     val borderShape = remember(cornerRadius) { RoundedCornerShape(cornerRadius) }
-    val borderModifier = Modifier.border(borderWidth, animatedBorderColor, borderShape)
-    val labelOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = labelOffsetY) else Modifier
-    val innerTextOffset = if (label != "" && !useLabelAsPlaceholder) Modifier.offset(y = innerTextOffsetY) else Modifier
+    val finalModifier = Modifier.background(backgroundColor, borderShape).border(borderWidth, animatedBorderColor, borderShape)
+
+    val labelState = when {
+        label.isEmpty() -> LabelAnimState.Hidden
+        useLabelAsPlaceholder && value.isNotEmpty() -> LabelAnimState.Placeholder
+        value.isNotEmpty() -> LabelAnimState.Floating
+        else -> LabelAnimState.Normal
+    }
+    val labelAnim by animateDpAsState(
+        when (labelState) {
+            LabelAnimState.Floating -> -insideMargin.height / 2
+            LabelAnimState.Placeholder, LabelAnimState.Normal -> 0.dp
+            LabelAnimState.Hidden -> 0.dp
+        }
+    )
+    val labelFontSize by animateDpAsState(
+        when (labelState) {
+            LabelAnimState.Floating -> 10.dp
+            else -> 17.dp
+        }
+    )
+    val paddingModifier = when {
+        leadingIcon == null && trailingIcon == null -> Modifier.padding(insideMargin.width, vertical = insideMargin.height)
+        leadingIcon == null -> Modifier.padding(start = insideMargin.width).padding(vertical = insideMargin.height)
+        trailingIcon == null -> Modifier.padding(end = insideMargin.width).padding(vertical = insideMargin.height)
+        else -> Modifier.padding(vertical = insideMargin.height)
+    }
 
     BasicTextField(
         value = value,
-        onValueChange = currentOnValueChange,
+        onValueChange = onValueChange,
         modifier = modifier,
         enabled = enabled,
         readOnly = readOnly,
@@ -388,96 +401,72 @@ fun TextField(
         cursorBrush = cursorBrush,
         decorationBox = @Composable { innerTextField ->
             textFieldDecorationBox(
-                backgroundColor = backgroundColor,
-                cornerRadius = cornerRadius,
-                borderModifier = borderModifier,
+                finalModifier = finalModifier,
                 leadingIcon = leadingIcon,
                 trailingIcon = trailingIcon,
                 paddingModifier = paddingModifier,
                 label = label,
-                labelVisible = if (useLabelAsPlaceholder) value.isEmpty() else true,
                 labelFontSize = labelFontSize,
-                labelOffset = labelOffset,
                 labelColor = labelColor,
-                innerTextOffset = innerTextOffset,
-                innerTextField = innerTextField,
-                contentAlignment = Alignment.CenterVertically,
-                labelContentAlignment = Alignment.TopStart
+                labelState = labelState,
+                labelAnim = labelAnim,
+                insideMargin = insideMargin,
+                innerTextField = innerTextField
             )
         }
     )
 }
+
+private enum class LabelAnimState { Hidden, Placeholder, Normal, Floating }
 
 /**
  * A Miuix style decoration box for the [TextField] component.
  */
 @Composable
 private fun textFieldDecorationBox(
-    backgroundColor: Color,
-    cornerRadius: Dp,
-    borderModifier: Modifier,
-    leadingIcon: @Composable (() -> Unit)?,
-    trailingIcon: @Composable (() -> Unit)?,
+    finalModifier: Modifier,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     paddingModifier: Modifier,
     label: String,
-    labelVisible: Boolean,
     labelFontSize: Dp,
-    labelOffset: Modifier,
     labelColor: Color,
-    innerTextOffset: Modifier,
+    labelState: LabelAnimState,
+    labelAnim: Dp = 0.dp,
+    insideMargin: DpSize = DpSize(16.dp, 16.dp),
     innerTextField: @Composable () -> Unit,
-    contentAlignment: Alignment.Vertical = Alignment.CenterVertically,
-    labelContentAlignment: Alignment = Alignment.CenterStart
 ) {
-    val backgroundShape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
-    val enterTransition = remember { fadeIn(spring(stiffness = 2500f)) }
-    val exitTransition = remember { fadeOut(spring(stiffness = 5000f)) }
     Box(
-        modifier = Modifier
-            .background(
-                color = backgroundColor,
-                shape = backgroundShape
-            )
-            .then(borderModifier),
+        modifier = finalModifier,
         contentAlignment = Alignment.CenterStart
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = contentAlignment
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            if (leadingIcon != null) {
-                leadingIcon()
-            }
+            leadingIcon?.invoke()
             Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .then(paddingModifier),
-                contentAlignment = labelContentAlignment
+                modifier = Modifier.weight(1f).then(paddingModifier),
+                contentAlignment = Alignment.TopStart
             ) {
-                androidx.compose.animation.AnimatedVisibility(
-                    visible = labelVisible,
-                    enter = enterTransition,
-                    exit = exitTransition
-                ) {
+                if (labelState != LabelAnimState.Hidden && labelState != LabelAnimState.Placeholder) {
                     Text(
                         text = label,
-                        textAlign = TextAlign.Start,
-                        fontWeight = FontWeight.Medium,
                         fontSize = labelFontSize.value.sp,
-                        modifier = Modifier.then(labelOffset),
-                        color = labelColor
+                        color = labelColor,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.offset(y = labelAnim),
+                        textAlign = TextAlign.Start
                     )
                 }
                 Box(
-                    modifier = Modifier.then(innerTextOffset),
+                    modifier = Modifier.offset(y = if (labelState == LabelAnimState.Floating) insideMargin.height / 2 else 0.dp),
                     contentAlignment = Alignment.CenterStart
                 ) {
                     innerTextField()
                 }
             }
-            if (trailingIcon != null) {
-                trailingIcon()
-            }
+            trailingIcon?.invoke()
         }
     }
 }

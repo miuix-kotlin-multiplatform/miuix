@@ -178,9 +178,6 @@ fun LazyListScope.otherComponent(focusManager: FocusManager, padding: PaddingVal
                 colors = ButtonDefaults.textButtonColorsPrimary()
             )
         }
-    }
-
-    item {
         Row(
             modifier = Modifier
                 .padding(horizontal = 12.dp)
@@ -312,9 +309,6 @@ fun LazyListScope.otherComponent(focusManager: FocusManager, padding: PaddingVal
                 .padding(horizontal = 12.dp)
                 .padding(bottom = 12.dp)
         )
-    }
-
-    item {
         var progressHaptic by remember { mutableStateOf(0.5f) }
         Slider(
             progress = progressHaptic,
@@ -324,9 +318,6 @@ fun LazyListScope.otherComponent(focusManager: FocusManager, padding: PaddingVal
                 .padding(horizontal = 12.dp)
                 .padding(bottom = 12.dp)
         )
-    }
-
-    item {
         val progressDisable by remember { mutableStateOf(0.5f) }
         Slider(
             progress = progressDisable,
@@ -340,7 +331,8 @@ fun LazyListScope.otherComponent(focusManager: FocusManager, padding: PaddingVal
 
     item {
         SmallTitle(text = "TabRow")
-        val tabTexts = listOf("Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6")
+        val tabTexts = listOf("Tab 1", "Tab 2", "Tab 3")
+        val tabTexts1 = listOf("Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6")
         var selectedTabIndex by remember { mutableStateOf(0) }
         var selectedTabIndex1 by remember { mutableStateOf(0) }
         TabRow(
@@ -360,7 +352,7 @@ fun LazyListScope.otherComponent(focusManager: FocusManager, padding: PaddingVal
             insideMargin = PaddingValues(16.dp)
         ) {
             TabRowWithContour(
-                tabs = tabTexts,
+                tabs = tabTexts1,
                 selectedTabIndex = selectedTabIndex1,
             ) {
                 selectedTabIndex1 = it
@@ -475,9 +467,6 @@ fun LazyListScope.otherComponent(focusManager: FocusManager, padding: PaddingVal
                 fontWeight = FontWeight.Normal
             )
         }
-    }
-
-    item {
         val hapticFeedback = LocalHapticFeedback.current
         Row(
             modifier = Modifier
@@ -506,7 +495,6 @@ fun LazyListScope.otherComponent(focusManager: FocusManager, padding: PaddingVal
                     )
                 }
             )
-
             Card(
                 modifier = Modifier.weight(1f),
                 insideMargin = PaddingValues(16.dp),

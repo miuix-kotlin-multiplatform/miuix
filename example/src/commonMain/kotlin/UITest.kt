@@ -405,6 +405,7 @@ fun AppHorizontalPager(
         state = pagerState,
         modifier = modifier,
         userScrollEnabled = uiState.enablePageUserScroll,
+        beyondViewportPageCount = 1,
         pageContent = { page ->
             when (page) {
                 0 -> MainPage(

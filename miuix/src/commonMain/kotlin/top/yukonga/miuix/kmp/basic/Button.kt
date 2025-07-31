@@ -11,10 +11,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,14 +49,13 @@ fun Button(
     content: @Composable RowScope.() -> Unit
 ) {
     val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
-    val currentOnClick by rememberUpdatedState(onClick)
-
+    val color = remember(enabled) { if (enabled) colors.color else colors.disabledColor }
     Surface(
-        onClick = currentOnClick,
+        onClick = onClick,
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
         shape = shape,
-        color = colors.color(enabled)
+        color = color,
     ) {
         Row(
             modifier = Modifier
@@ -97,15 +93,15 @@ fun TextButton(
     minHeight: Dp = ButtonDefaults.MinHeight,
     insideMargin: PaddingValues = ButtonDefaults.InsideMargin
 ) {
-    val currentOnClick by rememberUpdatedState(onClick)
     val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
-
+    val color = remember(enabled) { if (enabled) colors.color else colors.disabledColor }
+    val textColor = remember(enabled) { if (enabled) colors.textColor else colors.disabledTextColor }
     Surface(
-        onClick = currentOnClick,
+        onClick = onClick,
         enabled = enabled,
         modifier = modifier.semantics { role = Role.Button },
         shape = shape,
-        color = colors.color(enabled)
+        color = color,
     ) {
         Row(
             modifier = Modifier
@@ -116,7 +112,7 @@ fun TextButton(
             content = {
                 Text(
                     text = text,
-                    color = colors.textColor(enabled),
+                    color = textColor,
                     style = MiuixTheme.textStyles.button
                 )
             }
@@ -201,32 +197,34 @@ object ButtonDefaults {
 
 @Immutable
 class ButtonColors(
-    private val color: Color,
-    private val disabledColor: Color
+    val color: Color,
+    val disabledColor: Color
 ) {
-    @Stable
-    internal fun color(enabled: Boolean): Color = if (enabled) color else disabledColor
-
-    @Composable
-    internal fun colorState(enabled: Boolean) = rememberUpdatedState(if (enabled) color else disabledColor)
+    fun copy(
+        color: Color = this.color,
+        disabledColor: Color = this.disabledColor
+    ): ButtonColors = ButtonColors(
+        color = color,
+        disabledColor = disabledColor
+    )
 }
 
 @Immutable
 class TextButtonColors(
-    private val color: Color,
-    private val disabledColor: Color,
-    private val textColor: Color,
-    private val disabledTextColor: Color
+    val color: Color,
+    val disabledColor: Color,
+    val textColor: Color,
+    val disabledTextColor: Color
 ) {
-    @Stable
-    internal fun color(enabled: Boolean): Color = if (enabled) color else disabledColor
-
-    @Stable
-    internal fun textColor(enabled: Boolean): Color = if (enabled) textColor else disabledTextColor
-
-    @Composable
-    internal fun colorState(enabled: Boolean) = rememberUpdatedState(if (enabled) color else disabledColor)
-
-    @Composable
-    internal fun textColorState(enabled: Boolean) = rememberUpdatedState(if (enabled) textColor else disabledTextColor)
+    fun copy(
+        color: Color = this.color,
+        disabledColor: Color = this.disabledColor,
+        textColor: Color = this.textColor,
+        disabledTextColor: Color = this.disabledTextColor
+    ): TextButtonColors = TextButtonColors(
+        color = color,
+        disabledColor = disabledColor,
+        textColor = textColor,
+        disabledTextColor = disabledTextColor
+    )
 }

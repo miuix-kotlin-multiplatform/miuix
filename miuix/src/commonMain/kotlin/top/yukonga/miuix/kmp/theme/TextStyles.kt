@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.runtime.structuralEqualityPolicy
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
@@ -229,21 +230,21 @@ private val Title4: TextStyle
             fontSize = 18.sp,
         )
 
-internal fun TextStyles.updateColorsFrom(other: Colors) {
-    main = main.copy(color = other.onBackground)
-    paragraph = paragraph.copy(color = other.onBackground)
-    body1 = body1.copy(color = other.onBackground)
-    body2 = body2.copy(color = other.onBackground)
-    button = button.copy(color = other.onBackground)
-    footnote1 = footnote1.copy(color = other.onBackground)
-    footnote2 = footnote2.copy(color = other.onBackground)
-    headline1 = headline1.copy(color = other.onBackground)
-    headline2 = headline2.copy(color = other.onBackground)
-    subtitle = subtitle.copy(color = other.onBackground)
-    title1 = title1.copy(color = other.onBackground)
-    title2 = title2.copy(color = other.onBackground)
-    title3 = title3.copy(color = other.onBackground)
-    title4 = title4.copy(color = other.onBackground)
+internal fun TextStyles.updateColorsFrom(color: Color) {
+    main = main.copy(color = color)
+    paragraph = paragraph.copy(color = color)
+    body1 = body1.copy(color = color)
+    body2 = body2.copy(color = color)
+    button = button.copy(color = color)
+    footnote1 = footnote1.copy(color = color)
+    footnote2 = footnote2.copy(color = color)
+    headline1 = headline1.copy(color = color)
+    headline2 = headline2.copy(color = color)
+    subtitle = subtitle.copy(color = color)
+    title1 = title1.copy(color = color)
+    title2 = title2.copy(color = color)
+    title3 = title3.copy(color = color)
+    title4 = title4.copy(color = color)
 }
 
 internal val LocalTextStyles = staticCompositionLocalOf { defaultTextStyles() }

@@ -120,7 +120,7 @@ fun TabRowWithContour(
     colors: TabRowColors = TabRowDefaults.tabRowColors(),
     minWidth: Dp = TabRowDefaults.TabRowWithContourMinWidth,
     maxWidth: Dp = TabRowDefaults.TabRowWithContourMaxWidth,
-    height: Dp = TabRowDefaults.TabRowHeight,
+    height: Dp = TabRowDefaults.TabRowWithContourHeight,
     cornerRadius: Dp = TabRowDefaults.TabRowWithContourCornerRadius,
     onTabSelected: ((Int) -> Unit)? = null,
 ) {
@@ -302,7 +302,12 @@ object TabRowDefaults {
     /**
      * The default height of the [TabRow].
      */
-    val TabRowHeight = 42.dp
+    val TabRowHeight = 54.dp
+
+    /**
+     * The default height of the [TabRowWithContour].
+     */
+    val TabRowWithContourHeight = 45.dp
 
     /**
      * The default corner radius of the [TabRow].
@@ -310,7 +315,7 @@ object TabRowDefaults {
     val TabRowCornerRadius = 12.dp
 
     /**
-     * The default corner radius of the [TabRow] with contour style.
+     * The default corner radius of the [TabRowWithContour].
      */
     val TabRowWithContourCornerRadius = 8.dp
 
@@ -320,7 +325,7 @@ object TabRowDefaults {
     val TabRowMinWidth = 76.dp
 
     /**
-     * The default minimum width of the [TabRow] with contour style.
+     * The default minimum width of the [TabRowWithContour].
      */
     val TabRowWithContourMinWidth = 62.dp
 
@@ -330,7 +335,7 @@ object TabRowDefaults {
     val TabRowMaxWidth = 98.dp
 
     /**
-     * The default minimum width of the tab in [TabRow] with contour style.
+     * The default minimum width of the tab in [TabRowWithContour].
      */
     val TabRowWithContourMaxWidth = 84.dp
 

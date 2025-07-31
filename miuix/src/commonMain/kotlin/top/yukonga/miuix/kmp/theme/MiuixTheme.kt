@@ -26,8 +26,8 @@ fun MiuixTheme(
     val miuixColors = remember(colors) {
         colors.copy().apply { updateColorsFrom(colors) }
     }
-    val miuixTextStyles = remember(textStyles, colors) {
-        textStyles.copy().apply { updateColorsFrom(colors) }
+    val miuixTextStyles = remember(textStyles, colors.onBackground) {
+        textStyles.copy().apply { updateColorsFrom(colors.onBackground) }
     }
     val miuixIndication = remember(colors.onBackground) {
         MiuixIndication(color = colors.onBackground)

@@ -35,7 +35,7 @@ fun SecondPage(
     val pullToRefreshState = rememberPullToRefreshState()
 
     val dropdownOptions = listOf("Option 1", "Option 2", "Option 3", "Option 4")
-    val dropdownSelectedOption = remember { mutableStateOf(0) }
+    var dropdownSelectedOption by remember { mutableStateOf(0) }
     var ii by remember { mutableStateOf(6) }
 
     LaunchedEffect(isRefreshing) {
@@ -71,9 +71,9 @@ fun SecondPage(
                         SuperDropdown(
                             title = "Dropdown ${i + 1}",
                             items = dropdownOptions,
-                            selectedIndex = dropdownSelectedOption.value,
+                            selectedIndex = dropdownSelectedOption,
                             onSelectedIndexChange = { newOption ->
-                                dropdownSelectedOption.value = newOption
+                                dropdownSelectedOption = newOption
                             }
                         )
                     }

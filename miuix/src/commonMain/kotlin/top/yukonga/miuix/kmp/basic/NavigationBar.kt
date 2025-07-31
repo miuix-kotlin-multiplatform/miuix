@@ -3,7 +3,6 @@
 
 package top.yukonga.miuix.kmp.basic
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -111,7 +110,7 @@ fun NavigationBar(
                 val onSurfaceContainerColor = MiuixTheme.colorScheme.onSurfaceContainer
                 val onSurfaceContainerVariantColor = MiuixTheme.colorScheme.onSurfaceContainerVariant
 
-                val tint by remember(isSelected, isPressed) {
+                val tint by remember(isSelected, isPressed, onSurfaceContainerColor, onSurfaceContainerVariantColor) {
                     derivedStateOf {
                         when {
                             isPressed -> if (isSelected) {
@@ -277,19 +276,20 @@ fun FloatingNavigationBar(
                 val onSurfaceContainerColor = MiuixTheme.colorScheme.onSurfaceContainer
                 val onSurfaceContainerVariantColor = MiuixTheme.colorScheme.onSurfaceContainerVariant
 
-                val tint by animateColorAsState(
-                    targetValue = when {
-                        isPressed -> if (isSelected) {
-                            onSurfaceContainerColor.copy(alpha = 0.6f)
-                        } else {
-                            onSurfaceContainerVariantColor.copy(alpha = 0.6f)
-                        }
+                val tint by remember(isSelected, isPressed, onSurfaceContainerColor, onSurfaceContainerVariantColor) {
+                    derivedStateOf {
+                        when {
+                            isPressed -> if (isSelected) {
+                                onSurfaceContainerColor.copy(alpha = 0.6f)
+                            } else {
+                                onSurfaceContainerVariantColor.copy(alpha = 0.6f)
+                            }
 
-                        isSelected -> onSurfaceContainerColor
-                        else -> onSurfaceContainerVariantColor
-                    },
-                    label = "tintAnimation"
-                )
+                            isSelected -> onSurfaceContainerColor
+                            else -> onSurfaceContainerVariantColor
+                        }
+                    }
+                }
                 val fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
 
                 Column(

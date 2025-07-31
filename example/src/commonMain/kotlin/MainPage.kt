@@ -51,7 +51,6 @@ fun MainPage(
 ) {
     var searchValue by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
-
     val showDialog = remember { mutableStateOf(false) }
     val dialogTextFieldValue = remember { mutableStateOf("") }
     val showDialog2 = remember { mutableStateOf(false) }
@@ -114,7 +113,7 @@ fun MainPage(
                     .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
                     .height(getWindowSize().height.dp),
                 contentPadding = PaddingValues(top = padding.calculateTopPadding()),
-                overscrollEffect = null
+                overscrollEffect = null,
             ) {
                 item {
                     SmallTitle(text = "SearchBar")
