@@ -11,6 +11,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
@@ -26,6 +27,7 @@ import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import top.yukonga.miuix.kmp.theme.LocalContentColor
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**
@@ -44,25 +46,30 @@ fun Surface(
     modifier: Modifier = Modifier,
     shape: Shape = RectangleShape,
     color: Color = MiuixTheme.colorScheme.background,
+    contentColor: Color = MiuixTheme.colorScheme.onBackground,
     border: BorderStroke? = null,
     shadowElevation: Dp = 0.dp,
     content: @Composable () -> Unit
 ) {
-    Box(
-        modifier = modifier
-            .surface(
-                shape = shape,
-                backgroundColor = color,
-                border = border,
-                shadowElevation = with(LocalDensity.current) { shadowElevation.toPx() }
-            )
-            .semantics(mergeDescendants = false) {
-                isTraversalGroup = true
-            }
-            .pointerInput(Unit) {},
-        propagateMinConstraints = true
+    CompositionLocalProvider(
+        LocalContentColor provides contentColor,
     ) {
-        content()
+        Box(
+            modifier = modifier
+                .surface(
+                    shape = shape,
+                    backgroundColor = color,
+                    border = border,
+                    shadowElevation = with(LocalDensity.current) { shadowElevation.toPx() }
+                )
+                .semantics(mergeDescendants = false) {
+                    isTraversalGroup = true
+                }
+                .pointerInput(Unit) {},
+            propagateMinConstraints = true
+        ) {
+            content()
+        }
     }
 }
 
@@ -86,6 +93,7 @@ fun Surface(
     enabled: Boolean = true,
     shape: Shape = RectangleShape,
     color: Color = MiuixTheme.colorScheme.background,
+    contentColor: Color = MiuixTheme.colorScheme.onBackground,
     border: BorderStroke? = null,
     shadowElevation: Dp = 0.dp,
     interactionSource: MutableInteractionSource? = null,
@@ -93,23 +101,27 @@ fun Surface(
 ) {
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
-    Box(
-        modifier = modifier
-            .surface(
-                shape = shape,
-                backgroundColor = color,
-                border = border,
-                shadowElevation = with(LocalDensity.current) { shadowElevation.toPx() }
-            )
-            .clickable(
-                interactionSource = interactionSource,
-                indication = LocalIndication.current,
-                enabled = enabled,
-                onClick = onClick,
-            ),
-        propagateMinConstraints = true
+    CompositionLocalProvider(
+        LocalContentColor provides contentColor,
     ) {
-        content()
+        Box(
+            modifier = modifier
+                .surface(
+                    shape = shape,
+                    backgroundColor = color,
+                    border = border,
+                    shadowElevation = with(LocalDensity.current) { shadowElevation.toPx() }
+                )
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = LocalIndication.current,
+                    enabled = enabled,
+                    onClick = onClick,
+                ),
+            propagateMinConstraints = true
+        ) {
+            content()
+        }
     }
 }
 

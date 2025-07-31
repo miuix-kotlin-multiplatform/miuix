@@ -246,4 +246,4 @@ internal fun TextStyles.updateColorsFrom(other: Colors) {
     title4 = title4.copy(color = other.onBackground)
 }
 
-val LocalTextStyles = staticCompositionLocalOf { defaultTextStyles() }
+internal val LocalTextStyles = staticCompositionLocalOf { defaultTextStyles() }

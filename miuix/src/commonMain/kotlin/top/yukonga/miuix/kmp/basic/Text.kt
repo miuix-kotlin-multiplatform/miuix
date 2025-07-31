@@ -3,16 +3,21 @@
 
 package top.yukonga.miuix.kmp.basic
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.InlineTextContent
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.isSpecified
+import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.AnnotatedString.Range
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.Paragraph
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -21,7 +26,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
+import top.yukonga.miuix.kmp.theme.LocalContentColor
+import top.yukonga.miuix.kmp.theme.LocalTextStyles
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 /**
@@ -32,7 +38,11 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  * @param text the text to be displayed
  * @param modifier the [Modifier] to be applied to this layout node
  * @param color [Color] to apply to the text. If [Color.Unspecified], and [style] has no color set,
- *   this will be [MiuixTheme.colorScheme.primary].
+ *   this will be [LocalContentColor].
+ * @param autoSize Enable auto sizing for this text composable. Finds the biggest font size that
+ *   fits in the available space and lays the text out with this size. This performs multiple layout
+ *   passes and can be slower than using a fixed font size. This takes precedence over sizes defined
+ *   through [fontSize] and [style]. See [TextAutoSize].
  * @param fontSize the size of glyphs to use when painting the text. See [TextStyle.fontSize].
  * @param fontStyle the typeface variant to use when drawing the letters (e.g., italic). See
  *   [TextStyle.fontStyle].
@@ -65,7 +75,8 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 fun Text(
     text: String,
     modifier: Modifier = Modifier,
-    color: Color = MiuixTheme.colorScheme.onBackground,
+    color: Color = Color.Unspecified,
+    autoSize: TextAutoSize? = null,
     fontSize: TextUnit = TextUnit.Unspecified,
     fontStyle: FontStyle? = null,
     fontWeight: FontWeight? = null,
@@ -79,29 +90,31 @@ fun Text(
     maxLines: Int = Int.MAX_VALUE,
     minLines: Int = 1,
     onTextLayout: ((TextLayoutResult) -> Unit)? = null,
-    style: TextStyle = MiuixTheme.textStyles.main
+    style: TextStyle = LocalTextStyles.current.main
 ) {
-    val textColor = if (color.isSpecified) color else if (style.color.isSpecified) style.color else MiuixTheme.colorScheme.onBackground
+    val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
 
     BasicText(
         text = text,
         modifier = modifier,
-        style = style.merge(
-            color = textColor,
-            fontSize = fontSize,
-            fontWeight = fontWeight,
-            textAlign = textAlign ?: TextAlign.Unspecified,
-            lineHeight = lineHeight,
-            fontFamily = fontFamily,
-            textDecoration = textDecoration,
-            fontStyle = fontStyle,
-            letterSpacing = letterSpacing
-        ),
+        style =
+            style.merge(
+                color = textColor,
+                fontSize = fontSize,
+                fontWeight = fontWeight,
+                textAlign = textAlign ?: TextAlign.Unspecified,
+                lineHeight = lineHeight,
+                fontFamily = fontFamily,
+                textDecoration = textDecoration,
+                fontStyle = fontStyle,
+                letterSpacing = letterSpacing,
+            ),
         onTextLayout = onTextLayout,
         overflow = overflow,
         softWrap = softWrap,
         maxLines = maxLines,
-        minLines = minLines
+        minLines = minLines,
+        autoSize = autoSize,
     )
 }
 
@@ -112,7 +125,11 @@ fun Text(
  * @param text the text to be displayed
  * @param modifier the [Modifier] to be applied to this layout node
  * @param color [Color] to apply to the text. If [Color.Unspecified], and [style] has no color set,
- *   this will be [MiuixTheme.colorScheme.primary].
+ *   this will be [LocalContentColor].
+ * @param autoSize Enable auto sizing for this text composable. Finds the biggest font size that
+ *   fits in the available space and lays the text out with this size. This performs multiple layout
+ *   passes and can be slower than using a fixed font size. This takes precedence over sizes defined
+ *   through [fontSize] and [style]. See [TextAutoSize].
  * @param fontSize the size of glyphs to use when painting the text. See [TextStyle.fontSize].
  * @param fontStyle the typeface variant to use when drawing the letters (e.g., italic). See
  *   [TextStyle.fontStyle].
@@ -148,6 +165,7 @@ fun Text(
     text: AnnotatedString,
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
+    autoSize: TextAutoSize? = null,
     fontSize: TextUnit = TextUnit.Unspecified,
     fontStyle: FontStyle? = null,
     fontWeight: FontWeight? = null,
@@ -162,29 +180,60 @@ fun Text(
     minLines: Int = 1,
     inlineContent: Map<String, InlineTextContent> = mapOf(),
     onTextLayout: (TextLayoutResult) -> Unit = {},
-    style: TextStyle = MiuixTheme.textStyles.main
+    style: TextStyle = LocalTextStyles.current.main
 ) {
-    val textColor = if (color.isSpecified) color else if (style.color.isSpecified) style.color else MiuixTheme.colorScheme.onBackground
+    val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
+    val linkStyles = rememberTextLinkStyles()
+    val textWithMaterialLinkStyles =
+        remember(text, linkStyles) { createTextWithLinkStyles(text, linkStyles) }
 
     BasicText(
-        text = text,
-        modifier = modifier.padding(vertical = 4.dp),
-        style = style.merge(
-            color = textColor,
-            fontSize = fontSize,
-            fontWeight = fontWeight,
-            textAlign = textAlign ?: TextAlign.Unspecified,
-            lineHeight = lineHeight,
-            fontFamily = fontFamily,
-            textDecoration = textDecoration,
-            fontStyle = fontStyle,
-            letterSpacing = letterSpacing
-        ),
+        text = textWithMaterialLinkStyles,
+        modifier = modifier,
+        style =
+            style.merge(
+                color = textColor,
+                fontSize = fontSize,
+                fontWeight = fontWeight,
+                textAlign = textAlign ?: TextAlign.Unspecified,
+                lineHeight = lineHeight,
+                fontFamily = fontFamily,
+                textDecoration = textDecoration,
+                fontStyle = fontStyle,
+                letterSpacing = letterSpacing,
+            ),
         onTextLayout = onTextLayout,
         overflow = overflow,
         softWrap = softWrap,
         maxLines = maxLines,
         minLines = minLines,
-        inlineContent = inlineContent
+        inlineContent = inlineContent,
+        autoSize = autoSize,
     )
+}
+
+@Suppress("UNCHECKED_CAST")
+private fun createTextWithLinkStyles(
+    text: AnnotatedString,
+    linkStyles: TextLinkStyles,
+): AnnotatedString =
+    text.mapAnnotations { range ->
+        val link = range.item
+        when {
+            link is LinkAnnotation.Url && link.styles == null ->
+                (range as Range<LinkAnnotation.Url>).copy(link.copy(styles = linkStyles))
+            link is LinkAnnotation.Clickable && link.styles == null ->
+                (range as Range<LinkAnnotation.Clickable>).copy(link.copy(styles = linkStyles))
+            else -> range
+        }
+    }
+
+@Composable
+private fun rememberTextLinkStyles(): TextLinkStyles {
+    val primaryColor = MiuixTheme.colorScheme.primary
+    return remember(primaryColor) {
+        TextLinkStyles(
+            style = SpanStyle(color = primaryColor, textDecoration = TextDecoration.Underline)
+        )
+    }
 }

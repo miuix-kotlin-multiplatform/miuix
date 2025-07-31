@@ -89,7 +89,7 @@ data class UIState(
     val floatingToolbarOrientation: Int = 1,
     val showFloatingActionButton: Boolean = false,
     val floatingActionButtonPosition: Int = 2,
-    val enablePageUserScroll: Boolean = true,
+    val enablePageUserScroll: Boolean = false,
     val scrollEndHaptic: Boolean = true
 )
 

@@ -72,6 +72,7 @@ Text(
 | text           | String / AnnotatedString       | The text content to display                   | -                                   | Yes      |
 | modifier       | Modifier                       | Modifiers applied to the text                 | Modifier                            | No       |
 | color          | Color                          | Text color                                    | MiuixTheme.colorScheme.onBackground | No       |
+| autoSize       | TextAutoSize?                  | Auto-sizing behavior for text                 | null                                | No       |
 | fontSize       | TextUnit                       | Text size                                     | TextUnit.Unspecified                | No       |
 | fontStyle      | FontStyle?                     | Text font style (e.g., italic)                | null                                | No       |
 | fontWeight     | FontWeight?                    | Text font weight                              | null                                | No       |

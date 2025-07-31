@@ -67,26 +67,27 @@ Text(
 
 ## 属性
 
-| 属性名         | 类型                           | 说明                       | 默认值                              | 是否必须 |
-| -------------- | ------------------------------ | -------------------------- | ----------------------------------- | -------- |
-| text           | String / AnnotatedString       | 要显示的文本内容           | -                                   | 是       |
-| modifier       | Modifier                       | 应用于文本的修饰符         | Modifier                            | 否       |
-| color          | Color                          | 文本颜色                   | MiuixTheme.colorScheme.onBackground | 否       |
-| fontSize       | TextUnit                       | 文本字号                   | TextUnit.Unspecified                | 否       |
-| fontStyle      | FontStyle?                     | 文本字体风格（如斜体）     | null                                | 否       |
-| fontWeight     | FontWeight?                    | 文本字重                   | null                                | 否       |
-| fontFamily     | FontFamily?                    | 文本字体族                 | null                                | 否       |
-| letterSpacing  | TextUnit                       | 字母间距                   | TextUnit.Unspecified                | 否       |
-| textDecoration | TextDecoration?                | 文本装饰（如下划线）       | null                                | 否       |
-| textAlign      | TextAlign?                     | 文本对齐方式               | null                                | 否       |
-| lineHeight     | TextUnit                       | 行高                       | TextUnit.Unspecified                | 否       |
-| overflow       | TextOverflow                   | 文本溢出处理方式           | TextOverflow.Clip                   | 否       |
-| softWrap       | Boolean                        | 是否自动换行               | true                                | 否       |
-| maxLines       | Int                            | 最大行数                   | Int.MAX_VALUE                       | 否       |
-| minLines       | Int                            | 最小行数                   | 1                                   | 否       |
-| onTextLayout   | (TextLayoutResult) -> Unit     | 文本布局完成后的回调       | null                                | 否       |
-| style          | TextStyle                      | 文本样式                   | MiuixTheme.textStyles.main          | 否       |
-| inlineContent  | Map<String, InlineTextContent> | 用于插入内联可组合项的映射 | mapOf()                             | 否       |
+| 属性名         | 类型                           | 说明                       | 默认值                     | 是否必须 |
+| -------------- | ------------------------------ | -------------------------- | -------------------------- | -------- |
+| text           | String / AnnotatedString       | 要显示的文本内容           | -                          | 是       |
+| modifier       | Modifier                       | 应用于文本的修饰符         | Modifier                   | 否       |
+| color          | Color                          | 文本颜色                   | Color.Unspecified          | 否       |
+| autoSize       | TextAutoSize?                  | 文本自动调整大小行为       | null                       | 否       |
+| fontSize       | TextUnit                       | 文本字号                   | TextUnit.Unspecified       | 否       |
+| fontStyle      | FontStyle?                     | 文本字体风格（如斜体）     | null                       | 否       |
+| fontWeight     | FontWeight?                    | 文本字重                   | null                       | 否       |
+| fontFamily     | FontFamily?                    | 文本字体族                 | null                       | 否       |
+| letterSpacing  | TextUnit                       | 字母间距                   | TextUnit.Unspecified       | 否       |
+| textDecoration | TextDecoration?                | 文本装饰（如下划线）       | null                       | 否       |
+| textAlign      | TextAlign?                     | 文本对齐方式               | null                       | 否       |
+| lineHeight     | TextUnit                       | 行高                       | TextUnit.Unspecified       | 否       |
+| overflow       | TextOverflow                   | 文本溢出处理方式           | TextOverflow.Clip          | 否       |
+| softWrap       | Boolean                        | 是否自动换行               | true                       | 否       |
+| maxLines       | Int                            | 最大行数                   | Int.MAX_VALUE              | 否       |
+| minLines       | Int                            | 最小行数                   | 1                          | 否       |
+| onTextLayout   | (TextLayoutResult) -> Unit     | 文本布局完成后的回调       | null                       | 否       |
+| style          | TextStyle                      | 文本样式                   | MiuixTheme.textStyles.main | 否       |
+| inlineContent  | Map<String, InlineTextContent> | 用于插入内联可组合项的映射 | mapOf()                    | 否       |
 
 ## 进阶用法
 

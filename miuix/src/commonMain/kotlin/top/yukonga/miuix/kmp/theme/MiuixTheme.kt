@@ -43,12 +43,8 @@ fun MiuixTheme(
 
 object MiuixTheme {
     val colorScheme: Colors
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalColors.current
+        @Composable @ReadOnlyComposable get() = LocalColors.current
 
     val textStyles: TextStyles
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalTextStyles.current
+        @Composable @ReadOnlyComposable get() = LocalTextStyles.current
 }

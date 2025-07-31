@@ -159,8 +159,7 @@ private fun ScaffoldLayout(
     val snackbarContent: @Composable () -> Unit = remember(snackbar) { { Box { snackbar() } } }
     val floatingActionButtonContent: @Composable () -> Unit = remember(floatingActionButton) { { Box { floatingActionButton() } } }
     val floatingToolbarContent: @Composable () -> Unit = remember(floatingToolbar) { { Box { floatingToolbar() } } }
-    val bodyContent: @Composable () -> Unit =
-        remember(content, contentPadding) { { Box { content(contentPadding) } } }
+    val bodyContent: @Composable () -> Unit = remember(content, contentPadding) { { Box { content(contentPadding) } } }
     val bottomBarContent: @Composable () -> Unit = remember(bottomBar) { { Box { bottomBar() } } }
     SubcomposeLayout { constraints ->
         val layoutWidth = constraints.maxWidth
