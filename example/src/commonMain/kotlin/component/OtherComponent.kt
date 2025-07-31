@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.ButtonDefaults
 import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.CircularProgressIndicator
 import top.yukonga.miuix.kmp.basic.ColorPicker
 import top.yukonga.miuix.kmp.basic.Icon
@@ -453,7 +454,9 @@ fun LazyListScope.otherComponent(focusManager: FocusManager, padding: PaddingVal
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp)
                 .padding(bottom = 12.dp),
-            color = MiuixTheme.colorScheme.primaryVariant,
+            colors = CardDefaults.defaultColors(
+                color = MiuixTheme.colorScheme.primaryVariant
+            ),
             insideMargin = PaddingValues(16.dp),
             pressFeedbackType = PressFeedbackType.None,
             showIndication = true,

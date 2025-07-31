@@ -28,17 +28,17 @@ Card {
 ### Card 属性
 
 
-| 属性名            | 类型                               | 说明                     | 默认值                      | 是否必须 | 适用范围 |
-| ----------------- | ---------------------------------- | ------------------------ | --------------------------- | -------- | -------- |
-| modifier          | Modifier                           | 应用于卡片的修饰符       | Modifier                    | 否       | 所有     |
-| cornerRadius      | Dp                                 | 卡片圆角半径             | CardDefaults.CornerRadius   | 否       | 所有     |
-| insideMargin      | PaddingValues                      | 卡片内部边距             | CardDefaults.InsideMargin   | 否       | 所有     |
-| color             | Color                              | 卡片背景颜色             | CardDefaults.DefaultColor() | 否       | 所有     |
-| pressFeedbackType | PressFeedbackType                  | 按压反馈类型             | PressFeedbackType.None      | 否       | 交互式   |
-| showIndication    | Boolean?                           | 显示点击指示效果         | false                       | 否       | 交互式   |
-| onClick           | (() -> Unit)?                      | 点击事件回调             | null                        | 否       | 交互式   |
-| onLongPress       | (() -> Unit)?                      | 长按事件回调             | null                        | 否       | 交互式   |
-| content           | @Composable ColumnScope.() -> Unit | 卡片内容区域的可组合函数 | -                           | 是       | 所有     |
+| 属性名            | 类型                               | 说明                     | 默认值                       | 是否必须 | 适用范围 |
+| ----------------- | ---------------------------------- | ------------------------ | ---------------------------- | -------- | -------- |
+| modifier          | Modifier                           | 应用于卡片的修饰符       | Modifier                     | 否       | 所有     |
+| colors            | CardColors                         | 卡片颜色配置             | CardDefaults.defaultColors() | 否       | 所有     |
+| cornerRadius      | Dp                                 | 卡片圆角半径             | CardDefaults.CornerRadius    | 否       | 所有     |
+| insideMargin      | PaddingValues                      | 卡片内部边距             | CardDefaults.InsideMargin    | 否       | 所有     |
+| pressFeedbackType | PressFeedbackType                  | 按压反馈类型             | PressFeedbackType.None       | 否       | 交互式   |
+| showIndication    | Boolean?                           | 显示点击指示效果         | false                        | 否       | 交互式   |
+| onClick           | (() -> Unit)?                      | 点击事件回调             | null                         | 否       | 交互式   |
+| onLongPress       | (() -> Unit)?                      | 长按事件回调             | null                         | 否       | 交互式   |
+| content           | @Composable ColumnScope.() -> Unit | 卡片内容区域的可组合函数 | -                            | 是       | 所有     |
 
 ::: warning 注意
 部分属性仅在创建可交互的卡片时可用！
@@ -57,9 +57,15 @@ CardDefaults 对象提供了卡片组件的默认值和颜色配置。
 
 #### 方法
 
-| 方法名         | 类型  | 说明               |
-| -------------- | ----- | ------------------ |
-| DefaultColor() | Color | 卡片的默认背景颜色 |
+| 方法名          | 类型       | 说明           |
+| --------------- | ---------- | -------------- |
+| defaultColors() | CardColors | 卡片的默认颜色 |
+
+### CardColors 类
+| 属性名       | 类型  | 说明           |
+| ------------ | ----- | -------------- |
+| color        | Color | 卡片的背景颜色 |
+| contentColor | Color | 卡片的内容颜色 |
 
 ## 进阶用法
 
@@ -69,7 +75,9 @@ CardDefaults 对象提供了卡片组件的默认值和颜色配置。
 Card(
     cornerRadius = 8.dp,
     insideMargin = PaddingValues(16.dp),
-    color = Color.LightGray.copy(alpha = 0.5f)
+    colors = CardDefaults.defaultColors(
+        color = MiuixTheme.colorScheme.primaryVariant
+    ),
 ) {
     Text("自定义样式卡片")
 }

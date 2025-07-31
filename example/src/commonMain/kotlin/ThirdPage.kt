@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import misc.VersionInfo
 import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.extra.SuperArrow
@@ -208,11 +209,11 @@ fun ThirdPage(
             Spacer(modifier = Modifier.height(padding.calculateBottomPadding()))
         }
     }
-    dialog(showDialog)
+    Dialog(showDialog)
 }
 
 @Composable
-fun dialog(showDialog: MutableState<Boolean>) {
+fun Dialog(showDialog: MutableState<Boolean>) {
     SuperDialog(
         title = "About",
         show = showDialog,
@@ -227,7 +228,9 @@ fun dialog(showDialog: MutableState<Boolean>) {
                         + "\nJDK Version: " + VersionInfo.JDK_VERSION
             )
             Card(
-                color = MiuixTheme.colorScheme.secondaryContainer,
+                colors = CardDefaults.defaultColors(
+                    color = MiuixTheme.colorScheme.secondaryContainer,
+                )
             ) {
                 SuperArrow(
                     title = "View Source",

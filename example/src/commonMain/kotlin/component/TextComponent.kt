@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.ButtonDefaults
 import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Checkbox
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.SmallTitle
@@ -395,13 +396,12 @@ fun TextComponent(
             enabled = false
         )
     }
-
-    dialog(showDialog, dialogTextFieldValue)
-    dialog2(showDialog2, dialog2dropdownSelectedOption, dialog2SuperSwitchState)
+    Dialog(showDialog, dialogTextFieldValue)
+    Dialog2(showDialog2, dialog2dropdownSelectedOption, dialog2SuperSwitchState)
 }
 
 @Composable
-fun dialog(
+fun Dialog(
     showDialog: MutableState<Boolean>,
     dialogTextFieldValue: MutableState<String>
 ) {
@@ -443,7 +443,7 @@ fun dialog(
 }
 
 @Composable
-fun dialog2(
+fun Dialog2(
     showDialog: MutableState<Boolean>,
     dialog2dropdownSelectedOption: MutableState<Int>,
     dialog2SuperSwitchState: MutableState<Boolean>
@@ -457,7 +457,9 @@ fun dialog2(
         }
     ) {
         Card(
-            color = MiuixTheme.colorScheme.secondaryContainer,
+            colors = CardDefaults.defaultColors(
+                color = MiuixTheme.colorScheme.primaryVariant
+            ),
         ) {
             SuperDropdown(
                 title = "Dropdown",

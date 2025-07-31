@@ -27,17 +27,17 @@ Card {
 
 ### Card Properties
 
-| Property Name     | Type                               | Description                               | Default Value               | Required | Applies To  |
-| ----------------- | ---------------------------------- | ----------------------------------------- | --------------------------- | -------- | ----------- |
-| modifier          | Modifier                           | Modifier applied to the card              | Modifier                    | No       | All         |
-| cornerRadius      | Dp                                 | Card corner radius                        | CardDefaults.CornerRadius   | No       | All         |
-| insideMargin      | PaddingValues                      | Card inner padding                        | CardDefaults.InsideMargin   | No       | All         |
-| color             | Color                              | Card background color                     | CardDefaults.DefaultColor() | No       | All         |
-| pressFeedbackType | PressFeedbackType                  | Feedback type when pressed                | PressFeedbackType.None      | No       | Interactive |
-| showIndication    | Boolean?                           | Show indication on interaction            | false                       | No       | Interactive |
-| onClick           | (() -> Unit)?                      | Callback when clicked                     | null                        | No       | Interactive |
-| onLongPress       | (() -> Unit)?                      | Callback when long pressed                | null                        | No       | Interactive |
-| content           | @Composable ColumnScope.() -> Unit | Composable function for card content area | -                           | Yes      | All         |
+| Property Name     | Type                               | Description                               | Default Value                | Required | Applies To  |
+| ----------------- | ---------------------------------- | ----------------------------------------- | ---------------------------- | -------- | ----------- |
+| modifier          | Modifier                           | Modifier applied to the card              | Modifier                     | No       | All         |
+| colors            | CardColors?                        | Card color configuration                  | CardDefaults.defaultColors() | No       | All         |
+| cornerRadius      | Dp                                 | Card corner radius                        | CardDefaults.CornerRadius    | No       | All         |
+| insideMargin      | PaddingValues                      | Card inner padding                        | CardDefaults.InsideMargin    | No       | All         |
+| pressFeedbackType | PressFeedbackType                  | Feedback type when pressed                | PressFeedbackType.None       | No       | Interactive |
+| showIndication    | Boolean?                           | Show indication on interaction            | false                        | No       | Interactive |
+| onClick           | (() -> Unit)?                      | Callback when clicked                     | null                         | No       | Interactive |
+| onLongPress       | (() -> Unit)?                      | Callback when long pressed                | null                         | No       | Interactive |
+| content           | @Composable ColumnScope.() -> Unit | Composable function for card content area | -                            | Yes      | All         |
 
 ::: warning
 Some properties are only available when creating an interactive card!
@@ -56,9 +56,17 @@ The CardDefaults object provides default values and color configurations for the
 
 #### Methods
 
-| Method Name    | Type  | Description                               |
-| -------------- | ----- | ----------------------------------------- |
-| DefaultColor() | Color | The default background color for the card |
+| Method Name     | Type       | Description                |
+| --------------- | ---------- | -------------------------- |
+| defaultColors() | CardColors | The default color for card |
+
+### CardColors Class
+
+| Property Name | Type  | Description                      |
+| ------------- | ----- | -------------------------------- |
+| color         | Color | Default background color of card |
+| contentColor  | Color | Default content color of card    |
+
 
 ## Advanced Usage
 
@@ -68,7 +76,9 @@ The CardDefaults object provides default values and color configurations for the
 Card(
     cornerRadius = 8.dp,
     insideMargin = PaddingValues(16.dp),
-    color = Color.LightGray.copy(alpha = 0.5f)
+    colors = CardDefaults.defaultColors(
+        color = MiuixTheme.colorScheme.primaryVariant
+    ),
 ) {
     Text("Custom Style Card")
 }
