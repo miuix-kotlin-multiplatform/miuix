@@ -18,6 +18,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -108,8 +109,8 @@ private fun SuperDialogContent(
     content: @Composable () -> Unit
 ) {
     val density = LocalDensity.current
-    val windowSize = getWindowSize()
-    val roundedCorner = getRoundedCorner()
+    val windowSize by rememberUpdatedState(getWindowSize())
+    val roundedCorner by rememberUpdatedState(getRoundedCorner())
 
     val windowWidth by remember(windowSize, density) {
         derivedStateOf { windowSize.width.dp / density.density }

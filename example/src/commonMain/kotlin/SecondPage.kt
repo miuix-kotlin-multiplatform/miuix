@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -47,6 +48,8 @@ fun SecondPage(
         }
     }
 
+    val windowSize by rememberUpdatedState(getWindowSize())
+
     PullToRefresh(
         isRefreshing = isRefreshing,
         onRefresh = { isRefreshing = true },
@@ -56,7 +59,7 @@ fun SecondPage(
     ) {
         LazyColumn(
             modifier = Modifier
-                .height(getWindowSize().height.dp)
+                .height(windowSize.height.dp)
                 .overScrollVertical()
                 .then(
                     if (scrollEndHaptic) Modifier.scrollEndHaptic() else Modifier

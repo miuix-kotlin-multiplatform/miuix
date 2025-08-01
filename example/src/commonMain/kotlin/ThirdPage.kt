@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
@@ -75,6 +77,7 @@ fun ThirdPage(
     val floatingToolbarOrientationOptions = remember { listOf("Horizontal", "Vertical") }
     val fabPositionOptions = remember { listOf("Start", "Center", "End", "EndOverlay") }
     val colorModeOptions = remember { listOf("System", "Light", "Dark") }
+    val windowSize by rememberUpdatedState(getWindowSize())
     LazyColumn(
         modifier = Modifier
             .then(
@@ -82,7 +85,7 @@ fun ThirdPage(
             )
             .overScrollVertical()
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
-            .height(getWindowSize().height.dp),
+            .height(windowSize.height.dp),
         contentPadding = PaddingValues(top = padding.calculateTopPadding()),
         overscrollEffect = null
     ) {

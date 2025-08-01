@@ -43,6 +43,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.PopupLayout
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.WindowSize
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import kotlin.math.min
 
@@ -78,8 +79,7 @@ fun ListPopup(
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
 
-    val currentWindowSize = getWindowSize()
-    var windowSize by remember { mutableStateOf(IntSize(currentWindowSize.width, currentWindowSize.height)) }
+    val windowSize by rememberUpdatedState(getWindowSize())
     var parentBounds by remember { mutableStateOf(IntRect.Zero) }
 
     Layout(
@@ -133,7 +133,7 @@ fun ListPopup(
         )
     }
 
-    if (parentBounds != IntRect.Zero && windowSize != IntSize.Zero) {
+    if (parentBounds != IntRect.Zero && windowSize != WindowSize(0, 0)) {
         PopupLayout(
             visible = show,
             enableWindowDim = enableWindowDim,
