@@ -3,6 +3,7 @@
 
 package top.yukonga.miuix.kmp.utils
 
+import androidx.annotation.FloatRange
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.ui.geometry.Size
@@ -11,7 +12,9 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.graphics.shapes.CornerRounding
+import androidx.graphics.shapes.Cubic
 import androidx.graphics.shapes.RoundedPolygon
+import kotlin.jvm.JvmOverloads
 
 /**
  * Creates a [Path] for a rectangle with smoothly rounded corners.
@@ -24,7 +27,7 @@ import androidx.graphics.shapes.RoundedPolygon
  * @param bottomRight The radius of the bottom-right corner.
  */
 fun Path.Companion.smoothRoundedRectangle(
-    smoothing: Float,
+    @FloatRange(from = 0.0, 1.0) smoothing: Float,
     size: Size,
     topLeft: Float,
     topRight: Float,
@@ -32,7 +35,6 @@ fun Path.Companion.smoothRoundedRectangle(
     bottomRight: Float
 ): Path {
     if (size.width <= 0f || size.height <= 0f) return Path()
-    val clampedSmoothing = smoothing.coerceIn(0f, 1f)
 
     return RoundedPolygon(
         vertices = floatArrayOf(
@@ -42,12 +44,12 @@ fun Path.Companion.smoothRoundedRectangle(
             0f, size.height
         ),
         perVertexRounding = listOf(
-            CornerRounding(radius = topLeft, smoothing = clampedSmoothing),
-            CornerRounding(radius = topRight, smoothing = clampedSmoothing),
-            CornerRounding(radius = bottomRight, smoothing = clampedSmoothing),
-            CornerRounding(radius = bottomLeft, smoothing = clampedSmoothing),
+            CornerRounding(radius = topLeft, smoothing = smoothing),
+            CornerRounding(radius = topRight, smoothing = smoothing),
+            CornerRounding(radius = bottomRight, smoothing = smoothing),
+            CornerRounding(radius = bottomLeft, smoothing = smoothing),
         )
-    ).toComposePath()
+    ).toPath()
 }
 
 /**
@@ -58,7 +60,7 @@ fun Path.Companion.smoothRoundedRectangle(
  */
 fun SmoothRoundedCornerShape(
     corner: Dp,
-    smoothing: Float = DefaultSmoothing
+    @FloatRange(from = 0.0, 1.0) smoothing: Float = DefaultSmoothing
 ): SmoothRoundedCornerShape = SmoothRoundedCornerShape(
     smoothing = smoothing,
     topStart = corner,
@@ -100,7 +102,7 @@ class SmoothRoundedCornerShape(
      * @param bottomStart The Dp value for the bottom-start corner.
      */
     constructor(
-        smoothing: Float = DefaultSmoothing,
+        @FloatRange(from = 0.0, 1.0) smoothing: Float = DefaultSmoothing,
         topStart: Dp,
         topEnd: Dp,
         bottomEnd: Dp,
@@ -152,26 +154,40 @@ class SmoothRoundedCornerShape(
 }
 
 /**
- * Converts a [RoundedPolygon] from the AndroidX graphics shapes library to a Jetpack Compose [Path].
+ * Gets a [Path] representation for a [RoundedPolygon] shape. Note that there is some rounding
+ * happening (to the nearest thousandth), to work around rendering artifacts introduced by some
+ * points being just slightly off from each other (far less than a pixel). This also allows for a
+ * more optimal path, as redundant curves (usually a single point) can be detected and not added to
+ * the resulting path.
  *
- * @param path An optional existing [Path] to reuse. If provided, it will be rewound and populated.
- *   Otherwise, a new [Path] will be created.
+ * @param path an optional [Path] object which, if supplied, will avoid the function having to
+ *   create a new [Path] object
  */
-fun RoundedPolygon.toComposePath(path: Path = Path()): Path {
-    path.rewind()
+@JvmOverloads
+fun RoundedPolygon.toPath(path: Path = Path()): Path {
+    pathFromCubics(path, cubics)
+    return path
+}
 
-    if (cubics.isEmpty()) return path
-    path.moveTo(cubics[0].anchor0X, cubics[0].anchor0Y)
-    for (cubic in cubics) {
+private fun pathFromCubics(path: Path, cubics: List<Cubic>) {
+    var first = true
+    path.rewind()
+    for (i in 0 until cubics.size) {
+        val cubic = cubics[i]
+        if (first) {
+            path.moveTo(cubic.anchor0X, cubic.anchor0Y)
+            first = false
+        }
         path.cubicTo(
-            cubic.control0X, cubic.control0Y,
-            cubic.control1X, cubic.control1Y,
-            cubic.anchor1X, cubic.anchor1Y
+            cubic.control0X,
+            cubic.control0Y,
+            cubic.control1X,
+            cubic.control1Y,
+            cubic.anchor1X,
+            cubic.anchor1Y
         )
     }
-
     path.close()
-    return path
 }
 
 /**

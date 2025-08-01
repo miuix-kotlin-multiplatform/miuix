@@ -4,6 +4,7 @@
 package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -12,21 +13,28 @@ import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.semantics.isTraversalGroup
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import top.yukonga.miuix.kmp.theme.LocalContentColor
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.PressFeedbackType
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
@@ -158,14 +166,23 @@ private fun BasicCard(
     content: @Composable () -> Unit,
 ) {
     val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
+    val clipShape = remember(cornerRadius) { RoundedCornerShape(cornerRadius) }
 
-    Surface(
-        modifier = modifier,
-        color = colors.color,
-        shape = shape,
-        contentColor = colors.contentColor,
-        content = content
-    )
+    CompositionLocalProvider(
+        LocalContentColor provides colors.contentColor,
+    ) {
+        Box(
+            modifier = modifier
+                .semantics(mergeDescendants = false) {
+                    isTraversalGroup = true
+                }
+                .background(color = colors.color, shape = shape)
+                .clip(clipShape), // For touch feedback, there is a problem when using SmoothRoundedCornerShape.
+            propagateMinConstraints = true,
+        ) {
+            content()
+        }
+    }
 }
 
 object CardDefaults {
