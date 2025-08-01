@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,7 +51,7 @@ fun Button(
     content: @Composable RowScope.() -> Unit
 ) {
     val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
-    val color = remember(enabled) { if (enabled) colors.color else colors.disabledColor }
+    val color by rememberUpdatedState(if (enabled) colors.color else colors.disabledColor)
     Surface(
         onClick = onClick,
         enabled = enabled,
@@ -94,8 +96,8 @@ fun TextButton(
     insideMargin: PaddingValues = ButtonDefaults.InsideMargin
 ) {
     val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
-    val color = remember(enabled) { if (enabled) colors.color else colors.disabledColor }
-    val textColor = remember(enabled) { if (enabled) colors.textColor else colors.disabledTextColor }
+    val color by rememberUpdatedState(if (enabled) colors.color else colors.disabledColor)
+    val textColor by rememberUpdatedState(if (enabled) colors.textColor else colors.disabledTextColor)
     Surface(
         onClick = onClick,
         enabled = enabled,
