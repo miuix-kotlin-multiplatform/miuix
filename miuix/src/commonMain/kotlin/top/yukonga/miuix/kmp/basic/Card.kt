@@ -155,7 +155,7 @@ private fun BasicCard(
     modifier: Modifier = Modifier,
     colors: CardColors = CardDefaults.defaultColors(),
     cornerRadius: Dp = CardDefaults.CornerRadius,
-    content: @Composable ColumnScope.() -> Unit,
+    content: @Composable () -> Unit,
 ) {
     val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
 
@@ -164,9 +164,8 @@ private fun BasicCard(
         color = colors.color,
         shape = shape,
         contentColor = colors.contentColor,
-    ) {
-        Column(content = content)
-    }
+        content = content
+    )
 }
 
 object CardDefaults {
