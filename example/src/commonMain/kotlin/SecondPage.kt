@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -34,7 +35,7 @@ fun SecondPage(
     var isRefreshing by rememberSaveable { mutableStateOf(false) }
     val pullToRefreshState = rememberPullToRefreshState()
 
-    val dropdownOptions = listOf("Option 1", "Option 2", "Option 3", "Option 4")
+    val dropdownOptions = remember { listOf("Option 1", "Option 2", "Option 3", "Option 4") }
     var dropdownSelectedOption by remember { mutableStateOf(0) }
     var ii by remember { mutableStateOf(6) }
 
@@ -68,14 +69,16 @@ fun SecondPage(
                     modifier = Modifier.padding(horizontal = 12.dp).padding(bottom = 12.dp),
                 ) {
                     for (i in 0 until ii) {
-                        SuperDropdown(
-                            title = "Dropdown ${i + 1}",
-                            items = dropdownOptions,
-                            selectedIndex = dropdownSelectedOption,
-                            onSelectedIndexChange = { newOption ->
-                                dropdownSelectedOption = newOption
-                            }
-                        )
+                        key(i) {
+                            SuperDropdown(
+                                title = "Dropdown ${i + 1}",
+                                items = dropdownOptions,
+                                selectedIndex = dropdownSelectedOption,
+                                onSelectedIndexChange = { newOption ->
+                                    dropdownSelectedOption = newOption
+                                }
+                            )
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(padding.calculateBottomPadding()))

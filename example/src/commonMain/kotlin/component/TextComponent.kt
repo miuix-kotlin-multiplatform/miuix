@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -76,17 +77,21 @@ fun TextComponent(
     miuixSuperSwitchState: MutableState<Boolean>,
     miuixSuperSwitchAnimState: MutableState<Boolean>,
 ) {
-    val dropdownOptions = listOf("Option 1", "Option 2", "Option 3", "Option 4")
-    val dropdownLongOptions = listOf(
-        "Option 1", "Option 2 (long)", "Option 3 (long long)", "Option 4 (long long long)",
-        "Option 5 (long long long long)", "Option 6 (long long long long long)"
-    )
-    val spinnerOptions = listOf(
-        SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFF5B29)) }, "Option 1", "Red"),
-        SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFF36D167)) }, "Option 2", "Green"),
-        SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFF3482FF)) }, "Option 3", "Blue"),
-        SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFFB21D)) }, "Option 4", "Yellow"),
-    )
+    val dropdownOptions = remember { listOf("Option 1", "Option 2", "Option 3", "Option 4") }
+    val dropdownLongOptions = remember {
+        listOf(
+            "Option 1", "Option 2 (long)", "Option 3 (long long)", "Option 4 (long long long)",
+            "Option 5 (long long long long)", "Option 6 (long long long long long)"
+        )
+    }
+    val spinnerOptions = remember {
+        listOf(
+            SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFF5B29)) }, "Option 1", "Red"),
+            SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFF36D167)) }, "Option 2", "Green"),
+            SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFF3482FF)) }, "Option 3", "Blue"),
+            SpinnerEntry(icon = { Icon(RoundedRectanglePainter(), "Icon", Modifier.padding(end = 12.dp), Color(0xFFFFB21D)) }, "Option 4", "Yellow"),
+        )
+    }
 
     SmallTitle(text = "Basic Component")
     Card(
@@ -458,8 +463,8 @@ fun Dialog2(
     ) {
         Card(
             colors = CardDefaults.defaultColors(
-                color = MiuixTheme.colorScheme.primaryVariant
-            ),
+                color = MiuixTheme.colorScheme.secondaryContainer,
+            )
         ) {
             SuperDropdown(
                 title = "Dropdown",

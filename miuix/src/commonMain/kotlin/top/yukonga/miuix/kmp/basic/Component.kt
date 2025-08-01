@@ -17,10 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -64,8 +62,6 @@ fun BasicComponent(
     @Suppress("NAME_SHADOWING")
     val interactionSource = interactionSource ?: remember { MutableInteractionSource() }
 
-    val currentOnClick by rememberUpdatedState(onClick)
-
     val holdDown = remember { mutableStateOf<HoldDownInteraction.HoldDown?>(null) }
     LaunchedEffect(holdDownState) {
         if (holdDownState) {
@@ -85,11 +81,11 @@ fun BasicComponent(
             .heightIn(min = 56.dp)
             .fillMaxWidth()
             .then(
-                if (currentOnClick != null && enabled) {
+                if (onClick != null && enabled) {
                     Modifier.clickable(
                         indication = LocalIndication.current,
                         interactionSource = interactionSource,
-                        onClick = { currentOnClick?.invoke() }
+                        onClick = { onClick.invoke() }
                     )
                 } else Modifier
             )
@@ -133,9 +129,7 @@ fun BasicComponent(
                 )
             }.first().measure(looseConstraints.copy(maxWidth = contentMaxWidth))
         }
-        listOfNotNull(titlePlaceable?.width, summaryPlaceable?.width).maxOrNull() ?: 0
         val contentHeight = (titlePlaceable?.height ?: 0) + (summaryPlaceable?.height ?: 0)
-
         val layoutHeight = maxOf(leftHeight, rightHeight, contentHeight)
         layout(constraints.maxWidth, layoutHeight) {
             var x = 0

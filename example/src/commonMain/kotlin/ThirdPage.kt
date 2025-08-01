@@ -63,6 +63,18 @@ fun ThirdPage(
     colorMode: MutableState<Int>
 ) {
     val showDialog = remember { mutableStateOf(false) }
+    val floatingNavigationBarModeOptions = remember {
+        listOf("IconOnly", "IconAndText", "TextOnly")
+    }
+    val floatingNavigationBarPositionOptions = remember {
+        listOf("Center", "Start", "End")
+    }
+    val floatingToolbarPositionOptions = remember {
+        listOf("TopStart", "CenterStart", "BottomStart", "TopEnd", "CenterEnd", "BottomEnd", "TopCenter", "BottomCenter")
+    }
+    val floatingToolbarOrientationOptions = remember { listOf("Horizontal", "Vertical") }
+    val fabPositionOptions = remember { listOf("Start", "Center", "End", "EndOverlay") }
+    val colorModeOptions = remember { listOf("System", "Light", "Dark") }
     LazyColumn(
         modifier = Modifier
             .then(
@@ -108,13 +120,13 @@ fun ThirdPage(
                             Column {
                                 SuperDropdown(
                                     title = "FloatingNavigationBar Mode",
-                                    items = listOf("IconOnly", "IconAndText", "TextOnly"),
+                                    items = floatingNavigationBarModeOptions,
                                     selectedIndex = floatingNavigationBarMode,
                                     onSelectedIndexChange = onFloatingNavigationBarModeChange
                                 )
                                 SuperDropdown(
                                     title = "FloatingNavigationBar Position",
-                                    items = listOf("Center", "Start", "End"),
+                                    items = floatingNavigationBarPositionOptions,
                                     selectedIndex = floatingNavigationBarPosition,
                                     onSelectedIndexChange = onFloatingNavigationBarPositionChange
                                 )
@@ -133,22 +145,13 @@ fun ThirdPage(
                     Column {
                         SuperDropdown(
                             title = "FloatingToolbar Position",
-                            items = listOf(
-                                "TopStart",
-                                "CenterStart",
-                                "BottomStart",
-                                "TopEnd",
-                                "CenterEnd",
-                                "BottomEnd",
-                                "TopCenter",
-                                "BottomCenter"
-                            ),
+                            items = floatingToolbarPositionOptions,
                             selectedIndex = floatingToolbarPosition,
                             onSelectedIndexChange = onFloatingToolbarPositionChange
                         )
                         SuperDropdown(
                             title = "FloatingToolbar Orientation",
-                            items = listOf("Horizontal", "Vertical"),
+                            items = floatingToolbarOrientationOptions,
                             selectedIndex = floatingToolbarOrientation,
                             onSelectedIndexChange = onFloatingToolbarOrientationChange
                         )
@@ -164,12 +167,7 @@ fun ThirdPage(
                 ) {
                     SuperDropdown(
                         title = "FloatingActionButton Position",
-                        items = listOf(
-                            "Start",
-                            "Center",
-                            "End",
-                            "EndOverlay",
-                        ),
+                        items = fabPositionOptions,
                         selectedIndex = fabPosition,
                         onSelectedIndexChange = { fabPosition ->
                             onFabPositionChange(fabPosition)
@@ -188,7 +186,7 @@ fun ThirdPage(
                 )
                 SuperDropdown(
                     title = "Color Mode",
-                    items = listOf("System", "Light", "Dark"),
+                    items = colorModeOptions,
                     selectedIndex = colorMode.value,
                     onSelectedIndexChange = { colorMode.value = it }
                 )

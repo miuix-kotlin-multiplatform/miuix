@@ -4,9 +4,13 @@
 package top.yukonga.miuix.kmp.utils
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import android.view.RoundedCorner
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -21,16 +25,23 @@ import kotlin.math.min
 @Composable
 actual fun getWindowSize(): WindowSize {
     val configuration = LocalConfiguration.current
-    val screenWidthDp = configuration.screenWidthDp
-    val screenHeightDp = configuration.screenHeightDp
     val context = LocalContext.current
-    val windowMetrics = WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(context)
+    val windowMetrics = remember(configuration, context) {
+        WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(context)
+    }
     val widthPx = windowMetrics.bounds.width()
     val heightPx = windowMetrics.bounds.height()
-    return if (screenWidthDp > screenHeightDp)
-        WindowSize(max(widthPx, heightPx), min(widthPx, heightPx))
-    else
-        WindowSize(min(widthPx, heightPx), max(widthPx, heightPx))
+    val windowSize by remember(widthPx, heightPx, configuration) {
+        derivedStateOf {
+            val screenWidthDp = configuration.screenWidthDp
+            val screenHeightDp = configuration.screenHeightDp
+            if (screenWidthDp > screenHeightDp)
+                WindowSize(max(widthPx, heightPx), min(widthPx, heightPx))
+            else
+                WindowSize(min(widthPx, heightPx), max(widthPx, heightPx))
+        }
+    }
+    return windowSize
 }
 
 actual fun platform(): Platform = Platform.Android
@@ -38,26 +49,29 @@ actual fun platform(): Platform = Platform.Android
 @Composable
 actual fun getRoundedCorner(): Dp = getSystemCornerRadius()
 
-// NewApi. Represents a rounded corner of the display.
+// Represents a rounded corner of the display.
 @Composable
 private fun getSystemCornerRadius(): Dp {
-    val insets = LocalView.current.rootWindowInsets
+    val context = LocalContext.current
     val density = LocalDensity.current.density
-    val roundedCornerRadius = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        insets?.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_LEFT)?.radius ?: getCornerRadiusBottom()
-    } else {
-        getCornerRadiusBottom()
+    val insets = LocalView.current.rootWindowInsets
+
+    val roundedCornerRadius = remember(context, insets) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            insets?.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_LEFT)?.radius
+                ?.takeIf { it > 0 }
+                ?: getCornerRadiusBottom(context)
+        } else {
+            getCornerRadiusBottom(context)
+        }
     }
-    val cornerDp = (roundedCornerRadius / density).dp
-    if (cornerDp <= 32.dp) return 0.dp
-    return cornerDp
+    val dp = (roundedCornerRadius / density).dp
+    return if (dp <= 32.dp) 0.dp else dp
 }
 
 // from https://dev.mi.com/distribute/doc/details?pId=1631
-@Composable
 @SuppressLint("DiscouragedApi")
-fun getCornerRadiusBottom(): Int {
-    val context = LocalContext.current
+fun getCornerRadiusBottom(context: Context): Int {
     val resourceId = context.resources.getIdentifier("rounded_corner_radius_bottom", "dimen", "android")
     return if (resourceId > 0) context.resources.getDimensionPixelSize(resourceId) else 0
 }

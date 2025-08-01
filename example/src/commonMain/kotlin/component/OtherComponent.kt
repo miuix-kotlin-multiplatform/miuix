@@ -24,6 +24,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
@@ -57,95 +59,17 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TextButton
 import top.yukonga.miuix.kmp.basic.TextField
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.useful.AddSecret
-import top.yukonga.miuix.kmp.icon.icons.useful.Back
-import top.yukonga.miuix.kmp.icon.icons.useful.Blocklist
-import top.yukonga.miuix.kmp.icon.icons.useful.Cancel
-import top.yukonga.miuix.kmp.icon.icons.useful.Confirm
-import top.yukonga.miuix.kmp.icon.icons.useful.Copy
-import top.yukonga.miuix.kmp.icon.icons.useful.Cut
-import top.yukonga.miuix.kmp.icon.icons.useful.Delete
-import top.yukonga.miuix.kmp.icon.icons.useful.Edit
-import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
-import top.yukonga.miuix.kmp.icon.icons.useful.Info
 import top.yukonga.miuix.kmp.icon.icons.useful.Like
-import top.yukonga.miuix.kmp.icon.icons.useful.More
-import top.yukonga.miuix.kmp.icon.icons.useful.Move
-import top.yukonga.miuix.kmp.icon.icons.useful.NavigatorSwitch
-import top.yukonga.miuix.kmp.icon.icons.useful.New
-import top.yukonga.miuix.kmp.icon.icons.useful.Order
-import top.yukonga.miuix.kmp.icon.icons.useful.Paste
-import top.yukonga.miuix.kmp.icon.icons.useful.Pause
-import top.yukonga.miuix.kmp.icon.icons.useful.Personal
-import top.yukonga.miuix.kmp.icon.icons.useful.Play
-import top.yukonga.miuix.kmp.icon.icons.useful.Reboot
-import top.yukonga.miuix.kmp.icon.icons.useful.Redo
-import top.yukonga.miuix.kmp.icon.icons.useful.Refresh
-import top.yukonga.miuix.kmp.icon.icons.useful.Remove
-import top.yukonga.miuix.kmp.icon.icons.useful.RemoveBlocklist
-import top.yukonga.miuix.kmp.icon.icons.useful.RemoveSecret
-import top.yukonga.miuix.kmp.icon.icons.useful.Rename
-import top.yukonga.miuix.kmp.icon.icons.useful.Restore
-import top.yukonga.miuix.kmp.icon.icons.useful.Save
-import top.yukonga.miuix.kmp.icon.icons.useful.Scan
-import top.yukonga.miuix.kmp.icon.icons.useful.Search
-import top.yukonga.miuix.kmp.icon.icons.useful.SelectAll
-import top.yukonga.miuix.kmp.icon.icons.useful.Settings
-import top.yukonga.miuix.kmp.icon.icons.useful.Share
-import top.yukonga.miuix.kmp.icon.icons.useful.Stick
-import top.yukonga.miuix.kmp.icon.icons.useful.Undo
-import top.yukonga.miuix.kmp.icon.icons.useful.Unlike
-import top.yukonga.miuix.kmp.icon.icons.useful.Unstick
-import top.yukonga.miuix.kmp.icon.icons.useful.Update
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.PressFeedbackType
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import kotlin.math.round
 
-fun LazyListScope.otherComponent(focusManager: FocusManager, padding: PaddingValues) {
-    val miuixIconsNormal = listOf(
-        MiuixIcons.Useful.AddSecret,
-        MiuixIcons.Useful.Back,
-        MiuixIcons.Useful.Blocklist,
-        MiuixIcons.Useful.Cancel,
-        MiuixIcons.Useful.Confirm,
-        MiuixIcons.Useful.Copy,
-        MiuixIcons.Useful.Cut,
-        MiuixIcons.Useful.Delete,
-        MiuixIcons.Useful.Edit,
-        MiuixIcons.Useful.ImmersionMore,
-        MiuixIcons.Useful.Info,
-        MiuixIcons.Useful.Like,
-        MiuixIcons.Useful.More,
-        MiuixIcons.Useful.Move,
-        MiuixIcons.Useful.NavigatorSwitch,
-        MiuixIcons.Useful.New,
-        MiuixIcons.Useful.Order,
-        MiuixIcons.Useful.Paste,
-        MiuixIcons.Useful.Pause,
-        MiuixIcons.Useful.Personal,
-        MiuixIcons.Useful.Play,
-        MiuixIcons.Useful.Reboot,
-        MiuixIcons.Useful.Redo,
-        MiuixIcons.Useful.Refresh,
-        MiuixIcons.Useful.Remove,
-        MiuixIcons.Useful.RemoveBlocklist,
-        MiuixIcons.Useful.RemoveSecret,
-        MiuixIcons.Useful.Rename,
-        MiuixIcons.Useful.Restore,
-        MiuixIcons.Useful.Save,
-        MiuixIcons.Useful.Scan,
-        MiuixIcons.Useful.Search,
-        MiuixIcons.Useful.SelectAll,
-        MiuixIcons.Useful.Settings,
-        MiuixIcons.Useful.Share,
-        MiuixIcons.Useful.Stick,
-        MiuixIcons.Useful.Undo,
-        MiuixIcons.Useful.Unlike,
-        MiuixIcons.Useful.Unstick,
-        MiuixIcons.Useful.Update
-    )
-
+fun LazyListScope.otherComponent(
+    miuixIcons: List<ImageVector>,
+    focusManager: FocusManager,
+    padding: PaddingValues
+) {
     item {
         var buttonText by remember { mutableStateOf("Cancel") }
         var submitButtonText by remember { mutableStateOf("Submit") }
@@ -331,8 +255,9 @@ fun LazyListScope.otherComponent(focusManager: FocusManager, padding: PaddingVal
 
     item {
         SmallTitle(text = "TabRow")
-        val tabTexts = listOf("Tab 1", "Tab 2", "Tab 3")
-        val tabTexts1 = listOf("Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6")
+        // 用 remember 缓存 tab 文本列表，避免每次重组都新建对象
+        val tabTexts = remember { listOf("Tab 1", "Tab 2", "Tab 3") }
+        val tabTexts1 = remember { listOf("Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6") }
         var selectedTabIndex by remember { mutableStateOf(0) }
         var selectedTabIndex1 by remember { mutableStateOf(0) }
         TabRow(
@@ -357,8 +282,11 @@ fun LazyListScope.otherComponent(focusManager: FocusManager, padding: PaddingVal
             ) {
                 selectedTabIndex1 = it
             }
+            val selectedTabText by remember(selectedTabIndex1) {
+                derivedStateOf { tabTexts1[selectedTabIndex1] }
+            }
             Text(
-                text = "Selected Tab: ${tabTexts[selectedTabIndex1]}",
+                text = "Selected Tab: $selectedTabText",
                 modifier = Modifier.padding(top = 12.dp)
             )
         }
@@ -374,7 +302,7 @@ fun LazyListScope.otherComponent(focusManager: FocusManager, padding: PaddingVal
             insideMargin = PaddingValues(16.dp)
         ) {
             FlowRow {
-                miuixIconsNormal.forEach { icon ->
+                miuixIcons.forEach { icon ->
                     Icon(
                         imageVector = icon,
                         contentDescription = null,

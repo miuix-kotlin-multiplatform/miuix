@@ -39,9 +39,9 @@ object ColorUtils {
             else -> (60f * ((rf - gf) / delta) + 240f) % 360f
         }
 
-        hsv[0] = hue
-        hsv[1] = if (max > 0f) delta / max else 0f
-        hsv[2] = max
+        hsv[0] = hue.coerceIn(0f, 360f)
+        hsv[1] = (if (max > 0f) delta / max else 0f).coerceIn(0f, 1f)
+        hsv[2] = max.coerceIn(0f, 1f)
     }
 
     private const val INV_255 = 1f / 255f

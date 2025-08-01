@@ -220,6 +220,7 @@ fun UITest(
                 exit = fadeOut()
             ) {
                 FloatingToolbar(
+                    color = MiuixTheme.colorScheme.primaryVariant,
                     cornerRadius = 20.dp
                 ) {
                     AnimatedContent(
