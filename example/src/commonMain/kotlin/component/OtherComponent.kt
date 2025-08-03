@@ -70,7 +70,7 @@ fun LazyListScope.otherComponent(
     focusManager: FocusManager,
     padding: PaddingValues
 ) {
-    item {
+    item(key = "button") {
         var buttonText by remember { mutableStateOf("Cancel") }
         var submitButtonText by remember { mutableStateOf("Submit") }
         var clickCount by remember { mutableStateOf(0) }
@@ -125,7 +125,7 @@ fun LazyListScope.otherComponent(
         }
     }
 
-    item {
+    item(key = "progressIndicator") {
         SmallTitle(text = "ProgressIndicator")
         val progressValues = listOf(0.0f, 0.25f, 0.5f, 0.75f, 1.0f, null)
         val animatedProgressValue by rememberInfiniteTransition().animateFloat(
@@ -173,7 +173,7 @@ fun LazyListScope.otherComponent(
         }
     }
 
-    item {
+    item(key = "textField") {
         var text1 by remember { mutableStateOf("") }
         var text2 by remember { mutableStateOf(TextFieldValue("")) }
         val text3 = rememberTextFieldState(initialText = "")
@@ -222,7 +222,7 @@ fun LazyListScope.otherComponent(
         )
     }
 
-    item {
+    item(key = "slider") {
         SmallTitle(text = "Slider")
         var progress by remember { mutableStateOf(0.5f) }
         Slider(
@@ -253,9 +253,8 @@ fun LazyListScope.otherComponent(
         )
     }
 
-    item {
+    item(key = "tabRow") {
         SmallTitle(text = "TabRow")
-        // 用 remember 缓存 tab 文本列表，避免每次重组都新建对象
         val tabTexts = remember { listOf("Tab 1", "Tab 2", "Tab 3") }
         val tabTexts1 = remember { listOf("Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6") }
         var selectedTabIndex by remember { mutableStateOf(0) }
@@ -292,7 +291,7 @@ fun LazyListScope.otherComponent(
         }
     }
 
-    item {
+    item(key = "icon") {
         SmallTitle(text = "Icon")
         Card(
             modifier = Modifier
@@ -314,7 +313,7 @@ fun LazyListScope.otherComponent(
         }
     }
 
-    item {
+    item(key = "colorPicker") {
         SmallTitle(text = "ColorPicker")
         val miuixColor = MiuixTheme.colorScheme.primary
         var selectedColor by remember { mutableStateOf(miuixColor) }
@@ -367,7 +366,7 @@ fun LazyListScope.otherComponent(
         }
     }
 
-    item {
+    item(key = "card") {
         SmallTitle(text = "Card")
         Card(
             modifier = Modifier

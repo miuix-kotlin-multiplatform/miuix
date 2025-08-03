@@ -374,7 +374,6 @@ fun TextComponent(
             selectedIndex = spinnerOptionSelected.value,
             onSelectedIndexChange = { newOption -> spinnerOptionSelected.value = newOption },
         )
-
         SuperSpinner(
             title = "Spinner",
             summary = "Spinner always on right",
@@ -383,7 +382,6 @@ fun TextComponent(
             onSelectedIndexChange = { newOption -> spinnerOptionSelectedRight.value = newOption },
             mode = SpinnerMode.AlwaysOnRight,
         )
-
         SuperSpinner(
             title = "Spinner",
             summary = "Spinner as Dialog",
@@ -392,7 +390,6 @@ fun TextComponent(
             selectedIndex = spinnerOptionSelectedDialog.value,
             onSelectedIndexChange = { newOption -> spinnerOptionSelectedDialog.value = newOption },
         )
-
         SuperSpinner(
             title = "Disabled Spinner",
             items = listOf(SpinnerEntry(icon = null, title = "Option 4")),

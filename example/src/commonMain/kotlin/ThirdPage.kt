@@ -62,7 +62,8 @@ fun ThirdPage(
     onEnablePageUserScrollChange: (Boolean) -> Unit,
     scrollEndHaptic: Boolean,
     onScrollEndHapticChange: (Boolean) -> Unit,
-    colorMode: MutableState<Int>
+    isWideScreen: Boolean,
+    colorMode: MutableState<Int>,
 ) {
     val showDialog = remember { mutableStateOf(false) }
     val floatingNavigationBarModeOptions = remember {
@@ -106,10 +107,11 @@ fun ThirdPage(
                 SuperSwitch(
                     title = "Show NavigationBar",
                     checked = showNavigationBar,
+                    enabled = !isWideScreen,
                     onCheckedChange = onShowNavigationBarChange
                 )
                 AnimatedVisibility(
-                    visible = showNavigationBar
+                    visible = showNavigationBar && !isWideScreen
                 ) {
                     Column {
                         SuperSwitch(

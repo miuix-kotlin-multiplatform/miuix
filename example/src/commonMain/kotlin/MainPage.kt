@@ -2,21 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.displayCutout
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -190,158 +179,70 @@ fun MainPage(
     }
 
     val windowSize by rememberUpdatedState(getWindowSize())
+    val focusManager = LocalFocusManager.current
 
-    BoxWithConstraints(
-        modifier = Modifier.fillMaxSize()
+    LazyColumn(
+        modifier = Modifier
+            .then(
+                if (scrollEndHaptic) Modifier.scrollEndHaptic() else Modifier
+            )
+            .overScrollVertical()
+            .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
+            .height(windowSize.height.dp),
+        contentPadding = PaddingValues(top = padding.calculateTopPadding()),
+        overscrollEffect = null,
     ) {
-        val focusManager = LocalFocusManager.current
-        if (maxWidth < 840.dp) {
-            LazyColumn(
-                modifier = Modifier
-                    .then(
-                        if (scrollEndHaptic) Modifier.scrollEndHaptic() else Modifier
-                    )
-                    .overScrollVertical()
-                    .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
-                    .height(windowSize.height.dp),
-                contentPadding = PaddingValues(top = padding.calculateTopPadding()),
-                overscrollEffect = null,
-            ) {
-                item(key = "searchbar") {
-                    SmallTitle(text = "SearchBar")
-                    SearchBar(
-                        inputField = {
-                            InputField(
-                                query = searchValue,
-                                onQueryChange = { searchValue = it },
-                                onSearch = { expanded = false },
-                                expanded = expanded,
-                                onExpandedChange = { expanded = it },
-                                label = "Search"
-                            )
-                        },
-                        outsideRightAction = {
-                            Text(
-                                modifier = Modifier
-                                    .padding(end = 12.dp)
-                                    .clickable(
-                                        interactionSource = null,
-                                        indication = null
-                                    ) {
-                                        expanded = false
-                                        searchValue = ""
-                                    },
-                                text = "Cancel",
-                                style = TextStyle(fontSize = 17.sp, fontWeight = FontWeight.Bold),
-                                color = MiuixTheme.colorScheme.primary
-                            )
-                        },
+        item(key = "searchbar") {
+            SmallTitle(text = "SearchBar")
+            SearchBar(
+                inputField = {
+                    InputField(
+                        query = searchValue,
+                        onQueryChange = { searchValue = it },
+                        onSearch = { expanded = false },
                         expanded = expanded,
-                        onExpandedChange = { expanded = it }
-                    ) {
-                        Column {
-                            repeat(4) { idx ->
-                                val resultText = "Suggestion $idx"
-                                BasicComponent(
-                                    title = resultText,
-                                    onClick = {
-                                        searchValue = resultText
-                                        expanded = false
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
-                if (notExpanded) {
-                    item(key = "textComponent") {
-                        textComponent()
-                    }
-                    otherComponent(miuixIcons, focusManager, padding)
-                }
-            }
-        } else {
-            Row(
-                modifier = Modifier
-                    .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
-                    .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal))
-            ) {
-                LazyColumn(
-                    modifier = Modifier
-                        .overScrollVertical()
-                        .scrollEndHaptic()
-                        .weight(0.5f),
-                    contentPadding = PaddingValues(top = padding.calculateTopPadding())
-                ) {
-                    item(key = "searchbar-wide") {
-                        SmallTitle(text = "SearchBar")
-                        SearchBar(
-                            inputField = {
-                                InputField(
-                                    query = searchValue,
-                                    onQueryChange = { searchValue = it },
-                                    onSearch = { expanded = false },
-                                    expanded = expanded,
-                                    onExpandedChange = { expanded = it },
-                                    label = "Search"
-                                )
-                            },
-                            outsideRightAction = {
-                                Text(
-                                    modifier = Modifier
-                                        .clickable(
-                                            interactionSource = null,
-                                            indication = null
-                                        ) {
-                                            expanded = false
-                                            searchValue = ""
-                                        },
-                                    text = "Cancel",
-                                    color = MiuixTheme.colorScheme.primary
-                                )
-                            },
-                            expanded = expanded,
-                            onExpandedChange = { expanded = it }
-                        ) {
-                            Column(
-                                Modifier.fillMaxSize()
+                        onExpandedChange = { expanded = it },
+                        label = "Search"
+                    )
+                },
+                outsideRightAction = {
+                    Text(
+                        modifier = Modifier
+                            .padding(end = 12.dp)
+                            .clickable(
+                                interactionSource = null,
+                                indication = null
                             ) {
-                                repeat(4) { idx ->
-                                    val resultText = "Suggestion $idx"
-                                    BasicComponent(
-                                        title = resultText,
-                                        modifier = Modifier
-                                            .fillMaxWidth(),
-                                        onClick = {
-                                            searchValue = resultText
-                                            expanded = false
-                                        }
-                                    )
-                                }
+                                expanded = false
+                                searchValue = ""
+                            },
+                        text = "Cancel",
+                        style = TextStyle(fontSize = 17.sp, fontWeight = FontWeight.Bold),
+                        color = MiuixTheme.colorScheme.primary
+                    )
+                },
+                expanded = expanded,
+                onExpandedChange = { expanded = it }
+            ) {
+                Column {
+                    repeat(4) { idx ->
+                        val resultText = "Suggestion $idx"
+                        BasicComponent(
+                            title = resultText,
+                            onClick = {
+                                searchValue = resultText
+                                expanded = false
                             }
-                        }
-                    }
-                    if (notExpanded) {
-                        otherComponent(miuixIcons, focusManager, padding)
-                        item(key = "spacer-wide") {
-                            Spacer(modifier = Modifier.height(6.dp))
-                        }
-                    }
-                }
-                LazyColumn(
-                    modifier = Modifier
-                        .overScrollVertical()
-                        .scrollEndHaptic()
-                        .padding(end = 12.dp, bottom = 12.dp)
-                        .weight(0.5f),
-                    contentPadding = PaddingValues(top = padding.calculateTopPadding())
-                ) {
-                    item(key = "textComponent-wide") {
-                        textComponent()
-                        Spacer(modifier = Modifier.height(padding.calculateBottomPadding()))
+                        )
                     }
                 }
             }
+        }
+        if (notExpanded) {
+            item(key = "textComponent") {
+                textComponent()
+            }
+            otherComponent(miuixIcons, focusManager, padding)
         }
     }
 }
