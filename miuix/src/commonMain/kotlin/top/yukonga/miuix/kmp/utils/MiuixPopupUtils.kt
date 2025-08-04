@@ -152,7 +152,7 @@ class MiuixPopupUtils {
          */
         @Composable
         fun DialogLayout(
-            visible: MutableState<Boolean> = mutableStateOf(true),
+            visible: MutableState<Boolean>,
             enterTransition: EnterTransition? = null,
             exitTransition: ExitTransition? = null,
             enableWindowDim: Boolean = true,
@@ -324,10 +324,16 @@ class MiuixPopupUtils {
         @Composable
         fun MiuixPopupHost() {
             val density = LocalDensity.current
-            val getWindowSize by rememberUpdatedState(getWindowSize())
-            val windowWidth by rememberUpdatedState(getWindowSize.width.dp / density.density)
-            val windowHeight by rememberUpdatedState(getWindowSize.height.dp / density.density)
-            val largeScreen by remember { derivedStateOf { (windowHeight >= 480.dp && windowWidth >= 840.dp) } }
+            val windowSize by rememberUpdatedState(getWindowSize())
+            val windowWidth by remember(windowSize, density) {
+                derivedStateOf { windowSize.width.dp / density.density }
+            }
+            val windowHeight by remember(windowSize, density) {
+                derivedStateOf { windowSize.height.dp / density.density }
+            }
+            val largeScreen by remember(windowWidth, windowHeight) {
+                derivedStateOf { (windowHeight >= 480.dp && windowWidth >= 840.dp) }
+            }
 
             val dialogStates = LocalDialogStates.current
             val popupStates = LocalPopupStates.current
@@ -354,6 +360,13 @@ class MiuixPopupUtils {
                             popupState = popupState,
                         )
                     }
+                }
+            }
+
+            DisposableEffect(Unit) {
+                onDispose {
+                    dialogStates.clear()
+                    popupStates.clear()
                 }
             }
         }

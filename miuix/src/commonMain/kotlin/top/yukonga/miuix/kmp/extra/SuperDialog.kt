@@ -70,6 +70,7 @@ fun SuperDialog(
     content: @Composable () -> Unit
 ) {
     if (!show.value) return
+
     DialogLayout(
         visible = show,
         enableWindowDim = enableWindowDim,
@@ -109,9 +110,10 @@ private fun SuperDialogContent(
     content: @Composable () -> Unit
 ) {
     val density = LocalDensity.current
-    val windowSize by rememberUpdatedState(getWindowSize())
+
     val roundedCorner by rememberUpdatedState(getRoundedCorner())
 
+    val windowSize by rememberUpdatedState(getWindowSize())
     val windowWidth by remember(windowSize, density) {
         derivedStateOf { windowSize.width.dp / density.density }
     }

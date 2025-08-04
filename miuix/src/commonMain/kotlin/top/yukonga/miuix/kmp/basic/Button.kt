@@ -51,7 +51,7 @@ fun Button(
     content: @Composable RowScope.() -> Unit
 ) {
     val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
-    val color by rememberUpdatedState(if (enabled) colors.color else colors.disabledColor)
+    val color = if (enabled) colors.color else colors.disabledColor
     Surface(
         onClick = onClick,
         enabled = enabled,
@@ -96,8 +96,8 @@ fun TextButton(
     insideMargin: PaddingValues = ButtonDefaults.InsideMargin
 ) {
     val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
-    val color by rememberUpdatedState(if (enabled) colors.color else colors.disabledColor)
-    val textColor by rememberUpdatedState(if (enabled) colors.textColor else colors.disabledTextColor)
+    val color = if (enabled) colors.color else colors.disabledColor
+    val textColor = if (enabled) colors.textColor else colors.disabledTextColor
     Surface(
         onClick = onClick,
         enabled = enabled,

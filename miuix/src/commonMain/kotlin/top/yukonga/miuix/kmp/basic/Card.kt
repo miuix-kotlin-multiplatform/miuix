@@ -102,21 +102,21 @@ fun Card(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    val currentOnClick by rememberUpdatedState(onClick)
-    val currentOnLongPress by rememberUpdatedState(onLongPress)
 
-    val pressFeedbackModifier = when (pressFeedbackType) {
-        PressFeedbackType.None -> Modifier
-        PressFeedbackType.Sink -> Modifier.pressSink(interactionSource)
-        PressFeedbackType.Tilt -> Modifier.pressTilt(interactionSource)
+    val pressFeedbackModifier = remember(pressFeedbackType, interactionSource) {
+        when (pressFeedbackType) {
+            PressFeedbackType.None -> Modifier
+            PressFeedbackType.Sink -> Modifier.pressSink(interactionSource)
+            PressFeedbackType.Tilt -> Modifier.pressTilt(interactionSource)
+        }
     }
 
     BasicCard(
         modifier = modifier
-            .pointerInput(Unit) {
+            .pointerInput(onClick, onLongPress) {
                 detectTapGestures(
-                    onTap = { currentOnClick?.invoke() },
-                    onLongPress = { currentOnLongPress?.invoke() }
+                    onTap = { onClick?.invoke() },
+                    onLongPress = { onLongPress?.invoke() }
                 )
             }
             .pointerInput(interactionSource) {

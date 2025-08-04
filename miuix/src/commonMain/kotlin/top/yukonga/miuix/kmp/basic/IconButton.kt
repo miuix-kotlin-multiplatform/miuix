@@ -53,7 +53,6 @@ fun IconButton(
     minWidth: Dp = IconButtonDefaults.MinWidth,
     content: @Composable () -> Unit
 ) {
-    val currentOnClick by rememberUpdatedState(onClick)
     val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
     val interactionSource = remember { MutableInteractionSource() }
     val holdDown = remember { mutableStateOf<HoldDownInteraction.HoldDown?>(null) }
@@ -81,7 +80,7 @@ fun IconButton(
                 role = Role.Button,
                 indication = LocalIndication.current,
                 interactionSource = interactionSource,
-                onClick = currentOnClick
+                onClick = onClick
             ),
         contentAlignment = Alignment.Center
     ) {

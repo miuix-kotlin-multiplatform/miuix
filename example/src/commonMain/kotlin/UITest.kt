@@ -87,6 +87,7 @@ import top.yukonga.miuix.kmp.icon.icons.useful.NavigatorSwitch
 import top.yukonga.miuix.kmp.icon.icons.useful.Order
 import top.yukonga.miuix.kmp.icon.icons.useful.Settings
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.WindowSize
 import top.yukonga.miuix.kmp.utils.getWindowSize
 import top.yukonga.miuix.kmp.utils.overScrollVertical
 import top.yukonga.miuix.kmp.utils.scrollEndHaptic
@@ -229,7 +230,7 @@ private fun WideScreenLayout(
     pagerState: PagerState,
     topAppBarScrollBehaviorList: List<ScrollBehavior>,
     currentScrollBehavior: ScrollBehavior,
-    windowSize: Any,
+    windowSize: WindowSize,
     colorMode: MutableState<Int>
 ) {
     val layoutDirection = LocalLayoutDirection.current
@@ -274,7 +275,7 @@ private fun WideScreenPanel(
     onPageSelected: (Int) -> Unit,
     barScrollBehavior: ScrollBehavior,
     uiState: UIState,
-    windowSize: Any,
+    windowSize: WindowSize,
     layoutDirection: LayoutDirection
 ) {
     Scaffold(
