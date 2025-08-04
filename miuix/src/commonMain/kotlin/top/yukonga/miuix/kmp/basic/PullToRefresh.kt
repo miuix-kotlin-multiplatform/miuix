@@ -33,6 +33,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -191,9 +192,9 @@ fun rememberPullToRefreshState(): PullToRefreshState {
     }
 
     // Update context-dependent properties on the state instance to ensure it's always current.
-    val currentWindowSize = getWindowSize()
-    state.maxDragDistancePx = currentWindowSize.height.toFloat()// * maxDragRatio
-    state.refreshThresholdOffset = currentWindowSize.height.toFloat() * maxDragRatio * thresholdRatio
+    val windowSize by rememberUpdatedState(getWindowSize())
+    state.maxDragDistancePx = windowSize.height.toFloat()// * maxDragRatio
+    state.refreshThresholdOffset = windowSize.height.toFloat() * maxDragRatio * thresholdRatio
 
     return state
 }

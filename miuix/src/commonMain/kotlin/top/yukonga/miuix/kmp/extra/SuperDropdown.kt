@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +28,7 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.BlendModeColorFilter
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
@@ -167,12 +169,12 @@ fun SuperDropdown(
 private fun SuperDropdownPopup(
     items: List<String>,
     selectedIndex: Int,
-    isDropdownExpanded: androidx.compose.runtime.MutableState<Boolean>,
+    isDropdownExpanded: MutableState<Boolean>,
     mode: DropDownMode,
     alignLeft: Boolean,
     maxHeight: Dp?,
     dropdownColors: DropdownColors,
-    hapticFeedback: androidx.compose.ui.hapticfeedback.HapticFeedback,
+    hapticFeedback: HapticFeedback,
     onSelectedIndexChange: ((Int) -> Unit)?
 ) {
     ListPopup(

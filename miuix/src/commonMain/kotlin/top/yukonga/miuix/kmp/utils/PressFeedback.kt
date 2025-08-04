@@ -49,7 +49,9 @@ fun Modifier.pressSink(
 ): Modifier = composed {
     val isPressed by interactionSource.collectIsPressedAsState()
 
-    val animationSpec = spring<Float>(dampingRatio = dampingRatio, stiffness = stiffness)
+    val animationSpec = remember(dampingRatio, stiffness) {
+        spring<Float>(dampingRatio = dampingRatio, stiffness = stiffness)
+    }
 
     val scale by animateFloatAsState(
         targetValue = if (isPressed) sinkAmount else 1f,
@@ -78,7 +80,9 @@ fun Modifier.pressTilt(
 ): Modifier = composed {
     val isPressed by interactionSource.collectIsPressedAsState()
 
-    val animationSpec = spring<Float>(dampingRatio = dampingRatio, stiffness = stiffness)
+    val animationSpec = remember(dampingRatio, stiffness) {
+        spring<Float>(dampingRatio = dampingRatio, stiffness = stiffness)
+    }
 
     var targetX by remember { mutableStateOf(0f) }
     var targetY by remember { mutableStateOf(0f) }

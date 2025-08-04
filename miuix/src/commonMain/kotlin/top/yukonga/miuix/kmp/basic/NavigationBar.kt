@@ -76,8 +76,6 @@ fun NavigationBar(
 ) {
     require(items.size in 2..5) { "BottomBar must have between 2 and 5 items" }
 
-    val currentOnClick by rememberUpdatedState(onClick)
-
     val captionBarPaddings = WindowInsets.captionBar.only(WindowInsetsSides.Bottom).asPaddingValues()
     val captionBarBottomPaddingValue = captionBarPaddings.calculateBottomPadding()
 
@@ -130,14 +128,14 @@ fun NavigationBar(
                     modifier = Modifier
                         .height(itemHeight)
                         .weight(itemWeight)
-                        .pointerInput(currentOnClick, index) {
+                        .pointerInput(onClick, index) {
                             detectTapGestures(
                                 onPress = {
                                     isPressed = true
                                     tryAwaitRelease()
                                     isPressed = false
                                 },
-                                onTap = { currentOnClick(index) }
+                                onTap = { onClick(index) }
                             )
                         },
                     horizontalAlignment = CenterHorizontally
@@ -204,7 +202,6 @@ fun FloatingNavigationBar(
 ) {
     require(items.size in 2..5) { "FloatingNavigationBar must have between 2 and 5 items" }
 
-    val currentOnClick by rememberUpdatedState(onClick)
     val density = LocalDensity.current
 
     val platformValue = remember { platform() }
@@ -294,14 +291,14 @@ fun FloatingNavigationBar(
 
                 Column(
                     modifier = Modifier
-                        .pointerInput(currentOnClick, index) {
+                        .pointerInput(onClick, index) {
                             detectTapGestures(
                                 onPress = {
                                     isPressed = true
                                     tryAwaitRelease()
                                     isPressed = false
                                 },
-                                onTap = { currentOnClick(index) }
+                                onTap = { onClick(index) }
                             )
                         },
                     horizontalAlignment = CenterHorizontally

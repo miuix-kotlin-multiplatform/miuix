@@ -74,7 +74,6 @@ fun Slider(
     val hapticFeedback = LocalHapticFeedback.current
     var dragOffset by remember { mutableStateOf(0f) }
     var isDragging by remember { mutableStateOf(false) }
-    val updatedOnProgressChange by rememberUpdatedState(onProgressChange)
     val factor = remember(decimalPlaces) { 10f.pow(decimalPlaces) }
     val hapticState = remember { SliderHapticState() }
     val interactionSource = remember { MutableInteractionSource() }
@@ -97,13 +96,13 @@ fun Slider(
                                 isDragging = true
                                 dragOffset = offset.x
                                 val calculatedValue = calculateProgress(dragOffset, size.width)
-                                updatedOnProgressChange(calculatedValue)
+                                onProgressChange(calculatedValue)
                                 hapticState.reset(calculatedValue)
                             },
                             onHorizontalDrag = { _, dragAmount ->
                                 dragOffset = (dragOffset + dragAmount).coerceIn(0f, size.width.toFloat())
                                 val calculatedValue = calculateProgress(dragOffset, size.width)
-                                updatedOnProgressChange(calculatedValue)
+                                onProgressChange(calculatedValue)
                                 hapticState.handleHapticFeedback(calculatedValue, hapticEffect, hapticFeedback)
                             },
                             onDragEnd = {
