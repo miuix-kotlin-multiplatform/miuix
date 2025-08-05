@@ -13,6 +13,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.compose.hotReload)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.spotless)
@@ -257,4 +258,8 @@ val generateVersionInfo by tasks.registering {
 
 tasks.named("generateComposeResClass").configure {
     dependsOn(generateVersionInfo)
+}
+
+tasks.named<JavaExec>("hotRunDesktop") {
+    jvmArgs("-Dapp.mode=hot")
 }
