@@ -13,20 +13,20 @@ import top.yukonga.miuix.kmp.example.generated.resources.Res
 import top.yukonga.miuix.kmp.example.generated.resources.icon
 import java.awt.Dimension
 
-fun main() =
-    application {
-        val state =
-            rememberWindowState(
-                size = DpSize(420.dp, 840.dp),
-                position = WindowPosition.Aligned(Alignment.Center),
-            )
-        Window(
-            state = state,
-            onCloseRequest = ::exitApplication,
-            title = "Miuix",
-            icon = painterResource(Res.drawable.icon),
-        ) {
-            window.minimumSize = Dimension(300, 600)
-            App()
-        }
+fun main() = application {
+    val state = rememberWindowState(
+        size = DpSize(420.dp, 840.dp),
+        position = WindowPosition.Aligned(Alignment.Center),
+    )
+    val isHotReloadMode = System.getProperty("app.mode") == "hot"
+    Window(
+        state = state,
+        onCloseRequest = ::exitApplication,
+        alwaysOnTop = isHotReloadMode,
+        title = "Miuix",
+        icon = painterResource(Res.drawable.icon),
+    ) {
+        window.minimumSize = Dimension(300, 600)
+        App()
     }
+}
