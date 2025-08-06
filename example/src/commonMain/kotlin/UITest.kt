@@ -34,10 +34,10 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -136,6 +136,9 @@ data class UIState(
     val isWideScreen: Boolean = false,
 )
 
+val LocalPagerState = compositionLocalOf<PagerState> { error("No pager state") }
+val LocalHandlePageChange = compositionLocalOf<(Int) -> Unit> { error("No handle page change") }
+
 @Composable
 fun UITest(
     colorMode: MutableState<Int>,
@@ -143,12 +146,7 @@ fun UITest(
     val topAppBarScrollBehaviorList = List(UIConstants.PAGE_COUNT) { MiuixScrollBehavior() }
     val pagerState = rememberPagerState(pageCount = { UIConstants.PAGE_COUNT })
     val coroutineScope = rememberCoroutineScope()
-    var selectedPage by remember { mutableIntStateOf(pagerState.currentPage) }
-    val currentScrollBehavior = topAppBarScrollBehaviorList[selectedPage]
-
-    LaunchedEffect(pagerState.settledPage) {
-        if (selectedPage != pagerState.settledPage) selectedPage = pagerState.settledPage
-    }
+    val currentScrollBehavior = topAppBarScrollBehaviorList[pagerState.currentPage]
 
     val navigationItems = remember {
         listOf(
@@ -162,46 +160,44 @@ fun UITest(
     val showTopPopup = remember { mutableStateOf(false) }
     val windowSize by rememberUpdatedState(getWindowSize())
 
-    val onPageSelected: (Int) -> Unit = remember {
+    val handlePageChange: (Int) -> Unit = remember(pagerState, coroutineScope) {
         { page ->
-            selectedPage = page
             coroutineScope.launch { pagerState.animateScrollToPage(page) }
         }
     }
 
-    BoxWithConstraints(
-        modifier = Modifier.fillMaxSize()
+    CompositionLocalProvider(
+        LocalPagerState provides pagerState,
+        LocalHandlePageChange provides handlePageChange
     ) {
-        val isWideScreen = maxWidth > UIConstants.WIDE_SCREEN_THRESHOLD
-        uiState = uiState.copy(isWideScreen = isWideScreen)
+        BoxWithConstraints(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            val isWideScreen = maxWidth > UIConstants.WIDE_SCREEN_THRESHOLD
+            uiState = uiState.copy(isWideScreen = isWideScreen)
 
-        if (isWideScreen) {
-            WideScreenLayout(
-                selectedPage = selectedPage,
-                navigationItems = navigationItems,
-                uiState = uiState,
-                onUiStateChange = { uiState = it },
-                onPageSelected = onPageSelected,
-                showTopPopup = showTopPopup,
-                pagerState = pagerState,
-                topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
-                currentScrollBehavior = currentScrollBehavior,
-                windowSize = windowSize,
-                colorMode = colorMode
-            )
-        } else {
-            CompactScreenLayout(
-                selectedPage = selectedPage,
-                navigationItems = navigationItems,
-                uiState = uiState,
-                onUiStateChange = { uiState = it },
-                onPageSelected = onPageSelected,
-                showTopPopup = showTopPopup,
-                pagerState = pagerState,
-                topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
-                currentScrollBehavior = currentScrollBehavior,
-                colorMode = colorMode
-            )
+            if (isWideScreen) {
+                WideScreenLayout(
+                    navigationItems = navigationItems,
+                    uiState = uiState,
+                    onUiStateChange = { uiState = it },
+                    showTopPopup = showTopPopup,
+                    topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
+                    currentScrollBehavior = currentScrollBehavior,
+                    windowSize = windowSize,
+                    colorMode = colorMode
+                )
+            } else {
+                CompactScreenLayout(
+                    navigationItems = navigationItems,
+                    uiState = uiState,
+                    onUiStateChange = { uiState = it },
+                    showTopPopup = showTopPopup,
+                    topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
+                    currentScrollBehavior = currentScrollBehavior,
+                    colorMode = colorMode
+                )
+            }
         }
     }
 
@@ -221,13 +217,10 @@ fun UITest(
 
 @Composable
 private fun WideScreenLayout(
-    selectedPage: Int,
     navigationItems: List<NavigationItem>,
     uiState: UIState,
     onUiStateChange: (UIState) -> Unit,
-    onPageSelected: (Int) -> Unit,
     showTopPopup: MutableState<Boolean>,
-    pagerState: PagerState,
     topAppBarScrollBehaviorList: List<ScrollBehavior>,
     currentScrollBehavior: ScrollBehavior,
     windowSize: WindowSize,
@@ -240,8 +233,6 @@ private fun WideScreenLayout(
         Row {
             Box(modifier = Modifier.weight(0.4f)) {
                 WideScreenPanel(
-                    selectedPage = selectedPage,
-                    onPageSelected = onPageSelected,
                     barScrollBehavior = barScrollBehavior,
                     uiState = uiState,
                     windowSize = windowSize,
@@ -253,12 +244,9 @@ private fun WideScreenLayout(
             )
             Box(modifier = Modifier.weight(0.6f)) {
                 WideScreenContent(
-                    selectedPage = selectedPage,
                     navigationItems = navigationItems,
                     uiState = uiState,
-                    onPageSelected = onPageSelected,
                     showTopPopup = showTopPopup,
-                    pagerState = pagerState,
                     topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
                     currentScrollBehavior = currentScrollBehavior,
                     onUiStateChange = onUiStateChange,
@@ -271,13 +259,13 @@ private fun WideScreenLayout(
 
 @Composable
 private fun WideScreenPanel(
-    selectedPage: Int,
-    onPageSelected: (Int) -> Unit,
     barScrollBehavior: ScrollBehavior,
     uiState: UIState,
     windowSize: WindowSize,
     layoutDirection: LayoutDirection
 ) {
+    val currentPage = LocalPagerState.current.currentPage
+    val handlePageChange = LocalHandlePageChange.current
     Scaffold(
         modifier = Modifier
             .padding(start = 18.dp, end = 12.dp)
@@ -312,8 +300,8 @@ private fun WideScreenPanel(
                     UIConstants.PAGE_TITLES.forEachIndexed { index, title ->
                         BasicComponent(
                             title = title,
-                            onClick = { onPageSelected(index) },
-                            holdDownState = selectedPage == index,
+                            onClick = { handlePageChange(index) },
+                            holdDownState = currentPage == index,
                         )
                     }
                 }
@@ -324,12 +312,9 @@ private fun WideScreenPanel(
 
 @Composable
 private fun WideScreenContent(
-    selectedPage: Int,
     navigationItems: List<NavigationItem>,
     uiState: UIState,
-    onPageSelected: (Int) -> Unit,
     showTopPopup: MutableState<Boolean>,
-    pagerState: PagerState,
     topAppBarScrollBehaviorList: List<ScrollBehavior>,
     currentScrollBehavior: ScrollBehavior,
     onUiStateChange: (UIState) -> Unit,
@@ -346,14 +331,12 @@ private fun WideScreenContent(
                 exit = fadeOut() + shrinkVertically()
             ) {
                 SmallTopAppBar(
-                    title = UIConstants.PAGE_TITLES[selectedPage],
+                    title = UIConstants.PAGE_TITLES[LocalPagerState.current.currentPage],
                     scrollBehavior = currentScrollBehavior,
                     actions = {
                         TopAppBarActions(
-                            selectedPage = selectedPage,
                             items = navigationItems,
-                            showTopPopup = showTopPopup,
-                            onPageSelected = onPageSelected
+                            showTopPopup = showTopPopup
                         )
                     },
                     defaultWindowInsetsPadding = false,
@@ -381,7 +364,6 @@ private fun WideScreenContent(
                 .imePadding()
                 .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.End))
                 .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.End)),
-            pagerState = pagerState,
             topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
             padding = PaddingValues(
                 end = padding.calculateEndPadding(LayoutDirection.Ltr),
@@ -397,13 +379,10 @@ private fun WideScreenContent(
 
 @Composable
 private fun CompactScreenLayout(
-    selectedPage: Int,
     navigationItems: List<NavigationItem>,
     uiState: UIState,
     onUiStateChange: (UIState) -> Unit,
-    onPageSelected: (Int) -> Unit,
     showTopPopup: MutableState<Boolean>,
-    pagerState: PagerState,
     topAppBarScrollBehaviorList: List<ScrollBehavior>,
     currentScrollBehavior: ScrollBehavior,
     colorMode: MutableState<Int>
@@ -421,10 +400,8 @@ private fun CompactScreenLayout(
                     scrollBehavior = currentScrollBehavior,
                     actions = {
                         TopAppBarActions(
-                            selectedPage = selectedPage,
                             items = navigationItems,
-                            showTopPopup = showTopPopup,
-                            onPageSelected = onPageSelected
+                            showTopPopup = showTopPopup
                         )
                     }
                 )
@@ -434,8 +411,6 @@ private fun CompactScreenLayout(
             NavigationBar(
                 uiState = uiState,
                 navigationItems = navigationItems,
-                selectedPage = selectedPage,
-                onPageSelected = onPageSelected
             )
         },
         floatingActionButton = {
@@ -455,7 +430,6 @@ private fun CompactScreenLayout(
                 .imePadding()
                 .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
                 .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)),
-            pagerState = pagerState,
             topAppBarScrollBehaviorList = topAppBarScrollBehaviorList,
             padding = padding,
             uiState = uiState,
@@ -469,9 +443,9 @@ private fun CompactScreenLayout(
 private fun NavigationBar(
     uiState: UIState,
     navigationItems: List<NavigationItem>,
-    selectedPage: Int,
-    onPageSelected: (Int) -> Unit
 ) {
+    val currentPage = LocalPagerState.current.currentPage
+    val handlePageChange = LocalHandlePageChange.current
     AnimatedVisibility(
         visible = uiState.showNavigationBar,
         enter = fadeIn() + expandVertically(),
@@ -484,8 +458,8 @@ private fun NavigationBar(
         ) {
             NavigationBar(
                 items = navigationItems,
-                selected = selectedPage,
-                onClick = onPageSelected
+                selected = currentPage,
+                onClick = handlePageChange
             )
         }
         AnimatedVisibility(
@@ -495,10 +469,11 @@ private fun NavigationBar(
         ) {
             FloatingNavigationBar(
                 items = navigationItems,
-                selected = selectedPage,
+                selected = currentPage,
                 mode = FloatingNavigationBarDisplayMode.fromInt(uiState.floatingNavigationBarMode).toMode(),
-                horizontalAlignment = FloatingNavigationBarAlignment.fromInt(uiState.floatingNavigationBarPosition).toAlignment(),
-                onClick = onPageSelected
+                horizontalAlignment = FloatingNavigationBarAlignment.fromInt(uiState.floatingNavigationBarPosition)
+                    .toAlignment(),
+                onClick = handlePageChange
             )
         }
     }
@@ -617,12 +592,12 @@ private fun FloatingNavigationBarAlignment.toAlignment(): Alignment.Horizontal =
 
 @Composable
 private fun TopAppBarActions(
-    selectedPage: Int,
     items: List<NavigationItem>,
     showTopPopup: MutableState<Boolean>,
-    onPageSelected: (Int) -> Unit
 ) {
     val hapticFeedback = LocalHapticFeedback.current
+    val currentPage = LocalPagerState.current.currentPage
+    val handlePageChange = LocalHandlePageChange.current
 
     ListPopup(
         show = showTopPopup,
@@ -638,9 +613,9 @@ private fun TopAppBarActions(
                 DropdownImpl(
                     text = navigationItem.label,
                     optionSize = items.size,
-                    isSelected = index == selectedPage,
+                    isSelected = index == currentPage,
                     onSelectedIndexChange = {
-                        onPageSelected(index)
+                        handlePageChange(index)
                         hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
                         showTopPopup.value = false
                     },
@@ -668,7 +643,6 @@ private fun TopAppBarActions(
 @Composable
 fun AppPager(
     modifier: Modifier = Modifier,
-    pagerState: PagerState,
     topAppBarScrollBehaviorList: List<ScrollBehavior>,
     padding: PaddingValues,
     uiState: UIState,
@@ -676,7 +650,7 @@ fun AppPager(
     colorMode: MutableState<Int>
 ) {
     HorizontalPager(
-        state = pagerState,
+        state = LocalPagerState.current,
         modifier = modifier,
         userScrollEnabled = uiState.enablePageUserScroll,
         beyondViewportPageCount = 1,
