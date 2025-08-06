@@ -264,7 +264,7 @@ private fun WideScreenPanel(
     windowSize: WindowSize,
     layoutDirection: LayoutDirection
 ) {
-    val currentPage = LocalPagerState.current.currentPage
+    val page = LocalPagerState.current.targetPage
     val handlePageChange = LocalHandlePageChange.current
     Scaffold(
         modifier = Modifier
@@ -301,7 +301,7 @@ private fun WideScreenPanel(
                         BasicComponent(
                             title = title,
                             onClick = { handlePageChange(index) },
-                            holdDownState = currentPage == index,
+                            holdDownState = page == index,
                         )
                     }
                 }
@@ -331,7 +331,7 @@ private fun WideScreenContent(
                 exit = fadeOut() + shrinkVertically()
             ) {
                 SmallTopAppBar(
-                    title = UIConstants.PAGE_TITLES[LocalPagerState.current.currentPage],
+                    title = UIConstants.PAGE_TITLES[LocalPagerState.current.targetPage],
                     scrollBehavior = currentScrollBehavior,
                     actions = {
                         TopAppBarActions(
@@ -444,7 +444,7 @@ private fun NavigationBar(
     uiState: UIState,
     navigationItems: List<NavigationItem>,
 ) {
-    val currentPage = LocalPagerState.current.currentPage
+    val page = LocalPagerState.current.targetPage
     val handlePageChange = LocalHandlePageChange.current
     AnimatedVisibility(
         visible = uiState.showNavigationBar,
@@ -458,7 +458,7 @@ private fun NavigationBar(
         ) {
             NavigationBar(
                 items = navigationItems,
-                selected = currentPage,
+                selected = page,
                 onClick = handlePageChange
             )
         }
@@ -469,7 +469,7 @@ private fun NavigationBar(
         ) {
             FloatingNavigationBar(
                 items = navigationItems,
-                selected = currentPage,
+                selected = page,
                 mode = FloatingNavigationBarDisplayMode.fromInt(uiState.floatingNavigationBarMode).toMode(),
                 horizontalAlignment = FloatingNavigationBarAlignment.fromInt(uiState.floatingNavigationBarPosition)
                     .toAlignment(),
@@ -596,7 +596,7 @@ private fun TopAppBarActions(
     showTopPopup: MutableState<Boolean>,
 ) {
     val hapticFeedback = LocalHapticFeedback.current
-    val currentPage = LocalPagerState.current.currentPage
+    val page = LocalPagerState.current.targetPage
     val handlePageChange = LocalHandlePageChange.current
 
     ListPopup(
@@ -613,7 +613,7 @@ private fun TopAppBarActions(
                 DropdownImpl(
                     text = navigationItem.label,
                     optionSize = items.size,
-                    isSelected = index == currentPage,
+                    isSelected = index == page,
                     onSelectedIndexChange = {
                         handlePageChange(index)
                         hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
