@@ -8,15 +8,12 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -31,9 +28,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -61,8 +58,9 @@ import top.yukonga.miuix.kmp.basic.TextField
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.useful.Like
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.ColorUtils.colorToHsv
+import top.yukonga.miuix.kmp.utils.ColorUtils.colorToOkLab
 import top.yukonga.miuix.kmp.utils.PressFeedbackType
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import kotlin.math.round
 
 fun LazyListScope.otherComponent(
@@ -313,8 +311,8 @@ fun LazyListScope.otherComponent(
         }
     }
 
-    item(key = "colorPicker") {
-        SmallTitle(text = "ColorPicker")
+    item(key = "colorPicker-hsva") {
+        SmallTitle(text = "ColorPicker (HSVA)")
         val miuixColor = MiuixTheme.colorScheme.primary
         var selectedColor by remember { mutableStateOf(miuixColor) }
 
@@ -329,39 +327,64 @@ fun LazyListScope.otherComponent(
                 modifier = Modifier.padding(bottom = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val hsv = colorToHsv(selectedColor)
                 Text(
-                    text = "Selected Color:\nRGBA: " +
-                            "${(selectedColor.red * 255).toInt()}," +
-                            "${(selectedColor.green * 255).toInt()}," +
-                            "${(selectedColor.blue * 255).toInt()}," +
+                    text = "HEX: #${selectedColor.toArgb().toHexString(HexFormat.UpperCase)}" +
+                            "\nRGBA: ${(selectedColor.red * 255).toInt()}, " +
+                            "${(selectedColor.green * 255).toInt()}, " +
+                            "${(selectedColor.blue * 255).toInt()}, " +
                             "${(round(selectedColor.alpha * 100) / 100.0)}" +
-                            "\nHEX: #" +
-                            (selectedColor.alpha * 255).toInt().toString(16).padStart(2, '0')
-                                .uppercase() +
-                            (selectedColor.red * 255).toInt().toString(16).padStart(2, '0')
-                                .uppercase() +
-                            (selectedColor.green * 255).toInt().toString(16).padStart(2, '0')
-                                .uppercase() +
-                            (selectedColor.blue * 255).toInt().toString(16).padStart(2, '0')
-                                .uppercase(),
+                            "\nHSVA: ${(hsv[0]).toInt()}, " +
+                            "${(hsv[1] * 100).toInt()}%, " +
+                            "${(hsv[2] * 100).toInt()}%, " +
+                            "${(round(selectedColor.alpha * 100) / 100.0)}",
                     modifier = Modifier.weight(1f)
                 )
-                Spacer(Modifier.width(12.dp))
-                Box(
-                    modifier = Modifier
-                        .height(60.dp)
-                        .width(100.dp)
-                        .align(Alignment.CenterVertically)
-                        .clip(SmoothRoundedCornerShape(12.dp))
-                        .background(selectedColor)
-                )
             }
-
             ColorPicker(
                 initialColor = selectedColor,
                 onColorChanged = { selectedColor = it },
-                showPreview = false,
                 hapticEffect = SliderDefaults.SliderHapticEffect.Step
+            )
+        }
+    }
+
+    item(key = "colorPicker-okLab") {
+        SmallTitle(text = "ColorPicker (OkLab)")
+        val miuixColor = MiuixTheme.colorScheme.primary
+        var selectedColor by remember { mutableStateOf(miuixColor) }
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 6.dp),
+
+            insideMargin = PaddingValues(16.dp)
+        ) {
+            Row(
+                modifier = Modifier.padding(bottom = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                val okLab = colorToOkLab(selectedColor)
+                Text(
+                    text = "HEX: #${selectedColor.toArgb().toHexString(HexFormat.UpperCase)}" +
+                            "\nRGBA: ${(selectedColor.red * 255).toInt()}, " +
+                            "${(selectedColor.green * 255).toInt()}, " +
+                            "${(selectedColor.blue * 255).toInt()}, " +
+                            "${(round(selectedColor.alpha * 100) / 100.0)}" +
+                            "\nOkLab: ${(okLab[0] * 1000).toInt() / 1000f}, " +
+                            "${(okLab[1] * 1000).toInt() / 1000f}, " +
+                            "${(okLab[2] * 1000).toInt() / 1000f} / " +
+                            "${(round(selectedColor.alpha * 100) / 100.0)}",
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            ColorPicker(
+                initialColor = selectedColor,
+                onColorChanged = { selectedColor = it },
+                hapticEffect = SliderDefaults.SliderHapticEffect.Step,
+                useOkLab = true
             )
         }
     }
