@@ -44,6 +44,7 @@ import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.CircularProgressIndicator
 import top.yukonga.miuix.kmp.basic.ColorPicker
+import top.yukonga.miuix.kmp.basic.ColorSpace
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.InfiniteProgressIndicator
 import top.yukonga.miuix.kmp.basic.LinearProgressIndicator
@@ -311,8 +312,8 @@ fun LazyListScope.otherComponent(
         }
     }
 
-    item(key = "colorPicker-hsva") {
-        SmallTitle(text = "ColorPicker (HSVA)")
+    item(key = "colorPicker-hsv") {
+        SmallTitle(text = "ColorPicker (HSV)")
         val miuixColor = MiuixTheme.colorScheme.primary
         var selectedColor by remember { mutableStateOf(miuixColor) }
 
@@ -349,8 +350,48 @@ fun LazyListScope.otherComponent(
         }
     }
 
+    item(key = "colorPicker-okHsv") {
+        SmallTitle(text = "ColorPicker (OKHSV)")
+        val miuixColor = MiuixTheme.colorScheme.primary
+        var selectedColor by remember { mutableStateOf(miuixColor) }
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 6.dp),
+
+            insideMargin = PaddingValues(16.dp)
+        ) {
+            Row(
+                modifier = Modifier.padding(bottom = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                val hsv = colorToHsv(selectedColor)
+                Text(
+                    text = "HEX: #${selectedColor.toArgb().toHexString(HexFormat.UpperCase)}" +
+                            "\nRGBA: ${(selectedColor.red * 255).toInt()}, " +
+                            "${(selectedColor.green * 255).toInt()}, " +
+                            "${(selectedColor.blue * 255).toInt()}, " +
+                            "${(round(selectedColor.alpha * 100) / 100.0)}" +
+                            "\nHSVA: ${(hsv[0]).toInt()}, " +
+                            "${(hsv[1] * 100).toInt()}%, " +
+                            "${(hsv[2] * 100).toInt()}%, " +
+                            "${(round(selectedColor.alpha * 100) / 100.0)}",
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            ColorPicker(
+                initialColor = selectedColor,
+                onColorChanged = { selectedColor = it },
+                hapticEffect = SliderDefaults.SliderHapticEffect.Step,
+                colorSpace = ColorSpace.OKHSV
+            )
+        }
+    }
+
     item(key = "colorPicker-okLab") {
-        SmallTitle(text = "ColorPicker (OkLab)")
+        SmallTitle(text = "ColorPicker (OKLAB)")
         val miuixColor = MiuixTheme.colorScheme.primary
         var selectedColor by remember { mutableStateOf(miuixColor) }
 
@@ -384,7 +425,7 @@ fun LazyListScope.otherComponent(
                 initialColor = selectedColor,
                 onColorChanged = { selectedColor = it },
                 hapticEffect = SliderDefaults.SliderHapticEffect.Step,
-                useOkLab = true
+                colorSpace = ColorSpace.OKLAB
             )
         }
     }

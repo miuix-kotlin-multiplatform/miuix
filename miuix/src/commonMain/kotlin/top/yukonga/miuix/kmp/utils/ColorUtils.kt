@@ -8,6 +8,7 @@ import androidx.annotation.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.hsv
 import kotlin.math.cbrt
+import kotlin.math.pow
 
 object ColorUtils {
     /**
@@ -142,14 +143,283 @@ object ColorUtils {
     }
 
     /**
-     * Alternative: Generate pure HSV hue colors for maximum brightness
-     * Use this if you prefer the brightest possible hue colors
+     * Convert sRGB to OkHSV color space
      */
-    fun generatePureHueColors(): List<Color> {
+    fun srgbToOkhsv(r: Float, g: Float, b: Float): FloatArray {
+        val lab = linearSrgbToOklab(
+            srgbTransferFunctionInv(r),
+            srgbTransferFunctionInv(g),
+            srgbTransferFunctionInv(b)
+        )
+
+        val C = kotlin.math.sqrt(lab[1] * lab[1] + lab[2] * lab[2])
+        val a_ = if (C == 0f) 0f else lab[1] / C
+        val b_ = if (C == 0f) 0f else lab[2] / C
+
+        val L = lab[0]
+        val h = 0.5f + (0.5f * kotlin.math.atan2(-lab[2], -lab[1])) / kotlin.math.PI.toFloat()
+
+        val STMax = getSTMax(a_, b_)
+        val SMax = STMax[0]
+        val S0 = 0.5f
+        val T = STMax[1]
+        val k = 1f - S0 / SMax
+
+        val t = T / (C + L * T)
+        val Lv = t * L
+        val Cv = t * C
+
+        val Lvt = toeInv(Lv)
+        val Cvt = (Cv * Lvt) / Lv
+
+        val rgbScale = oklabToLinearSrgb(Lvt, a_ * Cvt, b_ * Cvt)
+        val scaleL = cbrt(
+            1f / maxOf(rgbScale[0], rgbScale[1], rgbScale[2], 0f)
+        )
+
+        var L2 = L / scaleL
+        var C2 = C / scaleL
+
+        C2 = (C2 * toe(L2)) / L2
+        L2 = toe(L2)
+
+        val v = L2 / Lv
+        val s = ((S0 + T) * Cv) / (T * S0 + T * k * Cv)
+
+        return floatArrayOf(h, s, v)
+    }
+
+    /**
+     * Convert OkHSV to sRGB color space
+     */
+    fun okhsvToSrgb(h: Float, s: Float, v: Float): FloatArray {
+        val a_ = kotlin.math.cos(2f * kotlin.math.PI.toFloat() * h)
+        val b_ = kotlin.math.sin(2f * kotlin.math.PI.toFloat() * h)
+
+        val STMax = getSTMax(a_, b_)
+        val SMax = STMax[0]
+        val S0 = 0.5f
+        val T = STMax[1]
+        val k = 1f - S0 / SMax
+
+        val Lv = 1f - (s * S0) / (S0 + T - T * k * s)
+        val Cv = (s * T * S0) / (S0 + T - T * k * s)
+
+        var L = v * Lv
+        var C = v * Cv
+
+        val Lvt = toeInv(Lv)
+        val Cvt = (Cv * Lvt) / Lv
+
+        val LNew = toeInv(L)
+        C = (C * LNew) / L
+        L = LNew
+
+        val rgbScale = oklabToLinearSrgb(Lvt, a_ * Cvt, b_ * Cvt)
+        val scaleL = cbrt(
+            1f / maxOf(rgbScale[0], rgbScale[1], rgbScale[2], 0f)
+        )
+
+        L = L * scaleL
+        C = C * scaleL
+
+        val rgb = oklabToLinearSrgb(L, C * a_, C * b_)
+        return floatArrayOf(
+            srgbTransferFunction(rgb[0]),
+            srgbTransferFunction(rgb[1]),
+            srgbTransferFunction(rgb[2])
+        )
+    }
+
+    /**
+     * Convert Compose Color to OkHSV
+     */
+    fun colorToOkhsv(color: Color): FloatArray {
+        return srgbToOkhsv(color.red, color.green, color.blue)
+    }
+
+    /**
+     * Convert OkHSV to Compose Color
+     */
+    fun okhsvToColor(h: Float, s: Float, v: Float, alpha: Float = 1f): Color {
+        val srgb = okhsvToSrgb(h, s, v)
+        return Color(srgb[0], srgb[1], srgb[2], alpha)
+    }
+
+    // 辅助函数
+
+    private fun srgbTransferFunction(a: Float): Float {
+        return if (0.0031308f >= a) {
+            12.92f * a
+        } else {
+            1.055f * a.pow(0.4166666666666667f) - 0.055f
+        }
+    }
+
+    private fun srgbTransferFunctionInv(a: Float): Float {
+        return if (0.04045f < a) {
+            ((a + 0.055f) / 1.055f).pow(2.4f)
+        } else {
+            a / 12.92f
+        }
+    }
+
+    private fun linearSrgbToOklab(r: Float, g: Float, b: Float): FloatArray {
+        val l = 0.4122214708f * r + 0.5363325363f * g + 0.0514459929f * b
+        val m = 0.2119034982f * r + 0.6806995451f * g + 0.1073969566f * b
+        val s = 0.0883024619f * r + 0.2817188376f * g + 0.6299787005f * b
+
+        val l_ = cbrt(l)
+        val m_ = cbrt(m)
+        val s_ = cbrt(s)
+
+        return floatArrayOf(
+            0.2104542553f * l_ + 0.793617785f * m_ - 0.0040720468f * s_,
+            1.9779984951f * l_ - 2.428592205f * m_ + 0.4505937099f * s_,
+            0.0259040371f * l_ + 0.7827717662f * m_ - 0.808675766f * s_
+        )
+    }
+
+    private fun oklabToLinearSrgb(L: Float, a: Float, b: Float): FloatArray {
+        val l_ = L + 0.3963377774f * a + 0.2158037573f * b
+        val m_ = L - 0.1055613458f * a - 0.0638541728f * b
+        val s_ = L - 0.0894841775f * a - 1.291485548f * b
+
+        val l = l_ * l_ * l_
+        val m = m_ * m_ * m_
+        val s = s_ * s_ * s_
+
+        return floatArrayOf(
+            4.0767416621f * l - 3.3077115913f * m + 0.2309699292f * s,
+            -1.2684380046f * l + 2.6097574011f * m - 0.3413193965f * s,
+            -0.0041960863f * l - 0.7034186147f * m + 1.707614701f * s
+        )
+    }
+
+    private fun toe(x: Float): Float {
+        val k1 = 0.206f
+        val k2 = 0.03f
+        val k3 = (1f + k1) / (1f + k2)
+
+        return 0.5f * (k3 * x - k1 + kotlin.math.sqrt((k3 * x - k1) * (k3 * x - k1) + 4f * k2 * k3 * x))
+    }
+
+    private fun toeInv(x: Float): Float {
+        val k1 = 0.206f
+        val k2 = 0.03f
+        val k3 = (1f + k1) / (1f + k2)
+        return (x * x + k1 * x) / (k3 * (x + k2))
+    }
+
+    private fun computeMaxSaturation(a: Float, b: Float): Float {
+        var k0: Float
+        var k1: Float
+        var k2: Float
+        var k3: Float
+        var k4: Float
+        var wl: Float
+        var wm: Float
+        var ws: Float
+
+        if (-1.88170328f * a - 0.80936493f * b > 1f) {
+            // Red component
+            k0 = 1.19086277f
+            k1 = 1.76576728f
+            k2 = 0.59662641f
+            k3 = 0.75515197f
+            k4 = 0.56771245f
+            wl = 4.0767416621f
+            wm = -3.3077115913f
+            ws = 0.2309699292f
+        } else if (1.81444104f * a - 1.19445276f * b > 1f) {
+            // Green component
+            k0 = 0.73956515f
+            k1 = -0.45954404f
+            k2 = 0.08285427f
+            k3 = 0.1254107f
+            k4 = 0.14503204f
+            wl = -1.2684380046f
+            wm = 2.6097574011f
+            ws = -0.3413193965f
+        } else {
+            // Blue component
+            k0 = 1.35733652f
+            k1 = -0.00915799f
+            k2 = -1.1513021f
+            k3 = -0.50559606f
+            k4 = 0.00692167f
+            wl = -0.0041960863f
+            wm = -0.7034186147f
+            ws = 1.707614701f
+        }
+
+        var S = k0 + k1 * a + k2 * b + k3 * a * a + k4 * a * b
+
+        val kL = 0.3963377774f * a + 0.2158037573f * b
+        val kM = -0.1055613458f * a - 0.0638541728f * b
+        val kS = -0.0894841775f * a - 1.291485548f * b
+
+        val l_ = 1f + S * kL
+        val m_ = 1f + S * kM
+        val s_ = 1f + S * kS
+
+        val l = l_ * l_ * l_
+        val m = m_ * m_ * m_
+        val s = s_ * s_ * s_
+
+        val lDS = 3f * kL * l_ * l_
+        val mDS = 3f * kM * m_ * m_
+        val sDS = 3f * kS * s_ * s_
+
+        val lDS2 = 6f * kL * kL * l_
+        val mDS2 = 6f * kM * kM * m_
+        val sDS2 = 6f * kS * kS * s_
+
+        val f = wl * l + wm * m + ws * s
+        val f1 = wl * lDS + wm * mDS + ws * sDS
+        val f2 = wl * lDS2 + wm * mDS2 + ws * sDS2
+
+        S = S - (f * f1) / (f1 * f1 - 0.5f * f * f2)
+
+        return S
+    }
+
+    private fun findCusp(a: Float, b: Float): FloatArray {
+        val sCusp = computeMaxSaturation(a, b)
+        val rgbAtMax = oklabToLinearSrgb(1f, sCusp * a, sCusp * b)
+        val lCusp = cbrt(
+            1f / maxOf(rgbAtMax[0], rgbAtMax[1], rgbAtMax[2])
+        )
+        val cCusp = lCusp * sCusp
+        return floatArrayOf(lCusp, cCusp)
+    }
+
+    private fun getSTMax(a_: Float, b_: Float, cusp: FloatArray? = null): FloatArray {
+        val cuspActual = cusp ?: findCusp(a_, b_)
+        val L = cuspActual[0]
+        val C = cuspActual[1]
+        return floatArrayOf(C / L, C / (1f - L))
+    }
+
+    /**
+     * Generate HSV hue colors for hue slider
+     */
+    fun generateHsvHueColors(): List<Color> {
         val steps = 36
         return (0 until steps).map { i ->
-            val hue = (i.toFloat() / steps.toFloat()) * 360f
-            hsv(hue, 1f, 1f)
+            val hue = i.toFloat() / steps.toFloat()
+            hsv(hue * 360f, 1f, 1f)
+        }
+    }
+
+    /**
+     * Generate OkHSV hue colors for hue slider
+     */
+    fun generateOkHsvHueColors(): List<Color> {
+        val steps = 36
+        return (0 until steps).map { i ->
+            val hue = i.toFloat() / steps.toFloat()
+            okhsvToColor(hue, 1f, 1f)
         }
     }
 }

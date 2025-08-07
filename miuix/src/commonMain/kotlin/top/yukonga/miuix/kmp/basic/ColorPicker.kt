@@ -45,7 +45,7 @@ import top.yukonga.miuix.kmp.utils.ColorUtils
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 /**
- * Default ColorPicker using HSV for backward compatibility
+ * Default ColorPicker using OkHSV for better perceptual uniformity
  */
 @Composable
 fun ColorPicker(
@@ -53,25 +53,39 @@ fun ColorPicker(
     onColorChanged: (Color) -> Unit,
     showPreview: Boolean = true,
     hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect,
+    colorSpace: ColorSpace = ColorSpace.HSV,
     modifier: Modifier = Modifier,
-    useOkLab: Boolean = false
 ) {
-    if (useOkLab) {
-        OkLabColorPicker(
-            initialColor = initialColor,
-            onColorChanged = onColorChanged,
-            showPreview = showPreview,
-            hapticEffect = hapticEffect,
-            modifier = modifier
-        )
-    } else {
-        HsvColorPicker(
-            initialColor = initialColor,
-            onColorChanged = onColorChanged,
-            showPreview = showPreview,
-            hapticEffect = hapticEffect,
-            modifier = modifier
-        )
+    when (colorSpace) {
+        ColorSpace.OKHSV -> {
+            OkHsvColorPicker(
+                initialColor = initialColor,
+                onColorChanged = onColorChanged,
+                showPreview = showPreview,
+                hapticEffect = hapticEffect,
+                modifier = modifier
+            )
+        }
+
+        ColorSpace.OKLAB -> {
+            OkLabColorPicker(
+                initialColor = initialColor,
+                onColorChanged = onColorChanged,
+                showPreview = showPreview,
+                hapticEffect = hapticEffect,
+                modifier = modifier
+            )
+        }
+
+        else -> {
+            HsvColorPicker(
+                initialColor = initialColor,
+                onColorChanged = onColorChanged,
+                showPreview = showPreview,
+                hapticEffect = hapticEffect,
+                modifier = modifier
+            )
+        }
     }
 }
 
@@ -181,14 +195,14 @@ fun HsvHueSlider(
     onHueChanged: (Float) -> Unit,
     hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
 ) {
-    val pureHueColors = remember {
-        ColorUtils.generatePureHueColors()
+    val hsvHueColors = remember {
+        ColorUtils.generateHsvHueColors()
     }
 
     ColorSlider(
         value = currentHue / 360f,
         onValueChanged = onHueChanged,
-        drawBrushColors = pureHueColors,
+        drawBrushColors = hsvHueColors,
         modifier = Modifier.fillMaxWidth(),
         hapticEffect = hapticEffect
     )
@@ -297,6 +311,238 @@ fun HsvAlphaSlider(
         }
     )
 }
+
+/**
+ * A [OkHsvColorPicker] component with Miuix style using OkHSV color space based on OkLab.
+ * OkHSV provides better perceptual uniformity than traditional HSV.
+ *
+ * @param initialColor The initial color of the picker.
+ * @param onColorChanged The callback to be called when the color changes.
+ * @param showPreview Whether to show the color preview.
+ * @param hapticEffect The haptic effect of the [ColorSlider].
+ * @param modifier The modifier to be applied to the color picker.
+ */
+@Composable
+fun OkHsvColorPicker(
+    initialColor: Color,
+    onColorChanged: (Color) -> Unit,
+    showPreview: Boolean = true,
+    hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect,
+    modifier: Modifier = Modifier
+) {
+    var initialSetup by remember { mutableStateOf(true) }
+    var currentH by remember { mutableStateOf(0f) }
+    var currentS by remember { mutableStateOf(0f) }
+    var currentV by remember { mutableStateOf(0f) }
+    var currentAlpha by remember { mutableStateOf(1f) }
+
+    val selectedColor = remember(currentH, currentS, currentV, currentAlpha) {
+        ColorUtils.okhsvToColor(currentH, currentS, currentV, currentAlpha)
+    }
+
+    LaunchedEffect(initialColor) {
+        if (initialSetup) {
+            val okhsv = ColorUtils.colorToOkhsv(initialColor)
+            currentH = okhsv[0]
+            currentS = okhsv[1]
+            currentV = okhsv[2]
+            currentAlpha = initialColor.alpha
+            initialSetup = false
+        }
+    }
+
+    LaunchedEffect(selectedColor) {
+        if (!initialSetup) {
+            onColorChanged(selectedColor)
+        }
+    }
+
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        // Color preview
+        if (showPreview) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(26.dp)
+                    .clip(SmoothRoundedCornerShape(50.dp))
+                    .background(selectedColor)
+            )
+        }
+
+        // Hue selection (OkHSV)
+        OkHsvHueSlider(
+            currentH = currentH,
+            onHueChanged = { currentH = it },
+            hapticEffect = hapticEffect
+        )
+
+        // Saturation selection (OkHSV)
+        OkHsvSaturationSlider(
+            currentH = currentH,
+            currentS = currentS,
+            onSaturationChanged = { currentS = it },
+            hapticEffect = hapticEffect
+        )
+
+        // Value selection (OkHSV)
+        OkHsvValueSlider(
+            currentH = currentH,
+            currentS = currentS,
+            currentV = currentV,
+            onValueChanged = { currentV = it },
+            hapticEffect = hapticEffect
+        )
+
+        // Alpha selection (OkHSV)
+        OkHsvAlphaSlider(
+            currentH = currentH,
+            currentS = currentS,
+            currentV = currentV,
+            currentAlpha = currentAlpha,
+            onAlphaChanged = { currentAlpha = it },
+            hapticEffect = hapticEffect
+        )
+    }
+}
+
+/**
+ * A [OkHsvHueSlider] component for selecting the hue of a color using OkHSV color space.
+ *
+ * @param currentH The current hue value (0-1).
+ * @param onHueChanged The callback to be called when the hue changes.
+ * @param hapticEffect The haptic effect of the [OkHsvHueSlider].
+ */
+@Composable
+fun OkHsvHueSlider(
+    currentH: Float,
+    onHueChanged: (Float) -> Unit,
+    hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
+) {
+    val okHsvHueColors = remember {
+        ColorUtils.generateOkHsvHueColors()
+    }
+
+    ColorSlider(
+        value = currentH,
+        onValueChanged = onHueChanged,
+        drawBrushColors = okHsvHueColors,
+        modifier = Modifier.fillMaxWidth(),
+        hapticEffect = hapticEffect
+    )
+}
+
+/**
+ * A [OkHsvSaturationSlider] component for selecting the saturation of a color using OkHSV.
+ *
+ * @param currentH The current hue value.
+ * @param currentS The current saturation value.
+ * @param onSaturationChanged The callback to be called when the saturation changes.
+ * @param hapticEffect The haptic effect of the [OkHsvSaturationSlider].
+ */
+@Composable
+fun OkHsvSaturationSlider(
+    currentH: Float,
+    currentS: Float,
+    onSaturationChanged: (Float) -> Unit,
+    hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
+) {
+    val saturationColors = remember(currentH) {
+        listOf(
+            ColorUtils.okhsvToColor(currentH, 0f, 1f, 1f),
+            ColorUtils.okhsvToColor(currentH, 1f, 1f, 1f)
+        )
+    }
+
+    ColorSlider(
+        value = currentS,
+        onValueChanged = onSaturationChanged,
+        drawBrushColors = saturationColors,
+        modifier = Modifier.fillMaxWidth(),
+        hapticEffect = hapticEffect
+    )
+}
+
+/**
+ * A [OkHsvValueSlider] component for selecting the value/brightness of a color using OkHSV.
+ *
+ * @param currentH The current hue value.
+ * @param currentS The current saturation value.
+ * @param currentV The current value value.
+ * @param onValueChanged The callback to be called when the value changes.
+ * @param hapticEffect The haptic effect of the [OkHsvValueSlider].
+ */
+@Composable
+fun OkHsvValueSlider(
+    currentH: Float,
+    currentS: Float,
+    currentV: Float,
+    onValueChanged: (Float) -> Unit,
+    hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
+) {
+    val valueColors = remember(currentH, currentS) {
+        listOf(
+            ColorUtils.okhsvToColor(currentH, currentS, 0f, 1f),
+            ColorUtils.okhsvToColor(currentH, currentS, 1f, 1f)
+        )
+    }
+
+    ColorSlider(
+        value = currentV,
+        onValueChanged = onValueChanged,
+        drawBrushColors = valueColors,
+        modifier = Modifier.fillMaxWidth(),
+        hapticEffect = hapticEffect
+    )
+}
+
+/**
+ * A [OkHsvAlphaSlider] component for selecting the alpha of a color using OkHSV.
+ *
+ * @param currentH The current hue value.
+ * @param currentS The current saturation value.
+ * @param currentV The current value value.
+ * @param currentAlpha The current alpha value.
+ * @param onAlphaChanged The callback to be called when the alpha changes.
+ * @param hapticEffect The haptic effect of the [OkHsvAlphaSlider].
+ */
+@Composable
+fun OkHsvAlphaSlider(
+    currentH: Float,
+    currentS: Float,
+    currentV: Float,
+    currentAlpha: Float,
+    onAlphaChanged: (Float) -> Unit,
+    hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
+) {
+    val density = LocalDensity.current
+
+    val alphaColors = remember(currentH, currentS, currentV) {
+        val baseColor = ColorUtils.okhsvToColor(currentH, currentS, currentV)
+        listOf(baseColor.copy(alpha = 0f), baseColor.copy(alpha = 1f))
+    }
+
+    val checkerBrush = remember(density) {
+        createCheckerboardBrush(density)
+    }
+
+    ColorSlider(
+        value = currentAlpha,
+        onValueChanged = onAlphaChanged,
+        drawBrushColors = alphaColors,
+        modifier = Modifier.fillMaxWidth(),
+        hapticEffect = hapticEffect,
+        drawBackground = { _, _ ->
+            drawRoundRect(
+                brush = checkerBrush,
+                cornerRadius = CornerRadius(size.height / 2, size.height / 2)
+            )
+        }
+    )
+}
+
 
 /**
  * A [OkLabColorPicker] component with Miuix style using OkLab color space.
@@ -671,4 +917,10 @@ private fun handleSliderInteraction(
     val constrainedX = positionX.coerceIn(sliderHalfSizePx, totalWidth - sliderHalfSizePx)
     val newPosition = (constrainedX - sliderHalfSizePx) / effectiveWidth
     return newPosition.coerceIn(0f, 1f)
+}
+
+enum class ColorSpace {
+    HSV,
+    OKHSV,
+    OKLAB
 }
