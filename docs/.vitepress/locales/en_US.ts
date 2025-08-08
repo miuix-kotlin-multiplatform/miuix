@@ -87,6 +87,7 @@ export default defineConfig({
                         { text: 'Divider', link: '/components/divider' },
                         { text: 'PullToRefresh', link: '/components/pulltorefresh' },
                         { text: 'SearchBar', link: '/components/searchbar' },
+                        { text: 'ColorPalette', link: '/components/colorpalette' },
                         { text: 'ColorPicker', link: '/components/colorpicker' },
                         { text: 'ListPopup', link: '/components/listpopup' },
                     ]

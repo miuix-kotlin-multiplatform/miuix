@@ -190,7 +190,7 @@ Scaffold {
     SuperDialog(
         title = "Select Color",
         show = showColorDialog,
-        onDismissRequest = { showColorDialog.value = false }
+        onDismissRequest = { showColorDialog.value = false } // Close dialog
     ) {
         Column {
             ColorPicker(
@@ -205,12 +205,12 @@ Scaffold {
                 TextButton(
                     modifier = Modifier.weight(1f),
                     text = "Cancel",
-                    onClick = { showColorDialog.value = false }
+                    onClick = { showColorDialog.value = false } // Close dialog
                 )
                 TextButton(
                     modifier = Modifier.weight(1f),
                     text = "Confirm",
-                    colors = ButtonDefaults.textButtonColorsPrimary(),
+                    colors = ButtonDefaults.textButtonColorsPrimary(), // Use theme color
                     onClick = {
                         showColorDialog.value = false
                         // Handle confirmation logic

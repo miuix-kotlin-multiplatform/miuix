@@ -45,7 +45,14 @@ import top.yukonga.miuix.kmp.utils.ColorUtils
 import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 /**
- * Default ColorPicker using OkHSV for better perceptual uniformity
+ * A [ColorPicker] component with Miuix style that supports multiple color spaces.
+ *
+ * @param initialColor The initial color of the picker.
+ * @param onColorChanged The callback to be called when the color changes.
+ * @param showPreview Whether to show a preview of the selected color.
+ * @param hapticEffect The haptic effect of the [ColorSlider].
+ * @param colorSpace The color space to use for the picker.
+ * @param modifier The modifier to be applied to the color picker.
  */
 @Composable
 fun ColorPicker(
@@ -94,7 +101,7 @@ fun ColorPicker(
  *
  * @param initialColor The initial color of the picker.
  * @param onColorChanged The callback to be called when the color changes.
- * @param showPreview Whether to show the color preview.
+ * @param showPreview Whether to show a preview of the selected color.
  * @param hapticEffect The haptic effect of the [ColorSlider].
  * @param modifier The modifier to be applied to the color picker.
  */
@@ -318,7 +325,7 @@ fun HsvAlphaSlider(
  *
  * @param initialColor The initial color of the picker.
  * @param onColorChanged The callback to be called when the color changes.
- * @param showPreview Whether to show the color preview.
+ * @param showPreview Whether to show a preview of the selected color.
  * @param hapticEffect The haptic effect of the [ColorSlider].
  * @param modifier The modifier to be applied to the color picker.
  */
@@ -549,7 +556,7 @@ fun OkHsvAlphaSlider(
  *
  * @param initialColor The initial color of the picker.
  * @param onColorChanged The callback to be called when the color changes.
- * @param showPreview Whether to show the color preview.
+ * @param showPreview Whether to show a preview of the selected color.
  * @param hapticEffect The haptic effect of the [ColorSlider].
  * @param modifier The modifier to be applied to the color picker.
  */

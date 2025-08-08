@@ -64,6 +64,7 @@ private val availableComponents = listOf(
     AvailableComponent("PullToRefresh", "pullToRefresh") { PullToRefreshDemo() },
     AvailableComponent("SearchBar", "searchBar") { SearchBarDemo() },
     AvailableComponent("ColorPicker", "colorPicker") { ColorPickerDemo() },
+    AvailableComponent("ColorPalette", "colorPalette") { ColorPaletteDemo() },
     AvailableComponent("ListPopup", "listPopup") { ListPopupDemo() },
     AvailableComponent("SuperArrow", "superArrow") { SuperArrowDemo() },
     AvailableComponent("SuperSwitch", "superSwitch") { SuperSwitchDemo() },

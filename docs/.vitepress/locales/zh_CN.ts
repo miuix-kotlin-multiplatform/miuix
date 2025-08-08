@@ -107,6 +107,7 @@ export default defineConfig({
                         { text: 'Divider', link: '/zh_CN/components/divider' },
                         { text: 'PullToRefresh', link: '/zh_CN/components/pulltorefresh' },
                         { text: 'SearchBar', link: '/zh_CN/components/searchbar' },
+                        { text: 'ColorPalette', link: '/zh_CN/components/colorpalette' },
                         { text: 'ColorPicker', link: '/zh_CN/components/colorpicker' },
                         { text: 'ListPopup', link: '/zh_CN/components/listpopup' },
                     ]

@@ -36,6 +36,7 @@ The Scaffold component provides a suitable container for cross-platform popup wi
 | [Divider](../components/divider)                           | Content separator                          | Block separation, hierarchy division  |
 | [PullToRefresh](../components/pulltorefresh)               | Pull-down refresh operation                | Data update, page refresh             |
 | [SearchBar](../components/searchbar)                       | Search input field                         | Content search, quick find            |
+| [ColorPalette](../components/colorpalette)                 | Grid palette with alpha slider             | Theme settings, color selection       |
 | [ColorPicker](../components/colorpicker)                   | Color selection control                    | Theme settings, color selection       |
 | [ListPopup](../components/listpopup)                       | List popup window component                | Option selection, feature list        |
 

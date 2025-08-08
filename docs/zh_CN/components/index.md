@@ -36,6 +36,7 @@ Scaffold 组件为跨平台提供了一个合适的弹出窗口的容器。`Supe
 | [Divider](../components/divider)                           | 内容分隔线             | 区块分隔、层次划分   |
 | [PullToRefresh](../components/pulltorefresh)               | 下拉触发刷新操作       | 数据更新、页面刷新   |
 | [SearchBar](../components/searchbar)                       | 执行搜索的输入框       | 内容搜索、快速查找   |
+| [ColorPalette](../components/colorpalette)                 | 网格调色盘（含透明度） | 主题设置、颜色选择   |
 | [ColorPicker](../components/colorpicker)                   | 选择颜色的控件         | 主题设置、颜色选择   |
 | [ListPopup](../components/listpopup)                       | 列表弹出窗口组件       | 选项选择、功能列表   |
 
