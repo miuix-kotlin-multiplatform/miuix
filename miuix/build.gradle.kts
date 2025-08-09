@@ -54,15 +54,13 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.androidx.window)
+            implementation(libs.androidx.activity.compose) // Android BackHandler
+            implementation(libs.androidx.window) // Android WindowMetrics
         }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(libs.androidx.graphics.shapes)
             implementation(libs.compose.window.size)
         }
     }
