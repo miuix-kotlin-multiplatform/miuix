@@ -45,7 +45,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.CapsuleShape
 import kotlin.math.absoluteValue
 
 /**
@@ -105,14 +105,12 @@ fun Switch(
         animationSpec = tween(durationMillis = 200)
     )
 
-    val trackClipShape = remember { SmoothRoundedCornerShape(50.dp) }
-
     Box(
         modifier = modifier
             .wrapContentSize(Alignment.Center)
             .size(50.dp, 28.5.dp)
             .requiredSize(50.dp, 28.5.dp)
-            .clip(trackClipShape)
+            .clip(CapsuleShape())
             .drawBehind {
                 drawRect(backgroundColor)
             }

@@ -24,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -41,8 +40,8 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import top.yukonga.miuix.kmp.utils.CapsuleShape
 import top.yukonga.miuix.kmp.utils.ColorUtils
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 
 /**
  * A [ColorPicker] component with Miuix style that supports multiple color spaces.
@@ -148,7 +147,7 @@ fun HsvColorPicker(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(26.dp)
-                    .clip(SmoothRoundedCornerShape(50.dp))
+                    .clip(CapsuleShape())
                     .background(selectedColor)
             )
         }
@@ -311,10 +310,7 @@ fun HsvAlphaSlider(
         modifier = Modifier.fillMaxWidth(),
         hapticEffect = hapticEffect,
         drawBackground = { _, _ ->
-            drawRoundRect(
-                brush = checkerBrush,
-                cornerRadius = CornerRadius(size.height / 2, size.height / 2)
-            )
+            drawRect(brush = checkerBrush)
         }
     )
 }
@@ -374,7 +370,7 @@ fun OkHsvColorPicker(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(26.dp)
-                    .clip(SmoothRoundedCornerShape(50.dp))
+                    .clip(CapsuleShape())
                     .background(selectedColor)
             )
         }
@@ -542,10 +538,7 @@ fun OkHsvAlphaSlider(
         modifier = Modifier.fillMaxWidth(),
         hapticEffect = hapticEffect,
         drawBackground = { _, _ ->
-            drawRoundRect(
-                brush = checkerBrush,
-                cornerRadius = CornerRadius(size.height / 2, size.height / 2)
-            )
+            drawRect(brush = checkerBrush)
         }
     )
 }
@@ -606,7 +599,7 @@ fun OkLabColorPicker(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(26.dp)
-                    .clip(SmoothRoundedCornerShape(50.dp))
+                    .clip(CapsuleShape())
                     .background(selectedColor)
             )
         }
@@ -773,10 +766,7 @@ fun OkLabAlphaSlider(
         modifier = Modifier.fillMaxWidth(),
         hapticEffect = hapticEffect,
         drawBackground = { _, _ ->
-            drawRoundRect(
-                brush = checkerBrush,
-                cornerRadius = CornerRadius(size.height / 2, size.height / 2)
-            )
+            drawRect(brush = checkerBrush)
         }
     )
 }
@@ -837,19 +827,18 @@ private fun ColorSlider(
     Box(
         modifier = modifier
             .height(sliderHeightDp)
+            .clip(CapsuleShape())
             .onGloballyPositioned { coordinates ->
                 sliderWidth = with(density) { coordinates.size.width.toDp() }
             }
             .drawBehind {
                 drawBackground?.invoke(this, size.width, size.height)
-                drawRoundRect(
+                drawRect(
                     brush = gradientBrush,
-                    cornerRadius = CornerRadius(size.height / 2, size.height / 2)
                 )
-                drawRoundRect(
+                drawRect(
                     color = Color.Gray.copy(0.1f),
                     style = Stroke(width = with(density) { 0.5.dp.toPx() }),
-                    cornerRadius = CornerRadius(size.height / 2, size.height / 2)
                 )
             }
             .pointerInput(Unit) {

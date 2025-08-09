@@ -203,32 +203,76 @@ The `PressFeedbackType` enum defines different types of visual feedback that can
 | Sink | Applies a sink effect, where the component scales down slightly when pressed          |
 | Tilt | Applies a tilt effect, where the component tilts slightly based on the touch position |
 
-## Smooth Rounded Corners (SmoothRoundedCornerShape)
+## Smooth Rounded Corners (G2RoundedCornerShape)
 
-`SmoothRoundedCornerShape` provides smoother rounded corners compared to the standard `RoundedCornerShape`.
+`G2RoundedCornerShape` provides visually smoother corners than the standard `RoundedCornerShape` by blending part of the circular arc with Bézier transitions. It supports: a single uniform corner size, per-corner sizes (Dp / px / percent), preset or custom smoothness via `CornerSmoothness`, and a ready-made `CapsuleShape()` helper.
+
+> Source: https://github.com/Kyant0/Capsule (Apache-2.0 License).
+
+### API Overview
+
+Key entry points (overloads):
+
+```kotlin
+G2RoundedCornerShape(size: Dp, cornerSmoothness: CornerSmoothness = CornerSmoothness.Default)
+G2RoundedCornerShape(
+    topStart: Dp = 0.dp,
+    topEnd: Dp = 0.dp,
+    bottomEnd: Dp = 0.dp,
+    bottomStart: Dp = 0.dp,
+    cornerSmoothness: CornerSmoothness = CornerSmoothness.Default
+)
+G2RoundedCornerShape(percent: Int, cornerSmoothness: CornerSmoothness = CornerSmoothness.Default)
+CapsuleShape(cornerSmoothness: CornerSmoothness = CornerSmoothness.Default)
+```
+
+`CornerSmoothness` parameters:
+* `circleFraction`: 0f..1f portion of a quarter circle preserved (1f = normal rounded corner, no smoothing blend)
+* `extendedFraction`: how much the control points extend horizontally/vertically to create a softer capsule-like shape
+
+Presets:
+* `CornerSmoothness.Default` – balanced smoothness (softened corners)
+* `CornerSmoothness.None` – equivalent to a regular rounded corner (no extra smoothing)
 
 ### Basic Usage
 
 ```kotlin
-Surface(
-    shape = SmoothRoundedCornerShape(16.dp)
-) {
-    // Content
+Surface(shape = G2RoundedCornerShape(16.dp)) {
+    /* 内容 */
 }
 ```
 
-### Custom Smoothness and Different Angles
+### Per-Corner Sizes
 
 ```kotlin
 Surface(
-    shape = SmoothRoundedCornerShape(
-        smoothing = 0.8f, // Smoothness, higher values are smoother
+    shape = G2RoundedCornerShape(
         topStart = 16.dp,
         topEnd = 16.dp,
         bottomStart = 8.dp,
-        bottomEnd = 8.dp
+        bottomEnd = 8.dp,
+        cornerSmoothness = CornerSmoothness.Default
     )
-) {
+) { /* Content */ }
+```
+
+### Capsule Shape
+
+```kotlin
+Surface(shape = CapsuleShape()) { /* Content */ }
+```
+
+### Custom Smoothness
+
+You can craft your own smoothness (smaller `circleFraction` & higher `extendedFraction` => softer / more elongated transition):
+
+```kotlin
+val ExtraSmooth = CornerSmoothness(
+    circleFraction = 0.55f,   // retain 55% of the arc; lower -> more smoothing
+    extendedFraction = 0.90f  // push Bézier handles further for a pill-like feel
+)
+
+Surface(shape = G2RoundedCornerShape(24.dp, cornerSmoothness = ExtraSmooth)) {
     // Content
 }
 ```

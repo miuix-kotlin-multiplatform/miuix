@@ -51,7 +51,8 @@ import top.yukonga.miuix.kmp.icon.icons.basic.Search
 import top.yukonga.miuix.kmp.icon.icons.basic.SearchCleanup
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.CapsuleShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 
 /**
  * A [SearchBar] component with Miuix style.
@@ -210,7 +211,7 @@ fun InputField(
                 modifier = Modifier
                     .background(
                         color = MiuixTheme.colorScheme.surfaceContainerHigh,
-                        shape = SmoothRoundedCornerShape(50.dp)
+                        shape = CapsuleShape()
                     ),
                 contentAlignment = Alignment.CenterStart
             ) {

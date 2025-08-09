@@ -20,7 +20,6 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,7 +36,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 import kotlin.math.pow
 import kotlin.math.round
 
@@ -77,7 +76,7 @@ fun Slider(
     val factor = remember(decimalPlaces) { 10f.pow(decimalPlaces) }
     val hapticState = remember { SliderHapticState() }
     val interactionSource = remember { MutableInteractionSource() }
-    val shape = remember(height) { SmoothRoundedCornerShape(height) }
+    val shape = remember(height) { G2RoundedCornerShape(height) }
 
     val calculateProgress = remember(minValue, maxValue, factor) {
         { offset: Float, width: Int ->
@@ -134,7 +133,7 @@ fun Slider(
 @Composable
 private fun SliderTrack(
     modifier: Modifier,
-    shape: SmoothRoundedCornerShape,
+    shape: G2RoundedCornerShape,
     backgroundColor: Color,
     foregroundColor: Color,
     effect: Boolean,

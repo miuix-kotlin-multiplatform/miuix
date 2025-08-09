@@ -11,9 +11,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,7 +21,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 
 /**
  * A [Button] component with Miuix style.
@@ -50,7 +48,7 @@ fun Button(
     insideMargin: PaddingValues = ButtonDefaults.InsideMargin,
     content: @Composable RowScope.() -> Unit
 ) {
-    val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
+    val shape = remember(cornerRadius) { G2RoundedCornerShape(cornerRadius) }
     val color = if (enabled) colors.color else colors.disabledColor
     Surface(
         onClick = onClick,
@@ -95,7 +93,7 @@ fun TextButton(
     minHeight: Dp = ButtonDefaults.MinHeight,
     insideMargin: PaddingValues = ButtonDefaults.InsideMargin
 ) {
-    val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
+    val shape = remember(cornerRadius) { G2RoundedCornerShape(cornerRadius) }
     val color = if (enabled) colors.color else colors.disabledColor
     val textColor = if (enabled) colors.textColor else colors.disabledTextColor
     Surface(

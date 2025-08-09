@@ -18,13 +18,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -36,8 +33,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.LocalContentColor
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.CornerSmoothness
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 import top.yukonga.miuix.kmp.utils.PressFeedbackType
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
 import top.yukonga.miuix.kmp.utils.pressSink
 import top.yukonga.miuix.kmp.utils.pressTilt
 
@@ -165,8 +163,8 @@ private fun BasicCard(
     cornerRadius: Dp = CardDefaults.CornerRadius,
     content: @Composable () -> Unit,
 ) {
-    val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
-    val clipShape = remember(cornerRadius) { RoundedCornerShape(cornerRadius) }
+    val shape = remember(cornerRadius) { G2RoundedCornerShape(cornerRadius) }
+    val clipShape = remember(cornerRadius) { G2RoundedCornerShape(cornerRadius, CornerSmoothness.None) }
 
     CompositionLocalProvider(
         LocalContentColor provides colors.contentColor,
@@ -176,8 +174,8 @@ private fun BasicCard(
                 .semantics(mergeDescendants = false) {
                     isTraversalGroup = true
                 }
-                .background(color = colors.color, shape = shape)
-                .clip(clipShape), // For touch feedback, there is a problem when using SmoothRoundedCornerShape.
+                .clip(clipShape)  // For touch feedback, there is a problem when using G2RoundedCornerShape.
+                .background(color = colors.color, shape = shape),
             propagateMinConstraints = true,
         ) {
             content()

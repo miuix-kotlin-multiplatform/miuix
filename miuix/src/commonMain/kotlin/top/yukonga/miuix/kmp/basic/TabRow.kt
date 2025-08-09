@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 import top.yukonga.miuix.kmp.utils.overScrollHorizontal
 
 /**
@@ -139,7 +139,7 @@ fun TabRowWithContour(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .clip(SmoothRoundedCornerShape(cornerRadius + contourPadding))
+                .clip(G2RoundedCornerShape(cornerRadius + contourPadding))
                 .background(color = colors.backgroundColor(false))
                 .padding(contourPadding)
         ) {
@@ -148,7 +148,7 @@ fun TabRowWithContour(
                 modifier = Modifier
                     .fillMaxSize()
                     .overScrollHorizontal()
-                    .clip(SmoothRoundedCornerShape(cornerRadius)),
+                    .clip(G2RoundedCornerShape(cornerRadius)),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(contourPadding),
                 overscrollEffect = null
@@ -176,7 +176,7 @@ private fun TabItem(
     onClick: () -> Unit,
     enabled: Boolean,
     colors: TabRowColors,
-    shape: SmoothRoundedCornerShape,
+    shape: G2RoundedCornerShape,
     width: Dp
 ) {
     Surface(
@@ -211,7 +211,7 @@ private fun TabItemWithContour(
     onClick: () -> Unit,
     enabled: Boolean,
     colors: TabRowColors,
-    shape: SmoothRoundedCornerShape,
+    shape: G2RoundedCornerShape,
     width: Dp
 ) {
     Box(
@@ -239,7 +239,7 @@ private fun TabItemWithContour(
  */
 private data class TabRowConfig(
     val tabWidth: Dp,
-    val shape: SmoothRoundedCornerShape,
+    val shape: G2RoundedCornerShape,
     val listState: androidx.compose.foundation.lazy.LazyListState
 )
 
@@ -260,7 +260,7 @@ private fun rememberTabRowConfig(
     val tabWidth = remember(tabs.size, minWidth, maxWidth, lazyRowAvailableWidth, spacing) {
         calculateTabWidth(tabs.size, minWidth, maxWidth, spacing, lazyRowAvailableWidth)
     }
-    val shape = remember(cornerRadius) { SmoothRoundedCornerShape(cornerRadius) }
+    val shape = remember(cornerRadius) { G2RoundedCornerShape(cornerRadius) }
 
     return TabRowConfig(tabWidth, shape, listState)
 }

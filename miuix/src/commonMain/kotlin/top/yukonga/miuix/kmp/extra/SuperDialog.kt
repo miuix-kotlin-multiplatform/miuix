@@ -33,7 +33,7 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtils.Companion.DialogLayout
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 import top.yukonga.miuix.kmp.utils.getRoundedCorner
 import top.yukonga.miuix.kmp.utils.getWindowSize
 
@@ -157,7 +157,7 @@ private fun SuperDialogContent(
         .pointerInput(Unit) {
             detectTapGestures { /* Consume click to prevent dismissal */ }
         }
-        .clip(SmoothRoundedCornerShape(bottomCornerRadius))
+        .clip(G2RoundedCornerShape(bottomCornerRadius))
         .background(backgroundColor)
         .padding(horizontal = insideMargin.width, vertical = insideMargin.height)
 

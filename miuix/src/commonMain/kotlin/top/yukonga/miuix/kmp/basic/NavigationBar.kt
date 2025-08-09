@@ -30,7 +30,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -50,7 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.Platform
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 import top.yukonga.miuix.kmp.utils.platform
 
 /**
@@ -240,7 +239,7 @@ fun FloatingNavigationBar(
                         Modifier
                             .background(
                                 color = MiuixTheme.colorScheme.dividerLine,
-                                shape = SmoothRoundedCornerShape(cornerRadius)
+                                shape = G2RoundedCornerShape(cornerRadius)
                             )
                             .padding(0.75.dp)
                     } else Modifier
@@ -249,11 +248,11 @@ fun FloatingNavigationBar(
                     if (shadowElevation > 0.dp) {
                         Modifier.graphicsLayer(
                             shadowElevation = with(density) { shadowElevation.toPx() },
-                            shape = SmoothRoundedCornerShape(cornerRadius),
+                            shape = G2RoundedCornerShape(cornerRadius),
                             clip = cornerRadius > 0.dp
                         )
                     } else if (cornerRadius > 0.dp) {
-                        Modifier.clip(SmoothRoundedCornerShape(cornerRadius))
+                        Modifier.clip(G2RoundedCornerShape(cornerRadius))
                     } else {
                         Modifier
                     }

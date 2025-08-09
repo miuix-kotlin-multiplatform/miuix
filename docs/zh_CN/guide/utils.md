@@ -203,32 +203,76 @@ Box(
 | Sink | 应用下沉效果，组件在按下时轻微缩小     |
 | Tilt | 应用倾斜效果，组件根据触摸位置轻微倾斜 |
 
-## 平滑圆角 (SmoothRoundedCornerShape)
+## 平滑圆角 (G2RoundedCornerShape)
 
-`SmoothRoundedCornerShape` 提供了比标准 `RoundedCornerShape` 更加平滑的圆角效果。
+`G2RoundedCornerShape` 通过在标准圆角圆弧与 Bézier 过渡之间混合，实现比 `RoundedCornerShape` 更柔和、视觉更自然的圆角。它支持：统一圆角值、分别设置四个角（支持 Dp / px / 百分比）、通过 `CornerSmoothness` 预设或自定义平滑度，以及快捷的 `CapsuleShape()` 胶囊形状。
+
+> 来源: https://github.com/Kyant0/Capsule (Apache-2.0 License)。
+
+### 核心 API
+
+常用构造函数（重载）：
+
+```kotlin
+G2RoundedCornerShape(size: Dp, cornerSmoothness: CornerSmoothness = CornerSmoothness.Default)
+G2RoundedCornerShape(
+    topStart: Dp = 0.dp,
+    topEnd: Dp = 0.dp,
+    bottomEnd: Dp = 0.dp,
+    bottomStart: Dp = 0.dp,
+    cornerSmoothness: CornerSmoothness = CornerSmoothness.Default
+)
+G2RoundedCornerShape(percent: Int, cornerSmoothness: CornerSmoothness = CornerSmoothness.Default)
+CapsuleShape(cornerSmoothness: CornerSmoothness = CornerSmoothness.Default)
+```
+
+`CornerSmoothness` 参数说明：
+* `circleFraction`: 0f..1f，表示保留四分之一圆弧的比例（1f = 传统圆角，不做平滑混合）
+* `extendedFraction`: 控制 Bézier 控制点向外延伸的程度，越大越接近椭圆/胶囊视觉
+
+预设：
+* `CornerSmoothness.Default` – 默认柔滑（推荐常规使用）
+* `CornerSmoothness.None` – 与普通圆角等效（无额外平滑）
 
 ### 基本使用
 
 ```kotlin
-Surface(
-    shape = SmoothRoundedCornerShape(16.dp)
-) {
-    // 内容
+Surface(shape = G2RoundedCornerShape(16.dp)) {
+    /* 内容 */
 }
 ```
 
-### 自定义平滑程度和不同角度
+### 分别指定四个角
 
 ```kotlin
 Surface(
-    shape = SmoothRoundedCornerShape(
-        smoothing = 0.8f, // 平滑度，值越高越平滑
+    shape = G2RoundedCornerShape(
         topStart = 16.dp,
         topEnd = 16.dp,
         bottomStart = 8.dp,
-        bottomEnd = 8.dp
+        bottomEnd = 8.dp,
+        cornerSmoothness = CornerSmoothness.Default
     )
-) {
+) { /* 内容 */ }
+```
+
+### 胶囊形状
+
+```kotlin
+Surface(shape = CapsuleShape()) { /* 内容 */ }
+```
+
+### 自定义平滑度
+
+（降低 `circleFraction` + 提高 `extendedFraction` => 更软、更延展）
+
+```kotlin
+val ExtraSmooth = CornerSmoothness(
+    circleFraction = 0.55f,   // 保留 55% 圆弧，越低越“圆润”
+    extendedFraction = 0.90f  // 控制点更外扩，接近胶囊
+)
+
+Surface(shape = G2RoundedCornerShape(24.dp, cornerSmoothness = ExtraSmooth)) {
     // 内容
 }
 ```

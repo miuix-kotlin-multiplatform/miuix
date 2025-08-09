@@ -36,7 +36,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.CapsuleShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -118,7 +119,7 @@ fun ColorPalette(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(26.dp)
-                    .clip(SmoothRoundedCornerShape(50.dp))
+                    .clip(CapsuleShape())
                     .background(lastEmittedColor ?: initialColor)
             )
         }
@@ -175,7 +176,7 @@ private fun PaletteCanvas(
     val totalColumns = hueColumns + if (includeGrayColumn) 1 else 0
     val rowSV = remember(rows) { buildRowSV(rows) }
     val grayV = remember(rows) { buildGrayV(rows) }
-    val shape = SmoothRoundedCornerShape(cornerRadius)
+    val shape = G2RoundedCornerShape(cornerRadius)
 
     var sizePx by remember { mutableStateOf(IntSize.Zero) }
 
