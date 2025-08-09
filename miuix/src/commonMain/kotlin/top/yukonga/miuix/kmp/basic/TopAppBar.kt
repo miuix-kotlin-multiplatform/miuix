@@ -228,7 +228,7 @@ fun SmallTopAppBar(
 fun MiuixScrollBehavior(
     state: TopAppBarState = rememberTopAppBarState(),
     canScroll: () -> Boolean = { true },
-    snapAnimationSpec: AnimationSpec<Float>? = spring(stiffness = 3000f),
+    snapAnimationSpec: AnimationSpec<Float>? = spring(stiffness = 2500f),
     flingAnimationSpec: DecayAnimationSpec<Float>? = rememberSplineBasedDecay()
 ): ScrollBehavior =
     remember(state, canScroll, snapAnimationSpec, flingAnimationSpec) {
@@ -424,10 +424,13 @@ private class ExitUntilCollapsedScrollBehavior(
     override var nestedScrollConnection =
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                // Don't intercept if scrolling down.
                 if (!canScroll() || available.y > 0) return Offset.Zero
                 val prevHeightOffset = state.heightOffset
-                state.heightOffset += available.y
+                state.heightOffset = state.heightOffset + available.y
                 return if (prevHeightOffset != state.heightOffset) {
+                    // We're in the middle of top app bar collapse or expand.
+                    // Consume only the scroll on the Y axis.
                     available.copy(x = 0f)
                 } else {
                     Offset.Zero
@@ -439,25 +442,35 @@ private class ExitUntilCollapsedScrollBehavior(
                 available: Offset,
                 source: NestedScrollSource,
             ): Offset {
-                if (!canScroll() || available.y < 0) return Offset.Zero
+                if (!canScroll()) return Offset.Zero
                 state.contentOffset += consumed.y
-                val oldHeightOffset = state.heightOffset
-                state.heightOffset += available.y
-                return Offset(0f, state.heightOffset - oldHeightOffset)
-            }
 
-            override suspend fun onPreFling(available: Velocity): Velocity {
-                if (available.y < 0 && state.heightOffset < 0f) {
-                    return settleAppBar(state, available.y, flingAnimationSpec, snapAnimationSpec)
+                if (available.y < 0f || consumed.y < 0f) {
+                    // When scrolling up, just update the state's height offset.
+                    val oldHeightOffset = state.heightOffset
+                    state.heightOffset = state.heightOffset + consumed.y
+                    return Offset(0f, state.heightOffset - oldHeightOffset)
                 }
-                return Velocity.Zero
+
+                if (available.y > 0f) {
+                    // Adjust the height offset in case the consumed delta Y is less than what was
+                    // recorded as available delta Y in the pre-scroll.
+                    val oldHeightOffset = state.heightOffset
+                    state.heightOffset = state.heightOffset + available.y
+                    return Offset(0f, state.heightOffset - oldHeightOffset)
+                }
+                return Offset.Zero
             }
 
             override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
                 if (available.y > 0) {
-                    return settleAppBar(state, available.y, flingAnimationSpec, snapAnimationSpec)
+                    // Reset the total content offset to zero when scrolling all the way down. This
+                    // will eliminate some float precision inaccuracies.
+                    state.contentOffset = 0f
                 }
-                return Velocity.Zero
+                val superConsumed = super.onPostFling(consumed, available)
+                return superConsumed +
+                        settleAppBar(state, available.y, flingAnimationSpec, snapAnimationSpec)
             }
         }
 }
@@ -484,10 +497,16 @@ private suspend fun settleAppBar(
     flingAnimationSpec: DecayAnimationSpec<Float>?,
     snapAnimationSpec: AnimationSpec<Float>?,
 ): Velocity {
+    // Check if the app bar is completely collapsed/expanded. If so, no need to settle the app bar,
+    // and just return Zero Velocity.
+    // Note that we don't check for 0f due to float precision with the collapsedFraction
+    // calculation.
     if (state.collapsedFraction < 0.01f || state.collapsedFraction == 1f) {
         return Velocity.Zero
     }
     var remainingVelocity = velocity
+    // In case there is an initial velocity that was left after a previous user fling, animate to
+    // continue the motion to expand or collapse the app bar.
     if (flingAnimationSpec != null && abs(velocity) > 1f) {
         var lastValue = 0f
         AnimationState(initialValue = 0f, initialVelocity = velocity).animateDecay(
@@ -503,6 +522,7 @@ private suspend fun settleAppBar(
             if (abs(delta - consumed) > 0.5f) this.cancelAnimation()
         }
     }
+    // Snap if animation specs were provided.
     if (snapAnimationSpec != null) {
         if (state.heightOffset < 0 && state.heightOffset > state.heightOffsetLimit) {
             AnimationState(initialValue = state.heightOffset).animateTo(
@@ -515,7 +535,6 @@ private suspend fun settleAppBar(
             ) {
                 state.heightOffset = value
             }
-            return Velocity(0f, velocity - remainingVelocity)
         }
     }
     return Velocity(0f, velocity - remainingVelocity)

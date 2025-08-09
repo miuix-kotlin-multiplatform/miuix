@@ -468,8 +468,7 @@ private fun createPullToRefreshConnection(
         if (pullToRefreshState.refreshState != RefreshState.Idle) {
             return available
         }
-        return topAppBarScrollBehavior?.nestedScrollConnection
-            ?.onPreFling(available) ?: Velocity.Zero
+        return Velocity.Zero
     }
 
     override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
