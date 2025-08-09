@@ -46,7 +46,17 @@ fun SecondPagePreview() {
 fun ThirdPagePreview() {
     AppTheme {
         Scaffold {
-            ThirdPage(
+            ThirdPage(MiuixScrollBehavior(rememberTopAppBarState()), PaddingValues(), true)
+        }
+    }
+}
+
+@Composable
+@Preview
+fun FourthPagePreview() {
+    AppTheme {
+        Scaffold {
+            FourthPage(
                 MiuixScrollBehavior(rememberTopAppBarState()),
                 PaddingValues(),
                 false,

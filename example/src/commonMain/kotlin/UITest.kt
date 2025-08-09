@@ -85,6 +85,7 @@ import top.yukonga.miuix.kmp.icon.icons.useful.Edit
 import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
 import top.yukonga.miuix.kmp.icon.icons.useful.NavigatorSwitch
 import top.yukonga.miuix.kmp.icon.icons.useful.Order
+import top.yukonga.miuix.kmp.icon.icons.useful.Scan
 import top.yukonga.miuix.kmp.icon.icons.useful.Settings
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.WindowSize
@@ -97,10 +98,11 @@ private object UIConstants {
     val WIDE_SCREEN_THRESHOLD = 840.dp
     const val MAIN_PAGE_INDEX = 0
     const val DROPDOWN_PAGE_INDEX = 1
-    const val PAGE_COUNT = 3
+    const val COLOR_PAGE_INDEX = 2
+    const val PAGE_COUNT = 4
     const val GITHUB_URL = "https://github.com/miuix-kotlin-multiplatform/miuix"
 
-    val PAGE_TITLES = listOf("HomePage", "DropDown", "Settings")
+    val PAGE_TITLES = listOf("HomePage", "DropDown", "Colors", "Settings")
 }
 
 enum class FloatingNavigationBarAlignment(val value: Int) {
@@ -150,9 +152,10 @@ fun UITest(
 
     val navigationItems = remember {
         listOf(
-            NavigationItem("HomePage", MiuixIcons.Useful.NavigatorSwitch),
-            NavigationItem("DropDown", MiuixIcons.Useful.Order),
-            NavigationItem("Settings", MiuixIcons.Useful.Settings)
+            NavigationItem(UIConstants.PAGE_TITLES[0], MiuixIcons.Useful.NavigatorSwitch),
+            NavigationItem(UIConstants.PAGE_TITLES[1], MiuixIcons.Useful.Order),
+            NavigationItem(UIConstants.PAGE_TITLES[2], MiuixIcons.Useful.Scan),
+            NavigationItem(UIConstants.PAGE_TITLES[3], MiuixIcons.Useful.Settings)
         )
     }
 
@@ -669,8 +672,14 @@ fun AppPager(
                     scrollEndHaptic = uiState.scrollEndHaptic,
                 )
 
-                else -> ThirdPage(
+                UIConstants.COLOR_PAGE_INDEX -> ThirdPage(
                     topAppBarScrollBehavior = topAppBarScrollBehaviorList[2],
+                    padding = padding,
+                    scrollEndHaptic = uiState.scrollEndHaptic,
+                )
+
+                else -> FourthPage(
+                    topAppBarScrollBehavior = topAppBarScrollBehaviorList[3],
                     padding = padding,
                     showFPSMonitor = uiState.showFPSMonitor,
                     onShowFPSMonitorChange = { onUiStateChange(uiState.copy(showFPSMonitor = it)) },
