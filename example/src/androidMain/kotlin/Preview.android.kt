@@ -4,6 +4,7 @@
 package top.yukonga.miuix.uitest
 
 import App
+import FourthPage
 import MainPage
 import SecondPage
 import ThirdPage
@@ -51,7 +52,17 @@ fun SecondPagePreview() {
 fun ThirdPagePreview() {
     AppTheme {
         Scaffold {
-            ThirdPage(
+            ThirdPage(MiuixScrollBehavior(), PaddingValues(), true)
+        }
+    }
+}
+
+@Composable
+@Preview(device = "spec:width=1200px,height=2670px,dpi=480")
+fun FourthPagePreview() {
+    AppTheme {
+        Scaffold {
+            FourthPage(
                 MiuixScrollBehavior(),
                 PaddingValues(),
                 false,
