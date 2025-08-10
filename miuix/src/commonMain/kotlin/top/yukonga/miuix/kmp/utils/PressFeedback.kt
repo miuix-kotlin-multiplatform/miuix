@@ -176,7 +176,6 @@ private class PressTiltNode(
         if (pointerEvent.type == PointerEventType.Press) {
             val offset = pointerEvent.changes.first().position
 
-            // 根据点击位置计算旋转方向
             transformOrigin = TransformOrigin(
                 pivotFractionX = if (offset.x < bounds.width / 2f) 1f else 0f,
                 pivotFractionY = if (offset.y < bounds.height / 2f) 1f else 0f
