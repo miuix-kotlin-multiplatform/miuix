@@ -32,8 +32,6 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
@@ -481,8 +479,7 @@ fun LazyListScope.otherComponent(
             ),
             insideMargin = PaddingValues(16.dp),
             pressFeedbackType = PressFeedbackType.None,
-            showIndication = true,
-            onClick = { }
+            showIndication = true
         ) {
             Text(
                 color = MiuixTheme.colorScheme.onPrimary,
@@ -497,7 +494,6 @@ fun LazyListScope.otherComponent(
                 fontWeight = FontWeight.Normal
             )
         }
-        val hapticFeedback = LocalHapticFeedback.current
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -510,7 +506,7 @@ fun LazyListScope.otherComponent(
                 insideMargin = PaddingValues(16.dp),
                 pressFeedbackType = PressFeedbackType.Sink,
                 showIndication = true,
-                onClick = { },
+                onClick = { println("Card click") },
                 content = {
                     Text(
                         color = MiuixTheme.colorScheme.onSurface,
@@ -529,7 +525,7 @@ fun LazyListScope.otherComponent(
                 modifier = Modifier.weight(1f),
                 insideMargin = PaddingValues(16.dp),
                 pressFeedbackType = PressFeedbackType.Tilt,
-                onLongPress = { hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress) },
+                onLongPress = { println("Card long press") },
                 content = {
                     Text(
                         color = MiuixTheme.colorScheme.onSurface,

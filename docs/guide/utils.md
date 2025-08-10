@@ -193,6 +193,18 @@ Box(
 )
 ```
 
+If you want to use both `Modifier.clickable()` and instant feedback, you can pass the `immediate = true` parameter.
+
+```kotlin
+val interactionSource = remember { MutableInteractionSource() }
+
+Box(
+    modifier = Modifier
+        .clickable(interactionSource = interactionSource, indication = null, onClick = {})
+        .pressSink(interactionSource, immediate = true)
+)
+```
+
 ### Press Feedback Type (`PressFeedbackType`)
 
 The `PressFeedbackType` enum defines different types of visual feedback that can be applied when the component is pressed.
