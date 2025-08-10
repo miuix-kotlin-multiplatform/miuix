@@ -5,14 +5,8 @@ package top.yukonga.miuix.kmp.basic
 
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.awaitEachGesture
-import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.waitForUpOrCancellation
-import androidx.compose.foundation.hoverable
-import androidx.compose.foundation.indication
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -26,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
@@ -104,43 +97,23 @@ fun Card(
     val pressFeedbackModifier = remember(pressFeedbackType, interactionSource) {
         when (pressFeedbackType) {
             PressFeedbackType.None -> Modifier
-            PressFeedbackType.Sink -> Modifier.pressSink(interactionSource)
-            PressFeedbackType.Tilt -> Modifier.pressTilt(interactionSource)
+            PressFeedbackType.Sink -> Modifier.pressSink(interactionSource, immediate = true)
+            PressFeedbackType.Tilt -> Modifier.pressTilt(interactionSource, immediate = true)
         }
     }
 
     BasicCard(
-        modifier = modifier
-            .pointerInput(onClick, onLongPress) {
-                detectTapGestures(
-                    onTap = { onClick?.invoke() },
-                    onLongPress = { onLongPress?.invoke() }
-                )
-            }
-            .pointerInput(interactionSource) {
-                awaitEachGesture {
-                    val pressInteraction: PressInteraction.Press
-                    awaitFirstDown().also {
-                        pressInteraction = PressInteraction.Press(it.position)
-                        interactionSource.tryEmit(pressInteraction)
-                    }
-                    if (waitForUpOrCancellation() == null) {
-                        interactionSource.tryEmit(PressInteraction.Cancel(pressInteraction))
-                    } else {
-                        interactionSource.tryEmit(PressInteraction.Release(pressInteraction))
-                    }
-                }
-            }
-            .hoverable(interactionSource)
-            .then(pressFeedbackModifier),
+        modifier = modifier.then(pressFeedbackModifier),
         cornerRadius = cornerRadius,
         colors = colors
     ) {
         Column(
             modifier = Modifier
-                .indication(
+                .combinedClickable(
                     interactionSource = interactionSource,
-                    indication = if (showIndication == true) LocalIndication.current else null
+                    indication = if (showIndication == true) LocalIndication.current else null,
+                    onClick = { onClick?.invoke() },
+                    onLongClick = onLongPress
                 )
                 .padding(insideMargin),
             content = content

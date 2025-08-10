@@ -193,6 +193,18 @@ Box(
 )
 ```
 
+如果既想使用 `Modifier.clickable()` 又想要即时的反馈效果，可以传递 `immediate = true` 参数。
+
+```kotlin
+val interactionSource = remember { MutableInteractionSource() }
+
+Box(
+    modifier = Modifier
+        .clickable(interactionSource = interactionSource, indication = null, onClick = {})
+        .pressSink(interactionSource, immediate = true)
+)
+```
+
 ### 按压反馈类型 (PressFeedbackType)
 
 `PressFeedbackType` 枚举定义了组件被按下时可以应用的不同类型的视觉反馈。
