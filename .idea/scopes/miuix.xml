@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="miuix" pattern="(file[miuix.docs*]:*//*||file[miuix.example*]:*//*||file[miuix.miuix*]:*//*)&amp;&amp;!file[miuix.docs]:.vitepress//*&amp;&amp;!file[miuix.docs]:.vitepress/locales//*&amp;&amp;!file[miuix.docs]:.vitepress/theme//*&amp;&amp;!file[miuix.docs]:.vitepress/theme/style//*&amp;&amp;!file[miuix.docs]:components//*&amp;&amp;!file[miuix.docs]:guide//*&amp;&amp;!file[miuix.docs]:public//*&amp;&amp;!file[miuix.docs]:zh_CN//*&amp;&amp;!file[miuix.docs]:zh_CN/components//*&amp;&amp;!file[miuix.docs]:zh_CN/guide//*||file[miuix.docs.demo]:*/||file[miuix.example]:*/||file[miuix.example]:kotlin-js-store//*||file[miuix.example]:webpack.config.d//*||file[miuix.miuix]:*/" />
+</component>
