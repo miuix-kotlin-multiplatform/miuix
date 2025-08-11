@@ -58,7 +58,7 @@ fun ThirdPage(
         item(key = "light") {
             SmallTitle("Light Theme Colors")
             Card(
-                modifier = Modifier.padding(horizontal = 12.dp),
+                modifier = Modifier.padding(horizontal = 12.dp).padding(bottom = 6.dp),
                 colors = CardDefaults.defaultColors(
                     color = lightColorScheme().surface
                 ),
