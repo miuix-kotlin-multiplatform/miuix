@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -247,9 +246,9 @@ private fun PaletteCanvas(
                         y = with(density) { cyPx.toDp() - indicatorSize / 2 }
                     )
                     .size(indicatorSize)
-                    .clip(CircleShape)
-                    .border(6.dp, Color.White, CircleShape)
-                    .background(Color.Transparent, CircleShape)
+                    .clip(CapsuleShape())
+                    .border(6.dp, Color.White, CapsuleShape())
+                    .background(Color.Transparent, CapsuleShape())
             )
         }
     }

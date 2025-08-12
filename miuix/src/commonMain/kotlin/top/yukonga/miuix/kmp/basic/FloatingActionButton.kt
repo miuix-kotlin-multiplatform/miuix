@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
@@ -25,6 +24,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.CapsuleShape
 
 /**
  * A [FloatingActionButton] component with Miuix style.
@@ -43,7 +43,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 fun FloatingActionButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    shape: Shape = CircleShape,
+    shape: Shape = CapsuleShape(),
     containerColor: Color = MiuixTheme.colorScheme.primary,
     shadowElevation: Dp = 4.dp,
     minWidth: Dp = 60.dp,

@@ -6,22 +6,15 @@ package top.yukonga.miuix.kmp.basic
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.keyframes
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsDraggedAsState
-import androidx.compose.foundation.interaction.collectIsHoveredAsState
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,7 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -46,6 +38,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.CapsuleShape
+import top.yukonga.miuix.kmp.utils.pressSink
 
 /**
  * A [Checkbox] component with Miuix style.
@@ -65,23 +59,7 @@ fun Checkbox(
     enabled: Boolean = true,
 ) {
     val hapticFeedback = LocalHapticFeedback.current
-
     val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
-    val isDragged by interactionSource.collectIsDraggedAsState()
-    val isHovered by interactionSource.collectIsHoveredAsState()
-
-    val springSpec = remember {
-        spring<Float>(
-            dampingRatio = Spring.DampingRatioLowBouncy,
-            stiffness = Spring.StiffnessMedium
-        )
-    }
-
-    val size by animateFloatAsState(
-        targetValue = if (!enabled) 1f else if (isPressed || isDragged || isHovered) 0.95f else 1f,
-        animationSpec = springSpec
-    )
 
     val backgroundColor by animateColorAsState(
         targetValue = if (checked) colors.checkedBackgroundColor(enabled) else colors.uncheckedBackgroundColor(enabled),
@@ -117,8 +95,8 @@ fun Checkbox(
         modifier = modifier
             .wrapContentSize(Alignment.Center)
             .requiredSize(25.5.dp)
-            .scale(size)
-            .clip(CircleShape)
+            .pressSink(interactionSource, immediate = true)
+            .clip(CapsuleShape)
             .drawBehind {
                 drawCircle(backgroundColor)
             }

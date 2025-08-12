@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -52,7 +51,6 @@ import top.yukonga.miuix.kmp.icon.icons.basic.SearchCleanup
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.BackHandler
 import top.yukonga.miuix.kmp.utils.CapsuleShape
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 
 /**
  * A [SearchBar] component with Miuix style.
@@ -171,7 +169,9 @@ fun InputField(
                 contentAlignment = Alignment.CenterStart
             ) {
                 Icon(
-                    modifier = Modifier.clip(CircleShape).clickable { onQueryChange("") },
+                    modifier = Modifier
+                        .clip(CapsuleShape())
+                        .clickable { onQueryChange("") },
                     imageVector = MiuixIcons.Basic.SearchCleanup,
                     tint = MiuixTheme.colorScheme.onSurfaceContainerHighest,
                     contentDescription = "Search Cleanup"
