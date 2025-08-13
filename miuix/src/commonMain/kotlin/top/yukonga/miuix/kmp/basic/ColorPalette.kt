@@ -37,8 +37,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import top.yukonga.miuix.kmp.utils.CapsuleShape
 import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import top.yukonga.miuix.kmp.utils.Hsv
+import top.yukonga.miuix.kmp.utils.toHsv
 import kotlin.math.abs
-import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -80,7 +81,10 @@ fun ColorPalette(
     LaunchedEffect(initialColor, rows, hueColumns, includeGrayColumn) {
         if (lastEmittedColor?.let { colorsEqualApprox(it, initialColor) } == true) return@LaunchedEffect
 
-        val (h, s, v) = colorToHsvLocal(initialColor)
+        val hsvInit = initialColor.toHsv()
+        val h = hsvInit.h.toFloat()
+        val s = (hsvInit.s / 100.0).toFloat()
+        val v = (hsvInit.v / 100.0).toFloat()
         val currentHSV = Triple(h, s, v)
         if (lastAcceptedHSV?.let { hsvEqualApprox(it, currentHSV) } == true) {
             alpha = initialColor.alpha
@@ -136,14 +140,17 @@ fun ColorPalette(
                 selectedCol = c
                 val base = cellColor(c, r, rowSV, grayV, hueColumns, includeGrayColumn)
                 val newColor = base.copy(alpha = alpha)
-                lastAcceptedHSV = colorToHsvLocal(base)
+                lastAcceptedHSV = base.toHsv().let { Triple(it.h.toFloat(), (it.s / 100.0).toFloat(), (it.v / 100.0).toFloat()) }
                 lastEmittedColor = newColor
                 onColorChangedState.value(newColor)
             }
         )
 
         val base = cellColor(selectedCol, selectedRow, rowSV, grayV, hueColumns, includeGrayColumn)
-        val (h, s, v) = colorToHsvLocal(base)
+        val hsvBase = base.toHsv()
+        val h = hsvBase.h.toFloat()
+        val s = (hsvBase.s / 100.0).toFloat()
+        val v = (hsvBase.v / 100.0).toFloat()
 
         HsvAlphaSlider(
             currentHue = h,
@@ -153,7 +160,7 @@ fun ColorPalette(
             onAlphaChanged = {
                 alpha = it
                 val newColor = base.copy(alpha = it)
-                lastAcceptedHSV = colorToHsvLocal(base)
+                lastAcceptedHSV = base.toHsv().let { Triple(it.h.toFloat(), (it.s / 100.0).toFloat(), (it.v / 100.0).toFloat()) }
                 lastEmittedColor = newColor
                 onColorChangedState.value(newColor)
             }
@@ -292,11 +299,11 @@ private fun cellColor(
     val totalColumns = hueColumns + if (includeGrayColumn) 1 else 0
     val (s, v) = rowSV[row]
     return if (includeGrayColumn && col == totalColumns - 1) {
-        Color.hsv(0f, 0f, grayV[row])
+        Hsv(0.0, (grayV[row] * 100.0), 0.0).toColor()
     } else {
         val step = 360f / hueColumns
         val h = (col * step) % 360f
-        Color.hsv(h, s, v)
+        Hsv(h.toDouble(), (v * 100.0), (s * 100.0)).toColor()
     }
 }
 
@@ -324,26 +331,6 @@ private fun hsvEqualApprox(
     val dhRaw = abs(a.first - b.first)
     val dh = min(dhRaw, 360f - dhRaw)
     return dh <= epsH && abs(a.second - b.second) <= eps && abs(a.third - b.third) <= eps
-}
-
-private fun colorToHsvLocal(color: Color): Triple<Float, Float, Float> {
-    val r = color.red
-    val g = color.green
-    val b = color.blue
-
-    val max = max(r, max(g, b))
-    val min = min(r, min(g, b))
-    val delta = max - min
-
-    val h = when {
-        delta == 0f -> 0f
-        max == r -> ((60f * ((g - b) / delta) + 360f) % 360f)
-        max == g -> (60f * ((b - r) / delta) + 120f)
-        else -> (60f * ((r - g) / delta) + 240f)
-    }
-    val s = if (max == 0f) 0f else delta / max
-    val v = max
-    return Triple(h.coerceIn(0f, 360f), s.coerceIn(0f, 1f), v.coerceIn(0f, 1f))
 }
 
 private fun <T> List<T>.indexOfMinBy(selector: (T) -> Float): Int {

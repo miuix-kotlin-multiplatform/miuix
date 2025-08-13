@@ -41,6 +41,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.utils.CapsuleShape
 import top.yukonga.miuix.kmp.utils.ColorUtils
+import top.yukonga.miuix.kmp.utils.Hsv
+import top.yukonga.miuix.kmp.utils.OkLab
+import top.yukonga.miuix.kmp.utils.toHsv
+import top.yukonga.miuix.kmp.utils.toOkLab
 
 /**
  * A [ColorPicker] component with Miuix style that supports multiple color spaces.
@@ -117,14 +121,18 @@ fun HsvColorPicker(
     var currentValue by remember { mutableStateOf(0f) }
     var currentAlpha by remember { mutableStateOf(1f) }
 
-    val selectedColor = Color.hsv(currentHue, currentSaturation, currentValue, currentAlpha)
+    val selectedColor = Hsv(
+        h = currentHue.toDouble(),
+        v = (currentValue * 100.0),
+        s = (currentSaturation * 100.0)
+    ).toColor(currentAlpha)
 
     LaunchedEffect(initialColor) {
         if (initialSetup) {
-            val hsv = ColorUtils.colorToHsv(initialColor)
-            currentHue = hsv[0]
-            currentSaturation = hsv[1]
-            currentValue = hsv[2]
+            val hsv = initialColor.toHsv()
+            currentHue = hsv.h.toFloat()
+            currentSaturation = (hsv.s / 100.0).toFloat()
+            currentValue = (hsv.v / 100.0).toFloat()
             currentAlpha = initialColor.alpha
             initialSetup = false
         }
@@ -230,8 +238,8 @@ fun HsvSaturationSlider(
 ) {
     val saturationColors = remember(currentHue) {
         listOf(
-            Color.hsv(currentHue, 0f, 1f, 1f),
-            Color.hsv(currentHue, 1f, 1f, 1f)
+            Hsv(currentHue.toDouble(), 100.0, 0.0).toColor(1f),
+            Hsv(currentHue.toDouble(), 100.0, 100.0).toColor(1f)
         )
     }
     ColorSlider(
@@ -261,7 +269,7 @@ fun HsvValueSlider(
     hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
 ) {
     val valueColors = remember(currentHue, currentSaturation) {
-        listOf(Color.Black, Color.hsv(currentHue, currentSaturation, 1f))
+        listOf(Color.Black, Hsv(currentHue.toDouble(), 100.0, (currentSaturation * 100.0)).toColor())
     }
     ColorSlider(
         value = currentValue,
@@ -294,7 +302,7 @@ fun HsvAlphaSlider(
     val density = LocalDensity.current
 
     val alphaColors = remember(currentHue, currentSaturation, currentValue) {
-        val baseColor = Color.hsv(currentHue, currentSaturation, currentValue)
+        val baseColor = Hsv(currentHue.toDouble(), (currentValue * 100.0), (currentSaturation * 100.0)).toColor()
         listOf(baseColor.copy(alpha = 0f), baseColor.copy(alpha = 1f))
     }
 
@@ -567,16 +575,19 @@ fun OkLabColorPicker(
     var currentAlpha by remember { mutableStateOf(1f) }
 
     val selectedColor = remember(currentL, currentA, currentB, currentAlpha) {
-        val okLabColor = ColorUtils.createOkLabColor(currentL, currentA, currentB)
-        ColorUtils.okLabToColor(okLabColor, currentAlpha)
+        OkLab(
+            l = (currentL * 100.0),
+            a = (currentA / 0.4 * 100.0),
+            b = (currentB / 0.4 * 100.0)
+        ).toColor(currentAlpha)
     }
 
     LaunchedEffect(initialColor) {
         if (initialSetup) {
-            val okLabColor = ColorUtils.colorToOkLab(initialColor)
-            currentL = okLabColor[0]
-            currentA = okLabColor[1]
-            currentB = okLabColor[2]
+            val ok = initialColor.toOkLab()
+            currentL = (ok.l / 100.0).toFloat()
+            currentA = ((ok.a / 100.0) * 0.4).toFloat()
+            currentB = ((ok.b / 100.0) * 0.4).toFloat()
             currentAlpha = initialColor.alpha
             initialSetup = false
         }
@@ -657,8 +668,11 @@ fun OkLabLightnessSlider(
         val steps = 7
         (0..steps).map { i ->
             val l = i.toFloat() / steps.toFloat()
-            val okLabColor = ColorUtils.createOkLabColor(l, currentA, currentB)
-            ColorUtils.okLabToColor(okLabColor)
+            OkLab(
+                l = l * 100.0,
+                a = (currentA / 0.4 * 100.0),
+                b = (currentB / 0.4 * 100.0)
+            ).toColor()
         }
     }
     ColorSlider(
@@ -687,8 +701,11 @@ fun OkLabAChannelSlider(
         val steps = 8
         (0..steps).map { i ->
             val a = minA + (maxA - minA) * i.toFloat() / steps.toFloat()
-            val okLabColor = ColorUtils.createOkLabColor(currentL, a, currentB)
-            ColorUtils.okLabToColor(okLabColor)
+            OkLab(
+                l = currentL * 100.0,
+                a = (a / 0.4 * 100.0),
+                b = (currentB / 0.4 * 100.0)
+            ).toColor()
         }
     }
     ColorSlider(
@@ -719,8 +736,11 @@ fun OkLabBChannelSlider(
         val steps = 8
         (0..steps).map { i ->
             val b = minB + (maxB - minB) * i.toFloat() / steps.toFloat()
-            val okLabColor = ColorUtils.createOkLabColor(currentL, currentA, b)
-            ColorUtils.okLabToColor(okLabColor)
+            OkLab(
+                l = currentL * 100.0,
+                a = (currentA / 0.4 * 100.0),
+                b = (b / 0.4 * 100.0)
+            ).toColor()
         }
     }
     ColorSlider(
@@ -749,8 +769,11 @@ fun OkLabAlphaSlider(
     val density = LocalDensity.current
 
     val alphaColors = remember(currentL, currentA, currentB) {
-        val okLabColor = ColorUtils.createOkLabColor(currentL, currentA, currentB)
-        val baseColor = ColorUtils.okLabToColor(okLabColor)
+        val baseColor = OkLab(
+            l = currentL * 100.0,
+            a = (currentA / 0.4 * 100.0),
+            b = (currentB / 0.4 * 100.0)
+        ).toColor()
         listOf(baseColor.copy(alpha = 0f), baseColor.copy(alpha = 1f))
     }
 

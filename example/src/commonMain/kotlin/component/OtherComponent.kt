@@ -58,8 +58,8 @@ import top.yukonga.miuix.kmp.basic.TextField
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.useful.Like
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.ColorUtils.colorToHsv
-import top.yukonga.miuix.kmp.utils.ColorUtils.colorToOkLab
+import top.yukonga.miuix.kmp.utils.toHsv
+import top.yukonga.miuix.kmp.utils.toOkLab
 import top.yukonga.miuix.kmp.utils.PressFeedbackType
 import kotlin.math.round
 
@@ -327,16 +327,16 @@ fun LazyListScope.otherComponent(
                 modifier = Modifier.padding(bottom = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val hsv = colorToHsv(selectedColor)
+                val hsv = selectedColor.toHsv()
                 Text(
                     text = "HEX: #${selectedColor.toArgb().toHexString(HexFormat.UpperCase)}" +
                             "\nRGBA: ${(selectedColor.red * 255).toInt()}, " +
                             "${(selectedColor.green * 255).toInt()}, " +
                             "${(selectedColor.blue * 255).toInt()}, " +
                             "${(round(selectedColor.alpha * 100) / 100.0)}" +
-                            "\nHSVA: ${(hsv[0]).toInt()}, " +
-                            "${(hsv[1] * 100).toInt()}%, " +
-                            "${(hsv[2] * 100).toInt()}%, " +
+                            "\nHSVA: ${(hsv.h).toInt()}, " +
+                            "${(hsv.s).toInt()}%, " +
+                            "${(hsv.v).toInt()}%, " +
                             "${(round(selectedColor.alpha * 100) / 100.0)}",
                     modifier = Modifier.weight(1f)
                 )
@@ -366,16 +366,16 @@ fun LazyListScope.otherComponent(
                 modifier = Modifier.padding(bottom = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val hsv = colorToHsv(selectedColor)
+                val hsv = selectedColor.toHsv()
                 Text(
                     text = "HEX: #${selectedColor.toArgb().toHexString(HexFormat.UpperCase)}" +
                             "\nRGBA: ${(selectedColor.red * 255).toInt()}, " +
                             "${(selectedColor.green * 255).toInt()}, " +
                             "${(selectedColor.blue * 255).toInt()}, " +
                             "${(round(selectedColor.alpha * 100) / 100.0)}" +
-                            "\nHSVA: ${(hsv[0]).toInt()}, " +
-                            "${(hsv[1] * 100).toInt()}%, " +
-                            "${(hsv[2] * 100).toInt()}%, " +
+                            "\nHSVA: ${(hsv.h).toInt()}, " +
+                            "${(hsv.s).toInt()}%, " +
+                            "${(hsv.v).toInt()}%, " +
                             "${(round(selectedColor.alpha * 100) / 100.0)}",
                     modifier = Modifier.weight(1f)
                 )
@@ -405,16 +405,16 @@ fun LazyListScope.otherComponent(
                 modifier = Modifier.padding(bottom = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val okLab = colorToOkLab(selectedColor)
+                val ok = selectedColor.toOkLab()
                 Text(
                     text = "HEX: #${selectedColor.toArgb().toHexString(HexFormat.UpperCase)}" +
                             "\nRGBA: ${(selectedColor.red * 255).toInt()}, " +
                             "${(selectedColor.green * 255).toInt()}, " +
                             "${(selectedColor.blue * 255).toInt()}, " +
                             "${(round(selectedColor.alpha * 100) / 100.0)}" +
-                            "\nOkLab: ${(okLab[0] * 1000).toInt() / 1000f}, " +
-                            "${(okLab[1] * 1000).toInt() / 1000f}, " +
-                            "${(okLab[2] * 1000).toInt() / 1000f} / " +
+                            "\nOkLab: ${((ok.l * 1000).toInt() / 1000.0)}, " +
+                            "${((ok.a * 1000).toInt() / 1000.0)}, " +
+                            "${((ok.b * 1000).toInt() / 1000.0)} / " +
                             "${(round(selectedColor.alpha * 100) / 100.0)}",
                     modifier = Modifier.weight(1f)
                 )
@@ -444,16 +444,16 @@ fun LazyListScope.otherComponent(
                 modifier = Modifier.padding(bottom = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val hsv = colorToHsv(selectedColor)
+                val hsv = selectedColor.toHsv()
                 Text(
                     text = "HEX: #${selectedColor.toArgb().toHexString(HexFormat.UpperCase)}" +
                             "\nRGBA: ${(selectedColor.red * 255).toInt()}, " +
                             "${(selectedColor.green * 255).toInt()}, " +
                             "${(selectedColor.blue * 255).toInt()}, " +
                             "${(round(selectedColor.alpha * 100) / 100.0)}" +
-                            "\nHSVA: ${(hsv[0]).toInt()}, " +
-                            "${(hsv[1] * 100).toInt()}%, " +
-                            "${(hsv[2] * 100).toInt()}%, " +
+                            "\nHSVA: ${(hsv.h).toInt()}, " +
+                            "${(hsv.s).toInt()}%, " +
+                            "${(hsv.v).toInt()}%, " +
                             "${(round(selectedColor.alpha * 100) / 100.0)}",
                     modifier = Modifier.weight(1f)
                 )

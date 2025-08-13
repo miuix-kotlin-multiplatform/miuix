@@ -10,11 +10,61 @@ import androidx.compose.ui.graphics.Color.Companion.hsv
 import kotlin.math.cbrt
 import kotlin.math.pow
 
+
+/**
+ * User-friendly OkLab representation.
+ * - l: 0.0..100.0 (lightness percent)
+ * - a: -100.0..100.0 (green-red axis, scaled to typical [-0.4, 0.4] internally)
+ * - b: -100.0..100.0 (blue-yellow axis, scaled to typical [-0.4, 0.4] internally)
+ */
+data class OkLab(val l: Double, val a: Double, val b: Double) {
+    fun toColor(alpha: Float = 1f): Color {
+        val lN = (l / 100.0).coerceIn(0.0, 1.0).toFloat()
+        val aN = ((a / 100.0) * 0.4).toFloat().coerceIn(-0.4f, 0.4f)
+        val bN = ((b / 100.0) * 0.4).toFloat().coerceIn(-0.4f, 0.4f)
+        val ok = floatArrayOf(lN, aN, bN)
+        return ColorUtils.okLabToColor(ok, alpha)
+    }
+}
+
+/**
+ * User-friendly HSV-like representation.
+ * - h: hue in degrees [0, 360)
+ * - v: value/brightness in percent [0.0, 100.0]
+ * - s: saturation in percent [0.0, 100.0]
+ */
+data class Hsv(val h: Double, val v: Double, val s: Double) {
+    fun toColor(alpha: Float = 1f): Color {
+        val hue = (((h % 360.0) + 360.0) % 360.0).toFloat()
+        val vN = (v / 100.0).coerceIn(0.0, 1.0).toFloat()
+        val sN = (s / 100.0).coerceIn(0.0, 1.0).toFloat()
+        return hsv(hue, sN, vN, alpha)
+    }
+}
+
+/** Convert Compose Color to user-friendly OkLab. */
+fun Color.toOkLab(): OkLab {
+    val lab = ColorUtils.colorToOkLab(this)
+    val l = (lab[0] * 100.0).coerceIn(0.0, 100.0)
+    val a = (lab[1] / 0.4 * 100.0).coerceIn(-100.0, 100.0)
+    val b = (lab[2] / 0.4 * 100.0).coerceIn(-100.0, 100.0)
+    return OkLab(l, a, b)
+}
+
+/** Convert Compose Color to Hvs. */
+fun Color.toHsv(): Hsv {
+    val hsvArr = ColorUtils.colorToHsv(this)
+    val h = hsvArr[0].toDouble()
+    val s = (hsvArr[1] * 100.0).coerceIn(0.0, 100.0)
+    val v = (hsvArr[2] * 100.0).coerceIn(0.0, 100.0)
+    return Hsv(h, v, s)
+}
+
 object ColorUtils {
     /**
-     * Convert an RGB colour space vector to OkLab colour space
-     * @param color RGB colour space vector (values 0-1)
-     * @return OkLab colour space vector
+     * Convert an RGB color-space vector (sRGB, 0..1) to OkLab color space.
+     * @param color RGB vector [r, g, b] with each component in 0..1
+     * @return OkLab vector [L, a, b], where L is approximately 0..1
      */
     fun rgbToOkLab(color: FloatArray): FloatArray {
         val l = cbrt(0.4122214708f * color[0] + 0.5363325363f * color[1] + 0.0514459929f * color[2])
@@ -29,9 +79,9 @@ object ColorUtils {
     }
 
     /**
-     * Convert an OkLab colour space vector to RGB colour space
-     * @param color OkLab colour space vector
-     * @return RGB colour space vector (values 0-1)
+     * Convert an OkLab color-space vector to sRGB.
+     * @param color OkLab vector [L, a, b]
+     * @return sRGB vector [r, g, b], each component clamped to 0..1
      */
     fun okLabToRgb(color: FloatArray): FloatArray {
         val l_ = color[0] + 0.3963377774f * color[1] + 0.2158037573f * color[2]
@@ -50,25 +100,10 @@ object ColorUtils {
     }
 
     /**
-     * Create a safe OkLab color with clamped values
-     * @param l Lightness (0.0 to 1.0)
-     * @param a Green-Red axis (-0.4 to 0.4, typical range)
-     * @param b Blue-Yellow axis (-0.4 to 0.4, typical range)
-     * @return Safe OkLab color array
-     */
-    fun createOkLabColor(l: Float, a: Float, b: Float): FloatArray {
-        return floatArrayOf(
-            l.coerceIn(0f, 1f),
-            a.coerceIn(-0.4f, 0.4f),
-            b.coerceIn(-0.4f, 0.4f)
-        )
-    }
-
-    /**
-     * Convert OkLab color to Compose Color
-     * @param okLab OkLab color array [L, A, B]
-     * @param alpha Alpha value (0.0 to 1.0)
-     * @return Compose Color
+     * Convert an OkLab color vector to a Compose Color (sRGB).
+     * @param okLab OkLab vector [L, a, b]
+     * @param alpha Alpha in 0..1
+     * @return Compose Color in sRGB
      */
     fun okLabToColor(okLab: FloatArray, alpha: Float = 1f): Color {
         val rgb = okLabToRgb(okLab)
@@ -76,9 +111,9 @@ object ColorUtils {
     }
 
     /**
-     * Convert Compose Color to OkLab
-     * @param color Compose Color
-     * @return OkLab color array [L, A, B]
+     * Convert a Compose Color (sRGB) to OkLab.
+     * @param color Compose Color in sRGB
+     * @return OkLab vector [L, a, b]
      */
     fun colorToOkLab(color: Color): FloatArray {
         val rgb = floatArrayOf(color.red, color.green, color.blue)
@@ -86,15 +121,11 @@ object ColorUtils {
     }
 
     /**
-     * Convert RGB color values to HSV color space.
-     *
-     * @param r Red component (0-255)
-     * @param g Green component (0-255)
-     * @param b Blue component (0-255)
-     * @param hsv Output array to store HSV values [hue, saturation, value]
-     *            - hue: 0-360 degrees
-     *            - saturation: 0.0-1.0
-     *            - value: 0.0-1.0
+     * Convert 8-bit sRGB (0..255) to HSV color space.
+     * @param r Red 0..255
+     * @param g Green 0..255
+     * @param b Blue 0..255
+     * @param hsv Output array [h, s, v]: h in degrees 0..360, s in 0..1, v in 0..1
      */
     fun rgbToHsv(
         @IntRange(0, 255) r: Int,
@@ -123,13 +154,9 @@ object ColorUtils {
     }
 
     /**
-     * Convert a Color to HSV color space.
-     *
-     * @param color The Color to convert.
-     * @return An array containing [hue, saturation, value].
-     *         - hue: 0-360 degrees
-     *         - saturation: 0.0-1.0
-     *         - value: 0.0-1.0
+     * Convert a Compose Color (sRGB) to HSV.
+     * @param color Color in sRGB
+     * @return HSV array [h, s, v]: h in degrees 0..360, s in 0..1, v in 0..1
      */
     fun colorToHsv(color: Color): FloatArray {
         val hsv = FloatArray(3)
@@ -143,7 +170,8 @@ object ColorUtils {
     }
 
     /**
-     * Convert sRGB to OkHSV color space
+     * Convert sRGB (0..1) to OkHSV color space.
+     * @return OkHSV array [h, s, v] with h in 0..1, s in 0..1, v in 0..1
      */
     fun srgbToOkhsv(r: Float, g: Float, b: Float): FloatArray {
         val lab = linearSrgbToOklab(
@@ -178,9 +206,6 @@ object ColorUtils {
         )
 
         var L2 = L / scaleL
-        var C2 = C / scaleL
-
-        C2 = (C2 * toe(L2)) / L2
         L2 = toe(L2)
 
         val v = L2 / Lv
@@ -190,7 +215,11 @@ object ColorUtils {
     }
 
     /**
-     * Convert OkHSV to sRGB color space
+     * Convert OkHSV to sRGB color space.
+     * @param h Hue in 0..1
+     * @param s Saturation in 0..1
+     * @param v Value in 0..1
+     * @return sRGB array [r, g, b] in 0..1
      */
     fun okhsvToSrgb(h: Float, s: Float, v: Float): FloatArray {
         val a_ = kotlin.math.cos(2f * kotlin.math.PI.toFloat() * h)
@@ -232,21 +261,24 @@ object ColorUtils {
     }
 
     /**
-     * Convert Compose Color to OkHSV
+     * Convert a Compose Color (sRGB) to OkHSV.
+     * @return OkHSV array [h, s, v] with h in 0..1
      */
     fun colorToOkhsv(color: Color): FloatArray {
         return srgbToOkhsv(color.red, color.green, color.blue)
     }
 
     /**
-     * Convert OkHSV to Compose Color
+     * Convert OkHSV to Compose Color (sRGB).
+     * @param h Hue in 0..1
+     * @param s Saturation in 0..1
+     * @param v Value in 0..1
+     * @param alpha Alpha in 0..1
      */
     fun okhsvToColor(h: Float, s: Float, v: Float, alpha: Float = 1f): Color {
         val srgb = okhsvToSrgb(h, s, v)
         return Color(srgb[0], srgb[1], srgb[2], alpha)
     }
-
-    // 辅助函数
 
     private fun srgbTransferFunction(a: Float): Float {
         return if (0.0031308f >= a) {
@@ -402,18 +434,18 @@ object ColorUtils {
     }
 
     /**
-     * Generate HSV hue colors for hue slider
+     * Generate HSV hue colors for the hue slider (using Hsv API, bright and saturated).
      */
     fun generateHsvHueColors(): List<Color> {
         val steps = 36
         return (0 until steps).map { i ->
-            val hue = i.toFloat() / steps.toFloat()
-            hsv(hue * 360f, 1f, 1f)
+            val hue = i.toDouble() / steps.toDouble() * 360.0
+            Hsv(hue, 100.0, 100.0).toColor()
         }
     }
 
     /**
-     * Generate OkHSV hue colors for hue slider
+     * Generate OkHSV hue colors for the hue slider (perceptual smoothing).
      */
     fun generateOkHsvHueColors(): List<Color> {
         val steps = 36
