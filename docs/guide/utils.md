@@ -127,21 +127,31 @@ LazyColumn(
 
 *   `hapticFeedbackType`: Specifies the type of haptic feedback to be performed when the scroll reaches its end. Defaults to `HapticFeedbackType.TextHandleMove`. You can use other types available in `androidx.compose.ui.hapticfeedback.HapticFeedbackType`.
 
-## Press Feedback Effects
+## Press Feedback Effects (Modifier.pressable())
 
 Miuix provides visual feedback effects to enhance user interaction experience, improving operability through tactile-like responses.
 
-### Sink Effect
-
-The `pressSink` modifier applies a "sink" visual feedback when the component is pressed, by smoothly scaling down the component.
+Supports use with responsive modifiers such as `Modifier.clickable()`, and `SinkFeedback` is the default effect.
 
 ```kotlin
-val interactionSource = remember { MutableInteractionSource() }
-
 Box(
     modifier = Modifier
-        .clickable(interactionSource = interactionSource, indication = null)
-        .pressSink(interactionSource)
+        .pressable()
+        .background(Color.Blue)
+        .size(100.dp)
+)
+```
+
+### Sink Effect
+
+The `SinkFeedback` indication applies a "sink" visual when the component is pressed, which is achieved by smoothly scaling the component.
+
+When `interactionSource` is `null`, internal `MutableInteractionSource` is lazily created only when needed, which reduces clickable performance costs during the combination.
+
+```kotlin
+Box(
+    modifier = Modifier
+        .pressable(interactionSource = null, indication = SinkFeedback())
         .background(Color.Blue)
         .size(100.dp)
 )
@@ -149,59 +159,22 @@ Box(
 
 ### Tilt Effect
 
-The `pressTilt` modifier applies a "tilt" effect based on the position where the user pressed the component. The tilt direction is determined by touch offset, giving the effect that one corner "sinks" while the other "static".
+The `TiltFeedback` indication applies a "tilt" effect based on the position of the user pressing the component. The tilt direction is determined by the touch offset, so that one corner "sinks" while the other corner remains "still".
 
 ```kotlin
 val interactionSource = remember { MutableInteractionSource() }
 
 Box(
     modifier = Modifier
-        .clickable(interactionSource = interactionSource, indication = null)
-        .pressTilt(interactionSource)
+        .pressable(interactionSource = interactionSource, indication = TiltFeedback())
+        .combinedClickable(
+            interactionSource = interactionSource,
+            indication = LocalIndication.current,
+            onClick = {},
+            onLongClick = {}
+        )
         .background(Color.Green)
         .size(100.dp)
-)
-```
-
-### Prerequisites for Triggering Press Feedback
-
-Press feedback effects require detecting `interactionSource.collectIsPressedAsState()` to be triggered.
-
-You can use responsive modifiers like `Modifier.clickable()` to add `PressInteraction.Press` to the `interactionSource` and trigger press feedback effects.
-
-However, it's recommended to use the method below to add `PressInteraction.Press` to the `interactionSource` for faster response triggering of press feedback effects.
-
-```kotlin
-val interactionSource = remember { MutableInteractionSource() }
-
-Box(
-    modifier = Modifier
-        .pointerInput(Unit) {
-            awaitEachGesture {
-                val pressInteraction: PressInteraction.Press
-                awaitFirstDown().also {
-                    pressInteraction = PressInteraction.Press(it.position)
-                    interactionSource.tryEmit(pressInteraction)
-                }
-                if (waitForUpOrCancellation() == null) {
-                    interactionSource.tryEmit(PressInteraction.Cancel(pressInteraction))
-                } else {
-                    interactionSource.tryEmit(PressInteraction.Release(pressInteraction))
-                }
-            }
-        }
-)
-```
-
-If you want to use both `Modifier.clickable()` and instant feedback, you can pass the `immediate = true` parameter.
-
-```kotlin
-val interactionSource = remember { MutableInteractionSource() }
-
-Box(
-    modifier = Modifier
-        .clickable(interactionSource = interactionSource, indication = null, onClick = {})
-        .pressSink(interactionSource, immediate = true)
 )
 ```
 
