@@ -35,7 +35,7 @@ data class SinkFeedback(
         SinkFeedbackNode(interactionSource, sinkAmount, animationSpec)
 
     private class SinkFeedbackNode(
-        var interactionSource: InteractionSource?,
+        var interactionSource: InteractionSource,
         var sinkAmount: Float,
         var animationSpec: AnimationSpec<Float>
     ) : Modifier.Node(), LayoutModifierNode {
@@ -48,7 +48,7 @@ data class SinkFeedback(
 
         override fun onAttach() {
             coroutineScope.launch {
-                interactionSource?.interactions?.collect { interaction: Interaction ->
+                interactionSource.interactions.collect { interaction: Interaction ->
                     when (interaction) {
                         is PressInteraction.Press -> animateToSink(sinkAmount)
                         is PressInteraction.Release -> animateToSink(1f)
@@ -82,7 +82,7 @@ data class TiltFeedback(
         TiltFeedbackNode(interactionSource, tiltAmount, animationSpec)
 
     private class TiltFeedbackNode(
-        var interactionSource: InteractionSource?,
+        var interactionSource: InteractionSource,
         var tiltAmount: Float,
         var animationSpec: AnimationSpec<Float>
     ) : Modifier.Node(), LayoutModifierNode, PointerInputModifierNode {
@@ -103,7 +103,7 @@ data class TiltFeedback(
 
         override fun onAttach() {
             coroutineScope.launch {
-                interactionSource?.interactions?.collect { interaction: Interaction ->
+                interactionSource.interactions.collect { interaction: Interaction ->
                     when (interaction) {
                         is PressInteraction.Press -> animateToTilt(targetX, targetY)
                         is PressInteraction.Release -> animateToTilt(0f, 0f)
