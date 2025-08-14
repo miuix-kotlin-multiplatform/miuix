@@ -5,7 +5,7 @@ androidx-window = "1.4.0"
 compose-hotReload = "1.0.0-beta05"
 compose-plugin = "1.8.2"
 dokka = "2.0.0"
-kotlin = "2.2.0"
+kotlin = "2.2.10"
 spotless = "7.2.1"
 
 [libraries]
