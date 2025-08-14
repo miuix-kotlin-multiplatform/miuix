@@ -29,8 +29,9 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.CornerSmoothness
 import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 import top.yukonga.miuix.kmp.utils.PressFeedbackType
-import top.yukonga.miuix.kmp.utils.pressSink
-import top.yukonga.miuix.kmp.utils.pressTilt
+import top.yukonga.miuix.kmp.utils.SinkFeedback
+import top.yukonga.miuix.kmp.utils.TiltFeedback
+import top.yukonga.miuix.kmp.utils.pressable
 
 /**
  * A [Card] component with Miuix style.
@@ -47,9 +48,9 @@ import top.yukonga.miuix.kmp.utils.pressTilt
 @Composable
 fun Card(
     modifier: Modifier = Modifier,
-    colors: CardColors = CardDefaults.defaultColors(),
     cornerRadius: Dp = CardDefaults.CornerRadius,
     insideMargin: PaddingValues = CardDefaults.InsideMargin,
+    colors: CardColors = CardDefaults.defaultColors(),
     content: @Composable ColumnScope.() -> Unit,
 ) {
     BasicCard(
@@ -94,16 +95,20 @@ fun Card(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
-    val pressFeedbackModifier = remember(pressFeedbackType, interactionSource) {
+    val pressFeedback = remember(pressFeedbackType) {
         when (pressFeedbackType) {
-            PressFeedbackType.None -> Modifier
-            PressFeedbackType.Sink -> Modifier.pressSink(interactionSource, immediate = true)
-            PressFeedbackType.Tilt -> Modifier.pressTilt(interactionSource, immediate = true)
+            PressFeedbackType.None -> null
+            PressFeedbackType.Sink -> SinkFeedback()
+            PressFeedbackType.Tilt -> TiltFeedback()
         }
     }
 
     BasicCard(
-        modifier = modifier.then(pressFeedbackModifier),
+        modifier = modifier.pressable(
+            interactionSource = if (pressFeedback != null) interactionSource else null,
+            indication = pressFeedback,
+            delay = null
+        ),
         cornerRadius = cornerRadius,
         colors = colors
     ) {
@@ -191,9 +196,8 @@ class CardColors(
     fun copy(
         color: Color = this.color,
         contentColor: Color = this.contentColor,
-    ) =
-        CardColors(
-            color.takeOrElse { this.color },
-            contentColor.takeOrElse { this.contentColor },
-        )
+    ) = CardColors(
+        color.takeOrElse { this.color },
+        contentColor.takeOrElse { this.contentColor },
+    )
 }

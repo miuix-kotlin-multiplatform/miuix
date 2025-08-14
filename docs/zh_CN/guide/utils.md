@@ -127,21 +127,31 @@ LazyColumn(
 
 *   `hapticFeedbackType`: 指定滚动到达末端时要执行的触觉反馈类型。默认为 `HapticFeedbackType.TextHandleMove`。您可以使用 `androidx.compose.ui.hapticfeedback.HapticFeedbackType` 中可用的其他类型。
 
-## 按压反馈效果 (PressFeedback)
+## 按压反馈效果 (Modifier.pressable())
 
 Miuix 提供了视觉反馈效果来增强用户交互体验，通过类似触觉的响应提升操作感。
 
-### 下沉效果
-
-`pressSink` 修饰符会在组件被按下时应用一种“下沉”视觉效果，通过平滑缩放组件实现。
+支持与 `Modifier.clickable()` 等响应式修饰符一起使用，`SinkFeedback` 为默认效果。
 
 ```kotlin
-val interactionSource = remember { MutableInteractionSource() }
-
 Box(
     modifier = Modifier
-        .clickable(interactionSource = interactionSource, indication = null)
-        .pressSink(interactionSource)
+        .pressable()
+        .background(Color.Blue)
+        .size(100.dp)
+)
+```
+
+### 下沉效果
+
+`SinkFeedback` 指示会在组件被按下时应用一种“下沉”视觉效果，通过平滑缩放组件实现。
+
+`interactionSource` 为 `null` 时，仅在需要时才会懒惰地创建内部 `MutableInteractionSource`，这会降低组合过程中可点击的性能成本。
+
+```kotlin
+Box(
+    modifier = Modifier
+        .pressable(interactionSource = null, indication = SinkFeedback())
         .background(Color.Blue)
         .size(100.dp)
 )
@@ -149,59 +159,22 @@ Box(
 
 ### 倾斜效果
 
-`pressTilt` 修饰符会根据用户按压组件的位置应用一种“倾斜”效果。倾斜方向由触摸偏移决定，使一角“下沉”而另一角保持“静止”。
+`TiltFeedback` 指示会根据用户按压组件的位置应用一种“倾斜”效果。倾斜方向由触摸偏移决定，使一角“下沉”而另一角保持“静止”。
 
 ```kotlin
 val interactionSource = remember { MutableInteractionSource() }
 
 Box(
     modifier = Modifier
-        .clickable(interactionSource = interactionSource, indication = null)
-        .pressTilt(interactionSource)
+        .pressable(interactionSource = interactionSource, indication = TiltFeedback())
+        .combinedClickable(
+            interactionSource = interactionSource,
+            indication = LocalIndication.current,
+            onClick = {},
+            onLongClick = {}
+        )
         .background(Color.Green)
         .size(100.dp)
-)
-```
-
-### 触发按压反馈效果的前提
-
-按压反馈效果需要检测 `interactionSource.collectIsPressedAsState()` 以触发。
-
-可以使用 `Modifier.clickable()` 等响应式修饰符来为 `interactionSource` 添加 `PressInteraction.Press` 以触发按压反馈效果。
-
-但更推荐使用下面的方法来为 `interactionSource` 添加 `PressInteraction.Press` 以获得更快响应的触发按压反馈效果。
-
-```kotlin
-val interactionSource = remember { MutableInteractionSource() }
-
-Box(
-    modifier = Modifier
-        .pointerInput(Unit) {
-            awaitEachGesture {
-                val pressInteraction: PressInteraction.Press
-                awaitFirstDown().also {
-                    pressInteraction = PressInteraction.Press(it.position)
-                    interactionSource.tryEmit(pressInteraction)
-                }
-                if (waitForUpOrCancellation() == null) {
-                    interactionSource.tryEmit(PressInteraction.Cancel(pressInteraction))
-                } else {
-                    interactionSource.tryEmit(PressInteraction.Release(pressInteraction))
-                }
-            }
-        }
-)
-```
-
-如果既想使用 `Modifier.clickable()` 又想要即时的反馈效果，可以传递 `immediate = true` 参数。
-
-```kotlin
-val interactionSource = remember { MutableInteractionSource() }
-
-Box(
-    modifier = Modifier
-        .clickable(interactionSource = interactionSource, indication = null, onClick = {})
-        .pressSink(interactionSource, immediate = true)
 )
 ```
 

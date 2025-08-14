@@ -9,7 +9,6 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
@@ -39,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.CapsuleShape
-import top.yukonga.miuix.kmp.utils.pressSink
+import top.yukonga.miuix.kmp.utils.pressable
 
 /**
  * A [Checkbox] component with Miuix style.
@@ -59,7 +58,6 @@ fun Checkbox(
     enabled: Boolean = true,
 ) {
     val hapticFeedback = LocalHapticFeedback.current
-    val interactionSource = remember { MutableInteractionSource() }
 
     val backgroundColor by animateColorAsState(
         targetValue = if (checked) colors.checkedBackgroundColor(enabled) else colors.uncheckedBackgroundColor(enabled),
@@ -95,7 +93,7 @@ fun Checkbox(
         modifier = modifier
             .wrapContentSize(Alignment.Center)
             .requiredSize(25.5.dp)
-            .pressSink(interactionSource, immediate = true)
+            .pressable(enabled = enabled, delay = null)
             .clip(CapsuleShape)
             .drawBehind {
                 drawCircle(backgroundColor)
