@@ -23,20 +23,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.ImageShader
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.yukonga.miuix.kmp.utils.CapsuleShape
@@ -45,6 +42,8 @@ import top.yukonga.miuix.kmp.utils.Hsv
 import top.yukonga.miuix.kmp.utils.OkLab
 import top.yukonga.miuix.kmp.utils.toHsv
 import top.yukonga.miuix.kmp.utils.toOkLab
+import kotlin.math.ceil
+import kotlin.math.min
 
 /**
  * A [ColorPicker] component with Miuix style that supports multiple color spaces.
@@ -299,26 +298,20 @@ fun HsvAlphaSlider(
     onAlphaChanged: (Float) -> Unit,
     hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
 ) {
-    val density = LocalDensity.current
-
     val alphaColors = remember(currentHue, currentSaturation, currentValue) {
         val baseColor = Hsv(currentHue.toDouble(), (currentValue * 100.0), (currentSaturation * 100.0)).toColor()
         listOf(baseColor.copy(alpha = 0f), baseColor.copy(alpha = 1f))
     }
 
-    val checkerBrush = remember(density) {
-        createCheckerboardBrush(density)
-    }
 
     ColorSlider(
         value = currentAlpha,
         onValueChanged = onAlphaChanged,
         drawBrushColors = alphaColors,
-        modifier = Modifier.fillMaxWidth(),
-        hapticEffect = hapticEffect,
-        drawBackground = { _, _ ->
-            drawRect(brush = checkerBrush)
-        }
+        modifier = Modifier
+            .fillMaxWidth()
+            .drawCheckerboard(),
+        hapticEffect = hapticEffect
     )
 }
 
@@ -527,26 +520,19 @@ fun OkHsvAlphaSlider(
     onAlphaChanged: (Float) -> Unit,
     hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
 ) {
-    val density = LocalDensity.current
-
     val alphaColors = remember(currentH, currentS, currentV) {
         val baseColor = ColorUtils.okhsvToColor(currentH, currentS, currentV)
         listOf(baseColor.copy(alpha = 0f), baseColor.copy(alpha = 1f))
-    }
-
-    val checkerBrush = remember(density) {
-        createCheckerboardBrush(density)
     }
 
     ColorSlider(
         value = currentAlpha,
         onValueChanged = onAlphaChanged,
         drawBrushColors = alphaColors,
-        modifier = Modifier.fillMaxWidth(),
-        hapticEffect = hapticEffect,
-        drawBackground = { _, _ ->
-            drawRect(brush = checkerBrush)
-        }
+        modifier = Modifier
+            .fillMaxWidth()
+            .drawCheckerboard(),
+        hapticEffect = hapticEffect
     )
 }
 
@@ -766,8 +752,6 @@ fun OkLabAlphaSlider(
     onAlphaChanged: (Float) -> Unit,
     hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
 ) {
-    val density = LocalDensity.current
-
     val alphaColors = remember(currentL, currentA, currentB) {
         val baseColor = OkLab(
             l = currentL * 100.0,
@@ -777,43 +761,50 @@ fun OkLabAlphaSlider(
         listOf(baseColor.copy(alpha = 0f), baseColor.copy(alpha = 1f))
     }
 
-    val checkerBrush = remember(density) {
-        createCheckerboardBrush(density)
-    }
-
     ColorSlider(
         value = currentAlpha,
         onValueChanged = onAlphaChanged,
         drawBrushColors = alphaColors,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+            .drawCheckerboard(),
         hapticEffect = hapticEffect,
-        drawBackground = { _, _ ->
-            drawRect(brush = checkerBrush)
-        }
     )
 }
 
-private fun createCheckerboardBrush(density: Density): ShaderBrush {
-    val lightColor = Color(0xFFCCCCCC)
-    val darkColor = Color(0xFFAAAAAA)
-    val checkerSizeDp = 3.dp
+fun Modifier.drawCheckerboard(
+    cellSizeDp: Dp = 3.dp,
+    lightColor: Color = Color(0xFFCCCCCC),
+    darkColor: Color = Color(0xFFAAAAAA)
+): Modifier = this.then(
+    Modifier.drawWithCache {
+        val cell = cellSizeDp.toPx().coerceAtLeast(1f)
+        val rows = ceil(size.height / cell).toInt().coerceAtLeast(1)
 
-    val pixelSize = with(density) { checkerSizeDp.toPx() }
-    val tileBitmapSideLengthPx = (2 * pixelSize).toInt().coerceAtLeast(1)
+        val darkPath = Path().apply {
+            var y = 0f
+            for (row in 0 until rows) {
+                var x = if ((row and 1) == 0) cell else 0f
+                while (x < size.width) {
+                    addRect(
+                        Rect(
+                            x,
+                            y,
+                            min(x + cell, size.width),
+                            min(y + cell, size.height)
+                        )
+                    )
+                    x += cell * 2f
+                }
+                y += cell
+            }
+        }
 
-    val imageBitmap = ImageBitmap(tileBitmapSideLengthPx, tileBitmapSideLengthPx)
-    val canvasForBitmap = androidx.compose.ui.graphics.Canvas(imageBitmap)
-
-    val lightPaint = Paint().apply { color = lightColor }
-    val darkPaint = Paint().apply { color = darkColor }
-
-    canvasForBitmap.drawRect(0f, 0f, tileBitmapSideLengthPx.toFloat(), tileBitmapSideLengthPx.toFloat(), lightPaint)
-    canvasForBitmap.drawRect(pixelSize, 0f, 2 * pixelSize, pixelSize, darkPaint)
-    canvasForBitmap.drawRect(0f, pixelSize, pixelSize, 2 * pixelSize, darkPaint)
-
-    val shader = ImageShader(imageBitmap, TileMode.Repeated, TileMode.Repeated)
-    return ShaderBrush(shader)
-}
+        onDrawBehind {
+            drawRect(color = lightColor)
+            drawPath(path = darkPath, color = darkColor)
+        }
+    }
+)
 
 /**
  * Generic slider component for color selection.
@@ -825,7 +816,6 @@ private fun ColorSlider(
     drawBrushColors: List<Color>,
     modifier: Modifier = Modifier,
     hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect,
-    drawBackground: (DrawScope.(width: Float, height: Float) -> Unit)? = null
 ) {
     val density = LocalDensity.current
     var sliderWidth by remember { mutableStateOf(0.dp) }
@@ -847,17 +837,15 @@ private fun ColorSlider(
     }
 
     Box(
-        modifier = modifier
-            .height(sliderHeightDp)
+        modifier = Modifier
             .clip(CapsuleShape())
+            .then(modifier)
+            .height(sliderHeightDp)
             .onGloballyPositioned { coordinates ->
                 sliderWidth = with(density) { coordinates.size.width.toDp() }
             }
             .drawBehind {
-                drawBackground?.invoke(this, size.width, size.height)
-                drawRect(
-                    brush = gradientBrush,
-                )
+                drawRect(brush = gradientBrush)
                 drawRect(
                     color = Color.Gray.copy(0.1f),
                     style = Stroke(width = with(density) { 0.5.dp.toPx() }),
@@ -867,7 +855,10 @@ private fun ColorSlider(
                 detectHorizontalDragGestures(
                     onDragStart = { offset ->
                         val newValue =
-                            handleSliderInteraction(offset.x, size.width.toFloat(), with(density) { sliderHeightDp.toPx() }).coerceIn(
+                            handleSliderInteraction(
+                                offset.x,
+                                size.width.toFloat(),
+                                with(density) { sliderHeightDp.toPx() }).coerceIn(
                                 0f,
                                 1f
                             )
@@ -916,7 +907,6 @@ private fun SliderIndicator(
         modifier = modifier
             .offset(x = indicatorOffsetXDp)
             .size(indicatorSize)
-            .clip(CapsuleShape())
             .border(6.dp, Color.White, CapsuleShape())
             .background(Color.Transparent, CapsuleShape())
     )
