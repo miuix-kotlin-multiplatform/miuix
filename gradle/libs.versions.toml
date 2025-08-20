@@ -1,15 +1,17 @@
 [versions]
-android-gradle-plugin = "8.12.0"
-androidx-activity-compose = "1.10.1"
+android-gradle-plugin = "8.12.1"
+androidx-activity = "1.10.1"
+androidx-navigation = "2.9.0-beta05"
 androidx-window = "1.4.0"
 compose-hotReload = "1.0.0-beta05"
-compose-plugin = "1.8.2"
+compose-plugin = "1.9.0-beta03"
 dokka = "2.0.0"
 kotlin = "2.2.10"
 spotless = "7.2.1"
 
 [libraries]
-androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
+androidx-activity = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
+androidx-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
 androidx-window = { group = "androidx.window", name = "window", version.ref = "androidx-window" }
 compose-window-size = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "compose-plugin" }
 

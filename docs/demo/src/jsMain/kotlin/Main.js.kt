@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.window.CanvasBasedWindow
+import androidx.compose.ui.window.ComposeViewport
 import kotlinx.browser.document
 import org.jetbrains.skiko.wasm.onWasmReady
 import org.w3c.dom.url.URLSearchParams
@@ -12,7 +12,9 @@ fun main() {
     val iFrameParams = URLSearchParams(document.location?.search)
     val id = iFrameParams.get("id")
     onWasmReady {
-        CanvasBasedWindow(canvasElementId = "ComposeTarget") {
+        ComposeViewport(
+            viewportContainerId = "ComposeTarget"
+        ) {
             Demo(demoId = id)
         }
     }

@@ -1,3 +1,6 @@
+<!-- Copyright 2025, miuix-kotlin-multiplatform contributors -->
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,22 +22,7 @@
     </style>
 </head>
 <body>
-<canvas id="ComposeTarget"></canvas>
-<script src="demo.js" type="application/javascript"></script>
-<script>
-    // Prevent scroll events on the canvas
-    const canvas = document.getElementById('ComposeTarget');
-
-    // Prevent wheel events (mouse wheel)
-    canvas.addEventListener('wheel', function(e) {
-        e.preventDefault();
-    }, { passive: false });
-
-    // Prevent touchmove events (touch scrolling)
-    canvas.addEventListener('touchmove', function(e) {
-        e.preventDefault();
-    }, { passive: false });
-</script>
+    <div id="ComposeTarget"></div>
+    <script src="demo.js" type="application/javascript"></script>
 </body>
-
 </html>

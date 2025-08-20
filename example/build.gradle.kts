@@ -89,7 +89,7 @@ kotlin {
             kotlin.srcDir(generatedSrcDir.resolve("kotlin").absolutePath)
         }
         androidMain.dependencies {
-            implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.activity)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
