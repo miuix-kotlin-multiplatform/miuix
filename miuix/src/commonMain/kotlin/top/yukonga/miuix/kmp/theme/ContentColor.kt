@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
 
 /**
  * CompositionLocal containing the preferred content color for a given position in the hierarchy.
- * This typically represents the `on` color for a color in [ColorScheme]. For example, if the
+ * This typically represents the `on` color for a color in [Colors]. For example, if the
  * background color is [Colors.surface], this color is typically set to
  * [Colors.onSurface].
  *

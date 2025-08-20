@@ -21,7 +21,7 @@ import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -123,7 +123,6 @@ fun Switch(
         Modifier
     }
 
-
     Box(
         modifier = modifier
             .wrapContentSize(Alignment.Center)
@@ -141,13 +140,13 @@ fun Switch(
     ) {
         Box(
             modifier = Modifier
-                .padding(start = thumbOffset)
                 .align(Alignment.CenterStart)
+                .offset(x = thumbOffset)
                 .size(thumbSize)
                 .drawBehind {
                     drawCircle(color = thumbColor)
                 }
-                .pointerInput(checked) {
+                .pointerInput(checked, enabled) {
                     if (!enabled) return@pointerInput
                     awaitEachGesture {
                         val pressInteraction: PressInteraction.Press
@@ -163,7 +162,7 @@ fun Switch(
                         }
                     }
                 }
-                .pointerInput(checked) {
+                .pointerInput(checked, enabled) {
                     if (!enabled) return@pointerInput
                     val dragInteraction: DragInteraction.Start = DragInteraction.Start()
                     detectHorizontalDragGestures(

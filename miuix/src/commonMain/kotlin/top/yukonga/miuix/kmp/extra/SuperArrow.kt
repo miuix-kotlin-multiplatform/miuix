@@ -5,12 +5,14 @@ package top.yukonga.miuix.kmp.extra
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -56,6 +58,16 @@ fun SuperArrow(
     holdDownState: Boolean = false,
     enabled: Boolean = true
 ) {
+    val rightActionsContent: @Composable (RowScope.() -> Unit) =
+        remember(rightText, rightActionColor, enabled) {
+            {
+                SuperArrowRightActions(
+                    rightText = rightText,
+                    tintColor = rightActionColor.color(enabled)
+                )
+            }
+        }
+
     BasicComponent(
         modifier = modifier,
         insideMargin = insideMargin,
@@ -64,13 +76,7 @@ fun SuperArrow(
         summary = summary,
         summaryColor = summaryColor,
         leftAction = leftAction,
-        rightActions = {
-            SuperArrowRightActions(
-                rightText = rightText,
-                rightActionColor = rightActionColor,
-                enabled = enabled
-            )
-        },
+        rightActions = rightActionsContent,
         onClick = onClick?.takeIf { enabled },
         holdDownState = holdDownState,
         enabled = enabled
@@ -80,17 +86,16 @@ fun SuperArrow(
 @Composable
 private fun SuperArrowRightActions(
     rightText: String?,
-    rightActionColor: RightActionColors,
-    enabled: Boolean
+    tintColor: Color
 ) {
-    val currentRightActionColor = rightActionColor.color(enabled)
+    val tintFilter = remember(tintColor) { ColorFilter.tint(tintColor) }
 
     if (rightText != null) {
         Text(
             modifier = Modifier.widthIn(max = 130.dp),
             text = rightText,
             fontSize = MiuixTheme.textStyles.body2.fontSize,
-            color = currentRightActionColor,
+            color = tintColor,
             textAlign = TextAlign.End,
             overflow = TextOverflow.Ellipsis,
             maxLines = 2
@@ -102,7 +107,7 @@ private fun SuperArrowRightActions(
             .size(width = 10.dp, height = 16.dp),
         imageVector = MiuixIcons.Basic.ArrowRight,
         contentDescription = null,
-        colorFilter = ColorFilter.tint(currentRightActionColor),
+        colorFilter = tintFilter,
     )
 }
 

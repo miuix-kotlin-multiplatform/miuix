@@ -87,6 +87,31 @@ fun BasicComponent(
         } else Modifier
     }
 
+    val titleContent: (@Composable () -> Unit)? = remember(title, enabled, titleColor) {
+        title?.let { text ->
+            {
+                Text(
+                    text = text,
+                    fontSize = MiuixTheme.textStyles.headline1.fontSize,
+                    fontWeight = FontWeight.Medium,
+                    color = titleColor.color(enabled)
+                )
+            }
+        }
+    }
+
+    val summaryContent: (@Composable () -> Unit)? = remember(summary, enabled, summaryColor) {
+        summary?.let { text ->
+            {
+                Text(
+                    text = text,
+                    fontSize = MiuixTheme.textStyles.body2.fontSize,
+                    color = summaryColor.color(enabled)
+                )
+            }
+        }
+    }
+
     SubcomposeLayout(
         modifier = modifier
             .heightIn(min = 56.dp)
@@ -113,25 +138,12 @@ fun BasicComponent(
         val rightHeight = rightPlaceables.maxOfOrNull { it.height } ?: 0
         // 3. content
         val contentMaxWidth = maxOf(0, constraints.maxWidth - leftWidth - rightWidth - 16.dp.roundToPx())
-        val titlePlaceable = title?.let {
-            subcompose("title") {
-                Text(
-                    text = it,
-                    fontSize = MiuixTheme.textStyles.headline1.fontSize,
-                    fontWeight = FontWeight.Medium,
-                    color = titleColor.color(enabled)
-                )
-            }.first().measure(looseConstraints.copy(maxWidth = contentMaxWidth))
-        }
-        val summaryPlaceable = summary?.let {
-            subcompose("summary") {
-                Text(
-                    text = it,
-                    fontSize = MiuixTheme.textStyles.body2.fontSize,
-                    color = summaryColor.color(enabled)
-                )
-            }.first().measure(looseConstraints.copy(maxWidth = contentMaxWidth))
-        }
+        val titlePlaceable = titleContent
+            ?.let { subcompose("title", it).first() }
+            ?.measure(looseConstraints.copy(maxWidth = contentMaxWidth))
+        val summaryPlaceable = summaryContent
+            ?.let { subcompose("summary", it).first() }
+            ?.measure(looseConstraints.copy(maxWidth = contentMaxWidth))
         val contentHeight = (titlePlaceable?.height ?: 0) + (summaryPlaceable?.height ?: 0)
         val layoutHeight = maxOf(leftHeight, rightHeight, contentHeight)
         layout(constraints.maxWidth, layoutHeight) {

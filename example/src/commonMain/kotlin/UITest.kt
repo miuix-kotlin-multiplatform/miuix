@@ -53,7 +53,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalUriHandler
@@ -237,17 +236,10 @@ private fun WideScreenLayout(
     windowSize: WindowSize,
     colorMode: MutableState<Int>
 ) {
-    val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
 
     val windowWidth = getWindowSize().width
-    val defaultWeight = remember(windowWidth, density) {
-        val minPx = with(density) { UIConstants.WIDE_SCREEN_THRESHOLD.toPx() }
-        val maxPx = with(density) { 1920.dp.toPx() }
-        val t = (windowWidth - minPx) / 2500
-        0.3f - 0.2f * t
-    }
-    var weight by remember(windowWidth) { mutableStateOf(defaultWeight) }
+    var weight by remember(windowWidth) { mutableStateOf(0.4f) }
     var potentialWeight by remember { mutableFloatStateOf(weight) }
     val dragState = rememberDraggableState { delta ->
         val nextPotentialWeight = potentialWeight + delta / windowWidth
