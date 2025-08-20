@@ -105,6 +105,25 @@ fun Switch(
         animationSpec = tween(durationMillis = 200)
     )
 
+    val toggleableModifier = if (onCheckedChange != null) {
+        Modifier.toggleable(
+            value = checked,
+            onValueChange = {
+                onCheckedChange(it)
+                hapticFeedback.performHapticFeedback(
+                    if (checked) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff
+                )
+            },
+            enabled = enabled,
+            role = Role.Switch,
+            interactionSource = null,
+            indication = null
+        )
+    } else {
+        Modifier
+    }
+
+
     Box(
         modifier = modifier
             .wrapContentSize(Alignment.Center)
@@ -118,51 +137,7 @@ fun Switch(
                 interactionSource = interactionSource,
                 enabled = enabled
             )
-            .pointerInput(checked) {
-                if (!enabled) return@pointerInput
-                val touchSlop = 16f
-                awaitEachGesture {
-                    val down = awaitFirstDown(requireUnconsumed = false)
-                    val initialOffset = down.position
-                    var validHorizontalDrag = false
-                    do {
-                        val event = awaitPointerEvent()
-                        val currentOffset = event.changes[0].position
-                        val dx = (currentOffset.x - initialOffset.x).absoluteValue
-                        val dy = (currentOffset.y - initialOffset.y).absoluteValue
-                        if (dy > touchSlop) {
-                            validHorizontalDrag = false
-                            break
-                        } else if (dx > touchSlop) {
-                            validHorizontalDrag = true
-                        }
-                    } while (event.changes.all { it.pressed })
-
-                    if (validHorizontalDrag && !isPressed && !isDragged) {
-                        if (onCheckedChange == null) return@awaitEachGesture
-                        onCheckedChange.invoke(!checked)
-                        hapticFeedback.performHapticFeedback(
-                            if (checked) HapticFeedbackType.ToggleOff
-                            else HapticFeedbackType.ToggleOn
-                        )
-                    }
-                }
-            }
-            .toggleable(
-                value = checked,
-                onValueChange = {
-                    if (onCheckedChange == null) return@toggleable
-                    onCheckedChange.invoke(!checked)
-                    hapticFeedback.performHapticFeedback(
-                        if (checked) HapticFeedbackType.ToggleOn
-                        else HapticFeedbackType.ToggleOff
-                    )
-                },
-                enabled = enabled,
-                role = Role.Switch,
-                indication = null,
-                interactionSource = null
-            )
+            .then(toggleableModifier)
     ) {
         Box(
             modifier = Modifier
