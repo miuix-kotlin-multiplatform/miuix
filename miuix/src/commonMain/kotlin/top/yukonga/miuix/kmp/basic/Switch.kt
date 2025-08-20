@@ -118,7 +118,7 @@ fun Switch(
                 interactionSource = interactionSource,
                 enabled = enabled
             )
-            .pointerInput(Unit) {
+            .pointerInput(checked) {
                 if (!enabled) return@pointerInput
                 val touchSlop = 16f
                 awaitEachGesture {
@@ -139,7 +139,8 @@ fun Switch(
                     } while (event.changes.all { it.pressed })
 
                     if (validHorizontalDrag && !isPressed && !isDragged) {
-                        onCheckedChange?.invoke(!checked)
+                        if (onCheckedChange == null) return@awaitEachGesture
+                        onCheckedChange.invoke(!checked)
                         hapticFeedback.performHapticFeedback(
                             if (checked) HapticFeedbackType.ToggleOff
                             else HapticFeedbackType.ToggleOn
