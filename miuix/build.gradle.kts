@@ -46,10 +46,10 @@ kotlin {
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser()
+        browser { binaries.executable() }
     }
     js(IR) {
-        browser()
+        browser { binaries.executable() }
     }
 
     sourceSets {
