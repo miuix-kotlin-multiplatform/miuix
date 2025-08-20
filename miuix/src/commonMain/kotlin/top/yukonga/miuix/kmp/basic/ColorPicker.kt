@@ -855,13 +855,7 @@ private fun ColorSlider(
                 detectHorizontalDragGestures(
                     onDragStart = { offset ->
                         val newValue =
-                            handleSliderInteraction(
-                                offset.x,
-                                size.width.toFloat(),
-                                with(density) { sliderHeightDp.toPx() }).coerceIn(
-                                0f,
-                                1f
-                            )
+                            handleSliderInteraction(offset.x, size.width.toFloat(), with(density) { sliderHeightDp.toPx() })
                         onValueChanged(newValue)
                         hapticState.reset(newValue)
                     },

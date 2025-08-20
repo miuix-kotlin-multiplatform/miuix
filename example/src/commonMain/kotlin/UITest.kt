@@ -9,6 +9,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -38,6 +41,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,6 +53,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalUriHandler
@@ -165,7 +170,10 @@ fun UITest(
 
     val handlePageChange: (Int) -> Unit = remember(pagerState, coroutineScope) {
         { page ->
-            coroutineScope.launch { pagerState.animateScrollToPage(page) }
+            coroutineScope.launch {
+                if (uiState.isWideScreen) pagerState.scrollToPage(page)
+                else pagerState.animateScrollToPage(page)
+            }
         }
     }
 
@@ -229,12 +237,31 @@ private fun WideScreenLayout(
     windowSize: WindowSize,
     colorMode: MutableState<Int>
 ) {
+    val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
+
+    val windowWidth = getWindowSize().width
+    val defaultWeight = remember(windowWidth, density) {
+        val minPx = with(density) { UIConstants.WIDE_SCREEN_THRESHOLD.toPx() }
+        val maxPx = with(density) { 1920.dp.toPx() }
+        val t = (windowWidth - minPx) / 2500
+        0.3f - 0.2f * t
+    }
+    var weight by remember(windowWidth) { mutableStateOf(defaultWeight) }
+    var potentialWeight by remember { mutableFloatStateOf(weight) }
+    val dragState = rememberDraggableState { delta ->
+        val nextPotentialWeight = potentialWeight + delta / windowWidth
+        potentialWeight = nextPotentialWeight
+        val clampedWeight = nextPotentialWeight.coerceIn(0.2f, 0.5f)
+        if (clampedWeight == nextPotentialWeight) {
+            weight = clampedWeight
+        }
+    }
 
     Scaffold {
         val barScrollBehavior = MiuixScrollBehavior()
         Row {
-            Box(modifier = Modifier.weight(0.4f)) {
+            Box(modifier = Modifier.weight(weight)) {
                 WideScreenPanel(
                     barScrollBehavior = barScrollBehavior,
                     uiState = uiState,
@@ -243,9 +270,14 @@ private fun WideScreenLayout(
                 )
             }
             VerticalDivider(
-                modifier = Modifier.padding(horizontal = 6.dp)
+                modifier = Modifier
+                    .draggable(
+                        state = dragState,
+                        orientation = Orientation.Horizontal
+                    )
+                    .padding(horizontal = 6.dp)
             )
-            Box(modifier = Modifier.weight(0.6f)) {
+            Box(modifier = Modifier.weight(1f - weight)) {
                 WideScreenContent(
                     navigationItems = navigationItems,
                     uiState = uiState,
