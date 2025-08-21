@@ -36,6 +36,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  * @param modifier The modifier to be applied to the [Surface].
  * @param shape The shape of the [Surface].
  * @param color The color of the [Surface].
+ * @param contentColor The content color of the [Surface].
  * @param border The border of the [Surface].
  * @param shadowElevation The shadow elevation of the [Surface].
  * @param content The [Composable] content of the [Surface].
@@ -81,6 +82,7 @@ fun Surface(
  * @param enabled Whether the [Surface] is enabled.
  * @param shape The shape of the [Surface].
  * @param color The color of the [Surface].
+ * @param contentColor The content color of the [Surface].
  * @param border The border of the [Surface].
  * @param shadowElevation The shadow elevation of the [Surface].
  * @param content The [Composable] content of the [Surface].

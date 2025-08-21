@@ -105,8 +105,7 @@ LazyColumn(
 *   `springDamp`: Float, defines the spring damping for the rebound animation. Higher values result in less oscillation. Defaults to `1f`.
 *   `isEnabled`: A lambda expression returning a Boolean, used to dynamically control whether the overscroll effect is enabled. By default, it is enabled only on Android and iOS platforms.
 
-
-## Scroll End Haptic Feedback
+## Scroll End Haptic Feedback (Modifier.scrollEndHaptic())
 
 Miuix provides a `scrollEndHaptic` modifier to trigger haptic feedback when a scrollable container is flung to its start or end boundaries. This enhances the user experience by providing a tactile confirmation that the end of the list has been reached.
 
@@ -193,10 +192,6 @@ The `PressFeedbackType` enum defines different types of visual feedback that can
 `G2RoundedCornerShape` provides visually smoother corners than the standard `RoundedCornerShape` by blending part of the circular arc with Bézier transitions. It supports: a single uniform corner size, per-corner sizes (Dp / px / percent), preset or custom smoothness via `CornerSmoothness`, and a ready-made `CapsuleShape()` helper.
 
 > Source: https://github.com/Kyant0/Capsule (Apache-2.0 License).
-
-### API Overview
-
-Key entry points (overloads):
 
 ```kotlin
 G2RoundedCornerShape(size: Dp, cornerSmoothness: CornerSmoothness = CornerSmoothness.Default)

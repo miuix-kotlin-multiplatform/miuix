@@ -106,7 +106,7 @@ LazyColumn(
 *   `springDamp`: 浮点数，定义回弹动画的弹簧阻尼。值越高，振荡越小。默认为 `1f`。
 *   `isEnabled`: 一个返回布尔值的 Lambda 表达式，用于动态控制是否启用越界回弹效果。默认情况下，仅在 Android 和 iOS 平台上启用。
 
-## 滚动到边界触觉反馈
+## 滚动到边界触觉反馈 (Modifier.scrollEndHaptic())
 
 Miuix 提供了用于在可滚动容器快速滑动到其开始或结束边界时触发触觉反馈的修饰符，通过触觉反馈确认已到达边界增强用户的交互体验。
 
@@ -193,10 +193,6 @@ Box(
 `G2RoundedCornerShape` 通过在标准圆角圆弧与 Bézier 过渡之间混合，实现比 `RoundedCornerShape` 更柔和、视觉更自然的圆角。它支持：统一圆角值、分别设置四个角（支持 Dp / px / 百分比）、通过 `CornerSmoothness` 预设或自定义平滑度，以及快捷的 `CapsuleShape()` 胶囊形状。
 
 > 来源: https://github.com/Kyant0/Capsule (Apache-2.0 License)。
-
-### 核心 API
-
-常用构造函数（重载）：
 
 ```kotlin
 G2RoundedCornerShape(size: Dp, cornerSmoothness: CornerSmoothness = CornerSmoothness.Default)

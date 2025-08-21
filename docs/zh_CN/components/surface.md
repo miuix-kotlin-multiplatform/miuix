@@ -41,6 +41,7 @@ Surface(
 | modifier        | Modifier               | 应用于 Surface 的修饰符      | Modifier                          | 否       |
 | shape           | Shape                  | Surface 的形状               | RectangleShape                    | 否       |
 | color           | Color                  | Surface 的背景颜色           | MiuixTheme.colorScheme.background | 否       |
+| contentColor    | Color                  | Surface 的内容颜色           | MiuixTheme.colorScheme.onBackground | 否       |
 | border          | BorderStroke?          | Surface 的边框样式           | null                              | 否       |
 | shadowElevation | Dp                     | Surface 的阴影高度           | 0.dp                              | 否       |
 | content         | @Composable () -> Unit | Surface 内容区域的可组合函数 | -                                 | 是       |
