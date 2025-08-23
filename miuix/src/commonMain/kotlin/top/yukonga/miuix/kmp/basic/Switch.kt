@@ -111,7 +111,7 @@ fun Switch(
             onValueChange = {
                 onCheckedChange(it)
                 hapticFeedback.performHapticFeedback(
-                    if (checked) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff
+                    if (it) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff
                 )
             },
             enabled = enabled,
