@@ -75,9 +75,9 @@ fun Checkbox(
         Modifier.toggleable(
             value = checked,
             onValueChange = {
-                onCheckedChange.invoke(!checked)
+                onCheckedChange(it)
                 hapticFeedback.performHapticFeedback(
-                    if (checked) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff
+                    if (it) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff
                 )
             },
             enabled = enabled,
