@@ -41,56 +41,62 @@ The Miuix icon system currently includes the following main categories:
 
 Basic icons include commonly used basic UI elements such as arrows and checkmarks. These icons are also used in Miuix's own components. Below is the complete list:
 
-- `Check`: Checkmark icon
-- `ArrowUpDown`: Up and down arrow icon
-- `ArrowUpDownIntegrated`: Integrated up and down arrow icon
-- `ArrowRight`: Right arrow icon
+| Preview                                                                   | Icon Name               | Description                       |
+|---------------------------------------------------------------------------|-------------------------|-----------------------------------|
+| <img src="/icons/basic/Check.svg" />                                      | `Check`                 | Checkmark icon                    |
+| <img src="/icons/basic/ArrowUpDown.svg" />                                | `ArrowUpDown`           | Up and down arrow icon            |
+| <img src="/icons/basic/ArrowUpDownIntegrated.svg" style="width: 15px;" /> | `ArrowUpDownIntegrated` | Integrated up and down arrow icon |
+| <img src="/icons/basic/ArrowRight.svg" style="width: 15px;" />            | `ArrowRight`            | Right arrow icon                  |
+| <img src="/icons/basic/Search.svg" />                                     | `Search`                | Search icon                       |
+| <img src="/icons/basic/SearchCleanup.svg" />                              | `SearchCleanup`         | Search cleanup icon               |
 
 ### Useful Icons
 
 Useful icons include a large number of functional icons suitable for various application scenarios. Below is the complete list:
 
-| Icon Name         | Description              | Common Usage                         |
-| ----------------- | ------------------------ | ------------------------------------ |
-| `AddSecret`       | Add encrypted content    | Add passwords, private items, etc.   |
-| `Back`            | Back icon                | Navigate back to the previous screen |
-| `Blocklist`       | Blocklist icon           | Block users, add to blacklist        |
-| `Cancel`          | Cancel icon              | Cancel operations, close dialogs     |
-| `Copy`            | Copy icon                | Copy content to clipboard            |
-| `Cut`             | Cut icon                 | Cut content to clipboard             |
-| `Delete`          | Delete icon              | Delete items, content, or files      |
-| `Edit`            | Edit icon                | Edit content, modify information     |
-| `ImmersionMore`   | Immersive more options   | Show more options in immersive mode  |
-| `Info`            | Info icon                | Show detailed information, tips      |
-| `Like`            | Like icon                | Like, favorite functionality         |
-| `More`            | More icon                | Show more options or menus           |
-| `Move`            | Move icon                | Move items to other locations        |
-| `NavigatorSwitch` | Navigation switch icon   | Switch navigation views              |
-| `New`             | New icon                 | Create new content, files, or items  |
-| `Order`           | Order icon               | Sort content                         |
-| `Paste`           | Paste icon               | Paste content from clipboard         |
-| `Personal`        | Personal/user icon       | Personal information, user page      |
-| `Play`            | Play icon                | Play media content                   |
-| `Reboot`          | Reboot icon              | Restart app or system                |
-| `Refresh`         | Refresh icon             | Refresh content or page              |
-| `Remove`          | Remove icon              | Remove items (soft delete)           |
-| `RemoveBlocklist` | Remove blocklist icon    | Unblock                              |
-| `RemoveSecret`    | Remove encrypted content | Remove encrypted items               |
-| `Rename`          | Rename icon              | Rename files or items                |
-| `Restore`         | Restore icon             | Restore deleted content              |
-| `Save`            | Save icon                | Save content or changes              |
-| `Scan`            | Scan icon                | Scan QR codes, etc.                  |
-| `Search`          | Search icon              | Search content                       |
-| `SelectAll`       | Select all icon          | Select all items                     |
-| `Settings`        | Settings icon            | App or system settings               |
-| `Share`           | Share icon               | Share content to other platforms     |
-| `Stick`           | Stick icon               | Pin content to the top               |
-| `Unlike`          | Unlike icon              | Unlike or unfavorite                 |
-| `Unstick`         | Unpin content            | Unpin content                        |
-| `Update`          | Update icon              | Update apps or content               |
+| Preview                                         | Icon Name         | Description              | Common Usage                         |
+|-------------------------------------------------|-------------------|--------------------------|--------------------------------------|
+| <img src="/icons/useful/AddSecret.svg" />       | `AddSecret`       | Add encrypted content    | Add passwords, private items, etc.   |
+| <img src="/icons/useful/Back.svg" />            | `Back`            | Back icon                | Navigate back to the previous screen |
+| <img src="/icons/useful/Blocklist.svg" />       | `Blocklist`       | Blocklist icon           | Block users, add to blacklist        |
+| <img src="/icons/useful/Cancel.svg" />          | `Cancel`          | Cancel icon              | Cancel operations, close dialogs     |
+| <img src="/icons/useful/Copy.svg" />            | `Copy`            | Copy icon                | Copy content to clipboard            |
+| <img src="/icons/useful/Cut.svg" />             | `Cut`             | Cut icon                 | Cut content to clipboard             |
+| <img src="/icons/useful/Delete.svg" />          | `Delete`          | Delete icon              | Delete items, content, or files      |
+| <img src="/icons/useful/Edit.svg" />            | `Edit`            | Edit icon                | Edit content, modify information     |
+| <img src="/icons/useful/ImmersionMore.svg" />   | `ImmersionMore`   | Immersive more options   | Show more options in immersive mode  |
+| <img src="/icons/useful/Info.svg" />            | `Info`            | Info icon                | Show detailed information, tips      |
+| <img src="/icons/useful/Like.svg" />            | `Like`            | Like icon                | Like, favorite functionality         |
+| <img src="/icons/useful/More.svg" />            | `More`            | More icon                | Show more options or menus           |
+| <img src="/icons/useful/Move.svg" />            | `Move`            | Move icon                | Move items to other locations        |
+| <img src="/icons/useful/NavigatorSwitch.svg" /> | `NavigatorSwitch` | Navigation switch icon   | Switch navigation views              |
+| <img src="/icons/useful/New.svg" />             | `New`             | New icon                 | Create new content, files, or items  |
+| <img src="/icons/useful/Order.svg" />           | `Order`           | Order icon               | Sort content                         |
+| <img src="/icons/useful/Paste.svg" />           | `Paste`           | Paste icon               | Paste content from clipboard         |
+| <img src="/icons/useful/Personal.svg" />        | `Personal`        | Personal/user icon       | Personal information, user page      |
+| <img src="/icons/useful/Play.svg" />            | `Play`            | Play icon                | Play media content                   |
+| <img src="/icons/useful/Reboot.svg" />          | `Reboot`          | Reboot icon              | Restart app or system                |
+| <img src="/icons/useful/Refresh.svg" />         | `Refresh`         | Refresh icon             | Refresh content or page              |
+| <img src="/icons/useful/Remove.svg" />          | `Remove`          | Remove icon              | Remove items (soft delete)           |
+| <img src="/icons/useful/RemoveBlocklist.svg" /> | `RemoveBlocklist` | Remove blocklist icon    | Unblock                              |
+| <img src="/icons/useful/RemoveSecret.svg" />    | `RemoveSecret`    | Remove encrypted content | Remove encrypted items               |
+| <img src="/icons/useful/Rename.svg" />          | `Rename`          | Rename icon              | Rename files or items                |
+| <img src="/icons/useful/Restore.svg" />         | `Restore`         | Restore icon             | Restore deleted content              |
+| <img src="/icons/useful/Save.svg" />            | `Save`            | Save icon                | Save content or changes              |
+| <img src="/icons/useful/Scan.svg" />            | `Scan`            | Scan icon                | Scan QR codes, etc.                  |
+| <img src="/icons/useful/Search.svg" />          | `Search`          | Search icon              | Search content                       |
+| <img src="/icons/useful/SelectAll.svg" />       | `SelectAll`       | Select all icon          | Select all items                     |
+| <img src="/icons/useful/Settings.svg" />        | `Settings`        | Settings icon            | App or system settings               |
+| <img src="/icons/useful/Share.svg" />           | `Share`           | Share icon               | Share content to other platforms     |
+| <img src="/icons/useful/Stick.svg" />           | `Stick`           | Stick icon               | Pin content to the top               |
+| <img src="/icons/useful/Unlike.svg" />          | `Unlike`          | Unlike icon              | Unlike or unfavorite                 |
+| <img src="/icons/useful/Unstick.svg" />         | `Unstick`         | Unpin content            | Unpin content                        |
+| <img src="/icons/useful/Update.svg" />          | `Update`          | Update icon              | Update apps or content               |
 
 ### Other Icons
 
 The "Other" category includes icons for specific scenarios.
 
-- `GitHub`: GitHub icon
+| Preview                               | Icon Name | Description |
+|---------------------------------------|-----------|-------------|
+| <img src="/icons/other/GitHub.svg" /> | `GitHub`  | GitHub icon |

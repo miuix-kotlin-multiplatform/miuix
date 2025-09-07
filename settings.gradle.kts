@@ -47,3 +47,4 @@ rootProject.name = "miuix"
 include(":miuix")
 include(":example")
 include(":docs:demo")
+include(":docs:iconGen")
