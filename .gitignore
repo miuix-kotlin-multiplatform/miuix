@@ -36,3 +36,4 @@ docs/.vitepress/dist
 docs/.vitepress/cache
 docs/public/dokka
 docs/public/compose
+docs/public/icons
