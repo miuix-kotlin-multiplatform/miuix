@@ -46,22 +46,24 @@ kotlin {
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser { binaries.executable() }
+        browser()
     }
+
     js(IR) {
-        browser { binaries.executable() }
+        browser()
     }
 
     sourceSets {
         androidMain.dependencies {
-            implementation(libs.androidx.activity) // Android BackHandler
             implementation(libs.androidx.window) // Android WindowMetrics
         }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.ui)
-            implementation(libs.compose.window.size)
+
+            implementation(libs.jetbrains.compose.ui.backhandler)
+            implementation(libs.jetbrains.compose.window.size)
         }
     }
 }

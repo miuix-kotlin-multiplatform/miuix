@@ -32,7 +32,7 @@ dependencyResolutionManagement {
 }
 
 plugins {
-    id("com.android.settings") version ("8.11.0")
+    id("com.android.settings") version ("8.13.0")
     id("org.gradle.toolchains.foojay-resolver-convention") version ("1.0.0")
 }
 

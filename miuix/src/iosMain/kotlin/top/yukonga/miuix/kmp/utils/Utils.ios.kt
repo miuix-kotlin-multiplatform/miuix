@@ -42,5 +42,5 @@ actual fun BackHandler(
     enabled: Boolean,
     onBack: () -> Unit
 ) {
-    androidx.compose.ui.backhandler.BackHandler(enabled, onBack)
+    androidx.compose.ui.backhandler.BackHandler(enabled = enabled, onBack = onBack)
 }

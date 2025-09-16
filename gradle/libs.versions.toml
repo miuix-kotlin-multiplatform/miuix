@@ -1,26 +1,28 @@
 [versions]
-android-gradle-plugin = "8.12.1"
-androidx-activity = "1.10.1"
-androidx-navigation = "2.9.0-rc01"
+android-gradle-plugin = "8.13.0"
+androidx-activity = "1.11.0"
 androidx-window = "1.4.0"
-compose-hotReload = "1.0.0-beta06"
-compose-plugin = "1.9.0-beta03"
-dokka = "2.0.0"
+jetbrains-compose = "1.9.0-rc02"
+jetbrains-compose-hotReload = "1.0.0-beta07"
+jetbrains-androidx-navigation = "2.9.0-rc02"
+jetbrains-compose-window-size = "1.9.0-beta05"
+jetbrains-dokka = "2.0.0"
 kotlin = "2.2.20"
 spotless = "7.2.1"
 
 [libraries]
 androidx-activity = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
-androidx-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
 androidx-window = { group = "androidx.window", name = "window", version.ref = "androidx-window" }
-compose-window-size = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "compose-plugin" }
+jetbrains-androidx-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "jetbrains-androidx-navigation" }
+jetbrains-compose-ui-backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "jetbrains-compose" }
+jetbrains-compose-window-size = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "jetbrains-compose-window-size" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-compose-hotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "compose-hotReload" }
-jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
-jetbrains-dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose" }
+jetbrains-compose-hotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "jetbrains-compose-hotReload" }
+jetbrains-dokka = { id = "org.jetbrains.dokka", version.ref = "jetbrains-dokka" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

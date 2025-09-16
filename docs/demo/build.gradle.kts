@@ -34,7 +34,7 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.ui)
 
-            implementation(libs.androidx.navigation)
+            implementation(libs.jetbrains.androidx.navigation)
             implementation(project(":miuix"))
         }
     }

@@ -11,8 +11,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import java.awt.KeyboardFocusManager
-import java.awt.event.KeyEvent
 
 @Composable
 @OptIn(ExperimentalComposeUiApi::class)
@@ -34,16 +32,11 @@ actual fun platform(): Platform = Platform.Desktop
 @Composable
 actual fun getRoundedCorner(): Dp = 0.dp
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 actual fun BackHandler(
     enabled: Boolean,
     onBack: () -> Unit
 ) {
-    if (!enabled) return
-    KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher { event ->
-        if (event.keyCode == KeyEvent.VK_ESCAPE) {
-            onBack()
-        }
-        false
-    }
+    androidx.compose.ui.backhandler.BackHandler(enabled = enabled, onBack = onBack)
 }

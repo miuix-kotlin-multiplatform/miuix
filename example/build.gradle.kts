@@ -6,6 +6,7 @@
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 import java.util.Properties
@@ -13,8 +14,8 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.compose.hotReload)
     alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.jetbrains.compose.hotReload)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.spotless)
 }
@@ -62,22 +63,31 @@ kotlin {
 
     jvm("desktop")
 
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
+    js(IR) {
+        outputModuleName.set("composeApp")
         browser {
-            outputModuleName = "uitest"
             commonWebpackConfig {
-                outputFileName = "uitest.js"
+                outputFileName = "composeApp.js"
             }
         }
         binaries.executable()
     }
 
-    js(IR) {
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        outputModuleName.set("composeApp")
         browser {
-            outputModuleName = "uitest"
+            val rootDirPath = project.rootDir.path
+            val projectDirPath = project.projectDir.path
             commonWebpackConfig {
-                outputFileName = "uitest.js"
+                outputFileName = "composeApp.js"
+                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
+                    static = (static ?: mutableListOf()).apply {
+                        // Serve sources to debug inside browser
+                        add(rootDirPath)
+                        add(projectDirPath)
+                    }
+                }
             }
         }
         binaries.executable()

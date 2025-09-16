@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -21,8 +22,8 @@ import androidx.window.layout.WindowMetricsCalculator
 import kotlin.math.max
 import kotlin.math.min
 
-@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
+@SuppressLint("ConfigurationScreenWidthHeight")
 actual fun getWindowSize(): WindowSize {
     val configuration = LocalConfiguration.current
     val context = LocalContext.current
@@ -76,10 +77,11 @@ fun getCornerRadiusBottom(context: Context): Int {
     return if (resourceId > 0) context.resources.getDimensionPixelSize(resourceId) else 0
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 actual fun BackHandler(
     enabled: Boolean,
     onBack: () -> Unit
 ) {
-    androidx.activity.compose.BackHandler(enabled = enabled, onBack = onBack)
+    androidx.compose.ui.backhandler.BackHandler(enabled = enabled, onBack = onBack)
 }

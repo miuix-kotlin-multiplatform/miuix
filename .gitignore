@@ -19,6 +19,8 @@
 .idea/AndroidProjectSystem.xml
 .idea/deviceManager.xml
 .idea/gradle.xml
+.idea/copilot.data.migration.agent.xml
+.idea/copilot.data.migration.edit.xml
 .fleet
 .vscode
 .DS_Store
