@@ -1,7 +1,7 @@
 // Copyright 2025, miuix-kotlin-multiplatform contributors
 // SPDX-License-Identifier: Apache-2.0
 
-package top.yukonga.miuix.uitest
+package preview
 
 import App
 import FourthPage
@@ -12,13 +12,13 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.tooling.preview.Preview
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.Scaffold
 import ui.AppTheme
 
 @Composable
-@Preview(device = "spec:width=1200px,height=2670px,dpi=480")
+@Preview
 fun UITestPreview() {
     AppTheme {
         Scaffold {
@@ -28,7 +28,7 @@ fun UITestPreview() {
 }
 
 @Composable
-@Preview(device = "spec:width=1200px,height=2670px,dpi=480")
+@Preview
 fun MainPagePreview() {
     AppTheme {
         Scaffold {
@@ -38,27 +38,35 @@ fun MainPagePreview() {
 }
 
 @Composable
-@Preview(device = "spec:width=1200px,height=2670px,dpi=480")
+@Preview
 fun SecondPagePreview() {
     AppTheme {
         Scaffold {
-            SecondPage(MiuixScrollBehavior(), PaddingValues(), true)
+            SecondPage(
+                MiuixScrollBehavior(),
+                PaddingValues(),
+                true
+            )
         }
     }
 }
 
 @Composable
-@Preview(device = "spec:width=1200px,height=2670px,dpi=480")
+@Preview
 fun ThirdPagePreview() {
     AppTheme {
         Scaffold {
-            ThirdPage(MiuixScrollBehavior(), PaddingValues(), true)
+            ThirdPage(
+                MiuixScrollBehavior(),
+                PaddingValues(),
+                true
+            )
         }
     }
 }
 
 @Composable
-@Preview(device = "spec:width=1200px,height=2670px,dpi=480")
+@Preview
 fun FourthPagePreview() {
     AppTheme {
         Scaffold {

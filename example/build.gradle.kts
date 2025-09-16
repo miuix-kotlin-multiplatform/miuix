@@ -106,18 +106,13 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.ui)
             implementation(compose.components.resources)
-
+            implementation(compose.components.uiToolingPreview)
             implementation(project(":miuix"))
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
         }
     }
-}
-
-dependencies {
-    implementation(compose.preview)
-    debugImplementation(compose.uiTooling)
 }
 
 android {
@@ -152,7 +147,13 @@ android {
             }
         }
     }
-    dependenciesInfo.includeInApk = false
+    dependencies {
+        debugImplementation(compose.uiTooling)
+    }
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
     packaging {
         applicationVariants.all {
             outputs.all {
