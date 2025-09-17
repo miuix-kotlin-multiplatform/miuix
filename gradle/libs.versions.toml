@@ -2,7 +2,7 @@
 android-gradle-plugin = "8.13.0"
 androidx-activity = "1.11.0"
 androidx-window = "1.4.0"
-jetbrains-compose = "1.9.0-rc02"
+jetbrains-compose = "1.9.0"
 jetbrains-compose-hotReload = "1.0.0-beta07"
 jetbrains-androidx-navigation = "2.9.0-rc02"
 jetbrains-compose-window-size = "1.9.0-beta05"
