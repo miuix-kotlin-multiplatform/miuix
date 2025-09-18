@@ -18,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -122,8 +123,8 @@ fun HsvColorPicker(
 
     val selectedColor = Hsv(
         h = currentHue.toDouble(),
-        v = (currentValue * 100.0),
-        s = (currentSaturation * 100.0)
+        s = (currentSaturation * 100.0),
+        v = (currentValue * 100.0)
     ).toColor(currentAlpha)
 
     LaunchedEffect(initialColor) {
@@ -237,7 +238,7 @@ fun HsvSaturationSlider(
 ) {
     val saturationColors = remember(currentHue) {
         listOf(
-            Hsv(currentHue.toDouble(), 100.0, 0.0).toColor(1f),
+            Hsv(currentHue.toDouble(), 0.0, 100.0).toColor(1f),
             Hsv(currentHue.toDouble(), 100.0, 100.0).toColor(1f)
         )
     }
@@ -268,7 +269,7 @@ fun HsvValueSlider(
     hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
 ) {
     val valueColors = remember(currentHue, currentSaturation) {
-        listOf(Color.Black, Hsv(currentHue.toDouble(), 100.0, (currentSaturation * 100.0)).toColor())
+        listOf(Color.Black, Hsv(currentHue.toDouble(), (currentSaturation * 100.0), 100.0).toColor())
     }
     ColorSlider(
         value = currentValue,
@@ -299,7 +300,7 @@ fun HsvAlphaSlider(
     hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect
 ) {
     val alphaColors = remember(currentHue, currentSaturation, currentValue) {
-        val baseColor = Hsv(currentHue.toDouble(), (currentValue * 100.0), (currentSaturation * 100.0)).toColor()
+        val baseColor = Hsv(currentHue.toDouble(), (currentSaturation * 100.0), (currentValue * 100.0)).toColor()
         listOf(baseColor.copy(alpha = 0f), baseColor.copy(alpha = 1f))
     }
 
@@ -817,6 +818,7 @@ private fun ColorSlider(
     modifier: Modifier = Modifier,
     hapticEffect: SliderDefaults.SliderHapticEffect = SliderDefaults.DefaultHapticEffect,
 ) {
+    val onValueChangedState = rememberUpdatedState(onValueChanged)
     val density = LocalDensity.current
     var sliderWidth by remember { mutableStateOf(0.dp) }
     val indicatorSizeDp = 20.dp
@@ -856,7 +858,7 @@ private fun ColorSlider(
                     onDragStart = { offset ->
                         val newValue =
                             handleSliderInteraction(offset.x, size.width.toFloat(), with(density) { sliderHeightDp.toPx() })
-                        onValueChanged(newValue)
+                        onValueChangedState.value(newValue)
                         hapticState.reset(newValue)
                     },
                     onHorizontalDrag = { change, _ ->
@@ -865,7 +867,7 @@ private fun ColorSlider(
                             change.position.x,
                             size.width.toFloat(),
                             with(density) { sliderHeightDp.toPx() }).coerceIn(0f, 1f)
-                        onValueChanged(newValue)
+                        onValueChangedState.value(newValue)
                         hapticState.handleHapticFeedback(newValue, hapticEffect, hapticFeedback)
                     }
                 )

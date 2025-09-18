@@ -43,7 +43,8 @@ import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-/** * A color palette component that allows users to select colors from a grid of HSV values.
+/**
+ * A color palette component that allows users to select colors from a grid of HSV values.
  *
  * @param initialColor The initial color to display in the palette.
  * @param onColorChanged Callback invoked when the selected color changes.
@@ -77,10 +78,7 @@ fun ColorPalette(
     var alpha by remember { mutableStateOf(initialColor.alpha.coerceIn(0f, 1f)) }
     var lastEmittedColor by remember { mutableStateOf<Color?>(null) }
     var lastAcceptedHSV by remember { mutableStateOf<Triple<Float, Float, Float>?>(null) }
-
     LaunchedEffect(initialColor, rows, hueColumns, includeGrayColumn) {
-        if (lastEmittedColor?.let { colorsEqualApprox(it, initialColor) } == true) return@LaunchedEffect
-
         val hsvInit = initialColor.toHsv()
         val h = hsvInit.h.toFloat()
         val s = (hsvInit.s / 100.0).toFloat()
@@ -179,6 +177,7 @@ private fun PaletteCanvas(
     selectedCol: Int,
     onSelect: (row: Int, col: Int) -> Unit,
 ) {
+    val onSelectState = rememberUpdatedState(onSelect)
     val totalColumns = hueColumns + if (includeGrayColumn) 1 else 0
     val rowSV = remember(rows) { buildRowSV(rows) }
     val grayV = remember(rows) { buildGrayV(rows) }
@@ -194,14 +193,14 @@ private fun PaletteCanvas(
                 detectTapGestures { pos ->
                     if (sizePx.width == 0 || sizePx.height == 0) return@detectTapGestures
                     val (r, c) = pointToCell(pos, sizePx, rows, totalColumns)
-                    onSelect(r, c)
+                    onSelectState.value(r, c)
                 }
             }
             .pointerInput(rows, hueColumns, includeGrayColumn) {
                 detectDragGestures { change, _ ->
                     if (sizePx.width == 0 || sizePx.height == 0) return@detectDragGestures
                     val (r, c) = pointToCell(change.position, sizePx, rows, totalColumns)
-                    onSelect(r, c)
+                    onSelectState.value(r, c)
                 }
             }
             .fillMaxWidth()
@@ -299,11 +298,11 @@ private fun cellColor(
     val totalColumns = hueColumns + if (includeGrayColumn) 1 else 0
     val (s, v) = rowSV[row]
     return if (includeGrayColumn && col == totalColumns - 1) {
-        Hsv(0.0, (grayV[row] * 100.0), 0.0).toColor()
+        Hsv(0.0, 0.0, (grayV[row] * 100.0)).toColor()
     } else {
         val step = 360f / hueColumns
         val h = (col * step) % 360f
-        Hsv(h.toDouble(), (v * 100.0), (s * 100.0)).toColor()
+        Hsv(h.toDouble(), (s * 100.0), (v * 100.0)).toColor()
     }
 }
 
@@ -313,13 +312,6 @@ private fun pointToCell(pos: Offset, size: IntSize, rows: Int, totalColumns: Int
     val col = ((x / size.width) * totalColumns).toInt().coerceIn(0, totalColumns - 1)
     val row = ((y / size.height) * rows).toInt().coerceIn(0, rows - 1)
     return row to col
-}
-
-private fun colorsEqualApprox(a: Color, b: Color, eps: Float = 0.002f): Boolean {
-    return abs(a.red - b.red) < eps &&
-            abs(a.green - b.green) < eps &&
-            abs(a.blue - b.blue) < eps &&
-            abs(a.alpha - b.alpha) < eps
 }
 
 private fun hsvEqualApprox(
@@ -346,4 +338,3 @@ private fun <T> List<T>.indexOfMinBy(selector: (T) -> Float): Int {
 }
 
 private fun sq(v: Float) = v * v
-

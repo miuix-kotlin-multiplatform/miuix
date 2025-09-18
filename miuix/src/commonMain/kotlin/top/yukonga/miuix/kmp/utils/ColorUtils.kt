@@ -30,14 +30,14 @@ data class OkLab(val l: Double, val a: Double, val b: Double) {
 /**
  * User-friendly HSV-like representation.
  * - h: hue in degrees [0, 360)
- * - v: value/brightness in percent [0.0, 100.0]
  * - s: saturation in percent [0.0, 100.0]
+ * - v: value/brightness in percent [0.0, 100.0]
  */
-data class Hsv(val h: Double, val v: Double, val s: Double) {
+data class Hsv(val h: Double, val s: Double, val v: Double) {
     fun toColor(alpha: Float = 1f): Color {
         val hue = (((h % 360.0) + 360.0) % 360.0).toFloat()
-        val vN = (v / 100.0).coerceIn(0.0, 1.0).toFloat()
         val sN = (s / 100.0).coerceIn(0.0, 1.0).toFloat()
+        val vN = (v / 100.0).coerceIn(0.0, 1.0).toFloat()
         return hsv(hue, sN, vN, alpha)
     }
 }
@@ -57,7 +57,7 @@ fun Color.toHsv(): Hsv {
     val h = hsvArr[0].toDouble()
     val s = (hsvArr[1] * 100.0).coerceIn(0.0, 100.0)
     val v = (hsvArr[2] * 100.0).coerceIn(0.0, 100.0)
-    return Hsv(h, v, s)
+    return Hsv(h, s, v)
 }
 
 object ColorUtils {
