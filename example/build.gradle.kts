@@ -6,7 +6,6 @@
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 import java.util.Properties
@@ -70,6 +69,10 @@ kotlin {
                 outputFileName = "composeApp.js"
             }
         }
+        compilerOptions {
+            freeCompilerArgs.add("-Xes-long-as-bigint")
+            freeCompilerArgs.add("-XXLanguage:+JsAllowLongInExportedDeclarations")
+        }
         binaries.executable()
     }
 
@@ -77,17 +80,8 @@ kotlin {
     wasmJs {
         outputModuleName.set("composeApp")
         browser {
-            val rootDirPath = project.rootDir.path
-            val projectDirPath = project.projectDir.path
             commonWebpackConfig {
                 outputFileName = "composeApp.js"
-                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                    static = (static ?: mutableListOf()).apply {
-                        // Serve sources to debug inside browser
-                        add(rootDirPath)
-                        add(projectDirPath)
-                    }
-                }
             }
         }
         binaries.executable()

@@ -51,6 +51,10 @@ kotlin {
 
     js(IR) {
         browser()
+        compilerOptions {
+            freeCompilerArgs.add("-Xes-long-as-bigint")
+            freeCompilerArgs.add("-XXLanguage:+JsAllowLongInExportedDeclarations")
+        }
     }
 
     sourceSets {
