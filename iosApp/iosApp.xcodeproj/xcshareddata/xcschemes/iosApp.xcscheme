@@ -35,7 +35,6 @@
       selectedDebuggerIdentifier = ""
       selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
       disableMainThreadChecker = "YES"
-      disablePerformanceAntipatternChecker = "YES"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -48,7 +47,8 @@
       viewDebuggingEnabled = "No"
       queueDebuggingEnabled = "No"
       consoleMode = "0"
-      structuredConsoleMode = "1">
+      structuredConsoleMode = "1"
+      disablePerformanceAntipatternChecker = "YES">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
